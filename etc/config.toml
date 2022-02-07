@@ -1,0 +1,33 @@
+[app]
+name = "mpaas"
+key  = "this is your app key"
+
+[http]
+host = "127.0.0.1"
+port = "8848"
+
+[grpc]
+host = "127.0.0.1"
+port = "18848"
+
+
+[keyauth]
+host = "127.0.0.1"
+port = "18050"
+client_id = "sfd"
+client_secret = "sdf"
+
+
+
+
+[mongodb]
+endpoints = ["127.0.0.1:27017"]
+username = "mpaas"
+password = "123456"
+database = "mpaas"
+
+[log]
+level = "debug"
+path = "logs"
+format = "text"
+to = "stdout"
