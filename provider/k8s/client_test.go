@@ -1,7 +1,10 @@
 package k8s_test
 
 import (
+	"fmt"
+	"io/ioutil"
 	"os"
+	"path/filepath"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -15,9 +18,22 @@ var (
 
 func TestGetter(t *testing.T) {
 	should := assert.New(t)
-	k8s.NewClient()
+	client, err := k8s.NewClient(kubeConfig)
+	should.NoError(err)
+	v, err := client.ServerVersion()
+	should.NoError(err)
+	fmt.Println(v)
 }
 
 func init() {
-	kubeConfig = os.Getenv("KUBE_CONFIG")
+	wd, err := os.Getwd()
+	if err != nil {
+		panic(err)
+	}
+
+	kc, err := ioutil.ReadFile(filepath.Join(wd, "kube_config.yml"))
+	if err != nil {
+		panic(err)
+	}
+	kubeConfig = string(kc)
 }

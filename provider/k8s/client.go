@@ -6,18 +6,33 @@ import (
 	clientcmdapi "k8s.io/client-go/tools/clientcmd/api"
 )
 
-func NewClient(kubeConfigYaml string) error {
+func NewClient(kubeConfigYaml string) (*Client, error) {
 	kc, err := clientcmd.BuildConfigFromKubeconfigGetter("",
 		func() (*clientcmdapi.Config, error) {
 			return clientcmd.Load([]byte(kubeConfigYaml))
 		},
 	)
 	if err != nil {
-		return err
+		return nil, err
 	}
 
 	// 初始化客户端
-	kubernetes.NewForConfig(kc)
+	client, err := kubernetes.NewForConfig(kc)
+	if err != nil {
+		return nil, err
+	}
 
-	return nil
+	return &Client{c: client}, nil
+}
+
+type Client struct {
+	c *kubernetes.Clientset
+}
+
+func (c *Client) ServerVersion() (string, error) {
+	si, err := c.c.ServerVersion()
+	if err != nil {
+		return "", err
+	}
+	return si.String(), nil
 }

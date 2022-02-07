@@ -18,4 +18,5 @@ etc/mpaas.toml
 etc/mpaas.env
 etc/ssl
 unit-test.env
+kube_config.yml
 mpaas
