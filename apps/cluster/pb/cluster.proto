@@ -1,0 +1,119 @@
+syntax = "proto3";
+
+package infraboard.mpaas.cluster;
+option go_package = "github.com/infraboard/mpaas/apps/cluster";
+
+import "github.com/infraboard/mcube/pb/page/page.proto";
+import "github.com/infraboard/mcube/pb/request/request.proto";
+
+service Service {
+    rpc CreateCluster(CreateClusterRequest) returns(Cluster);
+    rpc QueryCluster(QueryClusterRequest) returns(ClusterSet);
+    rpc DescribeCluster(DescribeClusterRequest) returns(Cluster);
+    rpc UpdateCluster(UpdateClusterRequest) returns(Cluster);
+    rpc DeleteCluster(DeleteClusterRequest) returns(Cluster);
+}
+
+// Cluster todo
+message Cluster {
+    // 唯一ID
+    // @gotags: json:"id" bson:"_id"
+    string id = 1;
+    // 录入时间
+    // @gotags: json:"create_at" bson:"create_at"
+    int64 create_at = 2;
+    // 更新时间
+    // @gotags: json:"update_at" bson:"update_at"
+    int64 update_at = 3;
+    // 更新人
+    // @gotags: json:"update_by" bson:"update_by"
+    string update_by = 4;
+    // k8s版本
+    // @gotags: json:"k8s_version" bson:"k8s_version"
+    string k8s_version = 5;
+    // 基础信息
+    // @gotags: json:"data" bson:"data"
+    CreateClusterRequest data = 6;
+    // 集群状态
+    // @gotags: json:"status" bson:"status"
+    Status status = 7;
+}
+
+message Status {
+    // 检查时间
+    // @gotags: json:"check_at" bson:"check_at"
+    int64 check_at  = 1;
+    // API Server是否正常
+    // @gotags: json:"is_alive" bson:"is_alive"
+    bool is_alive  = 2;
+    // 异常消息
+    // @gotags: json:"message" bson:"message"
+    string message = 10;
+}
+
+message CreateClusterRequest {
+    // 创建人
+    // @gotags: json:"create_by" bson:"create_by"
+    string create_by = 1;
+    // 名称
+    // @gotags: json:"name" bson:"name" validate:"required"
+    string name = 2;
+    // 集群客户端访问凭证
+    // @gotags: json:"kube_config" bson:"kube_config" validate:"required"
+    string kube_config = 3;
+    // 集群描述
+    // @gotags: json:"description" bson:"description"
+    string description = 4;
+    // 集群标签
+    // @gotags: json:"lables" bson:"lables"
+    map<string, string> lables = 5;
+}
+
+message QueryClusterRequest {
+    // 分页参数
+    // @gotags: json:"page" 
+    infraboard.mcube.page.PageRequest page = 1;
+    // 关键字参数
+    // @gotags: json:"keywords"
+    string keywords = 2;  
+}
+
+// ClusterSet todo
+message ClusterSet {
+    // 分页时，返回总数量
+    // @gotags: json:"total"
+    int64 total = 1;
+    // 一页的数据
+    // @gotags: json:"items"
+    repeated Cluster items = 2;
+}
+
+message DescribeClusterRequest {
+    // Cluster id
+    // @gotags: json:"id"
+    string id = 1;
+}
+
+message UpdateClusterRequest {
+    // Cluster id
+    // @gotags: json:"id"
+    string id = 1;
+    // 更新模式
+    // @gotags: json:"update_mode"
+    infraboard.mcube.request.UpdateMode update_mode = 2;
+    // 更新人
+    // @gotags: json:"update_by"
+    string update_by = 3;
+    // 更新时间
+    // @gotags: json:"update_at"
+    int64 update_at = 4;
+    // 更新的书本信息
+    // @gotags: json:"data"
+    CreateClusterRequest data = 5;
+}
+
+message DeleteClusterRequest {
+    // Cluster id
+    // @gotags: json:"id"
+    string id = 1;
+}
