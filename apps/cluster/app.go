@@ -1,6 +1,7 @@
 package cluster
 
 import (
+	"fmt"
 	"net/http"
 	"time"
 
@@ -29,9 +30,11 @@ func NewCluster(req *CreateClusterRequest) (*Cluster, error) {
 	}
 
 	return &Cluster{
-		Id:       xid.New().String(),
-		CreateAt: time.Now().UnixMicro(),
-		Data:     req,
+		Id:         xid.New().String(),
+		CreateAt:   time.Now().UnixMicro(),
+		Data:       req,
+		ServerInfo: &ServerInfo{},
+		Status:     &Status{},
 	}, nil
 }
 
@@ -53,6 +56,18 @@ func NewDefaultCluster() *Cluster {
 	return &Cluster{
 		Data: &CreateClusterRequest{},
 	}
+}
+
+func (i *Cluster) IsAlive() error {
+	if i.Status == nil {
+		return fmt.Errorf("status is nil")
+	}
+
+	if !i.Status.IsAlive {
+		return fmt.Errorf(i.Status.Message)
+	}
+
+	return nil
 }
 
 func (i *Cluster) Update(req *UpdateClusterRequest) {

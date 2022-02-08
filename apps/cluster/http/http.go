@@ -33,12 +33,12 @@ func (h *handler) Registry(r router.SubRouter) {
 	rr := r.ResourceRouter("cluster")
 
 	rr.BasePath("clusters")
-	rr.Handle("POST", "/", h.CreateBook).AddLabel(label.Create)
-	rr.Handle("GET", "/", h.QueryBook).AddLabel(label.List)
-	rr.Handle("GET", "/:id", h.DescribeBook).AddLabel(label.Get)
-	rr.Handle("PUT", "/:id", h.PutBook).AddLabel(label.Update)
-	rr.Handle("PATCH", "/:id", h.PatchBook).AddLabel(label.Update)
-	rr.Handle("DELETE", "/:id", h.DeleteBook).AddLabel(label.Delete)
+	rr.Handle("POST", "/", h.CreateCluster).AddLabel(label.Create)
+	rr.Handle("GET", "/", h.QueryCluster).AddLabel(label.List)
+	rr.Handle("GET", "/:id", h.DeleteCluster).AddLabel(label.Get)
+	rr.Handle("PUT", "/:id", h.PutCluster).AddLabel(label.Update)
+	rr.Handle("PATCH", "/:id", h.PatchCluster).AddLabel(label.Update)
+	rr.Handle("DELETE", "/:id", h.DeleteCluster).AddLabel(label.Delete)
 }
 
 func init() {

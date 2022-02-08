@@ -23,6 +23,8 @@ func TestGetter(t *testing.T) {
 	v, err := client.ServerVersion()
 	should.NoError(err)
 	fmt.Println(v)
+	fmt.Println(client.CurrentContext())
+	fmt.Println(client.CurrentCluster())
 }
 
 func init() {

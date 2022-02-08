@@ -28,15 +28,27 @@ message Cluster {
     // 更新人
     // @gotags: json:"update_by" bson:"update_by"
     string update_by = 4;
-    // k8s版本
-    // @gotags: json:"k8s_version" bson:"k8s_version"
-    string k8s_version = 5;
+    // 集群相关信息
+    // @gotags: json:"server_info" bson:"server_info"
+    ServerInfo server_info = 8;
     // 基础信息
     // @gotags: json:"data" bson:"data"
-    CreateClusterRequest data = 6;
+    CreateClusterRequest data = 9;
     // 集群状态
     // @gotags: json:"status" bson:"status"
-    Status status = 7;
+    Status status = 10;
+}
+
+message ServerInfo {
+    // k8s的地址
+    // @gotags: json:"server" bson:"server"
+    string server = 1;
+    // k8s版本
+    // @gotags: json:"version" bson:"version"
+    string version = 2;
+    // 连接用户
+    // @gotags: json:"auth_user" bson:"auth_user"
+    string auth_user = 3;
 }
 
 message Status {
@@ -53,19 +65,19 @@ message Status {
 
 message CreateClusterRequest {
     // 创建人
-    // @gotags: json:"create_by" bson:"create_by"
+    // @gotags: json:"create_by" form:"create_by" bson:"create_by"
     string create_by = 1;
     // 名称
-    // @gotags: json:"name" bson:"name" validate:"required"
+    // @gotags: json:"name" bson:"name" form:"name" validate:"required"
     string name = 2;
     // 集群客户端访问凭证
-    // @gotags: json:"kube_config" bson:"kube_config" validate:"required"
+    // @gotags: json:"kube_config" bson:"kube_config" form:"kube_config" validate:"required"
     string kube_config = 3;
     // 集群描述
-    // @gotags: json:"description" bson:"description"
+    // @gotags: json:"description" form:"description" bson:"description" 
     string description = 4;
     // 集群标签
-    // @gotags: json:"lables" bson:"lables"
+    // @gotags: json:"lables" form:"lables" bson:"lables" 
     map<string, string> lables = 5;
 }
 
