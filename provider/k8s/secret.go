@@ -17,3 +17,7 @@ func (c *Client) ListSecret(ctx context.Context, req *ListServiceRequest) (*v1.S
 	}
 	return c.client.CoreV1().Secrets(req.Namespace).List(ctx, metav1.ListOptions{})
 }
+
+func (c *Client) CreateSecret(ctx context.Context, req *v1.Secret) (*v1.Secret, error) {
+	return c.client.CoreV1().Secrets(req.Namespace).Create(ctx, req, metav1.CreateOptions{})
+}
