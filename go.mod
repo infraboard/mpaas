@@ -6,6 +6,7 @@ require (
 	github.com/BurntSushi/toml v1.0.0
 	github.com/caarlos0/env/v6 v6.9.1
 	github.com/go-playground/validator/v10 v10.10.0
+	github.com/gorilla/websocket v1.4.2
 	github.com/imdario/mergo v0.3.12
 	github.com/infraboard/keyauth v0.7.1
 	github.com/infraboard/mcube v1.6.5

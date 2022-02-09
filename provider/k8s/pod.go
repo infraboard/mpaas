@@ -3,6 +3,7 @@ package k8s
 import (
 	"context"
 	"fmt"
+	"io"
 
 	apiv1 "k8s.io/api/core/v1"
 	v1 "k8s.io/api/core/v1"
@@ -62,21 +63,29 @@ func (c *Client) LoginContainer(req *LoginContainerRequest) {
 	if err != nil {
 		return
 	}
+
 	fmt.Println(executor)
 }
 
 type WatchConainterLogRequest struct {
+	Namespace     string
+	PodName       string
 	ContainerName string
 }
 
+var (
+	LOG_TAIL_LINES = int64(100)
+)
+
 // 查看容器日志
-func (c *Client) WatchConainterLog(req *WatchConainterLogRequest) {
-	count := int64(100)
+func (c *Client) WatchConainterLog(ctx context.Context, req *WatchConainterLogRequest) (io.ReadCloser, error) {
 	opt := &v1.PodLogOptions{
 		Container:                    req.ContainerName,
 		Follow:                       false,
-		TailLines:                    &count,
+		TailLines:                    &LOG_TAIL_LINES,
 		InsecureSkipTLSVerifyBackend: true,
 	}
-	fmt.Println(opt)
+
+	restReq := c.client.CoreV1().Pods(req.Namespace).GetLogs(req.PodName, opt)
+	return restReq.Stream(ctx)
 }
