@@ -2,19 +2,17 @@ package k8s
 
 import (
 	"context"
-	"fmt"
 	"io"
 
-	apiv1 "k8s.io/api/core/v1"
 	v1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/client-go/kubernetes/scheme"
 	"k8s.io/client-go/tools/remotecommand"
 )
 
-func (c *Client) ListPod(ctx context.Context, req *ListDeploymentRequest) (*apiv1.PodList, error) {
+func (c *Client) ListPod(ctx context.Context, req *ListDeploymentRequest) (*v1.PodList, error) {
 	if req.Namespace == "" {
-		req.Namespace = apiv1.NamespaceDefault
+		req.Namespace = v1.NamespaceDefault
 	}
 	return c.client.CoreV1().Pods(req.Namespace).List(ctx, metav1.ListOptions{})
 }
@@ -24,9 +22,9 @@ type GetPodRequest struct {
 	Name      string
 }
 
-func (c *Client) GetPod(ctx context.Context, req *GetPodRequest) (*apiv1.Pod, error) {
+func (c *Client) GetPod(ctx context.Context, req *GetPodRequest) (*v1.Pod, error) {
 	if req.Namespace == "" {
-		req.Namespace = apiv1.NamespaceDefault
+		req.Namespace = v1.NamespaceDefault
 	}
 	return c.client.CoreV1().Pods(req.Namespace).Get(ctx, req.Name, metav1.GetOptions{})
 }
@@ -40,10 +38,17 @@ type LoginContainerRequest struct {
 	PodName       string
 	ContainerName string
 	Command       []string
+	Excutor       ContainerExecutor
+}
+
+type ContainerExecutor interface {
+	io.Reader
+	io.Writer
+	remotecommand.TerminalSizeQueue
 }
 
 // 登录容器
-func (c *Client) LoginContainer(req *LoginContainerRequest) {
+func (c *Client) LoginContainer(req *LoginContainerRequest) error {
 	restReq := c.client.CoreV1().RESTClient().Post().
 		Resource("pods").
 		Name(req.PodName).
@@ -61,10 +66,16 @@ func (c *Client) LoginContainer(req *LoginContainerRequest) {
 
 	executor, err := remotecommand.NewSPDYExecutor(c.restconf, "POST", restReq.URL())
 	if err != nil {
-		return
+		return err
 	}
 
-	fmt.Println(executor)
+	return executor.Stream(remotecommand.StreamOptions{
+		Stdin:             req.Excutor,
+		Stdout:            req.Excutor,
+		Stderr:            req.Excutor,
+		Tty:               true,
+		TerminalSizeQueue: req.Excutor,
+	})
 }
 
 type WatchConainterLogRequest struct {

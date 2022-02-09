@@ -13,11 +13,10 @@ import (
 	"k8s.io/client-go/tools/remotecommand"
 )
 
-// NewTerminal todo
-func NewTerminal(ws *websocket.Conn, ec remotecommand.Executor) *Terminal {
-	return &Terminal{
+// NewWebsocketTerminal todo
+func NewWebsocketTerminal(ws *websocket.Conn) ContainerExecutor {
+	return &WebsocketTerminal{
 		ws:            ws,
-		ec:            ec,
 		log:           zap.L().Named("Terminal"),
 		readDeadline:  60 * time.Second,
 		writeDeadline: 3 * time.Second,
@@ -27,30 +26,20 @@ func NewTerminal(ws *websocket.Conn, ec remotecommand.Executor) *Terminal {
 }
 
 // Terminal todo
-type Terminal struct {
-	sync.Mutex
+type WebsocketTerminal struct {
 	log      logger.Logger
 	ws       *websocket.Conn
-	ec       remotecommand.Executor
 	sizeChan chan remotecommand.TerminalSize
 	doneChan chan struct{}
 
 	readDeadline  time.Duration
 	writeDeadline time.Duration
-}
 
-// SetReadDeadline todo
-func (t *Terminal) SetReadDeadline(rd time.Duration) {
-	t.readDeadline = rd
-}
-
-// SetWriteDeadline todo
-func (t *Terminal) SetWriteDeadline(wd time.Duration) {
-	t.writeDeadline = wd
+	sync.Mutex
 }
 
 // Next called in a loop from remotecommand as long as the process is running
-func (t *Terminal) Next() *remotecommand.TerminalSize {
+func (t *WebsocketTerminal) Next() *remotecommand.TerminalSize {
 	select {
 	case size := <-t.sizeChan:
 		return &size
@@ -60,16 +49,17 @@ func (t *Terminal) Next() *remotecommand.TerminalSize {
 }
 
 // Done done, must call Done() before connection close, or Next() would not exits.
-func (t *Terminal) Done() {
+func (t *WebsocketTerminal) Done() {
 	close(t.doneChan)
 }
-func (t *Terminal) Read(p []byte) (int, error) {
+
+func (t *WebsocketTerminal) Read(p []byte) (int, error) {
 	_, message, err := t.ws.ReadMessage()
 	if err != nil {
 		t.log.Errorf("read message err: %s", err)
 		return copy(p, TerminalEnd), err
 	}
-	msg, err := ParseTerminalMessageFromText(string(message))
+	msg, err := ParseTerminalMessage(message)
 	if err != nil {
 		return copy(p, []byte(err.Error())), nil
 	}
@@ -82,17 +72,16 @@ func (t *Terminal) Read(p []byte) (int, error) {
 		t.sizeChan <- remotecommand.TerminalSize{Width: width, Height: height}
 		t.log.Debugf("send resize to channel")
 		return 0, nil
-	case OperationPing:
-		return 0, nil
 	default:
 		t.log.Errorf("unknown message type '%s'", msg.Operation)
 		return copy(p, TerminalEnd), fmt.Errorf("unknown message type '%d'", msg.Operation)
 	}
 }
-func (t *Terminal) Write(p []byte) (int, error) {
+
+func (t *WebsocketTerminal) Write(p []byte) (int, error) {
 	t.Lock()
 	defer t.Unlock()
-	msg := NewTerminalMessage(OperationStdout, string(p))
+	msg := NewTerminalMessage(OperationStdout, p)
 	t.ws.SetWriteDeadline(time.Now().Add(t.writeDeadline))
 	if err := t.ws.WriteMessage(websocket.BinaryMessage, msg.MarshalToBytes()); err != nil {
 		t.log.Debugf("write message err: %v", err)
@@ -102,7 +91,7 @@ func (t *Terminal) Write(p []byte) (int, error) {
 }
 
 // Ping 用户检测客户端状态, 如果客户端不在线则关闭连接
-func (t *Terminal) Ping(pingPeriod, writeWait time.Duration) {
+func (t *WebsocketTerminal) Ping(pingPeriod, writeWait time.Duration) {
 	pingTicker := time.NewTicker(pingPeriod)
 	defer func() {
 		t.log.Debug("pingger exit close websocket")
@@ -129,7 +118,7 @@ var (
 )
 
 // TerminalOperation 终端操作类型
-type TerminalOperation int
+type TerminalOperation byte
 
 const (
 	// OperationAuth 校验
@@ -142,32 +131,49 @@ const (
 	OperationStdout
 	// OperationResize resize
 	OperationResize
-	// OperationPing todo
-	OperationPing
-	// OperationResponse 操作返回
-	OperationResponse
+	// OperationUnknown
+	OperationUnknown
 )
 
-// ParseTerminalOperationFromString todo
-func ParseTerminalOperationFromString(op string) TerminalOperation {
-	code, _ := strconv.Atoi(op)
-	return TerminalOperation(code)
+func parseTerminalOperation(op byte) TerminalOperation {
+	switch op {
+	case 1:
+		return OperationAuth
+	case 2:
+		return OperatinonParam
+	case 3:
+		return OperationStdin
+	case 4:
+		return OperationStdout
+	case 5:
+		return OperationResize
+	default:
+		return OperationUnknown
+	}
 }
 
-// ParseTerminalMessageFromText todo
-func ParseTerminalMessageFromText(text string) (*TerminalMessage, error) {
-	msg := NewTerminalMessage(0, "")
-	sepIndex := strings.Index(text, ",")
-	if sepIndex == -1 {
-		return nil, fmt.Errorf("text format error, must <op>,<message>")
+var (
+	ErrMessageFormat = fmt.Errorf("message format error, must <op>,<message>")
+)
+
+// ParseTerminalMessage todo
+func ParseTerminalMessage(data []byte) (*TerminalMessage, error) {
+	if len(data) < 2 {
+		return nil, ErrMessageFormat
 	}
-	msg.Operation = ParseTerminalOperationFromString(text[:sepIndex])
-	msg.Data = text[sepIndex+1:]
-	return msg, nil
+
+	op := parseTerminalOperation(data[0])
+	if op == OperationUnknown {
+		return nil, ErrMessageFormat
+	}
+	return &TerminalMessage{
+		Operation: op,
+		Data:      data[1:],
+	}, nil
 }
 
 // NewTerminalMessage todo
-func NewTerminalMessage(op TerminalOperation, data string) *TerminalMessage {
+func NewTerminalMessage(op TerminalOperation, data []byte) *TerminalMessage {
 	return &TerminalMessage{
 		Operation: op,
 		Data:      data,
@@ -177,7 +183,7 @@ func NewTerminalMessage(op TerminalOperation, data string) *TerminalMessage {
 // TerminalMessage is the messaging protocol between ShellController and TerminalSession.
 type TerminalMessage struct {
 	Operation TerminalOperation `json:"op"`
-	Data      string            `json:"data"`
+	Data      []byte            `json:"data"`
 }
 
 // GetTermianlSize todo
@@ -186,7 +192,7 @@ func (t *TerminalMessage) GetTermianlSize() (uint16, uint16) {
 		cols uint64
 		rows uint64
 	)
-	wh := strings.Split(t.Data, ",")
+	wh := strings.Split(string(t.Data), ",")
 	if len(wh) == 2 {
 		cols, _ = strconv.ParseUint(wh[0], 10, 16)
 		rows, _ = strconv.ParseUint(wh[1], 10, 16)
@@ -194,12 +200,9 @@ func (t *TerminalMessage) GetTermianlSize() (uint16, uint16) {
 	return uint16(cols), uint16(rows)
 }
 
-// MarshalToText todo
-func (t *TerminalMessage) MarshalToText() string {
-	return fmt.Sprintf("%d,%s", t.Operation, t.Data)
-}
-
 // MarshalToBytes todo
 func (t *TerminalMessage) MarshalToBytes() []byte {
-	return []byte(t.MarshalToText())
+	bin := make([]byte, 0, len(t.Data)+1)
+	bin = append(bin, byte(t.Operation))
+	return append(bin, t.Data...)
 }
