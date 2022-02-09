@@ -7,6 +7,6 @@ import (
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
-func (c *Client) ListNodes(ctx context.Context) (*v1.NodeList, error) {
+func (c *Client) ListNode(ctx context.Context) (*v1.NodeList, error) {
 	return c.client.CoreV1().Nodes().List(ctx, metav1.ListOptions{})
 }

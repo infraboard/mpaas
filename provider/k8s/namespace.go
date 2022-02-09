@@ -15,7 +15,7 @@ func (c *Client) CreateNamespace(ctx context.Context, req *v1.Namespace) (*v1.Na
 	return c.client.CoreV1().Namespaces().Create(ctx, req, metav1.CreateOptions{})
 }
 
-func (c *Client) ListResourceQuotas(ctx context.Context) (*v1.ResourceQuotaList, error) {
+func (c *Client) ListResourceQuota(ctx context.Context) (*v1.ResourceQuotaList, error) {
 	return c.client.CoreV1().ResourceQuotas("").List(ctx, metav1.ListOptions{})
 }
 

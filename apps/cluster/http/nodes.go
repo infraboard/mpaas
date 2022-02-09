@@ -15,7 +15,7 @@ func (h *handler) QueryNodes(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	ins, err := client.ListNodes(r.Context())
+	ins, err := client.ListNode(r.Context())
 	if err != nil {
 		response.Failed(w, err)
 		return

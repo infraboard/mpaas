@@ -1,7 +1,9 @@
 package k8s
 
 import (
+	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/client-go/kubernetes"
+	"k8s.io/client-go/rest"
 	"k8s.io/client-go/tools/clientcmd"
 	clientcmdapi "k8s.io/client-go/tools/clientcmd/api"
 )
@@ -30,14 +32,16 @@ func NewClient(kubeConfigYaml string) (*Client, error) {
 	}
 
 	return &Client{
-		conf:   kubeConf,
-		client: client,
+		kubeconf: kubeConf,
+		restconf: restConf,
+		client:   client,
 	}, nil
 }
 
 type Client struct {
-	conf   *clientcmdapi.Config
-	client *kubernetes.Clientset
+	kubeconf *clientcmdapi.Config
+	restconf *rest.Config
+	client   *kubernetes.Clientset
 }
 
 func (c *Client) ServerVersion() (string, error) {
@@ -50,11 +54,11 @@ func (c *Client) ServerVersion() (string, error) {
 }
 
 func (c *Client) GetContexts() map[string]*clientcmdapi.Context {
-	return c.conf.Contexts
+	return c.kubeconf.Contexts
 }
 
 func (c *Client) CurrentContext() *clientcmdapi.Context {
-	return c.conf.Contexts[c.conf.CurrentContext]
+	return c.kubeconf.Contexts[c.kubeconf.CurrentContext]
 }
 
 func (c *Client) CurrentCluster() *clientcmdapi.Cluster {
@@ -63,5 +67,17 @@ func (c *Client) CurrentCluster() *clientcmdapi.Cluster {
 		return nil
 	}
 
-	return c.conf.Clusters[ctx.Cluster]
+	return c.kubeconf.Clusters[ctx.Cluster]
+}
+
+type GetRequest struct {
+	Namespace string
+	Name      string
+	Opts      metav1.GetOptions
+}
+
+type DeleteRequest struct {
+	Namespace string
+	Name      string
+	Opts      metav1.DeleteOptions
 }
