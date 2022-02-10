@@ -25,6 +25,7 @@ func NewWebsocketTerminal(ws *websocket.Conn) *WebsocketTerminal {
 	wt := &WebsocketTerminal{
 		ws:               ws,
 		log:              zap.L().Named("Terminal"),
+		maxAuthCount:     6,
 		maxMessageSize:   8192,
 		writeWait:        3 * time.Second,
 		pongWait:         60 * time.Second,
@@ -45,6 +46,8 @@ type WebsocketTerminal struct {
 	sizeChan chan remotecommand.TerminalSize
 	doneChan chan struct{}
 
+	authFailed   int
+	maxAuthCount int
 	// Maximum message size allowed from peer.
 	maxMessageSize int64
 	// Time allowed to write a message to the peer.
@@ -67,18 +70,20 @@ func (t *WebsocketTerminal) init() {
 	t.ws.SetPongHandler(t.PongHandler)
 }
 
+func (t *WebsocketTerminal) isMaxAuthFailed() bool {
+	return t.authFailed < t.maxAuthCount
+}
+
 // Send pings to peer with this period. Must be less than pongWait.
 func (t *WebsocketTerminal) PingPeriod() time.Duration {
 	return (t.pongWait * 3) / 10
 }
 
-type WebsocketTerminalAuther interface {
-	Auth(payload string) error
-}
+type AuthFunc func(payload string) error
 
 // 等待用户认证
-func (t *WebsocketTerminal) Auth(auther WebsocketTerminalAuther) {
-	for {
+func (t *WebsocketTerminal) Auth(af AuthFunc) {
+	for t.isMaxAuthFailed() {
 		_, message, err := t.ws.ReadMessage()
 		if err != nil {
 			t.Close(OperationAuth, fmt.Sprintf("read websocket auth message error, %s", err))
@@ -86,8 +91,9 @@ func (t *WebsocketTerminal) Auth(auther WebsocketTerminalAuther) {
 		}
 
 		// 读取Token进行认证
-		if err := auther.Auth(string(message)); err != nil {
+		if err := af(string(message)); err != nil {
 			t.writeLine(OperationAuth, []byte(AuthFailed))
+			t.authFailed++
 			continue
 		}
 
