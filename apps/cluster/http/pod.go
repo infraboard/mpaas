@@ -26,41 +26,6 @@ var (
 	defaultCmd = `TERM=xterm-256color; export TERM; [ -x /bin/bash ] && ([ -x /usr/bin/script ] && /usr/bin/script -q -c "/bin/bash" /dev/null || exec /bin/bash) || exec /bin/sh`
 )
 
-// Watch Pod 变化
-func (h *handler) WatchPod(w http.ResponseWriter, r *http.Request) {
-	term, err := h.newWebsocketTerminal(w, r)
-	if err != nil {
-		h.log.Errorf("new websocket terminal error, %s", err)
-		response.Failed(w, err)
-		return
-	}
-	defer term.Close()
-
-	ctx := context.GetContext(r)
-	client, err := h.GetClient(r.Context(), ctx.PS.ByName("id"))
-	if err != nil {
-		term.WriteMessage(k8s.NewOperatinonParamMessage(err.Error()))
-		return
-	}
-
-	// 获取参数
-	req := k8s.NewWatchConainterLogRequest()
-	term.ParseParame(req)
-
-	wi, err := client.WatchPod(r.Context())
-	if err != nil {
-		term.WriteMessage(k8s.NewOperatinonParamMessage(err.Error()))
-		return
-	}
-
-	reader := k8s.NewWatchReader(wi)
-	// 读取出来的数据流 copy到term
-	_, err = io.Copy(term, reader)
-	if err != nil {
-		h.log.Errorf("copy log to weboscket error, %s", err)
-	}
-}
-
 // Login Container Websocket
 func (h *handler) LoginContainer(w http.ResponseWriter, r *http.Request) {
 	term, err := h.newWebsocketTerminal(w, r)
@@ -136,5 +101,6 @@ func (h *handler) newWebsocketTerminal(w http.ResponseWriter, r *http.Request) (
 }
 
 func (h *handler) websocketAuth(payload string) error {
+	h.log.Debugf("auth payload: %s", payload)
 	return nil
 }
