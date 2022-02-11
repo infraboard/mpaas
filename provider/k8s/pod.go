@@ -7,6 +7,7 @@ import (
 	"github.com/go-playground/validator/v10"
 	v1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+	watch "k8s.io/apimachinery/pkg/watch"
 	"k8s.io/client-go/kubernetes/scheme"
 	"k8s.io/client-go/tools/remotecommand"
 )
@@ -32,6 +33,10 @@ func (c *Client) GetPod(ctx context.Context, req *GetPodRequest) (*v1.Pod, error
 		req.Namespace = v1.NamespaceDefault
 	}
 	return c.client.CoreV1().Pods(req.Namespace).Get(ctx, req.Name, metav1.GetOptions{})
+}
+
+func (c *Client) WatchPod(ctx context.Context) (watch.Interface, error) {
+	return c.client.CoreV1().Pods("").Watch(ctx, metav1.ListOptions{})
 }
 
 func (c *Client) DeletePod(ctx context.Context) error {
