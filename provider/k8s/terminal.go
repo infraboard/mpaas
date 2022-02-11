@@ -14,15 +14,6 @@ import (
 	"k8s.io/client-go/tools/remotecommand"
 )
 
-const (
-	// AuthFailed todo
-	AuthFailed = "auth failed, please input your token: "
-	// BadParams todo
-	BadParams = "params parse error"
-	// PermissionDeny todo
-	PermissionDeny = "permission deny, please contact administrator!"
-)
-
 // NewWebsocketTerminal todo
 func NewWebsocketTerminal(ws *websocket.Conn) *WebsocketTerminal {
 	wt := &WebsocketTerminal{
@@ -89,18 +80,19 @@ func (t *WebsocketTerminal) Auth(af AuthFunc) {
 	for t.isMaxAuthFailed() {
 		_, message, err := t.ws.ReadMessage()
 		if err != nil {
-			t.Close(OperationAuth, fmt.Sprintf("read websocket auth message error, %s", err))
+			t.WriteMessage(NewOperationAuthMessage(fmt.Sprintf("read websocket auth message error, %s", err)))
+			t.Close()
 			return
 		}
 
 		// 读取Token进行认证
 		if err := af(string(message)); err != nil {
-			t.writeLine(OperationAuth, []byte(AuthFailed))
+			t.WriteMessage(NewOperationAuthMessage(err.Error()))
 			t.authFailed++
 			continue
 		}
 
-		if err := t.writeLine(OperationAuth, []byte("auth ok")); err != nil {
+		if err := t.WriteMessage(NewOperationAuthMessage("auth ok")); err != nil {
 			t.log.Errorf("write auth success to websocket error, %s", err)
 		}
 		return
@@ -116,25 +108,26 @@ func (t *WebsocketTerminal) ParseParame(param WebSocketParamer) {
 	for t.isMaxAuthFailed() {
 		_, message, err := t.ws.ReadMessage()
 		if err != nil {
-			t.Close(OperatinonParam, fmt.Sprintf("read websocket param message error, %s", err))
+			t.WriteMessage(NewOperatinonParamMessage(fmt.Sprintf("read websocket param message error, %s", err)))
+			t.Close()
 			return
 		}
 
 		// 参数解析
 		if err := json.Unmarshal(message, param); err != nil {
-			t.writeLine(OperatinonParam, []byte(BadParams))
+			t.WriteMessage(NewOperatinonParamMessage(err.Error()))
 			t.authFailed++
 			continue
 		}
 
 		// 参数校验
 		if err := param.Validate(); err != nil {
-			t.writeLine(OperatinonParam, []byte(err.Error()))
+			t.WriteMessage(NewOperatinonParamMessage(err.Error()))
 			t.authFailed++
 			continue
 		}
 
-		if err := t.writeLine(OperatinonParam, []byte("param parse ok")); err != nil {
+		if err := t.WriteMessage(NewOperatinonParamMessage("param parse ok")); err != nil {
 			t.log.Errorf("write param success to websocket error, %s", err)
 		}
 		return
@@ -142,12 +135,8 @@ func (t *WebsocketTerminal) ParseParame(param WebSocketParamer) {
 }
 
 // 推出终端，关闭socket
-func (t *WebsocketTerminal) Close(op TerminalOperation, message string) {
-	resp := fmt.Sprintf("session closed now ..., reason: %s", message)
-	if err := t.writeLine(op, []byte(resp)); err != nil {
-		t.log.Errorf("web socket write error, %s", err)
-	}
-	t.ws.Close()
+func (t *WebsocketTerminal) Close() error {
+	return t.ws.Close()
 }
 
 // Next called in a loop from remotecommand as long as the process is running
@@ -194,7 +183,7 @@ func (t *WebsocketTerminal) Read(p []byte) (int, error) {
 
 // WebSocket 输出
 func (t *WebsocketTerminal) Write(p []byte) (int, error) {
-	if err := t.write(OperationStdout, p); err != nil {
+	if err := t.WriteMessage(NewBinaryMessage(OperationStdout, p)); err != nil {
 		t.log.Debugf("write message err: %v", err)
 		return 0, err
 	}
@@ -202,21 +191,9 @@ func (t *WebsocketTerminal) Write(p []byte) (int, error) {
 	return len(p), nil
 }
 
-// WebSocket 输出
-func (t *WebsocketTerminal) writeLine(op TerminalOperation, data []byte) error {
-	data = append(data, []byte("\n")...)
-	if err := t.write(OperationStdout, data); err != nil {
-		t.log.Debugf("write message err: %v", err)
-		return err
-	}
-
-	return nil
-}
-
-func (t *WebsocketTerminal) write(op TerminalOperation, data []byte) error {
+func (t *WebsocketTerminal) WriteMessage(msg *TerminalMessage) error {
 	t.Lock()
 	defer t.Unlock()
-	msg := NewTerminalMessage(op, data)
 	t.ws.SetWriteDeadline(time.Now().Add(t.writeWait))
 	if err := t.ws.WriteMessage(websocket.BinaryMessage, msg.MarshalToBytes()); err != nil {
 		return err
@@ -314,11 +291,27 @@ func ParseTerminalMessage(data []byte) (*TerminalMessage, error) {
 	}, nil
 }
 
+func NewOperatinonParamMessage(messge string) *TerminalMessage {
+	return NewTextMessage(OperatinonParam, messge)
+}
+
+func NewOperationAuthMessage(messge string) *TerminalMessage {
+	return NewTextMessage(OperationAuth, messge)
+}
+
 // NewTerminalMessage todo
-func NewTerminalMessage(op TerminalOperation, data []byte) *TerminalMessage {
+func NewBinaryMessage(op TerminalOperation, data []byte) *TerminalMessage {
 	return &TerminalMessage{
 		Operation: op,
 		Data:      data,
+	}
+}
+
+// NewTextMessage todo
+func NewTextMessage(op TerminalOperation, data string) *TerminalMessage {
+	return &TerminalMessage{
+		Operation: op,
+		Data:      []byte(data),
 	}
 }
 
