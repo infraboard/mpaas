@@ -4,10 +4,15 @@ import (
 	"context"
 	"io"
 
+	"github.com/go-playground/validator/v10"
 	v1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/client-go/kubernetes/scheme"
 	"k8s.io/client-go/tools/remotecommand"
+)
+
+var (
+	validate = validator.New()
 )
 
 func (c *Client) ListPod(ctx context.Context, req *ListDeploymentRequest) (*v1.PodList, error) {
@@ -33,12 +38,23 @@ func (c *Client) DeletePod(ctx context.Context) error {
 	return c.client.CoreV1().Pods("").Delete(ctx, "", metav1.DeleteOptions{})
 }
 
+func NewLoginContainerRequest(cmd []string, ce ContainerExecutor) *LoginContainerRequest {
+	return &LoginContainerRequest{
+		Command: cmd,
+		Excutor: ce,
+	}
+}
+
 type LoginContainerRequest struct {
-	Namespace     string
-	PodName       string
-	ContainerName string
-	Command       []string
-	Excutor       ContainerExecutor
+	Namespace     string            `json:"namespace" validate:"required"`
+	PodName       string            `json:"pod_name" validate:"required"`
+	ContainerName string            `json:"container_name"`
+	Command       []string          `json:"command"`
+	Excutor       ContainerExecutor `json:"-"`
+}
+
+func (req *LoginContainerRequest) Validate() error {
+	return validate.Struct(req)
 }
 
 type ContainerExecutor interface {
@@ -78,22 +94,34 @@ func (c *Client) LoginContainer(req *LoginContainerRequest) error {
 	})
 }
 
-type WatchConainterLogRequest struct {
-	Namespace     string
-	PodName       string
-	ContainerName string
+func NewWatchConainterLogRequest() *WatchConainterLogRequest {
+	return &WatchConainterLogRequest{
+		TailLines: 100,
+		Follow:    false,
+		Previous:  false,
+	}
 }
 
-var (
-	LOG_TAIL_LINES = int64(100)
-)
+type WatchConainterLogRequest struct {
+	Namespace     string `json:"namespace" validate:"required"`
+	PodName       string `json:"pod_name" validate:"required"`
+	ContainerName string `json:"container_name"`
+	TailLines     int64  `json:"tail_lines"`
+	Follow        bool   `json:"follow"`
+	Previous      bool   `json:"previous"`
+}
+
+func (req *WatchConainterLogRequest) Validate() error {
+	return validate.Struct(req)
+}
 
 // 查看容器日志
 func (c *Client) WatchConainterLog(ctx context.Context, req *WatchConainterLogRequest) (io.ReadCloser, error) {
 	opt := &v1.PodLogOptions{
 		Container:                    req.ContainerName,
-		Follow:                       false,
-		TailLines:                    &LOG_TAIL_LINES,
+		Follow:                       req.Follow,
+		TailLines:                    &req.TailLines,
+		Previous:                     req.Previous,
 		InsecureSkipTLSVerifyBackend: true,
 	}
 

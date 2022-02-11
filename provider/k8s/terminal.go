@@ -1,6 +1,7 @@
 package k8s
 
 import (
+	"encoding/json"
 	"fmt"
 	"strconv"
 	"strings"
@@ -16,6 +17,8 @@ import (
 const (
 	// AuthFailed todo
 	AuthFailed = "auth failed, please input your token: "
+	// BadParams todo
+	BadParams = "params parse error"
 	// PermissionDeny todo
 	PermissionDeny = "permission deny, please contact administrator!"
 )
@@ -99,6 +102,40 @@ func (t *WebsocketTerminal) Auth(af AuthFunc) {
 
 		if err := t.writeLine(OperationAuth, []byte("auth ok")); err != nil {
 			t.log.Errorf("write auth success to websocket error, %s", err)
+		}
+		return
+	}
+}
+
+type WebSocketParamer interface {
+	Validate() error
+}
+
+// 等待用户输入参数
+func (t *WebsocketTerminal) ParseParame(param WebSocketParamer) {
+	for t.isMaxAuthFailed() {
+		_, message, err := t.ws.ReadMessage()
+		if err != nil {
+			t.Close(OperatinonParam, fmt.Sprintf("read websocket param message error, %s", err))
+			return
+		}
+
+		// 参数解析
+		if err := json.Unmarshal(message, param); err != nil {
+			t.writeLine(OperatinonParam, []byte(BadParams))
+			t.authFailed++
+			continue
+		}
+
+		// 参数校验
+		if err := param.Validate(); err != nil {
+			t.writeLine(OperatinonParam, []byte(err.Error()))
+			t.authFailed++
+			continue
+		}
+
+		if err := t.writeLine(OperatinonParam, []byte("param parse ok")); err != nil {
+			t.log.Errorf("write param success to websocket error, %s", err)
 		}
 		return
 	}
