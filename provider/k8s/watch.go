@@ -12,8 +12,10 @@ import (
 type ObjectKind string
 
 const (
-	ObjectKindPod    ObjectKind = "pod"
-	ObjectKindDeploy ObjectKind = "deployment"
+	ObjectKindPod     ObjectKind = "pod"
+	ObjectKindDeploy  ObjectKind = "deployment"
+	ObjectStatefulset ObjectKind = "statefulset"
+	ObjectDaemonset   ObjectKind = "daemonset"
 )
 
 func NewWatchRequest() *WatchRequest {
@@ -25,6 +27,10 @@ type WatchRequest struct {
 	ObjectKind ObjectKind `json:"kind"`
 }
 
+func (req *WatchRequest) WatchOptions() metav1.ListOptions {
+	return metav1.ListOptions{}
+}
+
 func (req *WatchRequest) Validate() error {
 	return validate.Struct(req)
 }
@@ -32,9 +38,13 @@ func (req *WatchRequest) Validate() error {
 func (c *Client) Watch(ctx context.Context, req *WatchRequest) (watch.Interface, error) {
 	switch req.ObjectKind {
 	case ObjectKindPod:
-		return c.client.CoreV1().Pods(req.Namespace).Watch(ctx, metav1.ListOptions{})
+		return c.client.CoreV1().Pods(req.Namespace).Watch(ctx, req.WatchOptions())
 	case ObjectKindDeploy:
-		return c.client.AppsV1().Deployments(req.Namespace).Watch(ctx, metav1.ListOptions{})
+		return c.client.AppsV1().Deployments(req.Namespace).Watch(ctx, req.WatchOptions())
+	case ObjectStatefulset:
+		return c.client.AppsV1().StatefulSets(req.Namespace).Watch(ctx, req.WatchOptions())
+	case ObjectDaemonset:
+		return c.client.AppsV1().DaemonSets(req.Namespace).Watch(ctx, req.WatchOptions())
 	default:
 		return nil, fmt.Errorf("unknown Object Kind %s", req.ObjectKind)
 	}
