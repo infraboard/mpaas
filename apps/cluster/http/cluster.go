@@ -5,11 +5,24 @@ import (
 
 	"github.com/infraboard/mcube/http/binding"
 	"github.com/infraboard/mcube/http/context"
+	"github.com/infraboard/mcube/http/label"
 	"github.com/infraboard/mcube/http/request"
 	"github.com/infraboard/mcube/http/response"
+	"github.com/infraboard/mcube/http/router"
 
 	"github.com/infraboard/mpaas/apps/cluster"
 )
+
+func (h *handler) registryClusterHandler(r router.SubRouter) {
+	rr := r.ResourceRouter("cluster")
+	rr.BasePath("clusters")
+	rr.Handle("POST", "/", h.CreateCluster).AddLabel(label.Create)
+	rr.Handle("GET", "/", h.QueryCluster).AddLabel(label.List)
+	rr.Handle("GET", "/:id", h.DescribeCluster).AddLabel(label.Get)
+	rr.Handle("PUT", "/:id", h.PutCluster).AddLabel(label.Update)
+	rr.Handle("PATCH", "/:id", h.PatchCluster).AddLabel(label.Update)
+	rr.Handle("DELETE", "/:id", h.DeleteCluster).AddLabel(label.Delete)
+}
 
 func (h *handler) CreateCluster(w http.ResponseWriter, r *http.Request) {
 	req := cluster.NewCreateClusterRequest()

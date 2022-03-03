@@ -4,7 +4,6 @@ import (
 	"context"
 	"sync"
 
-	"github.com/infraboard/mcube/http/label"
 	"github.com/infraboard/mcube/http/router"
 	"github.com/infraboard/mcube/logger"
 	"github.com/infraboard/mcube/logger/zap"
@@ -37,40 +36,19 @@ func (h *handler) Name() string {
 }
 
 func (h *handler) Registry(r router.SubRouter) {
-	rr := r.ResourceRouter("cluster")
-
-	// clusters
-	rr.BasePath("clusters")
-	rr.Handle("POST", "/", h.CreateCluster).AddLabel(label.Create)
-	rr.Handle("GET", "/", h.QueryCluster).AddLabel(label.List)
-	rr.Handle("GET", "/:id", h.DescribeCluster).AddLabel(label.Get)
-	rr.Handle("PUT", "/:id", h.PutCluster).AddLabel(label.Update)
-	rr.Handle("PATCH", "/:id", h.PatchCluster).AddLabel(label.Update)
-	rr.Handle("DELETE", "/:id", h.DeleteCluster).AddLabel(label.Delete)
-
-	// nodes
-	nr := r.ResourceRouter("node")
-	nr.BasePath("clusters/:id/nodes")
-	nr.Handle("GET", "/", h.QueryNodes).AddLabel(label.List)
-
-	// namespaces
-	ns := r.ResourceRouter("namespace")
-	ns.BasePath("clusters/:id/namespaces")
-	ns.Handle("GET", "/", h.QueryNamespaces).AddLabel(label.List)
-	ns.Handle("POST", "/", h.CreateNamespaces).AddLabel(label.Create)
-
-	// deployments
-	dr := r.ResourceRouter("deployment")
-	dr.BasePath("clusters/:id/deployments")
-	dr.Handle("GET", "/", h.QueryDeployments).AddLabel(label.List)
-	dr.Handle("POST", "/", h.CreateDeployment).AddLabel(label.Create)
+	h.registryClusterHandler(r)
+	h.registryNodeHandler(r)
+	h.registryNamespaceHandler(r)
+	h.registryDeploymentHandler(r)
+	h.registryPodHandler(r)
+	h.registryWatchHandler(r)
 }
 
 func (h *handler) GetClient(ctx context.Context, clusterId string) (*k8s.Client, error) {
 	h.Lock()
 	defer h.Unlock()
 
-	// 本地缓存中获取
+	// 本地缓存中获取, 当Client有更新时，需要更新缓存
 	v, ok := h.clients[clusterId]
 	if ok {
 		return v, nil

@@ -5,10 +5,19 @@ import (
 
 	"github.com/infraboard/mcube/http/binding"
 	"github.com/infraboard/mcube/http/context"
+	"github.com/infraboard/mcube/http/label"
 	"github.com/infraboard/mcube/http/response"
+	"github.com/infraboard/mcube/http/router"
 
 	v1 "k8s.io/api/core/v1"
 )
+
+func (h *handler) registryNamespaceHandler(r router.SubRouter) {
+	ns := r.ResourceRouter("namespace")
+	ns.BasePath("clusters/:id/namespaces")
+	ns.Handle("GET", "/", h.QueryNamespaces).AddLabel(label.List)
+	ns.Handle("POST", "/", h.CreateNamespaces).AddLabel(label.Create)
+}
 
 func (h *handler) QueryNamespaces(w http.ResponseWriter, r *http.Request) {
 	ctx := context.GetContext(r)

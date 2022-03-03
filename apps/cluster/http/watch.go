@@ -6,8 +6,12 @@ import (
 
 	"github.com/infraboard/mcube/http/context"
 	"github.com/infraboard/mcube/http/response"
+	"github.com/infraboard/mcube/http/router"
 	"github.com/infraboard/mpaas/provider/k8s"
 )
+
+func (h *handler) registryWatchHandler(r router.SubRouter) {
+}
 
 // Watch 资源变化
 func (h *handler) Watch(w http.ResponseWriter, r *http.Request) {

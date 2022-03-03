@@ -8,8 +8,12 @@ import (
 	"github.com/gorilla/websocket"
 	"github.com/infraboard/mcube/http/context"
 	"github.com/infraboard/mcube/http/response"
+	"github.com/infraboard/mcube/http/router"
 	"github.com/infraboard/mpaas/provider/k8s"
 )
+
+func (h *handler) registryPodHandler(r router.SubRouter) {
+}
 
 var (
 	upgrader = websocket.Upgrader{
