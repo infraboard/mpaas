@@ -7,8 +7,8 @@ import (
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
-func (c *Client) ListNamespace(ctx context.Context) (*v1.NamespaceList, error) {
-	return c.client.CoreV1().Namespaces().List(ctx, metav1.ListOptions{})
+func (c *Client) ListNamespace(ctx context.Context, req *ListRequest) (*v1.NamespaceList, error) {
+	return c.client.CoreV1().Namespaces().List(ctx, req.Opts)
 }
 
 func (c *Client) CreateNamespace(ctx context.Context, req *v1.Namespace) (*v1.Namespace, error) {

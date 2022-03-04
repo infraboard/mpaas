@@ -81,3 +81,12 @@ type DeleteRequest struct {
 	Name      string
 	Opts      metav1.DeleteOptions
 }
+
+func NewListRequest() *ListRequest {
+	return &ListRequest{}
+}
+
+type ListRequest struct {
+	Namespace string
+	Opts      metav1.ListOptions
+}

@@ -67,18 +67,24 @@ message CreateClusterRequest {
     // 创建人
     // @gotags: json:"create_by" form:"create_by" bson:"create_by"
     string create_by = 1;
+    // 集群提供商
+    // @gotags: json:"name" bson:"vendor" form:"vendor" validate:"required"
+    string vendor = 2;
+    // 集群所处地域
+    // @gotags: json:"region" bson:"region" form:"region" validate:"required"
+    string region = 3;
     // 名称
     // @gotags: json:"name" bson:"name" form:"name" validate:"required"
-    string name = 2;
+    string name = 4;
     // 集群客户端访问凭证
     // @gotags: json:"kube_config" bson:"kube_config" form:"kube_config" validate:"required"
-    string kube_config = 3;
+    string kube_config = 5;
     // 集群描述
     // @gotags: json:"description" form:"description" bson:"description" 
-    string description = 4;
+    string description = 6;
     // 集群标签
     // @gotags: json:"lables" form:"lables" bson:"lables" 
-    map<string, string> lables = 5;
+    map<string, string> lables = 7;
 }
 
 message QueryClusterRequest {

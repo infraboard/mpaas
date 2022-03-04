@@ -15,7 +15,7 @@ var (
 	validate = validator.New()
 )
 
-func (c *Client) ListPod(ctx context.Context, req *ListDeploymentRequest) (*v1.PodList, error) {
+func (c *Client) ListPod(ctx context.Context, req *ListRequest) (*v1.PodList, error) {
 	if req.Namespace == "" {
 		req.Namespace = v1.NamespaceDefault
 	}

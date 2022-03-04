@@ -7,6 +7,7 @@ import (
 	"github.com/infraboard/mcube/http/label"
 	"github.com/infraboard/mcube/http/response"
 	"github.com/infraboard/mcube/http/router"
+	"github.com/infraboard/mpaas/provider/k8s"
 )
 
 func (h *handler) registryNodeHandler(r router.SubRouter) {
@@ -23,7 +24,7 @@ func (h *handler) QueryNodes(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	ins, err := client.ListNode(r.Context())
+	ins, err := client.ListNode(r.Context(), k8s.NewListRequest())
 	if err != nil {
 		response.Failed(w, err)
 		return
