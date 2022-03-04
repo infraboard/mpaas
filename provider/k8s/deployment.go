@@ -9,7 +9,7 @@ import (
 	watch "k8s.io/apimachinery/pkg/watch"
 )
 
-func NewListDeploymentRequestFromHttp(r *http.Request) *ListRequest {
+func NewListRequestFromHttp(r *http.Request) *ListRequest {
 	qs := r.URL.Query()
 
 	req := &ListRequest{

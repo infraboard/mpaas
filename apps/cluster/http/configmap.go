@@ -10,17 +10,17 @@ import (
 	"github.com/infraboard/mcube/http/router"
 	"github.com/infraboard/mpaas/provider/k8s"
 
-	appsv1 "k8s.io/api/apps/v1"
+	corev1 "k8s.io/api/core/v1"
 )
 
-func (h *handler) registryDeploymentHandler(r router.SubRouter) {
-	dr := r.ResourceRouter("deployment")
-	dr.BasePath("clusters/:id/deployments")
-	dr.Handle("GET", "/", h.QueryDeployments).AddLabel(label.List)
-	dr.Handle("POST", "/", h.CreateDeployment).AddLabel(label.Create)
+func (h *handler) registryConfigMapHandler(r router.SubRouter) {
+	dr := r.ResourceRouter("configmap")
+	dr.BasePath("clusters/:id/configmaps")
+	dr.Handle("GET", "/", h.QueryConfigMap).AddLabel(label.List)
+	dr.Handle("POST", "/", h.CreateConfigMap).AddLabel(label.Create)
 }
 
-func (h *handler) QueryDeployments(w http.ResponseWriter, r *http.Request) {
+func (h *handler) QueryConfigMap(w http.ResponseWriter, r *http.Request) {
 	ctx := context.GetContext(r)
 	client, err := h.GetClient(r.Context(), ctx.PS.ByName("id"))
 	if err != nil {
@@ -29,7 +29,7 @@ func (h *handler) QueryDeployments(w http.ResponseWriter, r *http.Request) {
 	}
 
 	req := k8s.NewListRequestFromHttp(r)
-	ins, err := client.ListDeployment(r.Context(), req)
+	ins, err := client.ListConfigMap(r.Context(), req)
 	if err != nil {
 		response.Failed(w, err)
 		return
@@ -38,7 +38,7 @@ func (h *handler) QueryDeployments(w http.ResponseWriter, r *http.Request) {
 	response.Success(w, ins)
 }
 
-func (h *handler) CreateDeployment(w http.ResponseWriter, r *http.Request) {
+func (h *handler) CreateConfigMap(w http.ResponseWriter, r *http.Request) {
 	ctx := context.GetContext(r)
 	client, err := h.GetClient(r.Context(), ctx.PS.ByName("id"))
 	if err != nil {
@@ -46,13 +46,13 @@ func (h *handler) CreateDeployment(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	req := &appsv1.Deployment{}
+	req := &corev1.ConfigMap{}
 	if err := binding.Bind(r, req); err != nil {
 		response.Failed(w, err)
 		return
 	}
 
-	ins, err := client.CreateDeployment(r.Context(), req)
+	ins, err := client.CreateConfigMap(r.Context(), req)
 	if err != nil {
 		response.Failed(w, err)
 		return

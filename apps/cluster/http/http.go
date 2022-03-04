@@ -42,6 +42,7 @@ func (h *handler) Registry(r router.SubRouter) {
 	h.registryDeploymentHandler(r)
 	h.registryPodHandler(r)
 	h.registryWatchHandler(r)
+	h.registryConfigMapHandler(r)
 }
 
 func (h *handler) GetClient(ctx context.Context, clusterId string) (*k8s.Client, error) {
