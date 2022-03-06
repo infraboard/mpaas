@@ -8,8 +8,8 @@ require (
 	github.com/go-playground/validator/v10 v10.10.0
 	github.com/gorilla/websocket v1.4.2
 	github.com/imdario/mergo v0.3.12
-	github.com/infraboard/keyauth v0.7.1
-	github.com/infraboard/mcube v1.6.5
+	github.com/infraboard/keyauth v0.7.3
+	github.com/infraboard/mcube v1.6.8
 	github.com/rs/xid v1.3.0
 	github.com/spf13/cobra v1.3.0
 	github.com/stretchr/testify v1.7.0

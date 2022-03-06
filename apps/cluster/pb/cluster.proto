@@ -64,27 +64,33 @@ message Status {
 }
 
 message CreateClusterRequest {
+    // 集群所属域
+    // @gotags: json:"domain" form:"domain" bson:"domain"
+    string domain = 1;
+    // 集群所属空间
+    // @gotags: json:"namespace" form:"namespace" bson:"namespace"
+    string namespace = 2;
     // 创建人
     // @gotags: json:"create_by" form:"create_by" bson:"create_by"
-    string create_by = 1;
+    string create_by = 3;
     // 集群提供商
-    // @gotags: json:"name" bson:"vendor" form:"vendor" validate:"required"
-    string vendor = 2;
+    // @gotags: json:"vendor" bson:"vendor" form:"vendor" validate:"required"
+    string vendor = 4;
     // 集群所处地域
     // @gotags: json:"region" bson:"region" form:"region" validate:"required"
-    string region = 3;
+    string region = 5;
     // 名称
     // @gotags: json:"name" bson:"name" form:"name" validate:"required"
-    string name = 4;
+    string name = 6;
     // 集群客户端访问凭证
     // @gotags: json:"kube_config" bson:"kube_config" form:"kube_config" validate:"required"
-    string kube_config = 5;
+    string kube_config = 7;
     // 集群描述
     // @gotags: json:"description" form:"description" bson:"description" 
-    string description = 6;
+    string description = 8;
     // 集群标签
     // @gotags: json:"lables" form:"lables" bson:"lables" 
-    map<string, string> lables = 7;
+    map<string, string> lables = 9;
 }
 
 message QueryClusterRequest {
@@ -93,7 +99,19 @@ message QueryClusterRequest {
     infraboard.mcube.page.PageRequest page = 1;
     // 关键字参数
     // @gotags: json:"keywords"
-    string keywords = 2;  
+    string keywords = 2;
+    // 集群所属域
+    // @gotags: json:"domain"
+    string domain = 3;
+    // 集群所属空间
+    // @gotags: json:"namespace"
+    string namespace = 4;
+    // 集群所属厂商
+    // @gotags: json:"vendor"
+    string vendor = 5;
+    // 集群所属地域
+    // @gotags: json:"region"
+    string region = 6;
 }
 
 // ClusterSet todo

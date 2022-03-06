@@ -12,15 +12,18 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
+const (
+	CIPHER_TEXT_PREFIX = "@ciphered@"
+)
+
 var (
 	mgoclient *mongo.Client
 )
 
 func newConfig() *Config {
 	return &Config{
-		App: newDefaultAPP(),
-		Log: newDefaultLog(),
-
+		App:     newDefaultAPP(),
+		Log:     newDefaultLog(),
 		Mongo:   newDefaultMongoDB(),
 		Keyauth: newDefaultKeyauth(),
 	}
@@ -28,9 +31,8 @@ func newConfig() *Config {
 
 // Config 应用配置
 type Config struct {
-	App *app `toml:"app"`
-	Log *log `toml:"log"`
-
+	App     *app     `toml:"app"`
+	Log     *log     `toml:"log"`
 	Mongo   *mongodb `toml:"mongodb"`
 	Keyauth *keyauth `toml:"keyauth"`
 }
@@ -66,7 +68,7 @@ func (a *http) Addr() string {
 func newDefaultHTTP() *http {
 	return &http{
 		Host: "127.0.0.1",
-		Port: "8050",
+		Port: "8080",
 	}
 }
 
@@ -85,7 +87,7 @@ func (a *grpc) Addr() string {
 func newDefaultGRPC() *grpc {
 	return &grpc{
 		Host: "127.0.0.1",
-		Port: "18050",
+		Port: "18080",
 	}
 }
 

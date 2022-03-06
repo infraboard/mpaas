@@ -3,6 +3,7 @@ package http
 import (
 	"net/http"
 
+	"github.com/infraboard/keyauth/apps/token"
 	"github.com/infraboard/mcube/http/binding"
 	"github.com/infraboard/mcube/http/context"
 	"github.com/infraboard/mcube/http/label"
@@ -25,6 +26,9 @@ func (h *handler) registryClusterHandler(r router.SubRouter) {
 }
 
 func (h *handler) CreateCluster(w http.ResponseWriter, r *http.Request) {
+	ctx := context.GetContext(r)
+	tk := ctx.AuthInfo.(*token.Token)
+
 	req := cluster.NewCreateClusterRequest()
 
 	if err := binding.Bind(r, req); err != nil {
@@ -32,6 +36,7 @@ func (h *handler) CreateCluster(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	req.UpdateOwner(tk)
 	set, err := h.service.CreateCluster(r.Context(), req)
 	if err != nil {
 		response.Failed(w, err)
@@ -48,6 +53,7 @@ func (h *handler) QueryCluster(w http.ResponseWriter, r *http.Request) {
 		response.Failed(w, err)
 		return
 	}
+	set.Desense()
 	response.Success(w, set)
 }
 
@@ -59,7 +65,7 @@ func (h *handler) DescribeCluster(w http.ResponseWriter, r *http.Request) {
 		response.Failed(w, err)
 		return
 	}
-
+	ins.Desense()
 	response.Success(w, ins)
 }
 
