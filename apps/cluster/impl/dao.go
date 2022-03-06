@@ -62,6 +62,20 @@ func (r *queryclusterRequest) FindOptions() *options.FindOptions {
 
 func (r *queryclusterRequest) FindFilter() bson.M {
 	filter := bson.M{}
+
+	if r.Domain != "" {
+		filter["data.domain"] = r.Domain
+	}
+	if r.Namespace != "" {
+		filter["data.namespace"] = r.Namespace
+	}
+	if r.Vendor != "" {
+		filter["data.vendor"] = r.Vendor
+	}
+	if r.Region != "" {
+		filter["data.region"] = r.Region
+	}
+
 	if r.Keywords != "" {
 		filter["$or"] = bson.A{
 			bson.M{"data.name": bson.M{"$regex": r.Keywords, "$options": "im"}},
@@ -73,6 +87,7 @@ func (r *queryclusterRequest) FindFilter() bson.M {
 func (s *service) query(ctx context.Context, req *queryclusterRequest) (*cluster.ClusterSet, error) {
 	resp, err := s.col.Find(ctx, req.FindFilter(), req.FindOptions())
 
+	s.log.Debugf("find filter: %s", req.FindFilter())
 	if err != nil {
 		return nil, exception.NewInternalServerError("find cluster error, error is %s", err)
 	}

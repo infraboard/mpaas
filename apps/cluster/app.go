@@ -181,7 +181,14 @@ func NewQueryClusterRequestFromHTTP(r *http.Request) *QueryClusterRequest {
 	return &QueryClusterRequest{
 		Page:     request.NewPageRequestFromHTTP(r),
 		Keywords: qs.Get("keywords"),
+		Vendor:   qs.Get("vendor"),
+		Region:   qs.Get("region"),
 	}
+}
+
+func (req *QueryClusterRequest) UpdateNamespace(tk *token.Token) {
+	req.Domain = tk.Domain
+	req.Namespace = tk.NamespaceName
 }
 
 func NewPutClusterRequest(id string) *UpdateClusterRequest {
