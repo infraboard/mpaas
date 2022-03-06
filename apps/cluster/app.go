@@ -70,6 +70,25 @@ func (s *ClusterSet) Desense() {
 	}
 }
 
+func (s *ClusterSet) DecryptKubeConf(key string) error {
+	errs := []string{}
+	for i := range s.Items {
+		err := s.Items[i].DecryptKubeConf(key)
+		if err != nil {
+			errs = append(errs, fmt.Sprintf(
+				"decrypt %s kubeconf error, %s",
+				s.Items[i].Data.Name,
+				err))
+		}
+	}
+
+	if len(errs) > 0 {
+		return fmt.Errorf("%s", strings.Join(errs, ","))
+	}
+
+	return nil
+}
+
 func NewDefaultCluster() *Cluster {
 	return &Cluster{
 		Data: &CreateClusterRequest{},
@@ -119,7 +138,7 @@ func (i *Cluster) EncryptKubeConf(key string) error {
 func (i *Cluster) DecryptKubeConf(key string) error {
 	// 判断文本是否已经是明文
 	if !strings.HasPrefix(i.Data.KubeConfig, conf.CIPHER_TEXT_PREFIX) {
-		return fmt.Errorf("text is plan text")
+		return nil
 	}
 
 	base64CipherText := strings.TrimPrefix(i.Data.KubeConfig, conf.CIPHER_TEXT_PREFIX)

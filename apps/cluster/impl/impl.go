@@ -22,16 +22,17 @@ type service struct {
 	log     logger.Logger
 	cluster cluster.ServiceServer
 	cluster.UnimplementedServiceServer
+	encryptoKey string
 }
 
 func (s *service) Config() error {
-
 	db, err := conf.C().Mongo.GetDB()
 	if err != nil {
 		return err
 	}
 	s.col = db.Collection(s.Name())
 
+	s.encryptoKey = conf.C().App.EncryptKey
 	s.log = zap.L().Named(s.Name())
 	s.cluster = app.GetGrpcApp(cluster.AppName).(cluster.ServiceServer)
 	return nil

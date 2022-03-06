@@ -19,8 +19,14 @@ func (s *service) CreateCluster(ctx context.Context, req *cluster.CreateClusterR
 	}
 
 	// 连接集群检查状态
-	s.CheckStatus(ins)
+	s.checkStatus(ins)
 	if err := ins.IsAlive(); err != nil {
+		return nil, err
+	}
+
+	// 加密
+	err = ins.EncryptKubeConf(s.encryptoKey)
+	if err != nil {
 		return nil, err
 	}
 
@@ -31,7 +37,7 @@ func (s *service) CreateCluster(ctx context.Context, req *cluster.CreateClusterR
 	return ins, nil
 }
 
-func (s *service) CheckStatus(ins *cluster.Cluster) {
+func (s *service) checkStatus(ins *cluster.Cluster) {
 	client, err := k8s.NewClient(ins.Data.KubeConfig)
 	if err != nil {
 		ins.Status.Message = err.Error()
@@ -60,13 +66,27 @@ func (s *service) CheckStatus(ins *cluster.Cluster) {
 
 func (s *service) DescribeCluster(ctx context.Context, req *cluster.DescribeClusterRequest) (
 	*cluster.Cluster, error) {
-	return s.get(ctx, req.Id)
+	ins, err := s.get(ctx, req.Id)
+	if err != nil {
+		return nil, err
+	}
+	if err := ins.DecryptKubeConf(s.encryptoKey); err != nil {
+		return nil, err
+	}
+	return ins, nil
 }
 
 func (s *service) QueryCluster(ctx context.Context, req *cluster.QueryClusterRequest) (
 	*cluster.ClusterSet, error) {
 	query := newQueryclusterRequest(req)
-	return s.query(ctx, query)
+	set, err := s.query(ctx, query)
+	if err != nil {
+		return nil, err
+	}
+	if err := set.DecryptKubeConf(s.encryptoKey); err != nil {
+		return nil, err
+	}
+	return set, nil
 }
 
 func (s *service) UpdateCluster(ctx context.Context, req *cluster.UpdateClusterRequest) (
@@ -88,6 +108,12 @@ func (s *service) UpdateCluster(ctx context.Context, req *cluster.UpdateClusterR
 
 	// 校验更新后数据合法性
 	if err := ins.Data.Validate(); err != nil {
+		return nil, err
+	}
+
+	// 加密
+	err = ins.EncryptKubeConf(s.encryptoKey)
+	if err != nil {
 		return nil, err
 	}
 
