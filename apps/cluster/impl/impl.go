@@ -30,6 +30,7 @@ func (s *service) Config() error {
 	if err != nil {
 		return err
 	}
+
 	s.col = db.Collection(s.Name())
 
 	s.encryptoKey = conf.C().App.EncryptKey
