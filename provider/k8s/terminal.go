@@ -40,7 +40,8 @@ type WebsocketTerminal struct {
 	sizeChan chan remotecommand.TerminalSize
 	doneChan chan struct{}
 
-	authFailed   int
+	authFailed int
+	// 允许重试多少次
 	maxAuthCount int
 	// Maximum message size allowed from peer.
 	maxMessageSize int64
