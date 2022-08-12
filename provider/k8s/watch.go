@@ -12,10 +12,12 @@ import (
 type ObjectKind string
 
 const (
-	ObjectKindPod     ObjectKind = "pod"
-	ObjectKindDeploy  ObjectKind = "deployment"
-	ObjectStatefulset ObjectKind = "statefulset"
-	ObjectDaemonset   ObjectKind = "daemonset"
+	OBJECT_DEPLOY       ObjectKind = "deployment"
+	OBJECT_STATEFUL_SET ObjectKind = "statefulset"
+	OBJECT_DAEMON_SET   ObjectKind = "daemonset"
+	OBJECT_JOB          ObjectKind = "job"
+	OBJECT_CRONJOB      ObjectKind = "cronjob"
+	OBJECT_POD          ObjectKind = "pod"
 )
 
 func NewWatchRequest() *WatchRequest {
@@ -37,14 +39,18 @@ func (req *WatchRequest) Validate() error {
 
 func (c *Client) Watch(ctx context.Context, req *WatchRequest) (watch.Interface, error) {
 	switch req.ObjectKind {
-	case ObjectKindPod:
-		return c.client.CoreV1().Pods(req.Namespace).Watch(ctx, req.WatchOptions())
-	case ObjectKindDeploy:
+	case OBJECT_DEPLOY:
 		return c.client.AppsV1().Deployments(req.Namespace).Watch(ctx, req.WatchOptions())
-	case ObjectStatefulset:
+	case OBJECT_STATEFUL_SET:
 		return c.client.AppsV1().StatefulSets(req.Namespace).Watch(ctx, req.WatchOptions())
-	case ObjectDaemonset:
+	case OBJECT_DAEMON_SET:
 		return c.client.AppsV1().DaemonSets(req.Namespace).Watch(ctx, req.WatchOptions())
+	case OBJECT_JOB:
+		return c.client.BatchV1().Jobs(req.Namespace).Watch(ctx, req.WatchOptions())
+	case OBJECT_CRONJOB:
+		return c.client.BatchV1().CronJobs(req.Namespace).Watch(ctx, req.WatchOptions())
+	case OBJECT_POD:
+		return c.client.CoreV1().Pods(req.Namespace).Watch(ctx, req.WatchOptions())
 	default:
 		return nil, fmt.Errorf("unknown Object Kind %s", req.ObjectKind)
 	}
