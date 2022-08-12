@@ -11,6 +11,10 @@ import (
 
 type ObjectKind string
 
+func (t ObjectKind) String() string {
+	return string(t)
+}
+
 const (
 	OBJECT_DEPLOY       ObjectKind = "deployment"
 	OBJECT_STATEFUL_SET ObjectKind = "statefulset"

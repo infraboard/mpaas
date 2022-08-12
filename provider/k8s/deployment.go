@@ -23,6 +23,10 @@ func (c *Client) ListDeployment(ctx context.Context, req *ListRequest) (*appsv1.
 	return c.client.AppsV1().Deployments(req.Namespace).List(ctx, req.Opts)
 }
 
+func (c *Client) GetDeployment(ctx context.Context, req *GetRequest) (*appsv1.Deployment, error) {
+	return c.client.AppsV1().Deployments(req.Namespace).Get(ctx, req.Name, metav1.GetOptions{})
+}
+
 func (c *Client) WatchDeployment(ctx context.Context, req *appsv1.Deployment) (watch.Interface, error) {
 	return c.client.AppsV1().Deployments(req.Namespace).Watch(ctx, metav1.ListOptions{})
 }

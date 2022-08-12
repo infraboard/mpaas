@@ -1,30 +1,67 @@
 package k8s_test
 
 import (
-	"fmt"
+	"context"
 	"io/ioutil"
 	"os"
 	"path/filepath"
 	"testing"
 
-	"github.com/stretchr/testify/assert"
-
 	"github.com/infraboard/mpaas/provider/k8s"
+	"sigs.k8s.io/yaml"
 )
 
 var (
-	kubeConfig = ""
+	client *k8s.Client
+	ctx    = context.Background()
 )
 
-func TestGetter(t *testing.T) {
-	should := assert.New(t)
-	client, err := k8s.NewClient(kubeConfig)
-	should.NoError(err)
+func TestServerVersion(t *testing.T) {
 	v, err := client.ServerVersion()
-	should.NoError(err)
-	fmt.Println(v)
-	fmt.Println(client.CurrentContext())
-	fmt.Println(client.CurrentCluster())
+	if err != nil {
+		t.Fatal(err)
+	}
+	t.Log(v)
+
+	rs, err := client.ServerResources()
+	if err != nil {
+		t.Log(err)
+	}
+	t.Log(rs)
+}
+
+func TestListNamespace(t *testing.T) {
+	v, err := client.ListNamespace(ctx, k8s.NewListRequest())
+	if err != nil {
+		t.Log(err)
+	}
+	for i := range v.Items {
+		t.Log(v.Items[i].Name)
+	}
+}
+
+func TestListDeployment(t *testing.T) {
+	v, err := client.ListDeployment(ctx, k8s.NewListRequest())
+	if err != nil {
+		t.Log(err)
+	}
+	for i := range v.Items {
+		t.Log(v.Items[i].Name)
+	}
+}
+
+func TestGetDeployment(t *testing.T) {
+	v, err := client.GetDeployment(ctx, k8s.NewGetRequest("nginx"))
+	if err != nil {
+		t.Log(err)
+	}
+
+	yd, err := yaml.Marshal(v)
+	if err != nil {
+		t.Log(err)
+	}
+
+	t.Log(string(yd))
 }
 
 func init() {
@@ -37,5 +74,10 @@ func init() {
 	if err != nil {
 		panic(err)
 	}
-	kubeConfig = string(kc)
+
+	client, err = k8s.NewClient(string(kc))
+	if err != nil {
+		panic(err)
+	}
+
 }

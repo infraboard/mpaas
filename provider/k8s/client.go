@@ -8,6 +8,10 @@ import (
 	clientcmdapi "k8s.io/client-go/tools/clientcmd/api"
 )
 
+var (
+	DEFAULT_NAMESPACE = "default"
+)
+
 func NewClient(kubeConfigYaml string) (*Client, error) {
 	// 加载配置
 	kubeConf, err := clientcmd.Load([]byte(kubeConfigYaml))
@@ -53,6 +57,10 @@ func (c *Client) ServerVersion() (string, error) {
 	return si.String(), nil
 }
 
+func (c *Client) ServerResources() ([]*metav1.APIResourceList, error) {
+	return c.client.ServerResources()
+}
+
 func (c *Client) GetContexts() map[string]*clientcmdapi.Context {
 	return c.kubeconf.Contexts
 }
@@ -68,6 +76,13 @@ func (c *Client) CurrentCluster() *clientcmdapi.Cluster {
 	}
 
 	return c.kubeconf.Clusters[ctx.Cluster]
+}
+
+func NewGetRequest(name string) *GetRequest {
+	return &GetRequest{
+		Namespace: DEFAULT_NAMESPACE,
+		Name:      name,
+	}
 }
 
 type GetRequest struct {
