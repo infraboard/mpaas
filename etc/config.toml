@@ -18,7 +18,7 @@ client_secret = "NlaVX6xsGVzqbxlLOSKXx3ARxOjls5VR"
 
 [mongodb]
 endpoints = ["127.0.0.1:27017"]
-username = "mpaas"
+username = "mpass"
 password = "123456"
 database = "mpaas"
 

@@ -26,17 +26,13 @@ func (h *handler) registryClusterHandler(r router.SubRouter) {
 }
 
 func (h *handler) CreateCluster(w http.ResponseWriter, r *http.Request) {
-	ctx := context.GetContext(r)
-	tk := ctx.AuthInfo.(*token.Token)
-
 	req := cluster.NewCreateClusterRequest()
 
 	if err := binding.Bind(r, req); err != nil {
 		response.Failed(w, err)
 		return
 	}
-
-	req.UpdateOwner(tk)
+	req.UpdateOwner()
 	set, err := h.service.CreateCluster(r.Context(), req)
 	if err != nil {
 		response.Failed(w, err)
@@ -47,11 +43,8 @@ func (h *handler) CreateCluster(w http.ResponseWriter, r *http.Request) {
 }
 
 func (h *handler) QueryCluster(w http.ResponseWriter, r *http.Request) {
-	ctx := context.GetContext(r)
-	tk := ctx.AuthInfo.(*token.Token)
-
 	req := cluster.NewQueryClusterRequestFromHTTP(r)
-	req.UpdateNamespace(tk)
+	req.UpdateNamespace()
 
 	set, err := h.service.QueryCluster(r.Context(), req)
 	if err != nil {

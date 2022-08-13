@@ -2,6 +2,7 @@ package k8s_test
 
 import (
 	"context"
+	"fmt"
 	"io/ioutil"
 	"os"
 	"path/filepath"
@@ -157,6 +158,15 @@ func TestCreateDeployment(t *testing.T) {
 			},
 		},
 	}
+
+	
+	yamlReq, err := yaml.Marshal(req)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	fmt.Println(string(yamlReq))
+
 
 	d, err := client.CreateDeployment(ctx, req)
 	if err != nil {

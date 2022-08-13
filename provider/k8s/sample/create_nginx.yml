@@ -1,0 +1,43 @@
+metadata:
+  creationTimestamp: null
+  name: nginx
+  namespace: default
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      k8s-app: nginx
+  strategy:
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
+    type: RollingUpdate
+  template:
+    metadata:
+      annotations:
+        eks.tke.cloud.tencent.com/root-cbs-size: "20"
+        eks.tke.cloud.tencent.com/security-group-id: sg-05url5pe
+      creationTimestamp: null
+      labels:
+        k8s-app: nginx
+    spec:
+      containers:
+      - env:
+        - name: APP_NAME
+          value: nginx
+        - name: APP_VERSION
+          value: v1
+        image: nginx:latest
+        imagePullPolicy: Always
+        name: nginx
+        resources:
+          limits:
+            cpu: 500m
+            memory: 1Gi
+          requests:
+            cpu: 250m
+            memory: 256Mi
+      dnsPolicy: ClusterFirst
+      restartPolicy: Always
+      schedulerName: default-scheduler
+      terminationGracePeriodSeconds: 30

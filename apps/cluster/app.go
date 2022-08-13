@@ -9,7 +9,6 @@ import (
 
 	"github.com/go-playground/validator/v10"
 	"github.com/imdario/mergo"
-	"github.com/infraboard/keyauth/apps/token"
 	"github.com/infraboard/mcube/crypto/cbc"
 	"github.com/infraboard/mcube/http/request"
 	pb_request "github.com/infraboard/mcube/pb/request"
@@ -48,10 +47,10 @@ func (req *CreateClusterRequest) Validate() error {
 	return validate.Struct(req)
 }
 
-func (req *CreateClusterRequest) UpdateOwner(tk *token.Token) {
-	req.CreateBy = tk.Account
-	req.Domain = tk.Domain
-	req.Namespace = tk.NamespaceName
+func (req *CreateClusterRequest) UpdateOwner() {
+	req.CreateBy = "default"
+	req.Domain = "default"
+	req.Namespace = "default"
 }
 
 func NewClusterSet() *ClusterSet {
@@ -186,9 +185,9 @@ func NewQueryClusterRequestFromHTTP(r *http.Request) *QueryClusterRequest {
 	}
 }
 
-func (req *QueryClusterRequest) UpdateNamespace(tk *token.Token) {
-	req.Domain = tk.Domain
-	req.Namespace = tk.NamespaceName
+func (req *QueryClusterRequest) UpdateNamespace() {
+	req.Domain = "default"
+	req.Namespace = "default"
 }
 
 func NewPutClusterRequest(id string) *UpdateClusterRequest {

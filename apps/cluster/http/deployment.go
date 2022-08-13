@@ -1,14 +1,15 @@
 package http
 
 import (
+	"io/ioutil"
 	"net/http"
 
-	"github.com/infraboard/mcube/http/binding"
 	"github.com/infraboard/mcube/http/context"
 	"github.com/infraboard/mcube/http/label"
 	"github.com/infraboard/mcube/http/response"
 	"github.com/infraboard/mcube/http/router"
 	"github.com/infraboard/mpaas/provider/k8s"
+	"sigs.k8s.io/yaml"
 
 	appsv1 "k8s.io/api/apps/v1"
 )
@@ -47,7 +48,15 @@ func (h *handler) CreateDeployment(w http.ResponseWriter, r *http.Request) {
 	}
 
 	req := &appsv1.Deployment{}
-	if err := binding.Bind(r, req); err != nil {
+
+	data, err := ioutil.ReadAll(r.Body)
+	if err != nil {
+		response.Failed(w, err)
+		return
+	}
+	defer r.Body.Close()
+
+	if err := yaml.Unmarshal(data, req); err != nil {
 		response.Failed(w, err)
 		return
 	}
