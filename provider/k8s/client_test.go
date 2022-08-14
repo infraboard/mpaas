@@ -159,14 +159,12 @@ func TestCreateDeployment(t *testing.T) {
 		},
 	}
 
-	
 	yamlReq, err := yaml.Marshal(req)
 	if err != nil {
 		t.Fatal(err)
 	}
 
 	fmt.Println(string(yamlReq))
-
 
 	d, err := client.CreateDeployment(ctx, req)
 	if err != nil {
@@ -208,7 +206,23 @@ func TestReDeployment(t *testing.T) {
 	t.Log(string(yd))
 }
 
-func TestDeployDeployment(t *testing.T) {
+func TestGetPod(t *testing.T) {
+	req := k8s.NewGetRequest("nginx-84b44d9c9d-q8ftf")
+
+	pods, err := client.GetPod(ctx, req)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	// 序列化
+	yd, err := yaml.Marshal(pods)
+	if err != nil {
+		t.Fatal(err)
+	}
+	t.Log(string(yd))
+}
+
+func TestDeleteDeployment(t *testing.T) {
 	req := k8s.NewDeleteRequest("nginx")
 	err := client.DeleteDeployment(ctx, req)
 	if err != nil {

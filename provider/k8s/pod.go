@@ -22,12 +22,7 @@ func (c *Client) ListPod(ctx context.Context, req *ListRequest) (*v1.PodList, er
 	return c.client.CoreV1().Pods(req.Namespace).List(ctx, metav1.ListOptions{})
 }
 
-type GetPodRequest struct {
-	Namespace string
-	Name      string
-}
-
-func (c *Client) GetPod(ctx context.Context, req *GetPodRequest) (*v1.Pod, error) {
+func (c *Client) GetPod(ctx context.Context, req *GetRequest) (*v1.Pod, error) {
 	if req.Namespace == "" {
 		req.Namespace = v1.NamespaceDefault
 	}
