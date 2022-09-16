@@ -1,0 +1,6 @@
+domain: devcloud
+layout:
+- go.kubebuilder.io/v3
+projectName: operator
+repo: github.com/infraboard/mpaas/operator
+version: "3"
