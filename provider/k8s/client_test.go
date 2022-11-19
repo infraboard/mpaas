@@ -63,9 +63,19 @@ func TestListNamespace(t *testing.T) {
 	}
 }
 
+func TestCreateNamespace(t *testing.T) {
+	ns := &corev1.Namespace{}
+	ns.Name = "go8"
+	v, err := client.CreateNamespace(ctx, ns)
+	if err != nil {
+		t.Log(err)
+	}
+	t.Log(v.Name)
+}
+
 func TestListDeployment(t *testing.T) {
 	req := k8s.NewListRequest()
-	req.Namespace = "default"
+	req.Namespace = "go8"
 	v, err := client.ListDeployment(ctx, req)
 	if err != nil {
 		t.Log(err)
@@ -77,7 +87,7 @@ func TestListDeployment(t *testing.T) {
 }
 
 func TestGetDeployment(t *testing.T) {
-	req := k8s.NewGetRequest("nginx")
+	req := k8s.NewGetRequest("coredns")
 	req.Namespace = "kube-system"
 	v, err := client.GetDeployment(ctx, req)
 	if err != nil {
@@ -94,13 +104,9 @@ func TestGetDeployment(t *testing.T) {
 
 func TestCreateDeployment(t *testing.T) {
 	req := &v1.Deployment{
-		// TypeMeta: metav1.TypeMeta{
-		// 	APIVersion: "apps/v1",
-		// 	Kind:       "Deployment",
-		// },
 		ObjectMeta: metav1.ObjectMeta{
 			Name:      "nginx",
-			Namespace: "default",
+			Namespace: "go8",
 		},
 		Spec: v1.DeploymentSpec{
 			Replicas: tea.Int32(2),
@@ -117,10 +123,7 @@ func TestCreateDeployment(t *testing.T) {
 			// Pod模板参数
 			Template: corev1.PodTemplateSpec{
 				ObjectMeta: metav1.ObjectMeta{
-					Annotations: map[string]string{
-						"eks.tke.cloud.tencent.com/root-cbs-size":     "20",
-						"eks.tke.cloud.tencent.com/security-group-id": "sg-05url5pe",
-					},
+					Annotations: map[string]string{},
 					Labels: map[string]string{
 						"k8s-app": "nginx",
 					},
@@ -147,8 +150,8 @@ func TestCreateDeployment(t *testing.T) {
 									corev1.ResourceMemory: resource.MustParse("1Gi"),
 								},
 								Requests: corev1.ResourceList{
-									corev1.ResourceCPU:    resource.MustParse("250m"),
-									corev1.ResourceMemory: resource.MustParse("256Mi"),
+									corev1.ResourceCPU:    resource.MustParse("50m"),
+									corev1.ResourceMemory: resource.MustParse("50Mi"),
 								},
 							},
 						},
@@ -174,7 +177,7 @@ func TestCreateDeployment(t *testing.T) {
 
 func TestScaleDeployment(t *testing.T) {
 	req := k8s.NewUpdateScaleRequest()
-	req.Scale.Namespace = k8s.DEFAULT_NAMESPACE
+	req.Scale.Namespace = "go8"
 	req.Scale.Name = "nginx"
 	req.Scale.Spec.Replicas = 2
 	v, err := client.UpdateDeploymentScale(ctx, req)
@@ -192,6 +195,7 @@ func TestScaleDeployment(t *testing.T) {
 
 func TestReDeployment(t *testing.T) {
 	req := k8s.NewGetRequest("nginx")
+	req.Namespace = "go8"
 	v, err := client.ReDeploy(ctx, req)
 	if err != nil {
 		t.Fatal(err)
@@ -205,8 +209,23 @@ func TestReDeployment(t *testing.T) {
 	t.Log(string(yd))
 }
 
+func TestListPod(t *testing.T) {
+	req := k8s.NewListRequest()
+	req.Namespace = "kube-system"
+	req.Opts.LabelSelector = "k8s-app=kube-dns"
+	pods, err := client.ListPod(ctx, req)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	// 序列化
+	for _, v := range pods.Items {
+		t.Log(v.Namespace, v.Name)
+	}
+}
+
 func TestGetPod(t *testing.T) {
-	req := k8s.NewGetRequest("nginx-84b44d9c9d-q8ftf")
+	req := k8s.NewGetRequest("kubernetes-proxy-78d4f87b58-crmlm")
 
 	pods, err := client.GetPod(ctx, req)
 	if err != nil {

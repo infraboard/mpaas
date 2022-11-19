@@ -4,7 +4,7 @@ import (
 	"context"
 	"sync"
 
-	"github.com/infraboard/mcube/http/router"
+	"github.com/emicklei/go-restful/v3"
 	"github.com/infraboard/mcube/logger"
 	"github.com/infraboard/mcube/logger/zap"
 
@@ -35,7 +35,11 @@ func (h *handler) Name() string {
 	return cluster.AppName
 }
 
-func (h *handler) Registry(r router.SubRouter) {
+func (h *handler) Version() string {
+	return "v1"
+}
+
+func (h *handler) Registry(r *restful.WebService) {
 	h.registryClusterHandler(r)
 	h.registryNodeHandler(r)
 	h.registryNamespaceHandler(r)
@@ -71,5 +75,5 @@ func (h *handler) GetClient(ctx context.Context, clusterId string) (*k8s.Client,
 }
 
 func init() {
-	app.RegistryHttpApp(h)
+	app.RegistryRESTfulApp(h)
 }

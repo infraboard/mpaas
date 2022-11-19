@@ -5,14 +5,13 @@ import (
 	"net/http"
 	"time"
 
+	"github.com/emicklei/go-restful/v3"
 	"github.com/gorilla/websocket"
-	"github.com/infraboard/mcube/http/context"
 	"github.com/infraboard/mcube/http/response"
-	"github.com/infraboard/mcube/http/router"
 	"github.com/infraboard/mpaas/provider/k8s"
 )
 
-func (h *handler) registryPodHandler(r router.SubRouter) {
+func (h *handler) registryPodHandler(ws *restful.WebService) {
 }
 
 var (
@@ -31,8 +30,8 @@ var (
 )
 
 // Login Container Websocket
-func (h *handler) LoginContainer(w http.ResponseWriter, r *http.Request) {
-	term, err := h.newWebsocketTerminal(w, r)
+func (h *handler) LoginContainer(r *restful.Request, w *restful.Response) {
+	term, err := h.newWebsocketTerminal(w, r.Request)
 	if err != nil {
 		h.log.Errorf("new websocket terminal error, %s", err)
 		response.Failed(w, err)
@@ -40,8 +39,7 @@ func (h *handler) LoginContainer(w http.ResponseWriter, r *http.Request) {
 	}
 	defer term.Close()
 
-	ctx := context.GetContext(r)
-	client, err := h.GetClient(r.Context(), ctx.PS.ByName("id"))
+	client, err := h.GetClient(r.Request.Context(), r.PathParameter("id"))
 	if err != nil {
 		response.Failed(w, err)
 		return
@@ -59,8 +57,8 @@ func (h *handler) LoginContainer(w http.ResponseWriter, r *http.Request) {
 }
 
 // Watch Container Log Websocket
-func (h *handler) WatchConainterLog(w http.ResponseWriter, r *http.Request) {
-	term, err := h.newWebsocketTerminal(w, r)
+func (h *handler) WatchConainterLog(r *restful.Request, w *restful.Response) {
+	term, err := h.newWebsocketTerminal(w, r.Request)
 	if err != nil {
 		h.log.Errorf("new websocket terminal error, %s", err)
 		response.Failed(w, err)
@@ -68,8 +66,7 @@ func (h *handler) WatchConainterLog(w http.ResponseWriter, r *http.Request) {
 	}
 	defer term.Close()
 
-	ctx := context.GetContext(r)
-	client, err := h.GetClient(r.Context(), ctx.PS.ByName("id"))
+	client, err := h.GetClient(r.Request.Context(), r.PathParameter("id"))
 	if err != nil {
 		response.Failed(w, err)
 		return
@@ -79,7 +76,7 @@ func (h *handler) WatchConainterLog(w http.ResponseWriter, r *http.Request) {
 	req := k8s.NewWatchConainterLogRequest()
 	term.ParseParame(req)
 
-	reader, err := client.WatchConainterLog(r.Context(), req)
+	reader, err := client.WatchConainterLog(r.Request.Context(), req)
 	if err != nil {
 		term.WriteMessage(k8s.NewOperatinonParamMessage(err.Error()))
 		return

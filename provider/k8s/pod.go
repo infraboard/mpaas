@@ -22,16 +22,10 @@ func (c *Client) CreatePod(ctx context.Context, pod *v1.Pod, req *CreateRequest)
 }
 
 func (c *Client) ListPod(ctx context.Context, req *ListRequest) (*v1.PodList, error) {
-	if req.Namespace == "" {
-		req.Namespace = v1.NamespaceDefault
-	}
 	return c.client.CoreV1().Pods(req.Namespace).List(ctx, req.Opts)
 }
 
 func (c *Client) GetPod(ctx context.Context, req *GetRequest) (*v1.Pod, error) {
-	if req.Namespace == "" {
-		req.Namespace = v1.NamespaceDefault
-	}
 	return c.client.CoreV1().Pods(req.Namespace).Get(ctx, req.Name, req.Opts)
 }
 

@@ -71,7 +71,7 @@ func (c *Client) ReDeploy(ctx context.Context, req *GetRequest) (*appsv1.Deploym
 		return nil, err
 	}
 	// 添加一个时间戳来是Deploy对象发送变更
-	d.Spec.Template.Annotations["devcloud/timestamp"] = time.Now().Format(time.RFC3339)
+	d.Spec.Template.Annotations["mpaas/timestamp"] = time.Now().Format(time.RFC3339)
 	return c.client.AppsV1().Deployments(req.Namespace).Update(ctx, d, metav1.UpdateOptions{})
 }
 

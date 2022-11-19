@@ -3,20 +3,39 @@ package http
 import (
 	"io/ioutil"
 
+	restfulspec "github.com/emicklei/go-restful-openapi"
 	"github.com/emicklei/go-restful/v3"
+	"github.com/infraboard/mcube/http/label"
 	"github.com/infraboard/mcube/http/response"
-	"github.com/infraboard/mcube/http/router"
+	"github.com/infraboard/mpaas/apps/cluster"
 	"github.com/infraboard/mpaas/provider/k8s"
 	"sigs.k8s.io/yaml"
 
 	appsv1 "k8s.io/api/apps/v1"
 )
 
-func (h *handler) registryDeploymentHandler(r router.SubRouter) {
-	// dr := r.ResourceRouter("deployment")
-	// dr.BasePath("clusters/:id/deployments")
-	// dr.Handle("GET", "/", h.QueryDeployments).AddLabel(label.List)
-	// dr.Handle("POST", "/", h.CreateDeployment).AddLabel(label.Create)
+func (h *handler) registryDeploymentHandler(ws *restful.WebService) {
+	tags := []string{"Deployment管理"}
+	ws.Route(ws.POST("/").To(h.CreateDeployment).
+		Doc("创建Deployment").
+		Metadata(restfulspec.KeyOpenAPITags, tags).
+		Metadata(label.Resource, h.Name()).
+		Metadata(label.Action, label.Create.Value()).
+		Metadata(label.Auth, label.Enable).
+		Metadata(label.Permission, label.Enable).
+		Reads(appsv1.Deployment{}).
+		Writes(response.NewData(appsv1.Deployment{})))
+
+	ws.Route(ws.GET("/").To(h.QueryDeployments).
+		Doc("查询Deployment").
+		Metadata(restfulspec.KeyOpenAPITags, tags).
+		Metadata(label.Resource, h.Name()).
+		Metadata(label.Action, label.List.Value()).
+		Metadata(label.Auth, label.Enable).
+		Metadata(label.Permission, label.Enable).
+		Reads(cluster.QueryClusterRequest{}).
+		Writes(response.NewData(appsv1.Deployment{})).
+		Returns(200, "OK", appsv1.Deployment{}))
 }
 
 func (h *handler) QueryDeployments(r *restful.Request, w *restful.Response) {

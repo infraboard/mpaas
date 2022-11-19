@@ -2,20 +2,18 @@ package http
 
 import (
 	"io"
-	"net/http"
 
-	"github.com/infraboard/mcube/http/context"
+	"github.com/emicklei/go-restful/v3"
 	"github.com/infraboard/mcube/http/response"
-	"github.com/infraboard/mcube/http/router"
 	"github.com/infraboard/mpaas/provider/k8s"
 )
 
-func (h *handler) registryWatchHandler(r router.SubRouter) {
+func (h *handler) registryWatchHandler(ws *restful.WebService) {
 }
 
 // Watch 资源变化
-func (h *handler) Watch(w http.ResponseWriter, r *http.Request) {
-	term, err := h.newWebsocketTerminal(w, r)
+func (h *handler) Watch(r *restful.Request, w *restful.Response) {
+	term, err := h.newWebsocketTerminal(w, r.Request)
 	if err != nil {
 		h.log.Errorf("new websocket terminal error, %s", err)
 		response.Failed(w, err)
@@ -23,8 +21,7 @@ func (h *handler) Watch(w http.ResponseWriter, r *http.Request) {
 	}
 	defer term.Close()
 
-	ctx := context.GetContext(r)
-	client, err := h.GetClient(r.Context(), ctx.PS.ByName("id"))
+	client, err := h.GetClient(r.Request.Context(), r.PathParameter("id"))
 	if err != nil {
 		term.WriteMessage(k8s.NewOperatinonParamMessage(err.Error()))
 		return
@@ -34,7 +31,7 @@ func (h *handler) Watch(w http.ResponseWriter, r *http.Request) {
 	req := k8s.NewWatchRequest()
 	term.ParseParame(req)
 
-	wi, err := client.Watch(r.Context(), req)
+	wi, err := client.Watch(r.Request.Context(), req)
 	if err != nil {
 		term.WriteMessage(k8s.NewOperatinonParamMessage(err.Error()))
 		return
