@@ -6,11 +6,13 @@ require (
 	github.com/BurntSushi/toml v1.0.0
 	github.com/alibabacloud-go/tea v1.1.19
 	github.com/caarlos0/env/v6 v6.9.1
+	github.com/emicklei/go-restful-openapi v1.4.1
+	github.com/emicklei/go-restful/v3 v3.10.0
 	github.com/go-playground/validator/v10 v10.10.0
 	github.com/gorilla/websocket v1.4.2
 	github.com/imdario/mergo v0.3.12
 	github.com/infraboard/keyauth v0.7.3
-	github.com/infraboard/mcube v1.6.8
+	github.com/infraboard/mcube v1.9.1-0.20221116042658-6666a9ee4f42
 	github.com/rs/xid v1.3.0
 	github.com/spf13/cobra v1.3.0
 	github.com/stretchr/testify v1.7.0
@@ -24,9 +26,18 @@ require (
 )
 
 require (
+	github.com/PuerkitoBio/purell v1.1.1 // indirect
+	github.com/PuerkitoBio/urlesc v0.0.0-20170810143723-de5bf2ad4578 // indirect
 	github.com/alibabacloud-go/debug v0.0.0-20190504072949-9472017b5c68 // indirect
 	github.com/davecgh/go-spew v1.1.1 // indirect
+	github.com/emicklei/go-restful v2.9.6+incompatible // indirect
+	github.com/gin-contrib/sse v0.1.0 // indirect
+	github.com/gin-gonic/gin v1.7.7 // indirect
 	github.com/go-logr/logr v1.2.0 // indirect
+	github.com/go-openapi/jsonpointer v0.19.5 // indirect
+	github.com/go-openapi/jsonreference v0.19.3 // indirect
+	github.com/go-openapi/spec v0.0.0-20180415031709-bcff419492ee // indirect
+	github.com/go-openapi/swag v0.19.5 // indirect
 	github.com/go-playground/locales v0.14.0 // indirect
 	github.com/go-playground/universal-translator v0.18.0 // indirect
 	github.com/go-stack/stack v1.8.0 // indirect
@@ -41,6 +52,8 @@ require (
 	github.com/julienschmidt/httprouter v1.3.0 // indirect
 	github.com/klauspost/compress v1.14.2 // indirect
 	github.com/leodido/go-urn v1.2.1 // indirect
+	github.com/mailru/easyjson v0.0.0-20190626092158-b2ccc519800e // indirect
+	github.com/mattn/go-isatty v0.0.14 // indirect
 	github.com/moby/spdystream v0.2.0 // indirect
 	github.com/modern-go/concurrent v0.0.0-20180306012644-bacd9c7ef1dd // indirect
 	github.com/modern-go/reflect2 v1.0.2 // indirect
@@ -68,7 +81,7 @@ require (
 	google.golang.org/genproto v0.0.0-20211208223120-3a66f561d7aa // indirect
 	gopkg.in/inf.v0 v0.9.1 // indirect
 	gopkg.in/yaml.v2 v2.4.0 // indirect
-	gopkg.in/yaml.v3 v3.0.0-20210107192922-496545a6307b // indirect
+	gopkg.in/yaml.v3 v3.0.1 // indirect
 	k8s.io/klog/v2 v2.30.0 // indirect
 	k8s.io/kube-openapi v0.0.0-20211115234752-e816edb12b65 // indirect
 	k8s.io/utils v0.0.0-20211116205334-6203023598ed // indirect

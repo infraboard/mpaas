@@ -3,7 +3,6 @@ package k8s_test
 import (
 	"context"
 	"fmt"
-	"io/ioutil"
 	"os"
 	"path/filepath"
 	"testing"
@@ -238,7 +237,7 @@ func init() {
 		panic(err)
 	}
 
-	kc, err := ioutil.ReadFile(filepath.Join(wd, "kube_config.yml"))
+	kc, err := os.ReadFile(filepath.Join(wd, "kube_config.yml"))
 	if err != nil {
 		panic(err)
 	}

@@ -121,3 +121,12 @@ type ListRequest struct {
 	Namespace string
 	Opts      metav1.ListOptions
 }
+
+func NewCreateRequest() *CreateRequest {
+	return &CreateRequest{}
+}
+
+type CreateRequest struct {
+	Namespace string
+	Opts      metav1.CreateOptions
+}
