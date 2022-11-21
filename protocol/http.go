@@ -6,37 +6,42 @@ import (
 	"net/http"
 	"time"
 
+	restfulspec "github.com/emicklei/go-restful-openapi/v2"
+	"github.com/emicklei/go-restful/v3"
+	"github.com/infraboard/mcube/app"
 	"github.com/infraboard/mcube/logger"
 	"github.com/infraboard/mcube/logger/zap"
 
-	"github.com/infraboard/keyauth/apps/endpoint"
-	"github.com/infraboard/keyauth/client/interceptor"
-	"github.com/infraboard/keyauth/version"
-	"github.com/infraboard/mcube/app"
-	"github.com/infraboard/mcube/http/middleware/accesslog"
-	"github.com/infraboard/mcube/http/middleware/cors"
-	"github.com/infraboard/mcube/http/middleware/recovery"
-	"github.com/infraboard/mcube/http/router"
-	"github.com/infraboard/mcube/http/router/httprouter"
+	"github.com/infraboard/mcenter/apps/endpoint"
+	"github.com/infraboard/mcenter/client/rpc"
+	"github.com/infraboard/mcenter/client/rpc/middleware"
+	"github.com/infraboard/mcenter/swagger"
 
 	"github.com/infraboard/mpaas/conf"
+	"github.com/infraboard/mpaas/version"
 )
 
 // NewHTTPService 构建函数
 func NewHTTPService() *HTTPService {
-	c, err := conf.C().Keyauth.Client()
+	c, err := rpc.NewClient(conf.C().Mcenter)
 	if err != nil {
 		panic(err)
 	}
-	auther := interceptor.NewHTTPAuther(c)
 
-	r := httprouter.New()
-	r.Use(recovery.NewWithLogger(zap.L().Named("Recovery")))
-	r.Use(accesslog.NewWithLogger(zap.L().Named("AccessLog")))
-	r.Use(cors.AllowAll())
-	r.EnableAPIRoot()
-	r.SetAuther(auther)
-	r.Auth(false)
+	r := restful.DefaultContainer
+	// Optionally, you can install the Swagger Service which provides a nice Web UI on your REST API
+	// You need to download the Swagger HTML5 assets and change the FilePath location in the config below.
+	// Open http://localhost:8080/apidocs/?url=http://localhost:8080/apidocs.json
+	// http.Handle("/apidocs/", http.StripPrefix("/apidocs/", http.FileServer(http.Dir("/Users/emicklei/Projects/swagger-ui/dist"))))
+
+	// Optionally, you may need to enable CORS for the UI to work.
+	cors := restful.CrossOriginResourceSharing{
+		AllowedHeaders: []string{"*"},
+		AllowedMethods: []string{"*"},
+		CookiesAllowed: false,
+		Container:      r}
+	r.Filter(cors.Filter)
+	r.Filter(middleware.RestfulServerInterceptor())
 
 	server := &http.Server{
 		ReadHeaderTimeout: 60 * time.Second,
@@ -45,12 +50,13 @@ func NewHTTPService() *HTTPService {
 		IdleTimeout:       60 * time.Second,
 		MaxHeaderBytes:    1 << 20, // 1M
 		Addr:              conf.C().App.HTTP.Addr(),
-		Handler:           cors.AllowAll().Handler(r),
+		Handler:           r,
 	}
+
 	return &HTTPService{
 		r:        r,
 		server:   server,
-		l:        zap.L().Named("HTTP Service"),
+		l:        zap.L().Named("server.http"),
 		c:        conf.C(),
 		endpoint: c.Endpoint(),
 	}
@@ -58,22 +64,37 @@ func NewHTTPService() *HTTPService {
 
 // HTTPService http服务
 type HTTPService struct {
-	r      router.Router
+	r      *restful.Container
 	l      logger.Logger
 	c      *conf.Config
 	server *http.Server
 
-	endpoint endpoint.ServiceClient
+	endpoint endpoint.RPCClient
 }
 
-func (s *HTTPService) Addr() string {
-	return fmt.Sprintf("%s/api/v1", s.c.App.Name)
+func (s *HTTPService) PathPrefix() string {
+	return fmt.Sprintf("/%s/api", s.c.App.Name)
 }
 
 // Start 启动服务
 func (s *HTTPService) Start() error {
 	// 装置子服务路由
-	app.LoadHttpApp(s.Addr(), s.r)
+	app.LoadRESTfulApp(s.PathPrefix(), s.r)
+
+	// API Doc
+	config := restfulspec.Config{
+		WebServices:                   restful.RegisteredWebServices(), // you control what services are visible
+		APIPath:                       "/apidocs.json",
+		PostBuildSwaggerObjectHandler: swagger.Docs,
+		DefinitionNameHandler: func(name string) string {
+			if name == "state" || name == "sizeCache" || name == "unknownFields" {
+				return ""
+			}
+			return name
+		},
+	}
+	s.r.Add(restfulspec.NewOpenAPIService(config))
+	s.l.Infof("Get the API using http://%s%s", s.c.App.HTTP.Addr(), config.APIPath)
 
 	// 注册路由条目
 	s.RegistryEndpoint()
@@ -105,7 +126,14 @@ func (s *HTTPService) RegistryEndpoint() {
 	// 注册服务权限条目
 	s.l.Info("start registry endpoints ...")
 
-	req := endpoint.NewRegistryRequest(version.Short(), s.r.GetEndpoints().UniquePathEntry())
+	entries := []*endpoint.Entry{}
+	wss := s.r.RegisteredWebServices()
+	for i := range wss {
+		es := endpoint.TransferRoutesToEntry(wss[i].Routes())
+		entries = append(entries, es...)
+	}
+
+	req := endpoint.NewRegistryRequest(version.Short(), entries)
 	_, err := s.endpoint.RegistryEndpoint(context.Background(), req)
 	if err != nil {
 		s.l.Warnf("registry endpoints error, %s", err)

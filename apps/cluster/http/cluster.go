@@ -3,7 +3,7 @@ package http
 import (
 	restfulspec "github.com/emicklei/go-restful-openapi"
 	"github.com/emicklei/go-restful/v3"
-	"github.com/infraboard/keyauth/apps/token"
+	"github.com/infraboard/mcenter/apps/token"
 	"github.com/infraboard/mcube/http/binding"
 	"github.com/infraboard/mcube/http/label"
 	"github.com/infraboard/mcube/http/request"
@@ -131,7 +131,7 @@ func (h *handler) PutCluster(r *restful.Request, w *restful.Response) {
 		response.Failed(w, err)
 		return
 	}
-	req.UpdateBy = tk.Account
+	req.UpdateBy = tk.Username
 
 	set, err := h.service.UpdateCluster(r.Request.Context(), req)
 	if err != nil {
@@ -149,7 +149,7 @@ func (h *handler) PatchCluster(r *restful.Request, w *restful.Response) {
 		response.Failed(w, err)
 		return
 	}
-	req.UpdateBy = tk.Account
+	req.UpdateBy = tk.Username
 
 	set, err := h.service.UpdateCluster(r.Request.Context(), req)
 	if err != nil {

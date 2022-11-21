@@ -3,6 +3,8 @@ package conf
 import (
 	"github.com/BurntSushi/toml"
 	"github.com/caarlos0/env/v6"
+
+	"github.com/infraboard/mcenter/client/rpc"
 )
 
 var (
@@ -14,6 +16,12 @@ func C() *Config {
 	if conf == nil {
 		panic("Load Config first")
 	}
+
+	// 提前加载好 mcenter客户端
+	err := rpc.LoadClientFromConfig(conf.Mcenter)
+	if err != nil {
+		panic("load mcenter client from config error: " + err.Error())
+	}
 	return conf
 }
 
@@ -23,7 +31,8 @@ func LoadConfigFromToml(filePath string) error {
 	if _, err := toml.DecodeFile(filePath, conf); err != nil {
 		return err
 	}
-	return nil
+
+	return conf.InitGloabl()
 }
 
 // LoadConfigFromEnv 从环境变量中加载配置
@@ -32,5 +41,5 @@ func LoadConfigFromEnv() error {
 	if err := env.Parse(conf); err != nil {
 		return err
 	}
-	return nil
+	return conf.InitGloabl()
 }
