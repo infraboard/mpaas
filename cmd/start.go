@@ -19,7 +19,7 @@ import (
 	"github.com/infraboard/mpaas/protocol"
 
 	// 注册所有服务
-	_ "github.com/infraboard/mpaas/apps/all"
+	_ "github.com/infraboard/mpaas/apps"
 )
 
 // startCmd represents the start command

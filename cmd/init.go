@@ -4,10 +4,6 @@ import (
 	"github.com/spf13/cobra"
 )
 
-var (
-	createTableFilePath string
-)
-
 // initCmd represents the start command
 var initCmd = &cobra.Command{
 	Use:   "init",
