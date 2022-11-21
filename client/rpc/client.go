@@ -3,7 +3,6 @@ package rpc
 import (
 	"context"
 	"fmt"
-	"time"
 
 	"github.com/infraboard/mcenter/client/rpc"
 	"github.com/infraboard/mcenter/client/rpc/resolver"
@@ -16,7 +15,7 @@ import (
 
 // NewClient todo
 func NewClientSet(conf *rpc.Config) (*ClientSet, error) {
-	ctx, cancel := context.WithTimeout(context.Background(), time.Second*10)
+	ctx, cancel := context.WithTimeout(context.Background(), conf.Timeout())
 	defer cancel()
 
 	// 连接到服务

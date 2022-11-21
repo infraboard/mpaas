@@ -10,15 +10,14 @@ port = "8080"
 host = "127.0.0.1"
 port = "18080"
 
-[keyauth]
-host = "127.0.0.1"
-port = "18050"
-client_id = "tNMEYe5aCSZpb78TCYzrx0SD"
-client_secret = "NlaVX6xsGVzqbxlLOSKXx3ARxOjls5VR"
+[mcenter]
+address = "127.0.0.1:18010"
+client_id = "w3N8ozuoqVGVQGxEOQ4zyhiE"
+client_secret = "nPvMEfQGl24dQwjE3MF8SNHXN0ul080P"
 
 [mongodb]
 endpoints = ["127.0.0.1:27017"]
-username = "mpass"
+username = "mpaas"
 password = "123456"
 database = "mpaas"
 

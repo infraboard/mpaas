@@ -38,6 +38,7 @@ type Config struct {
 
 // InitGloabl 注入全局变量
 func (c *Config) InitGloabl() error {
+	fmt.Println(c.Mcenter)
 	// 提前加载好 mcenter客户端
 	err := rpc.LoadClientFromConfig(c.Mcenter)
 	if err != nil {
