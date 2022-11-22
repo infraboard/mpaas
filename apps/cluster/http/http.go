@@ -18,7 +18,7 @@ var (
 )
 
 type handler struct {
-	service cluster.ServiceServer
+	service cluster.Service
 	log     logger.Logger
 	clients map[string]*k8s.Client
 	sync.Mutex
@@ -27,7 +27,7 @@ type handler struct {
 func (h *handler) Config() error {
 	h.clients = map[string]*k8s.Client{}
 	h.log = zap.L().Named(cluster.AppName)
-	h.service = app.GetGrpcApp(cluster.AppName).(cluster.ServiceServer)
+	h.service = app.GetGrpcApp(cluster.AppName).(cluster.Service)
 	return nil
 }
 

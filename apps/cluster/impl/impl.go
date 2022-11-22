@@ -20,8 +20,8 @@ var (
 type service struct {
 	col     *mongo.Collection
 	log     logger.Logger
-	cluster cluster.ServiceServer
-	cluster.UnimplementedServiceServer
+	cluster cluster.Service
+	cluster.UnimplementedRPCServer
 	encryptoKey string
 }
 
@@ -35,7 +35,7 @@ func (s *service) Config() error {
 
 	s.encryptoKey = conf.C().App.EncryptKey
 	s.log = zap.L().Named(s.Name())
-	s.cluster = app.GetGrpcApp(cluster.AppName).(cluster.ServiceServer)
+	s.cluster = app.GetGrpcApp(cluster.AppName).(cluster.Service)
 	return nil
 }
 
@@ -44,9 +44,10 @@ func (s *service) Name() string {
 }
 
 func (s *service) Registry(server *grpc.Server) {
-	cluster.RegisterServiceServer(server, svr)
+	cluster.RegisterRPCServer(server, svr)
 }
 
 func init() {
+	app.RegistryInternalApp(svr)
 	app.RegistryGrpcApp(svr)
 }

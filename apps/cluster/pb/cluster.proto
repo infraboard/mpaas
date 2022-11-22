@@ -6,12 +6,9 @@ option go_package = "github.com/infraboard/mpaas/apps/cluster";
 import "github.com/infraboard/mcube/pb/page/page.proto";
 import "github.com/infraboard/mcube/pb/request/request.proto";
 
-service Service {
-    rpc CreateCluster(CreateClusterRequest) returns(Cluster);
+service RPC {
     rpc QueryCluster(QueryClusterRequest) returns(ClusterSet);
     rpc DescribeCluster(DescribeClusterRequest) returns(Cluster);
-    rpc UpdateCluster(UpdateClusterRequest) returns(Cluster);
-    rpc DeleteCluster(DeleteClusterRequest) returns(Cluster);
 }
 
 // Cluster todo
