@@ -7,6 +7,7 @@ import (
 func NewClient(conf *Config) *ClientSet {
 	c := rest.NewRESTClient()
 	c.SetBearerTokenAuth(conf.Token)
+	c.SetHeader("Content-Type", "application/json")
 	c.SetBaseURL(conf.Address + conf.PathPrefix)
 	return &ClientSet{
 		c: c,

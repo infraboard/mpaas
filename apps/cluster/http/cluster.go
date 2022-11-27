@@ -90,13 +90,13 @@ func (h *handler) CreateCluster(r *restful.Request, w *restful.Response) {
 		return
 	}
 	req.UpdateOwner()
-	set, err := h.service.CreateCluster(r.Request.Context(), req)
+	ins, err := h.service.CreateCluster(r.Request.Context(), req)
 	if err != nil {
 		response.Failed(w, err)
 		return
 	}
 
-	response.Success(w, set)
+	response.Success(w, ins)
 }
 
 func (h *handler) QueryCluster(r *restful.Request, w *restful.Response) {

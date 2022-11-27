@@ -118,8 +118,9 @@ func NewListRequest() *ListRequest {
 }
 
 type ListRequest struct {
-	Namespace string
-	Opts      metav1.ListOptions
+	Namespace         string
+	SkipManagedFields bool
+	Opts              metav1.ListOptions
 }
 
 func NewCreateRequest() *CreateRequest {

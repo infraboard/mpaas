@@ -15,7 +15,7 @@ import (
 
 func (h *handler) registryNamespaceHandler(ws *restful.WebService) {
 	tags := []string{"Namespace管理"}
-	ws.Route(ws.POST("/").To(h.CreateNamespaces).
+	ws.Route(ws.POST("/{id}/namespace").To(h.CreateNamespaces).
 		Doc("创建Namespace").
 		Metadata(restfulspec.KeyOpenAPITags, tags).
 		Metadata(label.Resource, h.Name()).
@@ -25,7 +25,7 @@ func (h *handler) registryNamespaceHandler(ws *restful.WebService) {
 		Reads(corev1.Namespace{}).
 		Writes(response.NewData(corev1.Namespace{})))
 
-	ws.Route(ws.GET("/").To(h.QueryNamespaces).
+	ws.Route(ws.GET("/{id}/namespaces").To(h.QueryNamespaces).
 		Doc("查询Namespace").
 		Metadata(restfulspec.KeyOpenAPITags, tags).
 		Metadata(label.Resource, h.Name()).

@@ -1,0 +1,64 @@
+syntax = "proto3";
+
+package infraboard.mpaas.cluster;
+option go_package = "github.com/infraboard/mpaas/apps/cluster";
+
+import "github.com/infraboard/mcube/pb/page/page.proto";
+import "github.com/infraboard/mcube/pb/request/request.proto";
+import "apps/cluster/pb/cluster.proto";
+
+service RPC {
+    rpc QueryCluster(QueryClusterRequest) returns(ClusterSet);
+    rpc DescribeCluster(DescribeClusterRequest) returns(Cluster);
+}
+
+message QueryClusterRequest {
+    // 分页参数
+    // @gotags: json:"page" 
+    infraboard.mcube.page.PageRequest page = 1;
+    // 关键字参数
+    // @gotags: json:"keywords"
+    string keywords = 2;
+    // 集群所属域
+    // @gotags: json:"domain"
+    string domain = 3;
+    // 集群所属空间
+    // @gotags: json:"namespace"
+    string namespace = 4;
+    // 集群所属厂商
+    // @gotags: json:"vendor"
+    string vendor = 5;
+    // 集群所属地域
+    // @gotags: json:"region"
+    string region = 6;
+}
+
+message DescribeClusterRequest {
+    // Cluster id
+    // @gotags: json:"id"
+    string id = 1;
+}
+
+message UpdateClusterRequest {
+    // Cluster id
+    // @gotags: json:"id"
+    string id = 1;
+    // 更新模式
+    // @gotags: json:"update_mode"
+    infraboard.mcube.request.UpdateMode update_mode = 2;
+    // 更新人
+    // @gotags: json:"update_by"
+    string update_by = 3;
+    // 更新时间
+    // @gotags: json:"update_at"
+    int64 update_at = 4;
+    // 更新的书本信息
+    // @gotags: json:"data"
+    CreateClusterRequest data = 5;
+}
+
+message DeleteClusterRequest {
+    // Cluster id
+    // @gotags: json:"id"
+    string id = 1;
+}

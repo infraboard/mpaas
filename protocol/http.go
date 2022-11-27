@@ -14,10 +14,11 @@ import (
 
 	"github.com/infraboard/mcenter/apps/endpoint"
 	"github.com/infraboard/mcenter/client/rpc"
-	"github.com/infraboard/mcenter/client/rpc/middleware"
-	"github.com/infraboard/mcenter/swagger"
+
+	// "github.com/infraboard/mcenter/client/rpc/middleware"
 
 	"github.com/infraboard/mpaas/conf"
+	"github.com/infraboard/mpaas/swagger"
 	"github.com/infraboard/mpaas/version"
 )
 
@@ -41,7 +42,7 @@ func NewHTTPService() *HTTPService {
 		CookiesAllowed: false,
 		Container:      r}
 	r.Filter(cors.Filter)
-	r.Filter(middleware.RestfulServerInterceptor())
+	// r.Filter(middleware.RestfulServerInterceptor())
 
 	server := &http.Server{
 		ReadHeaderTimeout: 60 * time.Second,
@@ -84,7 +85,7 @@ func (s *HTTPService) Start() error {
 	// API Doc
 	config := restfulspec.Config{
 		WebServices:                   restful.RegisteredWebServices(), // you control what services are visible
-		APIPath:                       "/apidocs.json",
+		APIPath:                       "/apidocs.json/",
 		PostBuildSwaggerObjectHandler: swagger.Docs,
 		DefinitionNameHandler: func(name string) string {
 			if name == "state" || name == "sizeCache" || name == "unknownFields" {

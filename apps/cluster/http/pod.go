@@ -5,13 +5,29 @@ import (
 	"net/http"
 	"time"
 
+	restfulspec "github.com/emicklei/go-restful-openapi"
 	"github.com/emicklei/go-restful/v3"
 	"github.com/gorilla/websocket"
+	"github.com/infraboard/mcube/http/label"
 	"github.com/infraboard/mcube/http/response"
+	"github.com/infraboard/mpaas/apps/cluster"
 	"github.com/infraboard/mpaas/provider/k8s"
+	corev1 "k8s.io/api/core/v1"
 )
 
 func (h *handler) registryPodHandler(ws *restful.WebService) {
+	tags := []string{"Pod管理"}
+
+	ws.Route(ws.GET("/{id}/pods").To(h.QueryDeployments).
+		Doc("查询Pod列表").
+		Metadata(restfulspec.KeyOpenAPITags, tags).
+		Metadata(label.Resource, h.Name()).
+		Metadata(label.Action, label.List.Value()).
+		Metadata(label.Auth, label.Enable).
+		Metadata(label.Permission, label.Enable).
+		Reads(cluster.QueryClusterRequest{}).
+		Writes(response.NewData(corev1.PodList{})).
+		Returns(200, "OK", corev1.PodList{}))
 }
 
 var (

@@ -38,7 +38,6 @@ type Config struct {
 
 // InitGloabl 注入全局变量
 func (c *Config) InitGloabl() error {
-	fmt.Println(c.Mcenter)
 	// 提前加载好 mcenter客户端
 	err := rpc.LoadClientFromConfig(c.Mcenter)
 	if err != nil {
@@ -119,7 +118,9 @@ func newDefaultLog() *log {
 
 func newDefaultMongoDB() *mongodb {
 	return &mongodb{
-		Database:  "",
+		UserName:  "mpaas",
+		Password:  "123456",
+		Database:  "mpaas",
 		Endpoints: []string{"127.0.0.1:27017"},
 	}
 }

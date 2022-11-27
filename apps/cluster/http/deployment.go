@@ -16,7 +16,7 @@ import (
 
 func (h *handler) registryDeploymentHandler(ws *restful.WebService) {
 	tags := []string{"Deployment管理"}
-	ws.Route(ws.POST("/").To(h.CreateDeployment).
+	ws.Route(ws.POST("/{id}/deployments").To(h.CreateDeployment).
 		Doc("创建Deployment").
 		Metadata(restfulspec.KeyOpenAPITags, tags).
 		Metadata(label.Resource, h.Name()).
@@ -26,7 +26,7 @@ func (h *handler) registryDeploymentHandler(ws *restful.WebService) {
 		Reads(appsv1.Deployment{}).
 		Writes(response.NewData(appsv1.Deployment{})))
 
-	ws.Route(ws.GET("/").To(h.QueryDeployments).
+	ws.Route(ws.GET("/{id}/deployments").To(h.QueryDeployments).
 		Doc("查询Deployment").
 		Metadata(restfulspec.KeyOpenAPITags, tags).
 		Metadata(label.Resource, h.Name()).
@@ -36,6 +36,35 @@ func (h *handler) registryDeploymentHandler(ws *restful.WebService) {
 		Reads(cluster.QueryClusterRequest{}).
 		Writes(response.NewData(appsv1.Deployment{})).
 		Returns(200, "OK", appsv1.Deployment{}))
+
+	ws.Route(ws.GET("/{id}/deployments/{name}").To(h.GetDeployment).
+		Doc("查询Deployment").
+		Metadata(restfulspec.KeyOpenAPITags, tags).
+		Metadata(label.Resource, h.Name()).
+		Metadata(label.Action, label.List.Value()).
+		Metadata(label.Auth, label.Enable).
+		Metadata(label.Permission, label.Enable).
+		Reads(cluster.QueryClusterRequest{}).
+		Writes(response.NewData(appsv1.Deployment{})).
+		Returns(200, "OK", appsv1.Deployment{}))
+}
+
+func (h *handler) GetDeployment(r *restful.Request, w *restful.Response) {
+	client, err := h.GetClient(r.Request.Context(), r.PathParameter("id"))
+	if err != nil {
+		response.Failed(w, err)
+		return
+	}
+
+	req := k8s.NewGetRequestFromHttp(r.Request)
+	req.Name = r.PathParameter("name")
+	ins, err := client.GetDeployment(r.Request.Context(), req)
+	if err != nil {
+		response.Failed(w, err)
+		return
+	}
+
+	response.Success(w, ins)
 }
 
 func (h *handler) QueryDeployments(r *restful.Request, w *restful.Response) {

@@ -18,7 +18,7 @@ import (
 )
 
 const (
-	AppName = "cluster"
+	AppName = "clusters"
 )
 
 var (

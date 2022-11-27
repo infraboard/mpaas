@@ -15,14 +15,38 @@ func NewListRequestFromHttp(r *http.Request) *ListRequest {
 	qs := r.URL.Query()
 
 	req := &ListRequest{
+		Namespace:         qs.Get("namespace"),
+		SkipManagedFields: qs.Get("skip_managed_fields") == "true",
+		Opts: metav1.ListOptions{
+			LabelSelector: qs.Get("label"),
+		},
+	}
+
+	return req
+}
+
+func NewGetRequestFromHttp(r *http.Request) *GetRequest {
+	qs := r.URL.Query()
+
+	req := &GetRequest{
 		Namespace: qs.Get("namespace"),
+		Name:      qs.Get("name"),
 	}
 
 	return req
 }
 
 func (c *Client) ListDeployment(ctx context.Context, req *ListRequest) (*appsv1.DeploymentList, error) {
-	return c.client.AppsV1().Deployments(req.Namespace).List(ctx, req.Opts)
+	ds, err := c.client.AppsV1().Deployments(req.Namespace).List(ctx, req.Opts)
+	if err != nil {
+		return nil, err
+	}
+	if req.SkipManagedFields {
+		for i := range ds.Items {
+			ds.Items[i].ManagedFields = nil
+		}
+	}
+	return ds, nil
 }
 
 func (c *Client) GetDeployment(ctx context.Context, req *GetRequest) (*appsv1.Deployment, error) {

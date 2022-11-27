@@ -11,6 +11,7 @@ import (
 	"github.com/infraboard/mpaas/provider/k8s"
 )
 
+// 集群录入
 func (s *service) CreateCluster(ctx context.Context, req *cluster.CreateClusterRequest) (
 	*cluster.Cluster, error) {
 	ins, err := cluster.NewCluster(req)
@@ -53,6 +54,7 @@ func (s *service) checkStatus(ins *cluster.Cluster) {
 		ins.ServerInfo.Server = k.Server
 	}
 
+	// 检查凭证是否可用
 	ins.Status.CheckAt = time.Now().UnixMilli()
 	v, err := client.ServerVersion()
 	if err != nil {
@@ -64,6 +66,18 @@ func (s *service) checkStatus(ins *cluster.Cluster) {
 	}
 }
 
+// 查询集群列表
+func (s *service) QueryCluster(ctx context.Context, req *cluster.QueryClusterRequest) (
+	*cluster.ClusterSet, error) {
+	query := newQueryclusterRequest(req)
+	set, err := s.query(ctx, query)
+	if err != nil {
+		return nil, err
+	}
+	return set, nil
+}
+
+// 查询集群详情, 查询出来后进行解密
 func (s *service) DescribeCluster(ctx context.Context, req *cluster.DescribeClusterRequest) (
 	*cluster.Cluster, error) {
 	ins, err := s.get(ctx, req.Id)
@@ -76,25 +90,16 @@ func (s *service) DescribeCluster(ctx context.Context, req *cluster.DescribeClus
 	return ins, nil
 }
 
-func (s *service) QueryCluster(ctx context.Context, req *cluster.QueryClusterRequest) (
-	*cluster.ClusterSet, error) {
-	query := newQueryclusterRequest(req)
-	set, err := s.query(ctx, query)
-	if err != nil {
-		return nil, err
-	}
-	if err := set.DecryptKubeConf(s.encryptoKey); err != nil {
-		return nil, err
-	}
-	return set, nil
-}
-
+// 集群更新
 func (s *service) UpdateCluster(ctx context.Context, req *cluster.UpdateClusterRequest) (
 	*cluster.Cluster, error) {
 	ins, err := s.DescribeCluster(ctx, cluster.NewDescribeClusterRequest(req.Id))
 	if err != nil {
 		return nil, err
 	}
+
+	// 配置kubeconfig是否有变更
+	isKubeConfigChanged := req.Data.KubeConfig == ins.Data.KubeConfig
 
 	switch req.UpdateMode {
 	case request.UpdateMode_PUT:
@@ -111,6 +116,11 @@ func (s *service) UpdateCluster(ctx context.Context, req *cluster.UpdateClusterR
 		return nil, err
 	}
 
+	// 如果有变更检查集群状态
+	if isKubeConfigChanged {
+		s.checkStatus(ins)
+	}
+
 	// 加密
 	err = ins.EncryptKubeConf(s.encryptoKey)
 	if err != nil {
@@ -124,6 +134,7 @@ func (s *service) UpdateCluster(ctx context.Context, req *cluster.UpdateClusterR
 	return ins, nil
 }
 
+// 集群的删除
 func (s *service) DeleteCluster(ctx context.Context, req *cluster.DeleteClusterRequest) (
 	*cluster.Cluster, error) {
 	ins, err := s.DescribeCluster(ctx, cluster.NewDescribeClusterRequest(req.Id))

@@ -14,7 +14,7 @@ import (
 
 func (h *handler) registryConfigMapHandler(ws *restful.WebService) {
 	tags := []string{"Config Map管理"}
-	ws.Route(ws.POST("/").To(h.CreateConfigMap).
+	ws.Route(ws.POST("/{id}/configmaps").To(h.CreateConfigMap).
 		Doc("创建Config Map").
 		Metadata(restfulspec.KeyOpenAPITags, tags).
 		Metadata(label.Resource, h.Name()).
@@ -24,7 +24,7 @@ func (h *handler) registryConfigMapHandler(ws *restful.WebService) {
 		Reads(corev1.ConfigMap{}).
 		Writes(response.NewData(corev1.ConfigMap{})))
 
-	ws.Route(ws.GET("/").To(h.QueryConfigMap).
+	ws.Route(ws.GET("/{id}/configmap").To(h.QueryConfigMap).
 		Doc("查询Config Map").
 		Metadata(restfulspec.KeyOpenAPITags, tags).
 		Metadata(label.Resource, h.Name()).

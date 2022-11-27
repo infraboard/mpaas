@@ -31,6 +31,7 @@ func (h *handler) Config() error {
 	return nil
 }
 
+// /prifix/cluster/
 func (h *handler) Name() string {
 	return cluster.AppName
 }

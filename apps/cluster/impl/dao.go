@@ -85,9 +85,9 @@ func (r *queryclusterRequest) FindFilter() bson.M {
 }
 
 func (s *service) query(ctx context.Context, req *queryclusterRequest) (*cluster.ClusterSet, error) {
-	resp, err := s.col.Find(ctx, req.FindFilter(), req.FindOptions())
+	s.log.Debugf("find filter: %s, options: %s", req.FindFilter())
 
-	s.log.Debugf("find filter: %s", req.FindFilter())
+	resp, err := s.col.Find(ctx, req.FindFilter(), req.FindOptions())
 	if err != nil {
 		return nil, exception.NewInternalServerError("find cluster error, error is %s", err)
 	}
@@ -100,6 +100,7 @@ func (s *service) query(ctx context.Context, req *queryclusterRequest) (*cluster
 			return nil, exception.NewInternalServerError("decode cluster error, error is %s", err)
 		}
 
+		ins.Desense()
 		set.Add(ins)
 	}
 

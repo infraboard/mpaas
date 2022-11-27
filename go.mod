@@ -8,12 +8,13 @@ require (
 	github.com/caarlos0/env/v6 v6.9.2
 	github.com/emicklei/go-restful-openapi v1.4.1
 	github.com/emicklei/go-restful-openapi/v2 v2.9.0
-	github.com/emicklei/go-restful/v3 v3.10.0
+	github.com/emicklei/go-restful/v3 v3.8.0
+	github.com/go-openapi/spec v0.20.6
 	github.com/go-playground/validator/v10 v10.11.0
 	github.com/gorilla/websocket v1.4.2
 	github.com/imdario/mergo v0.3.13
 	github.com/infraboard/mcenter v0.0.7
-	github.com/infraboard/mcube v1.9.1-0.20221116042658-6666a9ee4f42
+	github.com/infraboard/mcube v1.9.2
 	github.com/rs/xid v1.4.0
 	github.com/spf13/cobra v1.4.0
 	github.com/stretchr/testify v1.8.0
@@ -36,7 +37,6 @@ require (
 	github.com/go-logr/logr v1.2.0 // indirect
 	github.com/go-openapi/jsonpointer v0.19.5 // indirect
 	github.com/go-openapi/jsonreference v0.20.0 // indirect
-	github.com/go-openapi/spec v0.20.6 // indirect
 	github.com/go-openapi/swag v0.19.15 // indirect
 	github.com/go-playground/locales v0.14.0 // indirect
 	github.com/go-playground/universal-translator v0.18.0 // indirect
