@@ -5,7 +5,7 @@ import (
 	"net/http"
 	"time"
 
-	restfulspec "github.com/emicklei/go-restful-openapi"
+	restfulspec "github.com/emicklei/go-restful-openapi/v2"
 	"github.com/emicklei/go-restful/v3"
 	"github.com/gorilla/websocket"
 	"github.com/infraboard/mcube/http/label"

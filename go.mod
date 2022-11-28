@@ -6,7 +6,6 @@ require (
 	github.com/BurntSushi/toml v1.1.0
 	github.com/alibabacloud-go/tea v1.1.19
 	github.com/caarlos0/env/v6 v6.9.2
-	github.com/emicklei/go-restful-openapi v1.4.1
 	github.com/emicklei/go-restful-openapi/v2 v2.9.0
 	github.com/emicklei/go-restful/v3 v3.8.0
 	github.com/go-openapi/spec v0.20.6
@@ -30,7 +29,6 @@ require (
 require (
 	github.com/alibabacloud-go/debug v0.0.0-20190504072949-9472017b5c68 // indirect
 	github.com/davecgh/go-spew v1.1.1 // indirect
-	github.com/emicklei/go-restful v2.9.6+incompatible // indirect
 	github.com/fsnotify/fsnotify v1.5.1 // indirect
 	github.com/gin-contrib/sse v0.1.0 // indirect
 	github.com/gin-gonic/gin v1.7.7 // indirect
