@@ -15,9 +15,6 @@ var (
 )
 
 func (c *Client) CreatePod(ctx context.Context, pod *v1.Pod, req *CreateRequest) (*v1.Pod, error) {
-	if req.Namespace == "" {
-		req.Namespace = v1.NamespaceDefault
-	}
 	return c.client.CoreV1().Pods(req.Namespace).Create(ctx, pod, req.Opts)
 }
 

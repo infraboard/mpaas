@@ -15,7 +15,7 @@ import (
 func (h *handler) registryConfigMapHandler(ws *restful.WebService) {
 	tags := []string{"Config Map管理"}
 	ws.Route(ws.POST("/{id}/configmaps").To(h.CreateConfigMap).
-		Doc("创建Config Map").
+		Doc("创建ConfigMap").
 		Metadata(restfulspec.KeyOpenAPITags, tags).
 		Metadata(label.Resource, h.Name()).
 		Metadata(label.Action, label.Create.Value()).
@@ -24,8 +24,19 @@ func (h *handler) registryConfigMapHandler(ws *restful.WebService) {
 		Reads(corev1.ConfigMap{}).
 		Writes(response.NewData(corev1.ConfigMap{})))
 
-	ws.Route(ws.GET("/{id}/configmap").To(h.QueryConfigMap).
-		Doc("查询Config Map").
+	ws.Route(ws.GET("/{id}/configmaps").To(h.QueryConfigMap).
+		Doc("查询ConfigMap列表").
+		Metadata(restfulspec.KeyOpenAPITags, tags).
+		Metadata(label.Resource, h.Name()).
+		Metadata(label.Action, label.List.Value()).
+		Metadata(label.Auth, label.Enable).
+		Metadata(label.Permission, label.Enable).
+		Reads(cluster.QueryClusterRequest{}).
+		Writes(response.NewData(corev1.ConfigMapList{})).
+		Returns(200, "OK", corev1.ConfigMapList{}))
+
+	ws.Route(ws.GET("/{id}/configmaps/{name}").To(h.GetConfigMap).
+		Doc("查询ConfigMap详情").
 		Metadata(restfulspec.KeyOpenAPITags, tags).
 		Metadata(label.Resource, h.Name()).
 		Metadata(label.Action, label.List.Value()).
@@ -45,6 +56,24 @@ func (h *handler) QueryConfigMap(r *restful.Request, w *restful.Response) {
 
 	req := k8s.NewListRequestFromHttp(r.Request)
 	ins, err := client.ListConfigMap(r.Request.Context(), req)
+	if err != nil {
+		response.Failed(w, err)
+		return
+	}
+
+	response.Success(w, ins)
+}
+
+func (h *handler) GetConfigMap(r *restful.Request, w *restful.Response) {
+	client, err := h.GetClient(r.Request.Context(), r.PathParameter("id"))
+	if err != nil {
+		response.Failed(w, err)
+		return
+	}
+
+	req := k8s.NewGetRequestFromHttp(r.Request)
+	req.Name = r.PathParameter("name")
+	ins, err := client.GetConfigMap(r.Request.Context(), req)
 	if err != nil {
 		response.Failed(w, err)
 		return

@@ -2,7 +2,6 @@ package k8s
 
 import (
 	"context"
-	"net/http"
 	"time"
 
 	appsv1 "k8s.io/api/apps/v1"
@@ -10,31 +9,6 @@ import (
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	watch "k8s.io/apimachinery/pkg/watch"
 )
-
-func NewListRequestFromHttp(r *http.Request) *ListRequest {
-	qs := r.URL.Query()
-
-	req := &ListRequest{
-		Namespace:         qs.Get("namespace"),
-		SkipManagedFields: qs.Get("skip_managed_fields") == "true",
-		Opts: metav1.ListOptions{
-			LabelSelector: qs.Get("label"),
-		},
-	}
-
-	return req
-}
-
-func NewGetRequestFromHttp(r *http.Request) *GetRequest {
-	qs := r.URL.Query()
-
-	req := &GetRequest{
-		Namespace: qs.Get("namespace"),
-		Name:      qs.Get("name"),
-	}
-
-	return req
-}
 
 func (c *Client) ListDeployment(ctx context.Context, req *ListRequest) (*appsv1.DeploymentList, error) {
 	ds, err := c.client.AppsV1().Deployments(req.Namespace).List(ctx, req.Opts)
@@ -65,25 +39,8 @@ func (c *Client) UpdateDeployment(ctx context.Context, req *appsv1.Deployment) (
 	return c.client.AppsV1().Deployments(req.Namespace).Update(ctx, req, metav1.UpdateOptions{})
 }
 
-func NewUpdateScaleRequest() *UpdateScaleRequest {
-	return &UpdateScaleRequest{
-		Scale:   &v1.Scale{},
-		Options: metav1.UpdateOptions{},
-	}
-}
-
-type UpdateScaleRequest struct {
-	Scale   *v1.Scale
-	Options metav1.UpdateOptions
-}
-
-func (c *Client) UpdateDeploymentScale(ctx context.Context, req *UpdateScaleRequest) (*v1.Scale, error) {
+func (c *Client) ScaleDeployment(ctx context.Context, req *ScaleRequest) (*v1.Scale, error) {
 	return c.client.AppsV1().Deployments(req.Scale.Namespace).UpdateScale(ctx, req.Scale.Name, req.Scale, req.Options)
-}
-
-type ReDeployRequest struct {
-	Namespace string
-	Name      string
 }
 
 // 原生并没有重新部署的功能, 通过变更注解时间来触发重新部署

@@ -11,6 +11,10 @@ func (c *Client) ListConfigMap(ctx context.Context, req *ListRequest) (*v1.Confi
 	return c.client.CoreV1().ConfigMaps(req.Namespace).List(ctx, req.Opts)
 }
 
+func (c *Client) GetConfigMap(ctx context.Context, req *GetRequest) (*v1.ConfigMap, error) {
+	return c.client.CoreV1().ConfigMaps(req.Namespace).Get(ctx, req.Name, req.Opts)
+}
+
 func (c *Client) CreateConfigMap(ctx context.Context, req *v1.ConfigMap) (*v1.ConfigMap, error) {
 	return c.client.CoreV1().ConfigMaps(req.Namespace).Create(ctx, req, metav1.CreateOptions{})
 }

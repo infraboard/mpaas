@@ -20,6 +20,17 @@ func (h *handler) registryNodeHandler(ws *restful.WebService) {
 		Metadata(label.Auth, label.Enable).
 		Metadata(label.Permission, label.Enable).
 		Reads(cluster.QueryClusterRequest{}).
+		Writes(response.NewData(corev1.NodeList{})).
+		Returns(200, "OK", corev1.NodeList{}))
+
+	ws.Route(ws.GET("/{id}/nodes/{name}").To(h.GetNode).
+		Doc("查询节点详情").
+		Metadata(restfulspec.KeyOpenAPITags, tags).
+		Metadata(label.Resource, h.Name()).
+		Metadata(label.Action, label.List.Value()).
+		Metadata(label.Auth, label.Enable).
+		Metadata(label.Permission, label.Enable).
+		Reads(cluster.QueryClusterRequest{}).
 		Writes(response.NewData(corev1.Node{})).
 		Returns(200, "OK", corev1.Node{}))
 }
@@ -32,6 +43,24 @@ func (h *handler) QueryNodes(r *restful.Request, w *restful.Response) {
 	}
 
 	ins, err := client.ListNode(r.Request.Context(), k8s.NewListRequest())
+	if err != nil {
+		response.Failed(w, err)
+		return
+	}
+
+	response.Success(w, ins)
+}
+
+func (h *handler) GetNode(r *restful.Request, w *restful.Response) {
+	client, err := h.GetClient(r.Request.Context(), r.PathParameter("id"))
+	if err != nil {
+		response.Failed(w, err)
+		return
+	}
+
+	req := k8s.NewGetRequestFromHttp(r.Request)
+	req.Name = r.PathParameter("name")
+	ins, err := client.GetNode(r.Request.Context(), req)
 	if err != nil {
 		response.Failed(w, err)
 		return

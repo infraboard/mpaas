@@ -12,13 +12,26 @@ import (
 	"github.com/infraboard/mcube/http/response"
 	"github.com/infraboard/mpaas/apps/cluster"
 	"github.com/infraboard/mpaas/provider/k8s"
+	"sigs.k8s.io/yaml"
+
 	corev1 "k8s.io/api/core/v1"
 )
 
 func (h *handler) registryPodHandler(ws *restful.WebService) {
 	tags := []string{"Pod管理"}
 
-	ws.Route(ws.GET("/{id}/pods").To(h.QueryDeployments).
+	ws.Route(ws.GET("/{id}/pods").To(h.CreatePod).
+		Doc("创建Pod").
+		Metadata(restfulspec.KeyOpenAPITags, tags).
+		Metadata(label.Resource, h.Name()).
+		Metadata(label.Action, label.List.Value()).
+		Metadata(label.Auth, label.Enable).
+		Metadata(label.Permission, label.Enable).
+		Reads(cluster.QueryClusterRequest{}).
+		Writes(response.NewData(corev1.Pod{})).
+		Returns(200, "OK", corev1.Pod{}))
+
+	ws.Route(ws.GET("/{id}/pods").To(h.QueryPods).
 		Doc("查询Pod列表").
 		Metadata(restfulspec.KeyOpenAPITags, tags).
 		Metadata(label.Resource, h.Name()).
@@ -28,6 +41,105 @@ func (h *handler) registryPodHandler(ws *restful.WebService) {
 		Reads(cluster.QueryClusterRequest{}).
 		Writes(response.NewData(corev1.PodList{})).
 		Returns(200, "OK", corev1.PodList{}))
+
+	ws.Route(ws.GET("/{id}/pods/{name}").To(h.GetPod).
+		Doc("查询Pod详情").
+		Metadata(restfulspec.KeyOpenAPITags, tags).
+		Metadata(label.Resource, h.Name()).
+		Metadata(label.Action, label.List.Value()).
+		Metadata(label.Auth, label.Enable).
+		Metadata(label.Permission, label.Enable).
+		Reads(cluster.QueryClusterRequest{}).
+		Writes(response.NewData(corev1.Pod{})).
+		Returns(200, "OK", corev1.Pod{}))
+
+	ws.Route(ws.GET("/{id}/pods/{name}/login").To(h.LoginContainer).
+		Doc("登陆Pod").
+		Metadata(restfulspec.KeyOpenAPITags, tags).
+		Metadata(label.Resource, h.Name()).
+		Metadata(label.Action, label.List.Value()).
+		Metadata(label.Auth, label.Enable).
+		Metadata(label.Permission, label.Enable).
+		Reads(cluster.QueryClusterRequest{}).
+		Writes(response.NewData(corev1.Pod{})).
+		Returns(200, "OK", corev1.Pod{}))
+
+	ws.Route(ws.GET("/{id}/pods/{name}/login").To(h.WatchConainterLog).
+		Doc("查看Pod日志").
+		Metadata(restfulspec.KeyOpenAPITags, tags).
+		Metadata(label.Resource, h.Name()).
+		Metadata(label.Action, label.List.Value()).
+		Metadata(label.Auth, label.Enable).
+		Metadata(label.Permission, label.Enable).
+		Reads(cluster.QueryClusterRequest{}).
+		Writes(response.NewData(corev1.Pod{})).
+		Returns(200, "OK", corev1.Pod{}))
+}
+
+func (h *handler) CreatePod(r *restful.Request, w *restful.Response) {
+	client, err := h.GetClient(r.Request.Context(), r.PathParameter("id"))
+	if err != nil {
+		response.Failed(w, err)
+		return
+	}
+
+	req := k8s.NewCreateRequest()
+	pod := &corev1.Pod{}
+
+	data, err := io.ReadAll(r.Request.Body)
+	if err != nil {
+		response.Failed(w, err)
+		return
+	}
+	defer r.Request.Body.Close()
+
+	if err := yaml.Unmarshal(data, pod); err != nil {
+		response.Failed(w, err)
+		return
+	}
+
+	ins, err := client.CreatePod(r.Request.Context(), pod, req)
+	if err != nil {
+		response.Failed(w, err)
+		return
+	}
+
+	response.Success(w, ins)
+}
+
+func (h *handler) QueryPods(r *restful.Request, w *restful.Response) {
+	client, err := h.GetClient(r.Request.Context(), r.PathParameter("id"))
+	if err != nil {
+		response.Failed(w, err)
+		return
+	}
+
+	req := k8s.NewListRequestFromHttp(r.Request)
+	ins, err := client.ListPod(r.Request.Context(), req)
+	if err != nil {
+		response.Failed(w, err)
+		return
+	}
+
+	response.Success(w, ins)
+}
+
+func (h *handler) GetPod(r *restful.Request, w *restful.Response) {
+	client, err := h.GetClient(r.Request.Context(), r.PathParameter("id"))
+	if err != nil {
+		response.Failed(w, err)
+		return
+	}
+
+	req := k8s.NewGetRequestFromHttp(r.Request)
+	req.Name = r.PathParameter("name")
+	ins, err := client.GetPod(r.Request.Context(), req)
+	if err != nil {
+		response.Failed(w, err)
+		return
+	}
+
+	response.Success(w, ins)
 }
 
 var (

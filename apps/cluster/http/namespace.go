@@ -9,7 +9,6 @@ import (
 	"github.com/infraboard/mpaas/apps/cluster"
 	"github.com/infraboard/mpaas/provider/k8s"
 
-	corev1 "k8s.io/api/core/v1"
 	v1 "k8s.io/api/core/v1"
 )
 
@@ -22,8 +21,8 @@ func (h *handler) registryNamespaceHandler(ws *restful.WebService) {
 		Metadata(label.Action, label.Create.Value()).
 		Metadata(label.Auth, label.Enable).
 		Metadata(label.Permission, label.Enable).
-		Reads(corev1.Namespace{}).
-		Writes(response.NewData(corev1.Namespace{})))
+		Reads(v1.Namespace{}).
+		Writes(response.NewData(v1.Namespace{})))
 
 	ws.Route(ws.GET("/{id}/namespaces").To(h.QueryNamespaces).
 		Doc("查询Namespace").
@@ -33,8 +32,8 @@ func (h *handler) registryNamespaceHandler(ws *restful.WebService) {
 		Metadata(label.Auth, label.Enable).
 		Metadata(label.Permission, label.Enable).
 		Reads(cluster.QueryClusterRequest{}).
-		Writes(response.NewData(corev1.Namespace{})).
-		Returns(200, "OK", corev1.Namespace{}))
+		Writes(response.NewData(v1.Namespace{})).
+		Returns(200, "OK", v1.Namespace{}))
 }
 
 func (h *handler) QueryNamespaces(r *restful.Request, w *restful.Response) {

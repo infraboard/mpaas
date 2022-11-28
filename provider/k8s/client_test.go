@@ -176,11 +176,11 @@ func TestCreateDeployment(t *testing.T) {
 }
 
 func TestScaleDeployment(t *testing.T) {
-	req := k8s.NewUpdateScaleRequest()
+	req := k8s.NewScaleRequest()
 	req.Scale.Namespace = "go8"
 	req.Scale.Name = "nginx"
 	req.Scale.Spec.Replicas = 2
-	v, err := client.UpdateDeploymentScale(ctx, req)
+	v, err := client.ScaleDeployment(ctx, req)
 	if err != nil {
 		t.Fatal(err)
 	}
