@@ -2,7 +2,7 @@
 // versions:
 // - protoc-gen-go-grpc v1.2.0
 // - protoc             v3.21.6
-// source: apps/cluster/pb/cluster.proto
+// source: apps/cluster/pb/rpc.proto
 
 package cluster
 
@@ -137,5 +137,5 @@ var RPC_ServiceDesc = grpc.ServiceDesc{
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
-	Metadata: "apps/cluster/pb/cluster.proto",
+	Metadata: "apps/cluster/pb/rpc.proto",
 }
