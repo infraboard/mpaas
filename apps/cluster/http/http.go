@@ -49,6 +49,9 @@ func (h *handler) Registry(r *restful.WebService) {
 	h.registryWatchHandler(r)
 	h.registryConfigMapHandler(r)
 	h.registryPVHandler(r)
+	h.registryServiceHandler(r)
+	h.registrySecretHandler(r)
+	h.registryStatefulSetHandler(r)
 }
 
 func (h *handler) GetClient(ctx context.Context, clusterId string) (*k8s.Client, error) {
