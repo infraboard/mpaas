@@ -12,7 +12,7 @@ func (c *ClientSet) CreateCluster(ctx context.Context, req *cluster.CreateCluste
 	ins := cluster.NewDefaultCluster()
 
 	err := c.c.
-		Post("clusters/").
+		Post("clusters").
 		Body(req).
 		Do(ctx).
 		Into(response.NewData(ins))
@@ -21,4 +21,20 @@ func (c *ClientSet) CreateCluster(ctx context.Context, req *cluster.CreateCluste
 	}
 
 	return ins, nil
+}
+
+func (c *ClientSet) QueryCluster(ctx context.Context, req *cluster.QueryClusterRequest) (
+	*cluster.ClusterSet, error) {
+	set := cluster.NewClusterSet()
+
+	err := c.c.
+		Get("clusters").
+		Body(req).
+		Do(ctx).
+		Into(response.NewData(set))
+	if err != nil {
+		return nil, err
+	}
+
+	return set, nil
 }

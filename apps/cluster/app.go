@@ -26,7 +26,10 @@ var (
 )
 
 func NewCreateClusterRequest() *CreateClusterRequest {
-	return &CreateClusterRequest{}
+	return &CreateClusterRequest{
+		Domain:    "default",
+		Namespace: "default",
+	}
 }
 
 func NewCluster(req *CreateClusterRequest) (*Cluster, error) {

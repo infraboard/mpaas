@@ -32,6 +32,15 @@ func TestCreateCluster(t *testing.T) {
 	t.Log(ins)
 }
 
+func TestQueryCluster(t *testing.T) {
+	req := cluster.NewQueryClusterRequest()
+	set, err := client.QueryCluster(ctx, req)
+	if err != nil {
+		t.Fatal(err)
+	}
+	t.Log(set)
+}
+
 func init() {
 	conf := rest.NewDefaultConfig()
 	client = rest.NewClient(conf)

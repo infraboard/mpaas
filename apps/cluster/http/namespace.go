@@ -42,7 +42,9 @@ func (h *handler) QueryNamespaces(r *restful.Request, w *restful.Response) {
 		response.Failed(w, err)
 		return
 	}
-	ins, err := client.ListNamespace(r.Request.Context(), k8s.NewListRequest())
+
+	req := k8s.NewListRequestFromHttp(r.Request)
+	ins, err := client.ListNamespace(r.Request.Context(), req)
 	if err != nil {
 		response.Failed(w, err)
 		return

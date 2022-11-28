@@ -8,7 +8,16 @@ import (
 )
 
 func (c *Client) ListNamespace(ctx context.Context, req *ListRequest) (*v1.NamespaceList, error) {
-	return c.client.CoreV1().Namespaces().List(ctx, req.Opts)
+	set, err := c.client.CoreV1().Namespaces().List(ctx, req.Opts)
+	if err != nil {
+		return nil, err
+	}
+	if req.SkipManagedFields {
+		for i := range set.Items {
+			set.Items[i].ManagedFields = nil
+		}
+	}
+	return set, nil
 }
 
 func (c *Client) CreateNamespace(ctx context.Context, req *v1.Namespace) (*v1.Namespace, error) {
