@@ -2,6 +2,7 @@ package rest
 
 import (
 	"context"
+	"fmt"
 
 	"github.com/infraboard/mcube/http/response"
 	"github.com/infraboard/mpaas/apps/cluster"
@@ -37,4 +38,20 @@ func (c *ClientSet) QueryCluster(ctx context.Context, req *cluster.QueryClusterR
 	}
 
 	return set, nil
+}
+
+func (c *ClientSet) DescribeCluster(ctx context.Context, req *cluster.DescribeClusterRequest) (
+	*cluster.Cluster, error) {
+	ins := cluster.NewDefaultCluster()
+
+	err := c.c.
+		Get(fmt.Sprintf("clusters/%s", req.Id)).
+		Body(req).
+		Do(ctx).
+		Into(response.NewData(ins))
+	if err != nil {
+		return nil, err
+	}
+
+	return ins, nil
 }

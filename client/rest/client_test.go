@@ -4,6 +4,7 @@ import (
 	"context"
 	"testing"
 
+	"github.com/infraboard/mcube/logger/zap"
 	"github.com/infraboard/mpaas/apps/cluster"
 	"github.com/infraboard/mpaas/client/rest"
 	"github.com/infraboard/mpaas/test/tools"
@@ -41,7 +42,17 @@ func TestQueryCluster(t *testing.T) {
 	t.Log(set)
 }
 
+func TestDescribeCluster(t *testing.T) {
+	req := cluster.NewDescribeClusterRequest("idc-k8s-test")
+	ins, err := client.DescribeCluster(ctx, req)
+	if err != nil {
+		t.Fatal(err)
+	}
+	t.Log(ins)
+}
+
 func init() {
+	zap.DevelopmentSetup()
 	conf := rest.NewDefaultConfig()
 	client = rest.NewClient(conf)
 }

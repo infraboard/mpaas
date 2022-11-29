@@ -231,10 +231,8 @@ github.com/inconshreveable/mousetrap v1.0.0 h1:Z8tu5sraLXCXIcARxBp/8cbvlwVa7Z1NH
 github.com/inconshreveable/mousetrap v1.0.0/go.mod h1:PxqpIevigyE2G7u3NXJIT2ANytuPF1OarO4DADm73n8=
 github.com/infraboard/mcenter v0.0.7 h1:ONx5PotKxS6+Vijfeou90N3AGq0YkjcPqEKTE+IdOmw=
 github.com/infraboard/mcenter v0.0.7/go.mod h1:BBVhZR6buhKK+/TfceNghJL04pLJj0MoFnwqcxMcwZ4=
-github.com/infraboard/mcube v1.9.3-0.20221129015027-8805d6a53cab h1:OrUwMAXnoUgW3H9Nb6h+j8yhUsheNmx59QHEprna+UE=
-github.com/infraboard/mcube v1.9.3-0.20221129015027-8805d6a53cab/go.mod h1:PHcYixPXYExwY8A70FcSsPPYDFbtmE0cd3EVGjnUl6g=
-github.com/infraboard/mcube v1.9.3-0.20221129061507-20e2137885f2 h1:u+kme7mKxXX9IuwtVioJunbmml6CtuR5d/KhwcqC/nU=
-github.com/infraboard/mcube v1.9.3-0.20221129061507-20e2137885f2/go.mod h1:PHcYixPXYExwY8A70FcSsPPYDFbtmE0cd3EVGjnUl6g=
+github.com/infraboard/mcube v1.9.3-0.20221129094200-ee6a1a8763e3 h1:ezu+LDS9QmK89L1j268unACK/ijm74wkAC4eFOX4s4A=
+github.com/infraboard/mcube v1.9.3-0.20221129094200-ee6a1a8763e3/go.mod h1:PHcYixPXYExwY8A70FcSsPPYDFbtmE0cd3EVGjnUl6g=
 github.com/josharian/intern v1.0.0 h1:vlS4z54oSdjm0bgjRigI+G1HpF+tI+9rE5LLzOg8HmY=
 github.com/josharian/intern v1.0.0/go.mod h1:5DoeVV0s6jJacbCEi61lwdGj/aVlrQvzHFFd8Hwg//Y=
 github.com/json-iterator/go v1.1.6/go.mod h1:+SdeFBvtyEkXs7REEP0seUULqWtbJapLOCVDaaPEHmU=
