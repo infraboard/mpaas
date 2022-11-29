@@ -5,14 +5,15 @@ import (
 
 	"github.com/infraboard/mcube/http/response"
 	"github.com/infraboard/mpaas/apps/cluster"
+	appsv1 "k8s.io/api/apps/v1"
 )
 
-func (c *ClientSet) CreateDeployment(ctx context.Context, req *cluster.CreateClusterRequest) (
+func (c *ClientSet) CreateDeployment(ctx context.Context, req *appsv1.Deployment) (
 	*cluster.Cluster, error) {
 	ins := cluster.NewDefaultCluster()
 
-	err := c.c.
-		Post("clusters").
+	err := c.c.Group("clusters").
+		Post("").
 		Body(req).
 		Do(ctx).
 		Into(response.NewData(ins))
