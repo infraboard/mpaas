@@ -3,7 +3,6 @@ package http
 import (
 	restfulspec "github.com/emicklei/go-restful-openapi/v2"
 	"github.com/emicklei/go-restful/v3"
-	"github.com/infraboard/mcube/http/binding"
 	"github.com/infraboard/mcube/http/label"
 	"github.com/infraboard/mcube/http/response"
 	"github.com/infraboard/mpaas/apps/cluster"
@@ -61,7 +60,7 @@ func (h *handler) CreateNamespaces(r *restful.Request, w *restful.Response) {
 	}
 
 	req := &v1.Namespace{}
-	if err := binding.Bind(r.Request, req); err != nil {
+	if err := r.ReadEntity(req); err != nil {
 		response.Failed(w, err)
 		return
 	}

@@ -4,9 +4,7 @@ import (
 	restfulspec "github.com/emicklei/go-restful-openapi/v2"
 	"github.com/emicklei/go-restful/v3"
 	"github.com/infraboard/mcenter/apps/token"
-	"github.com/infraboard/mcube/http/binding"
 	"github.com/infraboard/mcube/http/label"
-	"github.com/infraboard/mcube/http/request"
 	"github.com/infraboard/mcube/http/response"
 
 	"github.com/infraboard/mpaas/apps/cluster"
@@ -85,11 +83,12 @@ func (h *handler) registryClusterHandler(ws *restful.WebService) {
 func (h *handler) CreateCluster(r *restful.Request, w *restful.Response) {
 	req := cluster.NewCreateClusterRequest()
 
-	if err := binding.Bind(r.Request, req); err != nil {
+	if err := r.ReadEntity(req); err != nil {
 		response.Failed(w, err)
 		return
 	}
 	req.UpdateOwner()
+
 	ins, err := h.service.CreateCluster(r.Request.Context(), req)
 	if err != nil {
 		response.Failed(w, err)
@@ -127,7 +126,7 @@ func (h *handler) PutCluster(r *restful.Request, w *restful.Response) {
 	tk := r.Attribute("token").(*token.Token)
 
 	req := cluster.NewPutClusterRequest(r.PathParameter("id"))
-	if err := request.GetDataFromRequest(r.Request, req.Data); err != nil {
+	if err := r.ReadEntity(req.Data); err != nil {
 		response.Failed(w, err)
 		return
 	}
@@ -145,7 +144,7 @@ func (h *handler) PatchCluster(r *restful.Request, w *restful.Response) {
 	tk := r.Attribute("token").(*token.Token)
 	req := cluster.NewPatchClusterRequest(r.PathParameter("id"))
 
-	if err := request.GetDataFromRequest(r.Request, req.Data); err != nil {
+	if err := r.ReadEntity(req.Data); err != nil {
 		response.Failed(w, err)
 		return
 	}

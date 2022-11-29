@@ -12,7 +12,6 @@ import (
 	"github.com/infraboard/mcube/http/response"
 	"github.com/infraboard/mpaas/apps/cluster"
 	"github.com/infraboard/mpaas/provider/k8s"
-	"sigs.k8s.io/yaml"
 
 	corev1 "k8s.io/api/core/v1"
 )
@@ -83,21 +82,13 @@ func (h *handler) CreatePod(r *restful.Request, w *restful.Response) {
 		return
 	}
 
-	req := k8s.NewCreateRequest()
 	pod := &corev1.Pod{}
-
-	data, err := io.ReadAll(r.Request.Body)
-	if err != nil {
-		response.Failed(w, err)
-		return
-	}
-	defer r.Request.Body.Close()
-
-	if err := yaml.Unmarshal(data, pod); err != nil {
+	if err := r.ReadEntity(pod); err != nil {
 		response.Failed(w, err)
 		return
 	}
 
+	req := k8s.NewCreateRequest()
 	ins, err := client.CreatePod(r.Request.Context(), pod, req)
 	if err != nil {
 		response.Failed(w, err)

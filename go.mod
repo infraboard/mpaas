@@ -13,7 +13,7 @@ require (
 	github.com/gorilla/websocket v1.4.2
 	github.com/imdario/mergo v0.3.13
 	github.com/infraboard/mcenter v0.0.7
-	github.com/infraboard/mcube v1.9.2
+	github.com/infraboard/mcube v1.9.3-0.20221129061507-20e2137885f2
 	github.com/rs/xid v1.4.0
 	github.com/spf13/cobra v1.4.0
 	github.com/stretchr/testify v1.8.0
@@ -23,7 +23,7 @@ require (
 	k8s.io/api v0.23.3
 	k8s.io/apimachinery v0.23.3
 	k8s.io/client-go v0.23.3
-	sigs.k8s.io/yaml v1.2.0
+	sigs.k8s.io/yaml v1.3.0
 )
 
 require (

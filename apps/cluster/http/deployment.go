@@ -1,15 +1,12 @@
 package http
 
 import (
-	"io"
-
 	restfulspec "github.com/emicklei/go-restful-openapi/v2"
 	"github.com/emicklei/go-restful/v3"
 	"github.com/infraboard/mcube/http/label"
 	"github.com/infraboard/mcube/http/response"
 	"github.com/infraboard/mpaas/apps/cluster"
 	"github.com/infraboard/mpaas/provider/k8s"
-	"sigs.k8s.io/yaml"
 
 	appsv1 "k8s.io/api/apps/v1"
 	scalv1 "k8s.io/api/autoscaling/v1"
@@ -91,15 +88,7 @@ func (h *handler) CreateDeployment(r *restful.Request, w *restful.Response) {
 	}
 
 	req := &appsv1.Deployment{}
-
-	data, err := io.ReadAll(r.Request.Body)
-	if err != nil {
-		response.Failed(w, err)
-		return
-	}
-	defer r.Request.Body.Close()
-
-	if err := yaml.Unmarshal(data, req); err != nil {
+	if err := r.ReadEntity(req); err != nil {
 		response.Failed(w, err)
 		return
 	}
@@ -156,14 +145,7 @@ func (h *handler) UpdateDeployment(r *restful.Request, w *restful.Response) {
 	}
 
 	req := &appsv1.Deployment{}
-	data, err := io.ReadAll(r.Request.Body)
-	if err != nil {
-		response.Failed(w, err)
-		return
-	}
-	defer r.Request.Body.Close()
-
-	if err := yaml.Unmarshal(data, req); err != nil {
+	if err := r.ReadEntity(req); err != nil {
 		response.Failed(w, err)
 		return
 	}
@@ -186,14 +168,7 @@ func (h *handler) ScaleDeployment(r *restful.Request, w *restful.Response) {
 	}
 
 	req := k8s.NewScaleRequest()
-	data, err := io.ReadAll(r.Request.Body)
-	if err != nil {
-		response.Failed(w, err)
-		return
-	}
-	defer r.Request.Body.Close()
-
-	if err := yaml.Unmarshal(data, req); err != nil {
+	if err := r.ReadEntity(req); err != nil {
 		response.Failed(w, err)
 		return
 	}
