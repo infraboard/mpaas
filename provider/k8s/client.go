@@ -43,18 +43,20 @@ func NewClient(kubeConfigYaml string) (*Client, error) {
 	// client.RESTClient().Post().Namespace("ns").Body("body").Do(nil).Into(resp).Error()
 
 	return &Client{
-		kubeconf: kubeConf,
-		restconf: restConf,
-		client:   client,
-		log:      zap.L().Named("provider.k8s"),
+		kubeconf:   kubeConf,
+		restconf:   restConf,
+		client:     client,
+		log:        zap.L().Named("provider.k8s"),
+		appVersion: "apps/v1",
 	}, nil
 }
 
 type Client struct {
-	kubeconf *clientcmdapi.Config
-	restconf *rest.Config
-	client   *kubernetes.Clientset
-	log      logger.Logger
+	kubeconf   *clientcmdapi.Config
+	restconf   *rest.Config
+	client     *kubernetes.Clientset
+	log        logger.Logger
+	appVersion string
 }
 
 func (c *Client) ServerVersion() (string, error) {
