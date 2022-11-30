@@ -22,7 +22,7 @@ func (h *handler) registryDeploymentHandler(ws *restful.WebService) {
 		Metadata(label.Auth, label.Enable).
 		Metadata(label.Permission, label.Enable).
 		Reads(appsv1.Deployment{}).
-		Writes(response.NewData(appsv1.Deployment{})))
+		Writes(appsv1.Deployment{}))
 
 	ws.Route(ws.GET("/{id}/deployments").To(h.QueryDeployments).
 		Doc("查询Deployment列表").
@@ -32,7 +32,7 @@ func (h *handler) registryDeploymentHandler(ws *restful.WebService) {
 		Metadata(label.Auth, label.Enable).
 		Metadata(label.Permission, label.Enable).
 		Reads(cluster.QueryClusterRequest{}).
-		Writes(response.NewData(appsv1.Deployment{})).
+		Writes(appsv1.Deployment{}).
 		Returns(200, "OK", appsv1.Deployment{}))
 
 	ws.Route(ws.GET("/{id}/deployments/{name}").To(h.GetDeployment).
@@ -43,7 +43,7 @@ func (h *handler) registryDeploymentHandler(ws *restful.WebService) {
 		Metadata(label.Auth, label.Enable).
 		Metadata(label.Permission, label.Enable).
 		Reads(cluster.QueryClusterRequest{}).
-		Writes(response.NewData(appsv1.Deployment{})).
+		Writes(appsv1.Deployment{}).
 		Returns(200, "OK", appsv1.Deployment{}))
 
 	ws.Route(ws.PUT("/{id}/deployments/{name}").To(h.UpdateDeployment).
@@ -54,7 +54,7 @@ func (h *handler) registryDeploymentHandler(ws *restful.WebService) {
 		Metadata(label.Auth, label.Enable).
 		Metadata(label.Permission, label.Enable).
 		Reads(cluster.QueryClusterRequest{}).
-		Writes(response.NewData(appsv1.Deployment{})).
+		Writes(appsv1.Deployment{}).
 		Returns(200, "OK", appsv1.Deployment{}))
 
 	ws.Route(ws.POST("/{id}/deployments/{name}/scale").To(h.ScaleDeployment).
@@ -65,7 +65,7 @@ func (h *handler) registryDeploymentHandler(ws *restful.WebService) {
 		Metadata(label.Auth, label.Enable).
 		Metadata(label.Permission, label.Enable).
 		Reads(cluster.QueryClusterRequest{}).
-		Writes(response.NewData(scalv1.Scale{})).
+		Writes(scalv1.Scale{}).
 		Returns(200, "OK", scalv1.Scale{}))
 
 	ws.Route(ws.POST("/{id}/deployments/{name}/redeploy").To(h.ReDeployment).
@@ -76,7 +76,7 @@ func (h *handler) registryDeploymentHandler(ws *restful.WebService) {
 		Metadata(label.Auth, label.Enable).
 		Metadata(label.Permission, label.Enable).
 		Reads(cluster.QueryClusterRequest{}).
-		Writes(response.NewData(appsv1.Deployment{})).
+		Writes(appsv1.Deployment{}).
 		Returns(200, "OK", appsv1.Deployment{}))
 }
 

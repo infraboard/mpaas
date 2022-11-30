@@ -21,7 +21,7 @@ func (h *handler) registryStatefulSetHandler(ws *restful.WebService) {
 		Metadata(label.Auth, label.Enable).
 		Metadata(label.Permission, label.Enable).
 		Reads(appsv1.StatefulSet{}).
-		Writes(response.NewData(appsv1.StatefulSet{})))
+		Writes(appsv1.StatefulSet{}))
 
 	ws.Route(ws.GET("/{id}/statefulsets").To(h.QueryStatefulSet).
 		Doc("查询StatefulSet列表").
@@ -31,7 +31,7 @@ func (h *handler) registryStatefulSetHandler(ws *restful.WebService) {
 		Metadata(label.Auth, label.Enable).
 		Metadata(label.Permission, label.Enable).
 		Reads(cluster.QueryClusterRequest{}).
-		Writes(response.NewData(appsv1.StatefulSetList{})).
+		Writes(appsv1.StatefulSetList{}).
 		Returns(200, "OK", appsv1.StatefulSetList{}))
 
 	ws.Route(ws.GET("/{id}/statefulsets/{name}").To(h.GetStatefulSet).
@@ -42,7 +42,7 @@ func (h *handler) registryStatefulSetHandler(ws *restful.WebService) {
 		Metadata(label.Auth, label.Enable).
 		Metadata(label.Permission, label.Enable).
 		Reads(cluster.QueryClusterRequest{}).
-		Writes(response.NewData(appsv1.StatefulSet{})).
+		Writes(appsv1.StatefulSet{}).
 		Returns(200, "OK", appsv1.StatefulSet{}))
 }
 

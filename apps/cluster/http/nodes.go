@@ -20,7 +20,7 @@ func (h *handler) registryNodeHandler(ws *restful.WebService) {
 		Metadata(label.Auth, label.Enable).
 		Metadata(label.Permission, label.Enable).
 		Reads(cluster.QueryClusterRequest{}).
-		Writes(response.NewData(corev1.NodeList{})).
+		Writes(corev1.NodeList{}).
 		Returns(200, "OK", corev1.NodeList{}))
 
 	ws.Route(ws.GET("/{id}/nodes/{name}").To(h.GetNode).
@@ -31,7 +31,7 @@ func (h *handler) registryNodeHandler(ws *restful.WebService) {
 		Metadata(label.Auth, label.Enable).
 		Metadata(label.Permission, label.Enable).
 		Reads(cluster.QueryClusterRequest{}).
-		Writes(response.NewData(corev1.Node{})).
+		Writes(corev1.Node{}).
 		Returns(200, "OK", corev1.Node{}))
 }
 

@@ -22,7 +22,7 @@ func (h *handler) registryServiceHandler(ws *restful.WebService) {
 		Metadata(label.Auth, label.Enable).
 		Metadata(label.Permission, label.Enable).
 		Reads(cluster.QueryClusterRequest{}).
-		Writes(response.NewData(v1.Service{})).
+		Writes(v1.Service{}).
 		Returns(200, "OK", v1.Service{}))
 
 	ws.Route(ws.GET("/{id}/services").To(h.QueryService).
@@ -33,7 +33,7 @@ func (h *handler) registryServiceHandler(ws *restful.WebService) {
 		Metadata(label.Auth, label.Enable).
 		Metadata(label.Permission, label.Enable).
 		Reads(cluster.QueryClusterRequest{}).
-		Writes(response.NewData(v1.ServiceList{})).
+		Writes(v1.ServiceList{}).
 		Returns(200, "OK", v1.ServiceList{}))
 
 	ws.Route(ws.GET("/{id}/services/{name}").To(h.GetService).
@@ -44,7 +44,7 @@ func (h *handler) registryServiceHandler(ws *restful.WebService) {
 		Metadata(label.Auth, label.Enable).
 		Metadata(label.Permission, label.Enable).
 		Reads(cluster.QueryClusterRequest{}).
-		Writes(response.NewData(v1.Service{})).
+		Writes(v1.Service{}).
 		Returns(200, "OK", v1.Service{}))
 }
 

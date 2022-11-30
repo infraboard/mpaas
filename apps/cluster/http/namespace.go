@@ -21,7 +21,7 @@ func (h *handler) registryNamespaceHandler(ws *restful.WebService) {
 		Metadata(label.Auth, label.Enable).
 		Metadata(label.Permission, label.Enable).
 		Reads(v1.Namespace{}).
-		Writes(response.NewData(v1.Namespace{})))
+		Writes(v1.Namespace{}))
 
 	ws.Route(ws.GET("/{id}/namespaces").To(h.QueryNamespaces).
 		Doc("查询Namespace").
@@ -31,7 +31,7 @@ func (h *handler) registryNamespaceHandler(ws *restful.WebService) {
 		Metadata(label.Auth, label.Enable).
 		Metadata(label.Permission, label.Enable).
 		Reads(cluster.QueryClusterRequest{}).
-		Writes(response.NewData(v1.Namespace{})).
+		Writes(v1.Namespace{}).
 		Returns(200, "OK", v1.Namespace{}))
 }
 

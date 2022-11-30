@@ -25,7 +25,7 @@ func (h *handler) registrySecretHandler(ws *restful.WebService) {
 		Metadata(label.Auth, label.Enable).
 		Metadata(label.Permission, label.Enable).
 		Reads(cluster.QueryClusterRequest{}).
-		Writes(response.NewData(v1.Secret{})).
+		Writes(v1.Secret{}).
 		Returns(200, "OK", v1.Secret{}))
 
 	ws.Route(ws.GET("/{id}/secrets").To(h.QueryService).
@@ -36,7 +36,7 @@ func (h *handler) registrySecretHandler(ws *restful.WebService) {
 		Metadata(label.Auth, label.Enable).
 		Metadata(label.Permission, label.Enable).
 		Reads(cluster.QueryClusterRequest{}).
-		Writes(response.NewData(v1.SecretList{})).
+		Writes(v1.SecretList{}).
 		Returns(200, "OK", v1.SecretList{}))
 
 	ws.Route(ws.GET("/{id}/secrets/{name}").To(h.GetService).
@@ -47,7 +47,7 @@ func (h *handler) registrySecretHandler(ws *restful.WebService) {
 		Metadata(label.Auth, label.Enable).
 		Metadata(label.Permission, label.Enable).
 		Reads(cluster.QueryClusterRequest{}).
-		Writes(response.NewData(v1.Secret{})).
+		Writes(v1.Secret{}).
 		Returns(200, "OK", v1.Secret{}))
 }
 
