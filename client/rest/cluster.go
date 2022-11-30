@@ -3,7 +3,7 @@ package rest
 import (
 	"context"
 
-	"github.com/infraboard/mcube/http/response"
+	"github.com/infraboard/mcube/http/restful/response"
 	"github.com/infraboard/mpaas/apps/cluster"
 )
 
