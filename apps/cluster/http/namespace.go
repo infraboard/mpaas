@@ -4,7 +4,7 @@ import (
 	restfulspec "github.com/emicklei/go-restful-openapi/v2"
 	"github.com/emicklei/go-restful/v3"
 	"github.com/infraboard/mcube/http/label"
-	"github.com/infraboard/mcube/http/response"
+	"github.com/infraboard/mcube/http/restful/response"
 	"github.com/infraboard/mpaas/apps/cluster"
 	"github.com/infraboard/mpaas/provider/k8s"
 
@@ -21,7 +21,7 @@ func (h *handler) registryNamespaceHandler(ws *restful.WebService) {
 		Metadata(label.Auth, label.Enable).
 		Metadata(label.Permission, label.Enable).
 		Reads(v1.Namespace{}).
-		Writes(response.NewData(v1.Namespace{})))
+		Writes(v1.Namespace{}))
 
 	ws.Route(ws.GET("/{id}/namespaces").To(h.QueryNamespaces).
 		Doc("查询Namespace").
@@ -31,7 +31,7 @@ func (h *handler) registryNamespaceHandler(ws *restful.WebService) {
 		Metadata(label.Auth, label.Enable).
 		Metadata(label.Permission, label.Enable).
 		Reads(cluster.QueryClusterRequest{}).
-		Writes(response.NewData(v1.Namespace{})).
+		Writes(v1.Namespace{}).
 		Returns(200, "OK", v1.Namespace{}))
 }
 

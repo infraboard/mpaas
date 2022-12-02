@@ -24,7 +24,13 @@ func (c *Client) ListDeployment(ctx context.Context, req *ListRequest) (*appsv1.
 }
 
 func (c *Client) GetDeployment(ctx context.Context, req *GetRequest) (*appsv1.Deployment, error) {
-	return c.client.AppsV1().Deployments(req.Namespace).Get(ctx, req.Name, metav1.GetOptions{})
+	d, err := c.client.AppsV1().Deployments(req.Namespace).Get(ctx, req.Name, metav1.GetOptions{})
+	if err != nil {
+		return nil, err
+	}
+	d.APIVersion = c.appVersion
+	d.Kind = "Deployment"
+	return d, nil
 }
 
 func (c *Client) WatchDeployment(ctx context.Context, req *appsv1.Deployment) (watch.Interface, error) {

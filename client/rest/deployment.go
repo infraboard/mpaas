@@ -20,7 +20,7 @@ func (c *ClientSet) CreateDeployment(ctx context.Context, req *appsv1.Deployment
 		Post("deployments").
 		Body(req).
 		Do(ctx).
-		Into(response.NewData(ins))
+		Into(ins)
 	if err != nil {
 		return nil, err
 	}
@@ -38,7 +38,7 @@ func (c *ClientSet) CreateDeploymentByYaml(ctx context.Context, clusterName, yam
 		Header(restful.HEADER_ContentType, yamlk8s.MIME_YAML).
 		Body(yamlString).
 		Do(ctx).
-		Into(response.NewData(ins))
+		Into(ins)
 	if err != nil {
 		return nil, err
 	}

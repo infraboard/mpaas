@@ -4,7 +4,7 @@ import (
 	restfulspec "github.com/emicklei/go-restful-openapi/v2"
 	"github.com/emicklei/go-restful/v3"
 	"github.com/infraboard/mcube/http/label"
-	"github.com/infraboard/mcube/http/response"
+	"github.com/infraboard/mcube/http/restful/response"
 	"github.com/infraboard/mpaas/apps/cluster"
 	"github.com/infraboard/mpaas/provider/k8s"
 
@@ -22,7 +22,7 @@ func (h *handler) registryPVHandler(ws *restful.WebService) {
 		Metadata(label.Auth, label.Enable).
 		Metadata(label.Permission, label.Enable).
 		Reads(cluster.QueryClusterRequest{}).
-		Writes(response.NewData(corev1.PersistentVolumeList{})).
+		Writes(corev1.PersistentVolumeList{}).
 		Returns(200, "OK", corev1.PersistentVolumeList{}))
 
 	ws.Route(ws.GET("/{id}/pvc").To(h.QueryPersistentVolumeClaims).
@@ -33,7 +33,7 @@ func (h *handler) registryPVHandler(ws *restful.WebService) {
 		Metadata(label.Auth, label.Enable).
 		Metadata(label.Permission, label.Enable).
 		Reads(cluster.QueryClusterRequest{}).
-		Writes(response.NewData(corev1.PersistentVolumeList{})).
+		Writes(corev1.PersistentVolumeList{}).
 		Returns(200, "OK", corev1.PersistentVolumeList{}))
 
 	ws.Route(ws.GET("/{id}/sc").To(h.QueryStorageClass).
@@ -44,7 +44,7 @@ func (h *handler) registryPVHandler(ws *restful.WebService) {
 		Metadata(label.Auth, label.Enable).
 		Metadata(label.Permission, label.Enable).
 		Reads(cluster.QueryClusterRequest{}).
-		Writes(response.NewData(corev1.PersistentVolumeList{})).
+		Writes(corev1.PersistentVolumeList{}).
 		Returns(200, "OK", corev1.PersistentVolumeList{}))
 }
 

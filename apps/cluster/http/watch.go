@@ -4,7 +4,7 @@ import (
 	"io"
 
 	"github.com/emicklei/go-restful/v3"
-	"github.com/infraboard/mcube/http/response"
+	"github.com/infraboard/mcube/http/restful/response"
 	"github.com/infraboard/mpaas/provider/k8s"
 )
 

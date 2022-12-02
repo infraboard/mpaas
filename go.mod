@@ -13,7 +13,7 @@ require (
 	github.com/gorilla/websocket v1.4.2
 	github.com/imdario/mergo v0.3.13
 	github.com/infraboard/mcenter v0.0.7
-	github.com/infraboard/mcube v1.9.3-0.20221129094200-ee6a1a8763e3
+	github.com/infraboard/mcube v1.9.3-0.20221130085844-b835ee0a3409
 	github.com/rs/xid v1.4.0
 	github.com/spf13/cobra v1.4.0
 	github.com/stretchr/testify v1.8.0
@@ -48,7 +48,6 @@ require (
 	github.com/inconshreveable/mousetrap v1.0.0 // indirect
 	github.com/josharian/intern v1.0.0 // indirect
 	github.com/json-iterator/go v1.1.12 // indirect
-	github.com/julienschmidt/httprouter v1.3.0 // indirect
 	github.com/klauspost/compress v1.14.2 // indirect
 	github.com/leodido/go-urn v1.2.1 // indirect
 	github.com/mailru/easyjson v0.7.6 // indirect

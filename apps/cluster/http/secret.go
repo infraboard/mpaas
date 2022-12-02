@@ -6,7 +6,7 @@ import (
 	restfulspec "github.com/emicklei/go-restful-openapi/v2"
 	"github.com/emicklei/go-restful/v3"
 	"github.com/infraboard/mcube/http/label"
-	"github.com/infraboard/mcube/http/response"
+	"github.com/infraboard/mcube/http/restful/response"
 	"github.com/infraboard/mpaas/apps/cluster"
 	"github.com/infraboard/mpaas/provider/k8s"
 	"sigs.k8s.io/yaml"
@@ -25,7 +25,7 @@ func (h *handler) registrySecretHandler(ws *restful.WebService) {
 		Metadata(label.Auth, label.Enable).
 		Metadata(label.Permission, label.Enable).
 		Reads(cluster.QueryClusterRequest{}).
-		Writes(response.NewData(v1.Secret{})).
+		Writes(v1.Secret{}).
 		Returns(200, "OK", v1.Secret{}))
 
 	ws.Route(ws.GET("/{id}/secrets").To(h.QueryService).
@@ -36,7 +36,7 @@ func (h *handler) registrySecretHandler(ws *restful.WebService) {
 		Metadata(label.Auth, label.Enable).
 		Metadata(label.Permission, label.Enable).
 		Reads(cluster.QueryClusterRequest{}).
-		Writes(response.NewData(v1.SecretList{})).
+		Writes(v1.SecretList{}).
 		Returns(200, "OK", v1.SecretList{}))
 
 	ws.Route(ws.GET("/{id}/secrets/{name}").To(h.GetService).
@@ -47,7 +47,7 @@ func (h *handler) registrySecretHandler(ws *restful.WebService) {
 		Metadata(label.Auth, label.Enable).
 		Metadata(label.Permission, label.Enable).
 		Reads(cluster.QueryClusterRequest{}).
-		Writes(response.NewData(v1.Secret{})).
+		Writes(v1.Secret{}).
 		Returns(200, "OK", v1.Secret{}))
 }
 

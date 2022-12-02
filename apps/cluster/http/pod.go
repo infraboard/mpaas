@@ -9,7 +9,7 @@ import (
 	"github.com/emicklei/go-restful/v3"
 	"github.com/gorilla/websocket"
 	"github.com/infraboard/mcube/http/label"
-	"github.com/infraboard/mcube/http/response"
+	"github.com/infraboard/mcube/http/restful/response"
 	"github.com/infraboard/mpaas/apps/cluster"
 	"github.com/infraboard/mpaas/provider/k8s"
 
@@ -27,7 +27,7 @@ func (h *handler) registryPodHandler(ws *restful.WebService) {
 		Metadata(label.Auth, label.Enable).
 		Metadata(label.Permission, label.Enable).
 		Reads(cluster.QueryClusterRequest{}).
-		Writes(response.NewData(corev1.Pod{})).
+		Writes(corev1.Pod{}).
 		Returns(200, "OK", corev1.Pod{}))
 
 	ws.Route(ws.GET("/{id}/pods").To(h.QueryPods).
@@ -38,7 +38,7 @@ func (h *handler) registryPodHandler(ws *restful.WebService) {
 		Metadata(label.Auth, label.Enable).
 		Metadata(label.Permission, label.Enable).
 		Reads(cluster.QueryClusterRequest{}).
-		Writes(response.NewData(corev1.PodList{})).
+		Writes(corev1.PodList{}).
 		Returns(200, "OK", corev1.PodList{}))
 
 	ws.Route(ws.GET("/{id}/pods/{name}").To(h.GetPod).
@@ -49,7 +49,7 @@ func (h *handler) registryPodHandler(ws *restful.WebService) {
 		Metadata(label.Auth, label.Enable).
 		Metadata(label.Permission, label.Enable).
 		Reads(cluster.QueryClusterRequest{}).
-		Writes(response.NewData(corev1.Pod{})).
+		Writes(corev1.Pod{}).
 		Returns(200, "OK", corev1.Pod{}))
 
 	ws.Route(ws.GET("/{id}/pods/{name}/login").To(h.LoginContainer).
@@ -60,7 +60,7 @@ func (h *handler) registryPodHandler(ws *restful.WebService) {
 		Metadata(label.Auth, label.Enable).
 		Metadata(label.Permission, label.Enable).
 		Reads(cluster.QueryClusterRequest{}).
-		Writes(response.NewData(corev1.Pod{})).
+		Writes(corev1.Pod{}).
 		Returns(200, "OK", corev1.Pod{}))
 
 	ws.Route(ws.GET("/{id}/pods/{name}/login").To(h.WatchConainterLog).
@@ -71,7 +71,7 @@ func (h *handler) registryPodHandler(ws *restful.WebService) {
 		Metadata(label.Auth, label.Enable).
 		Metadata(label.Permission, label.Enable).
 		Reads(cluster.QueryClusterRequest{}).
-		Writes(response.NewData(corev1.Pod{})).
+		Writes(corev1.Pod{}).
 		Returns(200, "OK", corev1.Pod{}))
 }
 

@@ -5,7 +5,7 @@ import (
 	"github.com/emicklei/go-restful/v3"
 	"github.com/infraboard/mcube/http/binding"
 	"github.com/infraboard/mcube/http/label"
-	"github.com/infraboard/mcube/http/response"
+	"github.com/infraboard/mcube/http/restful/response"
 	"github.com/infraboard/mpaas/apps/cluster"
 	"github.com/infraboard/mpaas/provider/k8s"
 
@@ -22,7 +22,7 @@ func (h *handler) registryConfigMapHandler(ws *restful.WebService) {
 		Metadata(label.Auth, label.Enable).
 		Metadata(label.Permission, label.Enable).
 		Reads(corev1.ConfigMap{}).
-		Writes(response.NewData(corev1.ConfigMap{})))
+		Writes(corev1.ConfigMap{}))
 
 	ws.Route(ws.GET("/{id}/configmaps").To(h.QueryConfigMap).
 		Doc("查询ConfigMap列表").
@@ -32,7 +32,7 @@ func (h *handler) registryConfigMapHandler(ws *restful.WebService) {
 		Metadata(label.Auth, label.Enable).
 		Metadata(label.Permission, label.Enable).
 		Reads(cluster.QueryClusterRequest{}).
-		Writes(response.NewData(corev1.ConfigMapList{})).
+		Writes(corev1.ConfigMapList{}).
 		Returns(200, "OK", corev1.ConfigMapList{}))
 
 	ws.Route(ws.GET("/{id}/configmaps/{name}").To(h.GetConfigMap).
@@ -43,7 +43,7 @@ func (h *handler) registryConfigMapHandler(ws *restful.WebService) {
 		Metadata(label.Auth, label.Enable).
 		Metadata(label.Permission, label.Enable).
 		Reads(cluster.QueryClusterRequest{}).
-		Writes(response.NewData(corev1.ConfigMap{})).
+		Writes(corev1.ConfigMap{}).
 		Returns(200, "OK", corev1.ConfigMap{}))
 }
 
