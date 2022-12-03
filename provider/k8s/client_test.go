@@ -217,7 +217,6 @@ func TestListPod(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-
 	// 序列化
 	for _, v := range pods.Items {
 		t.Log(v.Namespace, v.Name)
@@ -225,7 +224,8 @@ func TestListPod(t *testing.T) {
 }
 
 func TestGetPod(t *testing.T) {
-	req := k8s.NewGetRequest("kubernetes-proxy-78d4f87b58-crmlm")
+	req := k8s.NewGetRequest("coredns-6599bd548d-hz48h")
+	req.Namespace = "kube-system"
 
 	pods, err := client.GetPod(ctx, req)
 	if err != nil {
