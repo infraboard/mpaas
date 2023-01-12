@@ -1,7 +1,6 @@
 package k8s_test
 
 import (
-	"context"
 	"os"
 	"path/filepath"
 	"testing"
@@ -12,7 +11,6 @@ import (
 
 var (
 	client *k8s.Client
-	ctx    = context.Background()
 )
 
 func TestServerVersion(t *testing.T) {
