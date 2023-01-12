@@ -1,6 +1,6 @@
 # k8s客户端
 
-
+[k8s 核心概念](https://kubernetes.io/docs/concepts/)
 
 ## 参考
 
