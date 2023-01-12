@@ -13,14 +13,12 @@ import (
 	"k8s.io/client-go/tools/clientcmd"
 	clientcmdapi "k8s.io/client-go/tools/clientcmd/api"
 
-	"github.com/infraboard/mpaas/provider/k8s/batch"
+	"github.com/infraboard/mpaas/provider/k8s/admin"
 	"github.com/infraboard/mpaas/provider/k8s/config"
 	"github.com/infraboard/mpaas/provider/k8s/event"
+	"github.com/infraboard/mpaas/provider/k8s/network"
+	"github.com/infraboard/mpaas/provider/k8s/storage"
 	"github.com/infraboard/mpaas/provider/k8s/workload"
-)
-
-var (
-	DEFAULT_NAMESPACE = "default"
 )
 
 func NewClientFromFile(kubeConfPath string) (*Client, error) {
@@ -61,20 +59,18 @@ func NewClient(kubeConfigYaml string) (*Client, error) {
 	}
 
 	return &Client{
-		kubeconf:   kubeConf,
-		restconf:   restConf,
-		client:     client,
-		log:        zap.L().Named("provider.k8s"),
-		appVersion: "apps/v1",
+		kubeconf: kubeConf,
+		restconf: restConf,
+		client:   client,
+		log:      zap.L().Named("provider.k8s"),
 	}, nil
 }
 
 type Client struct {
-	kubeconf   *clientcmdapi.Config
-	restconf   *rest.Config
-	client     *kubernetes.Clientset
-	log        logger.Logger
-	appVersion string
+	kubeconf *clientcmdapi.Config
+	restconf *rest.Config
+	client   *kubernetes.Clientset
+	log      logger.Logger
 }
 
 func (c *Client) ServerVersion() (string, error) {
@@ -107,18 +103,32 @@ func (c *Client) CurrentCluster() *clientcmdapi.Cluster {
 	return c.kubeconf.Clusters[ctx.Cluster]
 }
 
+// 应用负载
 func (c *Client) WorkLoad() *workload.Workload {
-	return workload.NewWorkload(c.client)
+	return workload.NewWorkload(c.client, c.restconf)
 }
 
+// 应用配置
 func (c *Client) Config() *config.Config {
 	return config.NewConfig(c.client)
 }
 
-func (c *Client) Batch() *batch.Batch {
-	return batch.NewBatch(c.client)
+// 应用存储
+func (c *Client) Storage() *storage.Storage {
+	return storage.NewStorage(c.client)
 }
 
+// 应用网络
+func (c *Client) Network() *network.Network {
+	return network.NewNetwork(c.client)
+}
+
+// 应用事件
 func (c *Client) Event() *event.Event {
 	return event.NewEvent(c.client)
+}
+
+// 集群管理
+func (c *Client) Admin() *admin.Admin {
+	return admin.NewAdmin(c.client)
 }

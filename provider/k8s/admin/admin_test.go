@@ -1,14 +1,14 @@
-package batch_test
+package admin_test
 
 import (
 	"context"
 
 	"github.com/infraboard/mpaas/provider/k8s"
-	"github.com/infraboard/mpaas/provider/k8s/batch"
+	"github.com/infraboard/mpaas/provider/k8s/admin"
 )
 
 var (
-	impl *batch.Batch
+	impl *admin.Admin
 	ctx  = context.Background()
 )
 
@@ -17,5 +17,5 @@ func init() {
 	if err != nil {
 		panic(err)
 	}
-	impl = client.Batch()
+	impl = client.Admin()
 }

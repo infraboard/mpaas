@@ -1,4 +1,4 @@
-package batch
+package workload
 
 import (
 	"context"
@@ -7,6 +7,6 @@ import (
 	v1 "k8s.io/api/batch/v1"
 )
 
-func (b *Batch) ListCronJob(ctx context.Context, req *meta.ListRequest) (*v1.CronJobList, error) {
+func (b *Workload) ListCronJob(ctx context.Context, req *meta.ListRequest) (*v1.CronJobList, error) {
 	return b.batchV1.CronJobs(req.Namespace).List(ctx, req.Opts)
 }

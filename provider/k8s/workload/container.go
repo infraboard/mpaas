@@ -1,4 +1,4 @@
-package k8s
+package workload
 
 import (
 	"context"
@@ -13,22 +13,6 @@ import (
 var (
 	validate = validator.New()
 )
-
-func (c *Client) CreatePod(ctx context.Context, pod *v1.Pod, req *CreateRequest) (*v1.Pod, error) {
-	return c.client.CoreV1().Pods(req.Namespace).Create(ctx, pod, req.Opts)
-}
-
-func (c *Client) ListPod(ctx context.Context, req *ListRequest) (*v1.PodList, error) {
-	return c.client.CoreV1().Pods(req.Namespace).List(ctx, req.Opts)
-}
-
-func (c *Client) GetPod(ctx context.Context, req *GetRequest) (*v1.Pod, error) {
-	return c.client.CoreV1().Pods(req.Namespace).Get(ctx, req.Name, req.Opts)
-}
-
-func (c *Client) DeletePod(ctx context.Context, req *DeleteRequest) error {
-	return c.client.CoreV1().Pods("").Delete(ctx, "", req.Opts)
-}
 
 func NewLoginContainerRequest(cmd []string, ce ContainerExecutor) *LoginContainerRequest {
 	return &LoginContainerRequest{
@@ -56,8 +40,8 @@ type ContainerExecutor interface {
 }
 
 // 登录容器
-func (c *Client) LoginContainer(req *LoginContainerRequest) error {
-	restReq := c.client.CoreV1().RESTClient().Post().
+func (c *Workload) LoginContainer(req *LoginContainerRequest) error {
+	restReq := c.corev1.RESTClient().Post().
 		Resource("pods").
 		Name(req.PodName).
 		Namespace(req.Namespace).
@@ -108,7 +92,7 @@ func (req *WatchConainterLogRequest) Validate() error {
 }
 
 // 查看容器日志
-func (c *Client) WatchConainterLog(ctx context.Context, req *WatchConainterLogRequest) (io.ReadCloser, error) {
+func (c *Workload) WatchConainterLog(ctx context.Context, req *WatchConainterLogRequest) (io.ReadCloser, error) {
 	opt := &v1.PodLogOptions{
 		Container:                    req.ContainerName,
 		Follow:                       req.Follow,
@@ -117,6 +101,6 @@ func (c *Client) WatchConainterLog(ctx context.Context, req *WatchConainterLogRe
 		InsecureSkipTLSVerifyBackend: true,
 	}
 
-	restReq := c.client.CoreV1().Pods(req.Namespace).GetLogs(req.PodName, opt)
+	restReq := c.corev1.Pods(req.Namespace).GetLogs(req.PodName, opt)
 	return restReq.Stream(ctx)
 }

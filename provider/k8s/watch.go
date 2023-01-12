@@ -5,8 +5,13 @@ import (
 	"encoding/json"
 	"fmt"
 
+	"github.com/go-playground/validator/v10"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	watch "k8s.io/apimachinery/pkg/watch"
+)
+
+var (
+	validate = validator.New()
 )
 
 type ObjectKind string
