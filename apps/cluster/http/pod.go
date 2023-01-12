@@ -19,7 +19,7 @@ import (
 func (h *handler) registryPodHandler(ws *restful.WebService) {
 	tags := []string{"Pod管理"}
 
-	ws.Route(ws.GET("/{id}/pods").To(h.CreatePod).
+	ws.Route(ws.POST("/{id}/pods").To(h.CreatePod).
 		Doc("创建Pod").
 		Metadata(restfulspec.KeyOpenAPITags, tags).
 		Metadata(label.Resource, h.Name()).

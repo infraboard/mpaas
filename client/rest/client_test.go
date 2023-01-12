@@ -19,7 +19,7 @@ func TestCreateCluster(t *testing.T) {
 	req := cluster.NewCreateClusterRequest()
 	req.Vendor = "腾讯云"
 	req.Region = "上海"
-	req.Name = "生产环境"
+	req.Name = "生产环境(新)"
 
 	kubeConf, err := tools.ReadFile("test/kube_config.yml")
 	if err != nil {
@@ -43,7 +43,7 @@ func TestQueryCluster(t *testing.T) {
 }
 
 func TestDescribeCluster(t *testing.T) {
-	req := cluster.NewDescribeClusterRequest("idc-k8s-test")
+	req := cluster.NewDescribeClusterRequest("cls-0f9m3dx3")
 	ins, err := client.DescribeCluster(ctx, req)
 	if err != nil {
 		t.Fatal(err)

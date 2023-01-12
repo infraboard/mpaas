@@ -8,16 +8,6 @@ import (
 	corev1 "k8s.io/api/core/v1"
 )
 
-func TestListNode(t *testing.T) {
-	v, err := impl.ListNode(ctx, meta.NewListRequest())
-	if err != nil {
-		t.Fatal(err)
-	}
-	for i := range v.Items {
-		t.Log(v.Items[i].Name)
-	}
-}
-
 func TestListNamespace(t *testing.T) {
 	v, err := impl.ListNamespace(ctx, meta.NewListRequest())
 	if err != nil {
