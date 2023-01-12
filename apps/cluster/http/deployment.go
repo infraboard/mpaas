@@ -6,7 +6,7 @@ import (
 	"github.com/infraboard/mcube/http/label"
 	"github.com/infraboard/mcube/http/restful/response"
 	"github.com/infraboard/mpaas/apps/cluster"
-	"github.com/infraboard/mpaas/provider/k8s"
+	"github.com/infraboard/mpaas/provider/k8s/meta"
 
 	appsv1 "k8s.io/api/apps/v1"
 	scalv1 "k8s.io/api/autoscaling/v1"
@@ -93,7 +93,7 @@ func (h *handler) CreateDeployment(r *restful.Request, w *restful.Response) {
 		return
 	}
 
-	ins, err := client.CreateDeployment(r.Request.Context(), req)
+	ins, err := client.WorkLoad().CreateDeployment(r.Request.Context(), req)
 	if err != nil {
 		response.Failed(w, err)
 		return
@@ -109,8 +109,8 @@ func (h *handler) QueryDeployments(r *restful.Request, w *restful.Response) {
 		return
 	}
 
-	req := k8s.NewListRequestFromHttp(r.Request)
-	ins, err := client.ListDeployment(r.Request.Context(), req)
+	req := meta.NewListRequestFromHttp(r.Request)
+	ins, err := client.WorkLoad().ListDeployment(r.Request.Context(), req)
 	if err != nil {
 		response.Failed(w, err)
 		return
@@ -126,9 +126,9 @@ func (h *handler) GetDeployment(r *restful.Request, w *restful.Response) {
 		return
 	}
 
-	req := k8s.NewGetRequestFromHttp(r.Request)
+	req := meta.NewGetRequestFromHttp(r.Request)
 	req.Name = r.PathParameter("name")
-	ins, err := client.GetDeployment(r.Request.Context(), req)
+	ins, err := client.WorkLoad().GetDeployment(r.Request.Context(), req)
 	if err != nil {
 		response.Failed(w, err)
 		return
@@ -151,7 +151,7 @@ func (h *handler) UpdateDeployment(r *restful.Request, w *restful.Response) {
 	}
 	req.Name = r.PathParameter("name")
 
-	ins, err := client.UpdateDeployment(r.Request.Context(), req)
+	ins, err := client.WorkLoad().UpdateDeployment(r.Request.Context(), req)
 	if err != nil {
 		response.Failed(w, err)
 		return
@@ -167,14 +167,14 @@ func (h *handler) ScaleDeployment(r *restful.Request, w *restful.Response) {
 		return
 	}
 
-	req := k8s.NewScaleRequest()
+	req := meta.NewScaleRequest()
 	if err := r.ReadEntity(req); err != nil {
 		response.Failed(w, err)
 		return
 	}
 	req.Scale.Name = r.PathParameter("name")
 
-	ins, err := client.ScaleDeployment(r.Request.Context(), req)
+	ins, err := client.WorkLoad().ScaleDeployment(r.Request.Context(), req)
 	if err != nil {
 		response.Failed(w, err)
 		return
@@ -190,10 +190,10 @@ func (h *handler) ReDeployment(r *restful.Request, w *restful.Response) {
 		return
 	}
 
-	req := k8s.NewGetRequestFromHttp(r.Request)
+	req := meta.NewGetRequestFromHttp(r.Request)
 	req.Name = r.PathParameter("name")
 
-	ins, err := client.ReDeploy(r.Request.Context(), req)
+	ins, err := client.WorkLoad().ReDeploy(r.Request.Context(), req)
 	if err != nil {
 		response.Failed(w, err)
 		return

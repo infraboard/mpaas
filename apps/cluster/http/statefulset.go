@@ -6,7 +6,7 @@ import (
 	"github.com/infraboard/mcube/http/label"
 	"github.com/infraboard/mcube/http/restful/response"
 	"github.com/infraboard/mpaas/apps/cluster"
-	"github.com/infraboard/mpaas/provider/k8s"
+	"github.com/infraboard/mpaas/provider/k8s/meta"
 
 	appsv1 "k8s.io/api/apps/v1"
 )
@@ -59,7 +59,7 @@ func (h *handler) CreateStatefulSet(r *restful.Request, w *restful.Response) {
 		return
 	}
 
-	ins, err := client.CreateStatefulSet(r.Request.Context(), req)
+	ins, err := client.WorkLoad().CreateStatefulSet(r.Request.Context(), req)
 	if err != nil {
 		response.Failed(w, err)
 		return
@@ -75,8 +75,8 @@ func (h *handler) QueryStatefulSet(r *restful.Request, w *restful.Response) {
 		return
 	}
 
-	req := k8s.NewListRequestFromHttp(r.Request)
-	ins, err := client.ListStatefulSet(r.Request.Context(), req)
+	req := meta.NewListRequestFromHttp(r.Request)
+	ins, err := client.WorkLoad().ListStatefulSet(r.Request.Context(), req)
 	if err != nil {
 		response.Failed(w, err)
 		return
@@ -92,9 +92,9 @@ func (h *handler) GetStatefulSet(r *restful.Request, w *restful.Response) {
 		return
 	}
 
-	req := k8s.NewGetRequestFromHttp(r.Request)
+	req := meta.NewGetRequestFromHttp(r.Request)
 	req.Name = r.PathParameter("name")
-	ins, err := client.GetStatefulSet(r.Request.Context(), req)
+	ins, err := client.WorkLoad().GetStatefulSet(r.Request.Context(), req)
 	if err != nil {
 		response.Failed(w, err)
 		return

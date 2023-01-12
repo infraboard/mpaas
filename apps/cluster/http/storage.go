@@ -6,7 +6,7 @@ import (
 	"github.com/infraboard/mcube/http/label"
 	"github.com/infraboard/mcube/http/restful/response"
 	"github.com/infraboard/mpaas/apps/cluster"
-	"github.com/infraboard/mpaas/provider/k8s"
+	"github.com/infraboard/mpaas/provider/k8s/meta"
 
 	corev1 "k8s.io/api/core/v1"
 )
@@ -55,8 +55,8 @@ func (h *handler) QueryPersistentVolumes(r *restful.Request, w *restful.Response
 		return
 	}
 
-	req := k8s.NewListRequestFromHttp(r.Request)
-	ins, err := client.ListPersistentVolume(r.Request.Context(), req)
+	req := meta.NewListRequestFromHttp(r.Request)
+	ins, err := client.Storage().ListPersistentVolume(r.Request.Context(), req)
 	if err != nil {
 		response.Failed(w, err)
 		return
@@ -72,8 +72,8 @@ func (h *handler) QueryPersistentVolumeClaims(r *restful.Request, w *restful.Res
 		return
 	}
 
-	req := k8s.NewListRequestFromHttp(r.Request)
-	ins, err := client.ListPersistentVolumeClaims(r.Request.Context(), req)
+	req := meta.NewListRequestFromHttp(r.Request)
+	ins, err := client.Storage().ListPersistentVolumeClaims(r.Request.Context(), req)
 	if err != nil {
 		response.Failed(w, err)
 		return
@@ -89,8 +89,8 @@ func (h *handler) QueryStorageClass(r *restful.Request, w *restful.Response) {
 		return
 	}
 
-	req := k8s.NewListRequestFromHttp(r.Request)
-	ins, err := client.ListStorageClass(r.Request.Context(), req)
+	req := meta.NewListRequestFromHttp(r.Request)
+	ins, err := client.Storage().ListStorageClass(r.Request.Context(), req)
 	if err != nil {
 		response.Failed(w, err)
 		return

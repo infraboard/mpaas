@@ -12,6 +12,8 @@ import (
 	"github.com/infraboard/mcube/http/restful/response"
 	"github.com/infraboard/mpaas/apps/cluster"
 	"github.com/infraboard/mpaas/provider/k8s"
+	"github.com/infraboard/mpaas/provider/k8s/meta"
+	"github.com/infraboard/mpaas/provider/k8s/workload"
 
 	corev1 "k8s.io/api/core/v1"
 )
@@ -88,8 +90,8 @@ func (h *handler) CreatePod(r *restful.Request, w *restful.Response) {
 		return
 	}
 
-	req := k8s.NewCreateRequest()
-	ins, err := client.CreatePod(r.Request.Context(), pod, req)
+	req := meta.NewCreateRequest()
+	ins, err := client.WorkLoad().CreatePod(r.Request.Context(), pod, req)
 	if err != nil {
 		response.Failed(w, err)
 		return
@@ -105,8 +107,8 @@ func (h *handler) QueryPods(r *restful.Request, w *restful.Response) {
 		return
 	}
 
-	req := k8s.NewListRequestFromHttp(r.Request)
-	ins, err := client.ListPod(r.Request.Context(), req)
+	req := meta.NewListRequestFromHttp(r.Request)
+	ins, err := client.WorkLoad().ListPod(r.Request.Context(), req)
 	if err != nil {
 		response.Failed(w, err)
 		return
@@ -122,9 +124,9 @@ func (h *handler) GetPod(r *restful.Request, w *restful.Response) {
 		return
 	}
 
-	req := k8s.NewGetRequestFromHttp(r.Request)
+	req := meta.NewGetRequestFromHttp(r.Request)
 	req.Name = r.PathParameter("name")
-	ins, err := client.GetPod(r.Request.Context(), req)
+	ins, err := client.WorkLoad().GetPod(r.Request.Context(), req)
 	if err != nil {
 		response.Failed(w, err)
 		return
@@ -165,10 +167,10 @@ func (h *handler) LoginContainer(r *restful.Request, w *restful.Response) {
 	}
 
 	// 获取参数
-	req := k8s.NewLoginContainerRequest([]string{"sh", "-c", defaultCmd}, term)
+	req := workload.NewLoginContainerRequest([]string{"sh", "-c", defaultCmd}, term)
 	term.ParseParame(req)
 
-	err = client.LoginContainer(req)
+	err = client.WorkLoad().LoginContainer(req)
 	if err != nil {
 		term.WriteMessage(k8s.NewOperatinonParamMessage(err.Error()))
 		return
@@ -192,10 +194,10 @@ func (h *handler) WatchConainterLog(r *restful.Request, w *restful.Response) {
 	}
 
 	// 获取参数
-	req := k8s.NewWatchConainterLogRequest()
+	req := workload.NewWatchConainterLogRequest()
 	term.ParseParame(req)
 
-	reader, err := client.WatchConainterLog(r.Request.Context(), req)
+	reader, err := client.WorkLoad().WatchConainterLog(r.Request.Context(), req)
 	if err != nil {
 		term.WriteMessage(k8s.NewOperatinonParamMessage(err.Error()))
 		return

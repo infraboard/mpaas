@@ -6,7 +6,7 @@ import (
 	"github.com/infraboard/mcube/http/label"
 	"github.com/infraboard/mcube/http/restful/response"
 	"github.com/infraboard/mpaas/apps/cluster"
-	"github.com/infraboard/mpaas/provider/k8s"
+	"github.com/infraboard/mpaas/provider/k8s/meta"
 	corev1 "k8s.io/api/core/v1"
 )
 
@@ -42,7 +42,7 @@ func (h *handler) QueryNodes(r *restful.Request, w *restful.Response) {
 		return
 	}
 
-	ins, err := client.ListNode(r.Request.Context(), k8s.NewListRequest())
+	ins, err := client.Admin().ListNode(r.Request.Context(), meta.NewListRequest())
 	if err != nil {
 		response.Failed(w, err)
 		return
@@ -58,9 +58,9 @@ func (h *handler) GetNode(r *restful.Request, w *restful.Response) {
 		return
 	}
 
-	req := k8s.NewGetRequestFromHttp(r.Request)
+	req := meta.NewGetRequestFromHttp(r.Request)
 	req.Name = r.PathParameter("name")
-	ins, err := client.GetNode(r.Request.Context(), req)
+	ins, err := client.Admin().GetNode(r.Request.Context(), req)
 	if err != nil {
 		response.Failed(w, err)
 		return

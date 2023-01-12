@@ -6,7 +6,7 @@ import (
 	"github.com/infraboard/mcube/http/label"
 	"github.com/infraboard/mcube/http/restful/response"
 	"github.com/infraboard/mpaas/apps/cluster"
-	"github.com/infraboard/mpaas/provider/k8s"
+	"github.com/infraboard/mpaas/provider/k8s/meta"
 
 	v1 "k8s.io/api/core/v1"
 )
@@ -42,8 +42,8 @@ func (h *handler) QueryNamespaces(r *restful.Request, w *restful.Response) {
 		return
 	}
 
-	req := k8s.NewListRequestFromHttp(r.Request)
-	ins, err := client.ListNamespace(r.Request.Context(), req)
+	req := meta.NewListRequestFromHttp(r.Request)
+	ins, err := client.Admin().ListNamespace(r.Request.Context(), req)
 	if err != nil {
 		response.Failed(w, err)
 		return
@@ -65,7 +65,7 @@ func (h *handler) CreateNamespaces(r *restful.Request, w *restful.Response) {
 		return
 	}
 
-	ins, err := client.CreateNamespace(r.Request.Context(), req)
+	ins, err := client.Admin().CreateNamespace(r.Request.Context(), req)
 	if err != nil {
 		response.Failed(w, err)
 		return

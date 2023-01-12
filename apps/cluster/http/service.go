@@ -6,7 +6,7 @@ import (
 	"github.com/infraboard/mcube/http/label"
 	"github.com/infraboard/mcube/http/restful/response"
 	"github.com/infraboard/mpaas/apps/cluster"
-	"github.com/infraboard/mpaas/provider/k8s"
+	"github.com/infraboard/mpaas/provider/k8s/meta"
 
 	v1 "k8s.io/api/core/v1"
 )
@@ -61,7 +61,7 @@ func (h *handler) CreateService(r *restful.Request, w *restful.Response) {
 		return
 	}
 
-	ins, err := client.CreateService(r.Request.Context(), req)
+	ins, err := client.Network().CreateService(r.Request.Context(), req)
 	if err != nil {
 		response.Failed(w, err)
 		return
@@ -77,8 +77,8 @@ func (h *handler) QueryService(r *restful.Request, w *restful.Response) {
 		return
 	}
 
-	req := k8s.NewListRequestFromHttp(r.Request)
-	ins, err := client.ListService(r.Request.Context(), req)
+	req := meta.NewListRequestFromHttp(r.Request)
+	ins, err := client.Network().ListService(r.Request.Context(), req)
 	if err != nil {
 		response.Failed(w, err)
 		return
@@ -94,9 +94,9 @@ func (h *handler) GetService(r *restful.Request, w *restful.Response) {
 		return
 	}
 
-	req := k8s.NewGetRequestFromHttp(r.Request)
+	req := meta.NewGetRequestFromHttp(r.Request)
 	req.Name = r.PathParameter("name")
-	ins, err := client.GetService(r.Request.Context(), req)
+	ins, err := client.Network().GetService(r.Request.Context(), req)
 	if err != nil {
 		response.Failed(w, err)
 		return

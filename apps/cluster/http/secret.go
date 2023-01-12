@@ -8,7 +8,7 @@ import (
 	"github.com/infraboard/mcube/http/label"
 	"github.com/infraboard/mcube/http/restful/response"
 	"github.com/infraboard/mpaas/apps/cluster"
-	"github.com/infraboard/mpaas/provider/k8s"
+	"github.com/infraboard/mpaas/provider/k8s/meta"
 	"sigs.k8s.io/yaml"
 
 	v1 "k8s.io/api/core/v1"
@@ -72,7 +72,7 @@ func (h *handler) CreateSecret(r *restful.Request, w *restful.Response) {
 		return
 	}
 
-	ins, err := client.CreateSecret(r.Request.Context(), req)
+	ins, err := client.Config().CreateSecret(r.Request.Context(), req)
 	if err != nil {
 		response.Failed(w, err)
 		return
@@ -88,8 +88,8 @@ func (h *handler) QuerySecret(r *restful.Request, w *restful.Response) {
 		return
 	}
 
-	req := k8s.NewListRequestFromHttp(r.Request)
-	ins, err := client.ListSecret(r.Request.Context(), req)
+	req := meta.NewListRequestFromHttp(r.Request)
+	ins, err := client.Config().ListSecret(r.Request.Context(), req)
 	if err != nil {
 		response.Failed(w, err)
 		return
@@ -105,9 +105,9 @@ func (h *handler) GetSecret(r *restful.Request, w *restful.Response) {
 		return
 	}
 
-	req := k8s.NewGetRequestFromHttp(r.Request)
+	req := meta.NewGetRequestFromHttp(r.Request)
 	req.Name = r.PathParameter("name")
-	ins, err := client.GetService(r.Request.Context(), req)
+	ins, err := client.Config().GetSecret(r.Request.Context(), req)
 	if err != nil {
 		response.Failed(w, err)
 		return

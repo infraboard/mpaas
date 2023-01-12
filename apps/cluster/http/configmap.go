@@ -7,7 +7,7 @@ import (
 	"github.com/infraboard/mcube/http/label"
 	"github.com/infraboard/mcube/http/restful/response"
 	"github.com/infraboard/mpaas/apps/cluster"
-	"github.com/infraboard/mpaas/provider/k8s"
+	"github.com/infraboard/mpaas/provider/k8s/meta"
 
 	corev1 "k8s.io/api/core/v1"
 )
@@ -54,8 +54,8 @@ func (h *handler) QueryConfigMap(r *restful.Request, w *restful.Response) {
 		return
 	}
 
-	req := k8s.NewListRequestFromHttp(r.Request)
-	ins, err := client.ListConfigMap(r.Request.Context(), req)
+	req := meta.NewListRequestFromHttp(r.Request)
+	ins, err := client.Config().ListConfigMap(r.Request.Context(), req)
 	if err != nil {
 		response.Failed(w, err)
 		return
@@ -71,9 +71,9 @@ func (h *handler) GetConfigMap(r *restful.Request, w *restful.Response) {
 		return
 	}
 
-	req := k8s.NewGetRequestFromHttp(r.Request)
+	req := meta.NewGetRequestFromHttp(r.Request)
 	req.Name = r.PathParameter("name")
-	ins, err := client.GetConfigMap(r.Request.Context(), req)
+	ins, err := client.Config().GetConfigMap(r.Request.Context(), req)
 	if err != nil {
 		response.Failed(w, err)
 		return
@@ -95,7 +95,7 @@ func (h *handler) CreateConfigMap(r *restful.Request, w *restful.Response) {
 		return
 	}
 
-	ins, err := client.CreateConfigMap(r.Request.Context(), req)
+	ins, err := client.Config().CreateConfigMap(r.Request.Context(), req)
 	if err != nil {
 		response.Failed(w, err)
 		return
