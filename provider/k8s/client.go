@@ -1,18 +1,41 @@
 package k8s
 
 import (
+	"os"
+	"path/filepath"
+
 	"github.com/infraboard/mcube/logger"
 	"github.com/infraboard/mcube/logger/zap"
+
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/client-go/kubernetes"
 	"k8s.io/client-go/rest"
 	"k8s.io/client-go/tools/clientcmd"
 	clientcmdapi "k8s.io/client-go/tools/clientcmd/api"
+
+	"github.com/infraboard/mpaas/provider/k8s/batch"
+	"github.com/infraboard/mpaas/provider/k8s/config"
+	"github.com/infraboard/mpaas/provider/k8s/event"
+	"github.com/infraboard/mpaas/provider/k8s/workload"
 )
 
 var (
 	DEFAULT_NAMESPACE = "default"
 )
+
+func NewClientFromFile(kubeConfPath string) (*Client, error) {
+	wd, err := os.Getwd()
+	if err != nil {
+		return nil, err
+	}
+
+	kc, err := os.ReadFile(filepath.Join(wd, kubeConfPath))
+	if err != nil {
+		return nil, err
+	}
+
+	return NewClient(string(kc))
+}
 
 func NewClient(kubeConfigYaml string) (*Client, error) {
 	// 加载kubeconfig配置
@@ -36,11 +59,6 @@ func NewClient(kubeConfigYaml string) (*Client, error) {
 	if err != nil {
 		return nil, err
 	}
-
-	// 基于Interface封装的客户端
-	// client.AppsV1().Deployments("default").Create(nil, nil, metav1.CreateOptions{})
-	// RESTclient https://github.com/jindezgm/k8s-src-analysis/blob/master/client-go/rest/Client.md
-	// client.RESTClient().Post().Namespace("ns").Body("body").Do(nil).Into(resp).Error()
 
 	return &Client{
 		kubeconf:   kubeConf,
@@ -87,4 +105,20 @@ func (c *Client) CurrentCluster() *clientcmdapi.Cluster {
 	}
 
 	return c.kubeconf.Clusters[ctx.Cluster]
+}
+
+func (c *Client) WorkLoad() *workload.Workload {
+	return workload.NewWorkload(c.client)
+}
+
+func (c *Client) Config() *config.Config {
+	return config.NewConfig(c.client)
+}
+
+func (c *Client) Batch() *batch.Batch {
+	return batch.NewBatch(c.client)
+}
+
+func (c *Client) Event() *event.Event {
+	return event.NewEvent(c.client)
 }
