@@ -1,4 +1,4 @@
-package http
+package api
 
 import (
 	restfulspec "github.com/emicklei/go-restful-openapi/v2"
@@ -7,42 +7,43 @@ import (
 	"github.com/infraboard/mcube/http/restful/response"
 	"github.com/infraboard/mpaas/apps/cluster"
 	"github.com/infraboard/mpaas/provider/k8s/meta"
-	corev1 "k8s.io/api/core/v1"
+
+	v1 "k8s.io/api/core/v1"
 )
 
-func (h *handler) registryNodeHandler(ws *restful.WebService) {
-	tags := []string{"Node管理"}
-	ws.Route(ws.GET("/{id}/nodes").To(h.QueryNodes).
-		Doc("查询节点列表").
+func (h *handler) registryNamespaceHandler(ws *restful.WebService) {
+	tags := []string{"Namespace管理"}
+	ws.Route(ws.POST("/{id}/namespace").To(h.CreateNamespaces).
+		Doc("创建Namespace").
 		Metadata(restfulspec.KeyOpenAPITags, tags).
 		Metadata(label.Resource, h.Name()).
-		Metadata(label.Action, label.List.Value()).
+		Metadata(label.Action, label.Create.Value()).
 		Metadata(label.Auth, label.Enable).
 		Metadata(label.Permission, label.Enable).
-		Reads(cluster.QueryClusterRequest{}).
-		Writes(corev1.NodeList{}).
-		Returns(200, "OK", corev1.NodeList{}))
+		Reads(v1.Namespace{}).
+		Writes(v1.Namespace{}))
 
-	ws.Route(ws.GET("/{id}/nodes/{name}").To(h.GetNode).
-		Doc("查询节点详情").
+	ws.Route(ws.GET("/{id}/namespaces").To(h.QueryNamespaces).
+		Doc("查询Namespace").
 		Metadata(restfulspec.KeyOpenAPITags, tags).
 		Metadata(label.Resource, h.Name()).
 		Metadata(label.Action, label.List.Value()).
 		Metadata(label.Auth, label.Enable).
 		Metadata(label.Permission, label.Enable).
 		Reads(cluster.QueryClusterRequest{}).
-		Writes(corev1.Node{}).
-		Returns(200, "OK", corev1.Node{}))
+		Writes(v1.Namespace{}).
+		Returns(200, "OK", v1.Namespace{}))
 }
 
-func (h *handler) QueryNodes(r *restful.Request, w *restful.Response) {
+func (h *handler) QueryNamespaces(r *restful.Request, w *restful.Response) {
 	client, err := h.GetClient(r.Request.Context(), r.PathParameter("id"))
 	if err != nil {
 		response.Failed(w, err)
 		return
 	}
 
-	ins, err := client.Admin().ListNode(r.Request.Context(), meta.NewListRequest())
+	req := meta.NewListRequestFromHttp(r.Request)
+	ins, err := client.Admin().ListNamespace(r.Request.Context(), req)
 	if err != nil {
 		response.Failed(w, err)
 		return
@@ -51,16 +52,20 @@ func (h *handler) QueryNodes(r *restful.Request, w *restful.Response) {
 	response.Success(w, ins)
 }
 
-func (h *handler) GetNode(r *restful.Request, w *restful.Response) {
+func (h *handler) CreateNamespaces(r *restful.Request, w *restful.Response) {
 	client, err := h.GetClient(r.Request.Context(), r.PathParameter("id"))
 	if err != nil {
 		response.Failed(w, err)
 		return
 	}
 
-	req := meta.NewGetRequestFromHttp(r.Request)
-	req.Name = r.PathParameter("name")
-	ins, err := client.Admin().GetNode(r.Request.Context(), req)
+	req := &v1.Namespace{}
+	if err := r.ReadEntity(req); err != nil {
+		response.Failed(w, err)
+		return
+	}
+
+	ins, err := client.Admin().CreateNamespace(r.Request.Context(), req)
 	if err != nil {
 		response.Failed(w, err)
 		return

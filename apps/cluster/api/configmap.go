@@ -1,87 +1,53 @@
-package http
+package api
 
 import (
-	"io"
-
 	restfulspec "github.com/emicklei/go-restful-openapi/v2"
 	"github.com/emicklei/go-restful/v3"
+	"github.com/infraboard/mcube/http/binding"
 	"github.com/infraboard/mcube/http/label"
 	"github.com/infraboard/mcube/http/restful/response"
 	"github.com/infraboard/mpaas/apps/cluster"
 	"github.com/infraboard/mpaas/provider/k8s/meta"
-	"sigs.k8s.io/yaml"
 
-	v1 "k8s.io/api/core/v1"
+	corev1 "k8s.io/api/core/v1"
 )
 
-func (h *handler) registrySecretHandler(ws *restful.WebService) {
-	tags := []string{"密钥管理"}
+func (h *handler) registryConfigMapHandler(ws *restful.WebService) {
+	tags := []string{"Config Map管理"}
+	ws.Route(ws.POST("/{id}/configmaps").To(h.CreateConfigMap).
+		Doc("创建ConfigMap").
+		Metadata(restfulspec.KeyOpenAPITags, tags).
+		Metadata(label.Resource, h.Name()).
+		Metadata(label.Action, label.Create.Value()).
+		Metadata(label.Auth, label.Enable).
+		Metadata(label.Permission, label.Enable).
+		Reads(corev1.ConfigMap{}).
+		Writes(corev1.ConfigMap{}))
 
-	ws.Route(ws.POST("/{id}/secrets").To(h.CreateService).
-		Doc("创建密钥").
+	ws.Route(ws.GET("/{id}/configmaps").To(h.QueryConfigMap).
+		Doc("查询ConfigMap列表").
 		Metadata(restfulspec.KeyOpenAPITags, tags).
 		Metadata(label.Resource, h.Name()).
 		Metadata(label.Action, label.List.Value()).
 		Metadata(label.Auth, label.Enable).
 		Metadata(label.Permission, label.Enable).
 		Reads(cluster.QueryClusterRequest{}).
-		Writes(v1.Secret{}).
-		Returns(200, "OK", v1.Secret{}))
+		Writes(corev1.ConfigMapList{}).
+		Returns(200, "OK", corev1.ConfigMapList{}))
 
-	ws.Route(ws.GET("/{id}/secrets").To(h.QueryService).
-		Doc("查询密钥列表").
+	ws.Route(ws.GET("/{id}/configmaps/{name}").To(h.GetConfigMap).
+		Doc("查询ConfigMap详情").
 		Metadata(restfulspec.KeyOpenAPITags, tags).
 		Metadata(label.Resource, h.Name()).
 		Metadata(label.Action, label.List.Value()).
 		Metadata(label.Auth, label.Enable).
 		Metadata(label.Permission, label.Enable).
 		Reads(cluster.QueryClusterRequest{}).
-		Writes(v1.SecretList{}).
-		Returns(200, "OK", v1.SecretList{}))
-
-	ws.Route(ws.GET("/{id}/secrets/{name}").To(h.GetService).
-		Doc("查询密钥详情").
-		Metadata(restfulspec.KeyOpenAPITags, tags).
-		Metadata(label.Resource, h.Name()).
-		Metadata(label.Action, label.List.Value()).
-		Metadata(label.Auth, label.Enable).
-		Metadata(label.Permission, label.Enable).
-		Reads(cluster.QueryClusterRequest{}).
-		Writes(v1.Secret{}).
-		Returns(200, "OK", v1.Secret{}))
+		Writes(corev1.ConfigMap{}).
+		Returns(200, "OK", corev1.ConfigMap{}))
 }
 
-func (h *handler) CreateSecret(r *restful.Request, w *restful.Response) {
-	client, err := h.GetClient(r.Request.Context(), r.PathParameter("id"))
-	if err != nil {
-		response.Failed(w, err)
-		return
-	}
-
-	req := &v1.Secret{}
-
-	data, err := io.ReadAll(r.Request.Body)
-	if err != nil {
-		response.Failed(w, err)
-		return
-	}
-	defer r.Request.Body.Close()
-
-	if err := yaml.Unmarshal(data, req); err != nil {
-		response.Failed(w, err)
-		return
-	}
-
-	ins, err := client.Config().CreateSecret(r.Request.Context(), req)
-	if err != nil {
-		response.Failed(w, err)
-		return
-	}
-
-	response.Success(w, ins)
-}
-
-func (h *handler) QuerySecret(r *restful.Request, w *restful.Response) {
+func (h *handler) QueryConfigMap(r *restful.Request, w *restful.Response) {
 	client, err := h.GetClient(r.Request.Context(), r.PathParameter("id"))
 	if err != nil {
 		response.Failed(w, err)
@@ -89,7 +55,7 @@ func (h *handler) QuerySecret(r *restful.Request, w *restful.Response) {
 	}
 
 	req := meta.NewListRequestFromHttp(r.Request)
-	ins, err := client.Config().ListSecret(r.Request.Context(), req)
+	ins, err := client.Config().ListConfigMap(r.Request.Context(), req)
 	if err != nil {
 		response.Failed(w, err)
 		return
@@ -98,7 +64,7 @@ func (h *handler) QuerySecret(r *restful.Request, w *restful.Response) {
 	response.Success(w, ins)
 }
 
-func (h *handler) GetSecret(r *restful.Request, w *restful.Response) {
+func (h *handler) GetConfigMap(r *restful.Request, w *restful.Response) {
 	client, err := h.GetClient(r.Request.Context(), r.PathParameter("id"))
 	if err != nil {
 		response.Failed(w, err)
@@ -107,7 +73,29 @@ func (h *handler) GetSecret(r *restful.Request, w *restful.Response) {
 
 	req := meta.NewGetRequestFromHttp(r.Request)
 	req.Name = r.PathParameter("name")
-	ins, err := client.Config().GetSecret(r.Request.Context(), req)
+	ins, err := client.Config().GetConfigMap(r.Request.Context(), req)
+	if err != nil {
+		response.Failed(w, err)
+		return
+	}
+
+	response.Success(w, ins)
+}
+
+func (h *handler) CreateConfigMap(r *restful.Request, w *restful.Response) {
+	client, err := h.GetClient(r.Request.Context(), r.PathParameter("id"))
+	if err != nil {
+		response.Failed(w, err)
+		return
+	}
+
+	req := &corev1.ConfigMap{}
+	if err := binding.Bind(r.Request, req); err != nil {
+		response.Failed(w, err)
+		return
+	}
+
+	ins, err := client.Config().CreateConfigMap(r.Request.Context(), req)
 	if err != nil {
 		response.Failed(w, err)
 		return

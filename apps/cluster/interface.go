@@ -1,8 +1,14 @@
 package cluster
 
-import context "context"
+import (
+	context "context"
+)
 
 type Service interface {
+	ClusterService
+}
+
+type ClusterService interface {
 	RPCServer
 	CreateCluster(context.Context, *CreateClusterRequest) (*Cluster, error)
 	UpdateCluster(context.Context, *UpdateClusterRequest) (*Cluster, error)

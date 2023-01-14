@@ -1,67 +1,78 @@
-package http
+package api
 
 import (
+	"io"
+
 	restfulspec "github.com/emicklei/go-restful-openapi/v2"
 	"github.com/emicklei/go-restful/v3"
 	"github.com/infraboard/mcube/http/label"
 	"github.com/infraboard/mcube/http/restful/response"
 	"github.com/infraboard/mpaas/apps/cluster"
 	"github.com/infraboard/mpaas/provider/k8s/meta"
+	"sigs.k8s.io/yaml"
 
 	v1 "k8s.io/api/core/v1"
 )
 
-func (h *handler) registryServiceHandler(ws *restful.WebService) {
-	tags := []string{"服务管理"}
+func (h *handler) registrySecretHandler(ws *restful.WebService) {
+	tags := []string{"密钥管理"}
 
-	ws.Route(ws.POST("/{id}/services").To(h.CreateService).
-		Doc("创建服务").
+	ws.Route(ws.POST("/{id}/secrets").To(h.CreateService).
+		Doc("创建密钥").
 		Metadata(restfulspec.KeyOpenAPITags, tags).
 		Metadata(label.Resource, h.Name()).
 		Metadata(label.Action, label.List.Value()).
 		Metadata(label.Auth, label.Enable).
 		Metadata(label.Permission, label.Enable).
 		Reads(cluster.QueryClusterRequest{}).
-		Writes(v1.Service{}).
-		Returns(200, "OK", v1.Service{}))
+		Writes(v1.Secret{}).
+		Returns(200, "OK", v1.Secret{}))
 
-	ws.Route(ws.GET("/{id}/services").To(h.QueryService).
-		Doc("查询服务列表").
+	ws.Route(ws.GET("/{id}/secrets").To(h.QueryService).
+		Doc("查询密钥列表").
 		Metadata(restfulspec.KeyOpenAPITags, tags).
 		Metadata(label.Resource, h.Name()).
 		Metadata(label.Action, label.List.Value()).
 		Metadata(label.Auth, label.Enable).
 		Metadata(label.Permission, label.Enable).
 		Reads(cluster.QueryClusterRequest{}).
-		Writes(v1.ServiceList{}).
-		Returns(200, "OK", v1.ServiceList{}))
+		Writes(v1.SecretList{}).
+		Returns(200, "OK", v1.SecretList{}))
 
-	ws.Route(ws.GET("/{id}/services/{name}").To(h.GetService).
-		Doc("查询服务详情").
+	ws.Route(ws.GET("/{id}/secrets/{name}").To(h.GetService).
+		Doc("查询密钥详情").
 		Metadata(restfulspec.KeyOpenAPITags, tags).
 		Metadata(label.Resource, h.Name()).
 		Metadata(label.Action, label.List.Value()).
 		Metadata(label.Auth, label.Enable).
 		Metadata(label.Permission, label.Enable).
 		Reads(cluster.QueryClusterRequest{}).
-		Writes(v1.Service{}).
-		Returns(200, "OK", v1.Service{}))
+		Writes(v1.Secret{}).
+		Returns(200, "OK", v1.Secret{}))
 }
 
-func (h *handler) CreateService(r *restful.Request, w *restful.Response) {
+func (h *handler) CreateSecret(r *restful.Request, w *restful.Response) {
 	client, err := h.GetClient(r.Request.Context(), r.PathParameter("id"))
 	if err != nil {
 		response.Failed(w, err)
 		return
 	}
 
-	req := &v1.Service{}
-	if err := r.ReadEntity(req); err != nil {
+	req := &v1.Secret{}
+
+	data, err := io.ReadAll(r.Request.Body)
+	if err != nil {
+		response.Failed(w, err)
+		return
+	}
+	defer r.Request.Body.Close()
+
+	if err := yaml.Unmarshal(data, req); err != nil {
 		response.Failed(w, err)
 		return
 	}
 
-	ins, err := client.Network().CreateService(r.Request.Context(), req)
+	ins, err := client.Config().CreateSecret(r.Request.Context(), req)
 	if err != nil {
 		response.Failed(w, err)
 		return
@@ -70,7 +81,7 @@ func (h *handler) CreateService(r *restful.Request, w *restful.Response) {
 	response.Success(w, ins)
 }
 
-func (h *handler) QueryService(r *restful.Request, w *restful.Response) {
+func (h *handler) QuerySecret(r *restful.Request, w *restful.Response) {
 	client, err := h.GetClient(r.Request.Context(), r.PathParameter("id"))
 	if err != nil {
 		response.Failed(w, err)
@@ -78,7 +89,7 @@ func (h *handler) QueryService(r *restful.Request, w *restful.Response) {
 	}
 
 	req := meta.NewListRequestFromHttp(r.Request)
-	ins, err := client.Network().ListService(r.Request.Context(), req)
+	ins, err := client.Config().ListSecret(r.Request.Context(), req)
 	if err != nil {
 		response.Failed(w, err)
 		return
@@ -87,7 +98,7 @@ func (h *handler) QueryService(r *restful.Request, w *restful.Response) {
 	response.Success(w, ins)
 }
 
-func (h *handler) GetService(r *restful.Request, w *restful.Response) {
+func (h *handler) GetSecret(r *restful.Request, w *restful.Response) {
 	client, err := h.GetClient(r.Request.Context(), r.PathParameter("id"))
 	if err != nil {
 		response.Failed(w, err)
@@ -96,7 +107,7 @@ func (h *handler) GetService(r *restful.Request, w *restful.Response) {
 
 	req := meta.NewGetRequestFromHttp(r.Request)
 	req.Name = r.PathParameter("name")
-	ins, err := client.Network().GetService(r.Request.Context(), req)
+	ins, err := client.Config().GetSecret(r.Request.Context(), req)
 	if err != nil {
 		response.Failed(w, err)
 		return

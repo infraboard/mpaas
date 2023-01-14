@@ -15,6 +15,7 @@ import (
 	"github.com/rs/xid"
 
 	"github.com/infraboard/mpaas/conf"
+	"github.com/infraboard/mpaas/provider/k8s"
 )
 
 const (
@@ -163,6 +164,10 @@ func (i *Cluster) Desense() {
 	if i.Data.KubeConfig != "" {
 		i.Data.KubeConfig = "****"
 	}
+}
+
+func (i *Cluster) Client() (*k8s.Client, error) {
+	return k8s.NewClient(i.Data.KubeConfig)
 }
 
 func NewDescribeClusterRequest(id string) *DescribeClusterRequest {
