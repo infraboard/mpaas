@@ -1,9 +1,11 @@
 package api
 
 import (
+	"fmt"
 	"sync"
 
 	"github.com/emicklei/go-restful/v3"
+	"github.com/infraboard/mcube/http/restful/response"
 	"github.com/infraboard/mcube/logger"
 	"github.com/infraboard/mcube/logger/zap"
 
@@ -31,7 +33,7 @@ func (h *handler) Config() error {
 	return nil
 }
 
-// /prifix/cluster/
+// /prifix/proxy/
 func (h *handler) Name() string {
 	return proxy.AppName
 }
@@ -41,6 +43,38 @@ func (h *handler) Version() string {
 }
 
 func (h *handler) Registry(r *restful.WebService) {
+	r.Filter(h.ClusterMiddleware)
+}
+
+// 解析Cluster Id的中间件
+func (h *handler) ClusterMiddleware(
+	req *restful.Request,
+	resp *restful.Response,
+	next *restful.FilterChain) {
+
+	// 处理请求
+	clusterId := req.PathParameter("cluster_id")
+	if clusterId != "" {
+		descReq := cluster.NewDescribeClusterRequest(clusterId)
+		ins, err := h.service.DescribeCluster(req.Request.Context(), descReq)
+		if err != nil {
+			response.Failed(resp, fmt.Errorf("describe cluster_id error, %s", err))
+			return
+		}
+
+		client, err := k8s.NewClient(ins.Data.KubeConfig)
+		if err != nil {
+			response.Failed(resp, fmt.Errorf("new k8s client error, %s", err))
+			return
+		}
+
+		req.SetAttribute(proxy.ATTRIBUTE_K8S_CLIENT, client)
+	}
+
+	// next flow
+	next.ProcessFilter(req, resp)
+
+	// 处理响应
 }
 
 func init() {
