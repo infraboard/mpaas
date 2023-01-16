@@ -6,6 +6,8 @@ import (
 	"github.com/infraboard/mcube/http/label"
 	"github.com/infraboard/mcube/http/restful/response"
 	"github.com/infraboard/mpaas/apps/cluster"
+	"github.com/infraboard/mpaas/apps/proxy"
+	"github.com/infraboard/mpaas/provider/k8s"
 	"github.com/infraboard/mpaas/provider/k8s/meta"
 
 	v1 "k8s.io/api/core/v1"
@@ -13,7 +15,7 @@ import (
 
 func (h *handler) registryNamespaceHandler(ws *restful.WebService) {
 	tags := []string{"Namespace管理"}
-	ws.Route(ws.POST("/{id}/namespace").To(h.CreateNamespaces).
+	ws.Route(ws.POST("/{cluster_id}/namespace").To(h.CreateNamespaces).
 		Doc("创建Namespace").
 		Metadata(restfulspec.KeyOpenAPITags, tags).
 		Metadata(label.Resource, h.Name()).
@@ -23,7 +25,7 @@ func (h *handler) registryNamespaceHandler(ws *restful.WebService) {
 		Reads(v1.Namespace{}).
 		Writes(v1.Namespace{}))
 
-	ws.Route(ws.GET("/{id}/namespaces").To(h.QueryNamespaces).
+	ws.Route(ws.GET("/{cluster_id}/namespaces").To(h.QueryNamespaces).
 		Doc("查询Namespace").
 		Metadata(restfulspec.KeyOpenAPITags, tags).
 		Metadata(label.Resource, h.Name()).
@@ -36,11 +38,7 @@ func (h *handler) registryNamespaceHandler(ws *restful.WebService) {
 }
 
 func (h *handler) QueryNamespaces(r *restful.Request, w *restful.Response) {
-	client, err := h.GetClient(r.Request.Context(), r.PathParameter("id"))
-	if err != nil {
-		response.Failed(w, err)
-		return
-	}
+	client := r.Attribute(proxy.ATTRIBUTE_K8S_CLIENT).(*k8s.Client)
 
 	req := meta.NewListRequestFromHttp(r.Request)
 	ins, err := client.Admin().ListNamespace(r.Request.Context(), req)
@@ -53,11 +51,7 @@ func (h *handler) QueryNamespaces(r *restful.Request, w *restful.Response) {
 }
 
 func (h *handler) CreateNamespaces(r *restful.Request, w *restful.Response) {
-	client, err := h.GetClient(r.Request.Context(), r.PathParameter("id"))
-	if err != nil {
-		response.Failed(w, err)
-		return
-	}
+	client := r.Attribute(proxy.ATTRIBUTE_K8S_CLIENT).(*k8s.Client)
 
 	req := &v1.Namespace{}
 	if err := r.ReadEntity(req); err != nil {

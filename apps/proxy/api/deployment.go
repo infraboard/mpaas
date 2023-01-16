@@ -6,6 +6,8 @@ import (
 	"github.com/infraboard/mcube/http/label"
 	"github.com/infraboard/mcube/http/restful/response"
 	"github.com/infraboard/mpaas/apps/cluster"
+	"github.com/infraboard/mpaas/apps/proxy"
+	"github.com/infraboard/mpaas/provider/k8s"
 	"github.com/infraboard/mpaas/provider/k8s/meta"
 
 	appsv1 "k8s.io/api/apps/v1"
@@ -14,7 +16,7 @@ import (
 
 func (h *handler) registryDeploymentHandler(ws *restful.WebService) {
 	tags := []string{"Deployment管理"}
-	ws.Route(ws.POST("/{id}/deployments").To(h.CreateDeployment).
+	ws.Route(ws.POST("/{cluster_id}/deployments").To(h.CreateDeployment).
 		Doc("创建Deployment").
 		Metadata(restfulspec.KeyOpenAPITags, tags).
 		Metadata(label.Resource, h.Name()).
@@ -24,7 +26,7 @@ func (h *handler) registryDeploymentHandler(ws *restful.WebService) {
 		Reads(appsv1.Deployment{}).
 		Writes(appsv1.Deployment{}))
 
-	ws.Route(ws.GET("/{id}/deployments").To(h.QueryDeployments).
+	ws.Route(ws.GET("/{cluster_id}/deployments").To(h.QueryDeployments).
 		Doc("查询Deployment列表").
 		Metadata(restfulspec.KeyOpenAPITags, tags).
 		Metadata(label.Resource, h.Name()).
@@ -35,7 +37,7 @@ func (h *handler) registryDeploymentHandler(ws *restful.WebService) {
 		Writes(appsv1.Deployment{}).
 		Returns(200, "OK", appsv1.Deployment{}))
 
-	ws.Route(ws.GET("/{id}/deployments/{name}").To(h.GetDeployment).
+	ws.Route(ws.GET("/{cluster_id}/deployments/{name}").To(h.GetDeployment).
 		Doc("查询Deployment详情").
 		Metadata(restfulspec.KeyOpenAPITags, tags).
 		Metadata(label.Resource, h.Name()).
@@ -46,7 +48,7 @@ func (h *handler) registryDeploymentHandler(ws *restful.WebService) {
 		Writes(appsv1.Deployment{}).
 		Returns(200, "OK", appsv1.Deployment{}))
 
-	ws.Route(ws.PUT("/{id}/deployments/{name}").To(h.UpdateDeployment).
+	ws.Route(ws.PUT("/{cluster_id}/deployments/{name}").To(h.UpdateDeployment).
 		Doc("更新Deployment").
 		Metadata(restfulspec.KeyOpenAPITags, tags).
 		Metadata(label.Resource, h.Name()).
@@ -57,7 +59,7 @@ func (h *handler) registryDeploymentHandler(ws *restful.WebService) {
 		Writes(appsv1.Deployment{}).
 		Returns(200, "OK", appsv1.Deployment{}))
 
-	ws.Route(ws.POST("/{id}/deployments/{name}/scale").To(h.ScaleDeployment).
+	ws.Route(ws.POST("/{cluster_id}/deployments/{name}/scale").To(h.ScaleDeployment).
 		Doc("更新副本数").
 		Metadata(restfulspec.KeyOpenAPITags, tags).
 		Metadata(label.Resource, h.Name()).
@@ -68,7 +70,7 @@ func (h *handler) registryDeploymentHandler(ws *restful.WebService) {
 		Writes(scalv1.Scale{}).
 		Returns(200, "OK", scalv1.Scale{}))
 
-	ws.Route(ws.POST("/{id}/deployments/{name}/redeploy").To(h.ReDeployment).
+	ws.Route(ws.POST("/{cluster_id}/deployments/{name}/redeploy").To(h.ReDeployment).
 		Doc("重新部署").
 		Metadata(restfulspec.KeyOpenAPITags, tags).
 		Metadata(label.Resource, h.Name()).
@@ -81,11 +83,7 @@ func (h *handler) registryDeploymentHandler(ws *restful.WebService) {
 }
 
 func (h *handler) CreateDeployment(r *restful.Request, w *restful.Response) {
-	client, err := h.GetClient(r.Request.Context(), r.PathParameter("id"))
-	if err != nil {
-		response.Failed(w, err)
-		return
-	}
+	client := r.Attribute(proxy.ATTRIBUTE_K8S_CLIENT).(*k8s.Client)
 
 	req := &appsv1.Deployment{}
 	if err := r.ReadEntity(req); err != nil {
@@ -103,11 +101,7 @@ func (h *handler) CreateDeployment(r *restful.Request, w *restful.Response) {
 }
 
 func (h *handler) QueryDeployments(r *restful.Request, w *restful.Response) {
-	client, err := h.GetClient(r.Request.Context(), r.PathParameter("id"))
-	if err != nil {
-		response.Failed(w, err)
-		return
-	}
+	client := r.Attribute(proxy.ATTRIBUTE_K8S_CLIENT).(*k8s.Client)
 
 	req := meta.NewListRequestFromHttp(r.Request)
 	ins, err := client.WorkLoad().ListDeployment(r.Request.Context(), req)
@@ -120,11 +114,7 @@ func (h *handler) QueryDeployments(r *restful.Request, w *restful.Response) {
 }
 
 func (h *handler) GetDeployment(r *restful.Request, w *restful.Response) {
-	client, err := h.GetClient(r.Request.Context(), r.PathParameter("id"))
-	if err != nil {
-		response.Failed(w, err)
-		return
-	}
+	client := r.Attribute(proxy.ATTRIBUTE_K8S_CLIENT).(*k8s.Client)
 
 	req := meta.NewGetRequestFromHttp(r.Request)
 	req.Name = r.PathParameter("name")
@@ -138,11 +128,7 @@ func (h *handler) GetDeployment(r *restful.Request, w *restful.Response) {
 }
 
 func (h *handler) UpdateDeployment(r *restful.Request, w *restful.Response) {
-	client, err := h.GetClient(r.Request.Context(), r.PathParameter("id"))
-	if err != nil {
-		response.Failed(w, err)
-		return
-	}
+	client := r.Attribute(proxy.ATTRIBUTE_K8S_CLIENT).(*k8s.Client)
 
 	req := &appsv1.Deployment{}
 	if err := r.ReadEntity(req); err != nil {
@@ -161,11 +147,7 @@ func (h *handler) UpdateDeployment(r *restful.Request, w *restful.Response) {
 }
 
 func (h *handler) ScaleDeployment(r *restful.Request, w *restful.Response) {
-	client, err := h.GetClient(r.Request.Context(), r.PathParameter("id"))
-	if err != nil {
-		response.Failed(w, err)
-		return
-	}
+	client := r.Attribute(proxy.ATTRIBUTE_K8S_CLIENT).(*k8s.Client)
 
 	req := meta.NewScaleRequest()
 	if err := r.ReadEntity(req); err != nil {
@@ -184,11 +166,7 @@ func (h *handler) ScaleDeployment(r *restful.Request, w *restful.Response) {
 }
 
 func (h *handler) ReDeployment(r *restful.Request, w *restful.Response) {
-	client, err := h.GetClient(r.Request.Context(), r.PathParameter("id"))
-	if err != nil {
-		response.Failed(w, err)
-		return
-	}
+	client := r.Attribute(proxy.ATTRIBUTE_K8S_CLIENT).(*k8s.Client)
 
 	req := meta.NewGetRequestFromHttp(r.Request)
 	req.Name = r.PathParameter("name")

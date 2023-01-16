@@ -8,6 +8,8 @@ import (
 	"github.com/infraboard/mcube/http/label"
 	"github.com/infraboard/mcube/http/restful/response"
 	"github.com/infraboard/mpaas/apps/cluster"
+	"github.com/infraboard/mpaas/apps/proxy"
+	"github.com/infraboard/mpaas/provider/k8s"
 	"github.com/infraboard/mpaas/provider/k8s/meta"
 	"sigs.k8s.io/yaml"
 
@@ -17,7 +19,7 @@ import (
 func (h *handler) registrySecretHandler(ws *restful.WebService) {
 	tags := []string{"密钥管理"}
 
-	ws.Route(ws.POST("/{id}/secrets").To(h.CreateService).
+	ws.Route(ws.POST("/{cluster_id}/secrets").To(h.CreateSecret).
 		Doc("创建密钥").
 		Metadata(restfulspec.KeyOpenAPITags, tags).
 		Metadata(label.Resource, h.Name()).
@@ -28,7 +30,7 @@ func (h *handler) registrySecretHandler(ws *restful.WebService) {
 		Writes(v1.Secret{}).
 		Returns(200, "OK", v1.Secret{}))
 
-	ws.Route(ws.GET("/{id}/secrets").To(h.QueryService).
+	ws.Route(ws.GET("/{cluster_id}/secrets").To(h.QuerySecret).
 		Doc("查询密钥列表").
 		Metadata(restfulspec.KeyOpenAPITags, tags).
 		Metadata(label.Resource, h.Name()).
@@ -39,7 +41,7 @@ func (h *handler) registrySecretHandler(ws *restful.WebService) {
 		Writes(v1.SecretList{}).
 		Returns(200, "OK", v1.SecretList{}))
 
-	ws.Route(ws.GET("/{id}/secrets/{name}").To(h.GetService).
+	ws.Route(ws.GET("/{cluster_id}/secrets/{name}").To(h.GetSecret).
 		Doc("查询密钥详情").
 		Metadata(restfulspec.KeyOpenAPITags, tags).
 		Metadata(label.Resource, h.Name()).
@@ -52,11 +54,7 @@ func (h *handler) registrySecretHandler(ws *restful.WebService) {
 }
 
 func (h *handler) CreateSecret(r *restful.Request, w *restful.Response) {
-	client, err := h.GetClient(r.Request.Context(), r.PathParameter("id"))
-	if err != nil {
-		response.Failed(w, err)
-		return
-	}
+	client := r.Attribute(proxy.ATTRIBUTE_K8S_CLIENT).(*k8s.Client)
 
 	req := &v1.Secret{}
 
@@ -82,11 +80,7 @@ func (h *handler) CreateSecret(r *restful.Request, w *restful.Response) {
 }
 
 func (h *handler) QuerySecret(r *restful.Request, w *restful.Response) {
-	client, err := h.GetClient(r.Request.Context(), r.PathParameter("id"))
-	if err != nil {
-		response.Failed(w, err)
-		return
-	}
+	client := r.Attribute(proxy.ATTRIBUTE_K8S_CLIENT).(*k8s.Client)
 
 	req := meta.NewListRequestFromHttp(r.Request)
 	ins, err := client.Config().ListSecret(r.Request.Context(), req)
@@ -99,11 +93,7 @@ func (h *handler) QuerySecret(r *restful.Request, w *restful.Response) {
 }
 
 func (h *handler) GetSecret(r *restful.Request, w *restful.Response) {
-	client, err := h.GetClient(r.Request.Context(), r.PathParameter("id"))
-	if err != nil {
-		response.Failed(w, err)
-		return
-	}
+	client := r.Attribute(proxy.ATTRIBUTE_K8S_CLIENT).(*k8s.Client)
 
 	req := meta.NewGetRequestFromHttp(r.Request)
 	req.Name = r.PathParameter("name")

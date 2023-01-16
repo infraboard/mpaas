@@ -5,6 +5,7 @@ import (
 
 	"github.com/emicklei/go-restful/v3"
 	"github.com/infraboard/mcube/http/restful/response"
+	"github.com/infraboard/mpaas/apps/proxy"
 	"github.com/infraboard/mpaas/provider/k8s"
 )
 
@@ -21,11 +22,7 @@ func (h *handler) Watch(r *restful.Request, w *restful.Response) {
 	}
 	defer term.Close()
 
-	client, err := h.GetClient(r.Request.Context(), r.PathParameter("id"))
-	if err != nil {
-		term.WriteMessage(k8s.NewOperatinonParamMessage(err.Error()))
-		return
-	}
+	client := r.Attribute(proxy.ATTRIBUTE_K8S_CLIENT).(*k8s.Client)
 
 	// 获取参数
 	req := k8s.NewWatchRequest()

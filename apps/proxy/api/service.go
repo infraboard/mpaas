@@ -6,6 +6,8 @@ import (
 	"github.com/infraboard/mcube/http/label"
 	"github.com/infraboard/mcube/http/restful/response"
 	"github.com/infraboard/mpaas/apps/cluster"
+	"github.com/infraboard/mpaas/apps/proxy"
+	"github.com/infraboard/mpaas/provider/k8s"
 	"github.com/infraboard/mpaas/provider/k8s/meta"
 
 	v1 "k8s.io/api/core/v1"
@@ -14,7 +16,7 @@ import (
 func (h *handler) registryServiceHandler(ws *restful.WebService) {
 	tags := []string{"服务管理"}
 
-	ws.Route(ws.POST("/{id}/services").To(h.CreateService).
+	ws.Route(ws.POST("/{cluster_id}/services").To(h.CreateService).
 		Doc("创建服务").
 		Metadata(restfulspec.KeyOpenAPITags, tags).
 		Metadata(label.Resource, h.Name()).
@@ -25,7 +27,7 @@ func (h *handler) registryServiceHandler(ws *restful.WebService) {
 		Writes(v1.Service{}).
 		Returns(200, "OK", v1.Service{}))
 
-	ws.Route(ws.GET("/{id}/services").To(h.QueryService).
+	ws.Route(ws.GET("/{cluster_id}/services").To(h.QueryService).
 		Doc("查询服务列表").
 		Metadata(restfulspec.KeyOpenAPITags, tags).
 		Metadata(label.Resource, h.Name()).
@@ -36,7 +38,7 @@ func (h *handler) registryServiceHandler(ws *restful.WebService) {
 		Writes(v1.ServiceList{}).
 		Returns(200, "OK", v1.ServiceList{}))
 
-	ws.Route(ws.GET("/{id}/services/{name}").To(h.GetService).
+	ws.Route(ws.GET("/{cluster_id}/services/{name}").To(h.GetService).
 		Doc("查询服务详情").
 		Metadata(restfulspec.KeyOpenAPITags, tags).
 		Metadata(label.Resource, h.Name()).
@@ -49,11 +51,7 @@ func (h *handler) registryServiceHandler(ws *restful.WebService) {
 }
 
 func (h *handler) CreateService(r *restful.Request, w *restful.Response) {
-	client, err := h.GetClient(r.Request.Context(), r.PathParameter("id"))
-	if err != nil {
-		response.Failed(w, err)
-		return
-	}
+	client := r.Attribute(proxy.ATTRIBUTE_K8S_CLIENT).(*k8s.Client)
 
 	req := &v1.Service{}
 	if err := r.ReadEntity(req); err != nil {
@@ -71,11 +69,7 @@ func (h *handler) CreateService(r *restful.Request, w *restful.Response) {
 }
 
 func (h *handler) QueryService(r *restful.Request, w *restful.Response) {
-	client, err := h.GetClient(r.Request.Context(), r.PathParameter("id"))
-	if err != nil {
-		response.Failed(w, err)
-		return
-	}
+	client := r.Attribute(proxy.ATTRIBUTE_K8S_CLIENT).(*k8s.Client)
 
 	req := meta.NewListRequestFromHttp(r.Request)
 	ins, err := client.Network().ListService(r.Request.Context(), req)
@@ -88,11 +82,7 @@ func (h *handler) QueryService(r *restful.Request, w *restful.Response) {
 }
 
 func (h *handler) GetService(r *restful.Request, w *restful.Response) {
-	client, err := h.GetClient(r.Request.Context(), r.PathParameter("id"))
-	if err != nil {
-		response.Failed(w, err)
-		return
-	}
+	client := r.Attribute(proxy.ATTRIBUTE_K8S_CLIENT).(*k8s.Client)
 
 	req := meta.NewGetRequestFromHttp(r.Request)
 	req.Name = r.PathParameter("name")

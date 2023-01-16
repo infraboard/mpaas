@@ -11,6 +11,7 @@ import (
 	"github.com/infraboard/mcube/http/label"
 	"github.com/infraboard/mcube/http/restful/response"
 	"github.com/infraboard/mpaas/apps/cluster"
+	"github.com/infraboard/mpaas/apps/proxy"
 	"github.com/infraboard/mpaas/provider/k8s"
 	"github.com/infraboard/mpaas/provider/k8s/meta"
 	"github.com/infraboard/mpaas/provider/k8s/workload"
@@ -21,7 +22,7 @@ import (
 func (h *handler) registryPodHandler(ws *restful.WebService) {
 	tags := []string{"Pod管理"}
 
-	ws.Route(ws.POST("/{id}/pods").To(h.CreatePod).
+	ws.Route(ws.POST("/{cluster_id}/pods").To(h.CreatePod).
 		Doc("创建Pod").
 		Metadata(restfulspec.KeyOpenAPITags, tags).
 		Metadata(label.Resource, h.Name()).
@@ -32,7 +33,7 @@ func (h *handler) registryPodHandler(ws *restful.WebService) {
 		Writes(corev1.Pod{}).
 		Returns(200, "OK", corev1.Pod{}))
 
-	ws.Route(ws.GET("/{id}/pods").To(h.QueryPods).
+	ws.Route(ws.GET("/{cluster_id}/pods").To(h.QueryPods).
 		Doc("查询Pod列表").
 		Metadata(restfulspec.KeyOpenAPITags, tags).
 		Metadata(label.Resource, h.Name()).
@@ -43,7 +44,7 @@ func (h *handler) registryPodHandler(ws *restful.WebService) {
 		Writes(corev1.PodList{}).
 		Returns(200, "OK", corev1.PodList{}))
 
-	ws.Route(ws.GET("/{id}/pods/{name}").To(h.GetPod).
+	ws.Route(ws.GET("/{cluster_id}/pods/{name}").To(h.GetPod).
 		Doc("查询Pod详情").
 		Metadata(restfulspec.KeyOpenAPITags, tags).
 		Metadata(label.Resource, h.Name()).
@@ -54,7 +55,7 @@ func (h *handler) registryPodHandler(ws *restful.WebService) {
 		Writes(corev1.Pod{}).
 		Returns(200, "OK", corev1.Pod{}))
 
-	ws.Route(ws.GET("/{id}/pods/{name}/login").To(h.LoginContainer).
+	ws.Route(ws.GET("/{cluster_id}/pods/{name}/login").To(h.LoginContainer).
 		Doc("登陆Pod").
 		Metadata(restfulspec.KeyOpenAPITags, tags).
 		Metadata(label.Resource, h.Name()).
@@ -65,7 +66,7 @@ func (h *handler) registryPodHandler(ws *restful.WebService) {
 		Writes(corev1.Pod{}).
 		Returns(200, "OK", corev1.Pod{}))
 
-	ws.Route(ws.GET("/{id}/pods/{name}/login").To(h.WatchConainterLog).
+	ws.Route(ws.GET("/{cluster_id}/pods/{name}/login").To(h.WatchConainterLog).
 		Doc("查看Pod日志").
 		Metadata(restfulspec.KeyOpenAPITags, tags).
 		Metadata(label.Resource, h.Name()).
@@ -78,11 +79,7 @@ func (h *handler) registryPodHandler(ws *restful.WebService) {
 }
 
 func (h *handler) CreatePod(r *restful.Request, w *restful.Response) {
-	client, err := h.GetClient(r.Request.Context(), r.PathParameter("id"))
-	if err != nil {
-		response.Failed(w, err)
-		return
-	}
+	client := r.Attribute(proxy.ATTRIBUTE_K8S_CLIENT).(*k8s.Client)
 
 	pod := &corev1.Pod{}
 	if err := r.ReadEntity(pod); err != nil {
@@ -101,11 +98,7 @@ func (h *handler) CreatePod(r *restful.Request, w *restful.Response) {
 }
 
 func (h *handler) QueryPods(r *restful.Request, w *restful.Response) {
-	client, err := h.GetClient(r.Request.Context(), r.PathParameter("id"))
-	if err != nil {
-		response.Failed(w, err)
-		return
-	}
+	client := r.Attribute(proxy.ATTRIBUTE_K8S_CLIENT).(*k8s.Client)
 
 	req := meta.NewListRequestFromHttp(r.Request)
 	ins, err := client.WorkLoad().ListPod(r.Request.Context(), req)
@@ -118,11 +111,7 @@ func (h *handler) QueryPods(r *restful.Request, w *restful.Response) {
 }
 
 func (h *handler) GetPod(r *restful.Request, w *restful.Response) {
-	client, err := h.GetClient(r.Request.Context(), r.PathParameter("id"))
-	if err != nil {
-		response.Failed(w, err)
-		return
-	}
+	client := r.Attribute(proxy.ATTRIBUTE_K8S_CLIENT).(*k8s.Client)
 
 	req := meta.NewGetRequestFromHttp(r.Request)
 	req.Name = r.PathParameter("name")
@@ -160,11 +149,7 @@ func (h *handler) LoginContainer(r *restful.Request, w *restful.Response) {
 	}
 	defer term.Close()
 
-	client, err := h.GetClient(r.Request.Context(), r.PathParameter("id"))
-	if err != nil {
-		response.Failed(w, err)
-		return
-	}
+	client := r.Attribute(proxy.ATTRIBUTE_K8S_CLIENT).(*k8s.Client)
 
 	// 获取参数
 	req := workload.NewLoginContainerRequest([]string{"sh", "-c", defaultCmd}, term)
@@ -187,11 +172,7 @@ func (h *handler) WatchConainterLog(r *restful.Request, w *restful.Response) {
 	}
 	defer term.Close()
 
-	client, err := h.GetClient(r.Request.Context(), r.PathParameter("id"))
-	if err != nil {
-		response.Failed(w, err)
-		return
-	}
+	client := r.Attribute(proxy.ATTRIBUTE_K8S_CLIENT).(*k8s.Client)
 
 	// 获取参数
 	req := workload.NewWatchConainterLogRequest()
