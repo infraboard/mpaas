@@ -17,6 +17,7 @@ import (
 	"github.com/infraboard/mcube/logger/zap"
 
 	"github.com/infraboard/mpaas/conf"
+	"github.com/infraboard/mpaas/version"
 )
 
 // NewGRPCService todo
@@ -24,7 +25,7 @@ func NewGRPCService() *GRPCService {
 	rc := recovery.NewInterceptor(recovery.NewZapRecoveryHandler())
 	grpcServer := grpc.NewServer(grpc.ChainUnaryInterceptor(
 		rc.UnaryServerInterceptor(),
-		middleware.GrpcAuthUnaryServerInterceptor(),
+		middleware.GrpcAuthUnaryServerInterceptor(version.ServiceName),
 	))
 
 	// 控制Grpc启动其他服务, 比如注册中心

@@ -13,6 +13,7 @@ func (c *Config) ListConfigMap(ctx context.Context, req *meta.ListRequest) (*v1.
 }
 
 func (c *Config) GetConfigMap(ctx context.Context, req *meta.GetRequest) (*v1.ConfigMap, error) {
+
 	return c.corev1.ConfigMaps(req.Namespace).Get(ctx, req.Name, req.Opts)
 }
 

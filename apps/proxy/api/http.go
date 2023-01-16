@@ -2,7 +2,6 @@ package api
 
 import (
 	"fmt"
-	"sync"
 
 	"github.com/emicklei/go-restful/v3"
 	"github.com/infraboard/mcube/http/restful/response"
@@ -22,12 +21,9 @@ var (
 type handler struct {
 	service cluster.Service
 	log     logger.Logger
-	clients map[string]*k8s.Client
-	sync.Mutex
 }
 
 func (h *handler) Config() error {
-	h.clients = map[string]*k8s.Client{}
 	h.log = zap.L().Named(cluster.AppName)
 	h.service = app.GetGrpcApp(cluster.AppName).(cluster.Service)
 	return nil
@@ -64,22 +60,25 @@ func (h *handler) ClusterMiddleware(
 
 	// 处理请求
 	clusterId := req.PathParameter("cluster_id")
-	if clusterId != "" {
-		descReq := cluster.NewDescribeClusterRequest(clusterId)
-		ins, err := h.service.DescribeCluster(req.Request.Context(), descReq)
-		if err != nil {
-			response.Failed(resp, fmt.Errorf("describe cluster_id error, %s", err))
-			return
-		}
-
-		client, err := k8s.NewClient(ins.Data.KubeConfig)
-		if err != nil {
-			response.Failed(resp, fmt.Errorf("new k8s client error, %s", err))
-			return
-		}
-
-		req.SetAttribute(proxy.ATTRIBUTE_K8S_CLIENT, client)
+	if clusterId == "" {
+		response.Failed(resp, fmt.Errorf("url path param cluster_id required"))
+		return
 	}
+
+	// 获取集群client对象
+	descReq := cluster.NewDescribeClusterRequest(clusterId)
+	ins, err := h.service.DescribeCluster(req.Request.Context(), descReq)
+	if err != nil {
+		response.Failed(resp, fmt.Errorf("describe cluster_id error, %s", err))
+		return
+	}
+
+	client, err := k8s.NewClient(ins.Data.KubeConfig)
+	if err != nil {
+		response.Failed(resp, fmt.Errorf("new k8s client error, %s", err))
+		return
+	}
+	req.SetAttribute(proxy.ATTRIBUTE_K8S_CLIENT, client)
 
 	// next flow
 	next.ProcessFilter(req, resp)

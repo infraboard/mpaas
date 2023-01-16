@@ -14,8 +14,7 @@ import (
 
 	"github.com/infraboard/mcenter/apps/endpoint"
 	"github.com/infraboard/mcenter/client/rpc"
-
-	// "github.com/infraboard/mcenter/client/rpc/middleware"
+	"github.com/infraboard/mcenter/client/rpc/middleware"
 
 	"github.com/infraboard/mpaas/conf"
 	"github.com/infraboard/mpaas/swagger"
@@ -30,19 +29,18 @@ func NewHTTPService() *HTTPService {
 	}
 
 	r := restful.DefaultContainer
-	// Optionally, you can install the Swagger Service which provides a nice Web UI on your REST API
-	// You need to download the Swagger HTML5 assets and change the FilePath location in the config below.
-	// Open http://localhost:8080/apidocs/?url=http://localhost:8080/apidocs.json
-	// http.Handle("/apidocs/", http.StripPrefix("/apidocs/", http.FileServer(http.Dir("/Users/emicklei/Projects/swagger-ui/dist"))))
 
 	// Optionally, you may need to enable CORS for the UI to work.
 	cors := restful.CrossOriginResourceSharing{
 		AllowedHeaders: []string{"*"},
-		AllowedMethods: []string{"*"},
+		AllowedDomains: []string{"*"},
+		AllowedMethods: []string{"HEAD", "OPTIONS", "GET", "POST", "PUT", "PATCH", "DELETE"},
 		CookiesAllowed: false,
-		Container:      r}
+		Container:      r,
+	}
+
 	r.Filter(cors.Filter)
-	// r.Filter(middleware.RestfulServerInterceptor())
+	r.Filter(middleware.RestfulServerInterceptor())
 
 	server := &http.Server{
 		ReadHeaderTimeout: 60 * time.Second,
