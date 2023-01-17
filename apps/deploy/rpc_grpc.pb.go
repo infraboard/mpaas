@@ -24,6 +24,7 @@ const _ = grpc.SupportPackageIsVersion7
 type RPCClient interface {
 	UpdateDeploy(ctx context.Context, in *UpdateDeployRequest, opts ...grpc.CallOption) (*Deploy, error)
 	QueryDeploy(ctx context.Context, in *QueryDeployRequest, opts ...grpc.CallOption) (*DeploySet, error)
+	DescribeDeploy(ctx context.Context, in *DescribeDeployRequest, opts ...grpc.CallOption) (*Deploy, error)
 }
 
 type rPCClient struct {
@@ -52,12 +53,22 @@ func (c *rPCClient) QueryDeploy(ctx context.Context, in *QueryDeployRequest, opt
 	return out, nil
 }
 
+func (c *rPCClient) DescribeDeploy(ctx context.Context, in *DescribeDeployRequest, opts ...grpc.CallOption) (*Deploy, error) {
+	out := new(Deploy)
+	err := c.cc.Invoke(ctx, "/infraboard.mpaas.deploy.RPC/DescribeDeploy", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // RPCServer is the server API for RPC service.
 // All implementations must embed UnimplementedRPCServer
 // for forward compatibility
 type RPCServer interface {
 	UpdateDeploy(context.Context, *UpdateDeployRequest) (*Deploy, error)
 	QueryDeploy(context.Context, *QueryDeployRequest) (*DeploySet, error)
+	DescribeDeploy(context.Context, *DescribeDeployRequest) (*Deploy, error)
 	mustEmbedUnimplementedRPCServer()
 }
 
@@ -70,6 +81,9 @@ func (UnimplementedRPCServer) UpdateDeploy(context.Context, *UpdateDeployRequest
 }
 func (UnimplementedRPCServer) QueryDeploy(context.Context, *QueryDeployRequest) (*DeploySet, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method QueryDeploy not implemented")
+}
+func (UnimplementedRPCServer) DescribeDeploy(context.Context, *DescribeDeployRequest) (*Deploy, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DescribeDeploy not implemented")
 }
 func (UnimplementedRPCServer) mustEmbedUnimplementedRPCServer() {}
 
@@ -120,6 +134,24 @@ func _RPC_QueryDeploy_Handler(srv interface{}, ctx context.Context, dec func(int
 	return interceptor(ctx, in, info, handler)
 }
 
+func _RPC_DescribeDeploy_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(DescribeDeployRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(RPCServer).DescribeDeploy(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/infraboard.mpaas.deploy.RPC/DescribeDeploy",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(RPCServer).DescribeDeploy(ctx, req.(*DescribeDeployRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // RPC_ServiceDesc is the grpc.ServiceDesc for RPC service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -134,6 +166,10 @@ var RPC_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "QueryDeploy",
 			Handler:    _RPC_QueryDeploy_Handler,
+		},
+		{
+			MethodName: "DescribeDeploy",
+			Handler:    _RPC_DescribeDeploy_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

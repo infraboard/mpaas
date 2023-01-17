@@ -36,7 +36,7 @@ func (h *handler) Version() string {
 func (h *handler) Registry(ws *restful.WebService) {
 	tags := []string{"事件处理"}
 
-	ws.Route(ws.GET("events/gitlab").To(h.HandleGitlabEvent).
+	ws.Route(ws.GET("gitlab").To(h.HandleGitlabEvent).
 		Doc("处理Gitlab Webhook事件").
 		Metadata(restfulspec.KeyOpenAPITags, tags))
 }

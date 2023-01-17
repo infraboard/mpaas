@@ -1,7 +1,6 @@
 package api
 
 import (
-	"github.com/emicklei/go-restful/v3"
 	"github.com/infraboard/mcube/logger"
 	"github.com/infraboard/mcube/logger/zap"
 
@@ -31,10 +30,6 @@ func (h *handler) Name() string {
 
 func (h *handler) Version() string {
 	return "v1"
-}
-
-func (h *handler) Registry(r *restful.WebService) {
-	h.registryClusterHandler(r)
 }
 
 func init() {

@@ -3,6 +3,7 @@ package deploy
 import (
 	context "context"
 	"fmt"
+	"net/http"
 	"time"
 
 	"github.com/infraboard/mcenter/common/validate"
@@ -40,6 +41,12 @@ func (req *CreateDeployRequest) Validate() error {
 	return validate.Validate(req)
 }
 
+func NewQueryDeployRequestFromHttp(r *http.Request) *QueryDeployRequest {
+	req := NewQueryDeployRequest()
+	req.Page = request.NewPageRequestFromHTTP(r)
+	return req
+}
+
 func NewQueryDeployRequest() *QueryDeployRequest {
 	return &QueryDeployRequest{
 		Page: request.NewDefaultPageRequest(),
@@ -70,4 +77,26 @@ func NewDescribeDeployRequest(id string) *DescribeDeployRequest {
 
 func (req *DescribeDeployRequest) Validate() error {
 	return validate.Validate(req)
+}
+
+func NewPutDeployRequest(id string) *UpdateDeployRequest {
+	return &UpdateDeployRequest{
+		Id:         id,
+		UpdateMode: pb_request.UpdateMode_PUT,
+		Spec:       NewCreateDeployRequest(),
+	}
+}
+
+func NewPatchDeployRequest(id string) *UpdateDeployRequest {
+	return &UpdateDeployRequest{
+		Id:         id,
+		UpdateMode: pb_request.UpdateMode_PATCH,
+		Spec:       NewCreateDeployRequest(),
+	}
+}
+
+func NewDeleteDeployRequest(id string) *DeleteDeployRequest {
+	return &DeleteDeployRequest{
+		Id: id,
+	}
 }

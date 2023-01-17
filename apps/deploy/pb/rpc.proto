@@ -11,6 +11,7 @@ import "apps/deploy/pb/deploy.proto";
 service RPC {
     rpc UpdateDeploy(UpdateDeployRequest) returns(Deploy);
     rpc QueryDeploy(QueryDeployRequest) returns(DeploySet);
+    rpc DescribeDeploy(DescribeDeployRequest) returns(Deploy);
 }
 
 message QueryDeployRequest {
@@ -43,9 +44,12 @@ message UpdateDeployRequest {
     // 部署Id
     // @gotags: json:"id"
     string id = 2;
+    // 部署Id
+    // @gotags: json:"id"
+    string update_by = 3;
     // 创建信息
     // @gotags: json:"spec"
-    CreateDeployRequest spec = 3;
+    CreateDeployRequest spec = 4;
 }
 
 message DeleteDeployRequest {

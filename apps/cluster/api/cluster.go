@@ -10,7 +10,7 @@ import (
 	"github.com/infraboard/mpaas/apps/cluster"
 )
 
-func (h *handler) registryClusterHandler(ws *restful.WebService) {
+func (h *handler) Registry(ws *restful.WebService) {
 	tags := []string{"集群管理"}
 	ws.Route(ws.POST("/").To(h.CreateCluster).
 		Doc("创建集群").
