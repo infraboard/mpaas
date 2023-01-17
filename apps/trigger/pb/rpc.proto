@@ -1,0 +1,11 @@
+syntax = "proto3";
+
+package infraboard.mpaas.trigger;
+option go_package = "github.com/infraboard/mpaas/apps/trigger";
+
+import "apps/trigger/pb/gitlab.proto";
+
+service RPC {
+    // 处理Gitlab的事件
+    rpc HandleGitlabEvent(GitlabWebHookEvent) returns(GitlabWebHookEvent);
+}

@@ -1,6 +1,10 @@
 package tools
 
 import (
+	"encoding/json"
+	"io"
+	"os"
+
 	"github.com/infraboard/mcube/app"
 	"github.com/infraboard/mcube/logger/zap"
 	"github.com/infraboard/mpaas/conf"
@@ -21,4 +25,18 @@ func DevelopmentSetup() {
 	if err := app.InitAllApp(); err != nil {
 		panic(err)
 	}
+}
+
+func ReadJsonFile(filepath string, v any) error {
+	fd, err := os.Open(filepath)
+	if err != nil {
+		return err
+	}
+	defer fd.Close()
+
+	payload, err := io.ReadAll(fd)
+	if err != nil {
+		return err
+	}
+	return json.Unmarshal(payload, v)
 }
