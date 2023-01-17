@@ -18,8 +18,8 @@ func (h *handler) Registry(ws *restful.WebService) {
 		Metadata(label.Action, label.Create.Value()).
 		Metadata(label.Auth, label.Enable).
 		Metadata(label.Permission, label.Enable).
-		Reads(deploy.CreateDeployRequest{}).
-		Writes(deploy.Deploy{}))
+		Reads(deploy.CreateDeployConfigRequest{}).
+		Writes(deploy.DeployConfig{}))
 
 	ws.Route(ws.GET("/").To(h.QueryDeploy).
 		Doc("查询部署配置列表").
@@ -28,9 +28,9 @@ func (h *handler) Registry(ws *restful.WebService) {
 		Metadata(label.Action, label.List.Value()).
 		Metadata(label.Auth, label.Enable).
 		Metadata(label.Permission, label.Enable).
-		Reads(deploy.QueryDeployRequest{}).
-		Writes(deploy.DeploySet{}).
-		Returns(200, "OK", deploy.DeploySet{}))
+		Reads(deploy.QueryDeployConfigRequest{}).
+		Writes(deploy.DeployConfigSet{}).
+		Returns(200, "OK", deploy.DeployConfigSet{}))
 
 	ws.Route(ws.GET("/{id}").To(h.DescribeDeploy).
 		Doc("部署配置详情").
@@ -40,8 +40,8 @@ func (h *handler) Registry(ws *restful.WebService) {
 		Metadata(label.Action, label.Get.Value()).
 		Metadata(label.Auth, label.Enable).
 		Metadata(label.Permission, label.Enable).
-		Writes(deploy.Deploy{}).
-		Returns(200, "OK", deploy.Deploy{}).
+		Writes(deploy.DeployConfig{}).
+		Returns(200, "OK", deploy.DeployConfig{}).
 		Returns(404, "Not Found", nil))
 
 	ws.Route(ws.PUT("/{id}").To(h.PutDeploy).
@@ -52,8 +52,8 @@ func (h *handler) Registry(ws *restful.WebService) {
 		Metadata(label.Action, label.Get.Value()).
 		Metadata(label.Auth, label.Enable).
 		Metadata(label.Permission, label.Enable).
-		Writes(deploy.Deploy{}).
-		Returns(200, "OK", deploy.Deploy{}).
+		Writes(deploy.DeployConfig{}).
+		Returns(200, "OK", deploy.DeployConfig{}).
 		Returns(404, "Not Found", nil))
 
 	ws.Route(ws.PATCH("/{id}").To(h.PatchDeploy).
@@ -64,8 +64,8 @@ func (h *handler) Registry(ws *restful.WebService) {
 		Metadata(label.Action, label.Get.Value()).
 		Metadata(label.Auth, label.Enable).
 		Metadata(label.Permission, label.Enable).
-		Writes(deploy.Deploy{}).
-		Returns(200, "OK", deploy.Deploy{}).
+		Writes(deploy.DeployConfig{}).
+		Returns(200, "OK", deploy.DeployConfig{}).
 		Returns(404, "Not Found", nil))
 
 	ws.Route(ws.DELETE("/{id}").To(h.DeleteDeploy).
@@ -80,14 +80,14 @@ func (h *handler) Registry(ws *restful.WebService) {
 }
 
 func (h *handler) CreateDeploy(r *restful.Request, w *restful.Response) {
-	req := deploy.NewCreateDeployRequest()
+	req := deploy.NewCreateDeployConfigRequest()
 
 	if err := r.ReadEntity(req); err != nil {
 		response.Failed(w, err)
 		return
 	}
 
-	ins, err := h.service.CreateDeploy(r.Request.Context(), req)
+	ins, err := h.service.CreateDeployConfig(r.Request.Context(), req)
 	if err != nil {
 		response.Failed(w, err)
 		return
@@ -97,9 +97,9 @@ func (h *handler) CreateDeploy(r *restful.Request, w *restful.Response) {
 }
 
 func (h *handler) QueryDeploy(r *restful.Request, w *restful.Response) {
-	req := deploy.NewQueryDeployRequestFromHttp(r.Request)
+	req := deploy.NewQueryDeployConfigRequestFromHttp(r.Request)
 
-	set, err := h.service.QueryDeploy(r.Request.Context(), req)
+	set, err := h.service.QueryDeployConfig(r.Request.Context(), req)
 	if err != nil {
 		response.Failed(w, err)
 		return
@@ -108,9 +108,9 @@ func (h *handler) QueryDeploy(r *restful.Request, w *restful.Response) {
 }
 
 func (h *handler) DescribeDeploy(r *restful.Request, w *restful.Response) {
-	req := deploy.NewDescribeDeployRequest(r.PathParameter("id"))
+	req := deploy.NewDescribeDeployConfigRequest(r.PathParameter("id"))
 
-	ins, err := h.service.DescribeDeploy(r.Request.Context(), req)
+	ins, err := h.service.DescribeDeployConfig(r.Request.Context(), req)
 	if err != nil {
 		response.Failed(w, err)
 		return
@@ -128,7 +128,7 @@ func (h *handler) PutDeploy(r *restful.Request, w *restful.Response) {
 	}
 	req.UpdateBy = tk.Username
 
-	set, err := h.service.UpdateDeploy(r.Request.Context(), req)
+	set, err := h.service.UpdateDeployConfig(r.Request.Context(), req)
 	if err != nil {
 		response.Failed(w, err)
 		return
@@ -147,7 +147,7 @@ func (h *handler) PatchDeploy(r *restful.Request, w *restful.Response) {
 	}
 	req.UpdateBy = tk.Username
 
-	set, err := h.service.UpdateDeploy(r.Request.Context(), req)
+	set, err := h.service.UpdateDeployConfig(r.Request.Context(), req)
 	if err != nil {
 		response.Failed(w, err)
 		return
@@ -156,8 +156,8 @@ func (h *handler) PatchDeploy(r *restful.Request, w *restful.Response) {
 }
 
 func (h *handler) DeleteDeploy(r *restful.Request, w *restful.Response) {
-	req := deploy.NewDeleteDeployRequest(r.PathParameter("id"))
-	set, err := h.service.DeleteDeploy(r.Request.Context(), req)
+	req := deploy.NewDeleteDeployConfigRequest(r.PathParameter("id"))
+	set, err := h.service.DeleteDeployConfig(r.Request.Context(), req)
 	if err != nil {
 		response.Failed(w, err)
 		return

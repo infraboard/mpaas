@@ -1,17 +1,17 @@
 package deploy
 
-func NewDeploySet() *DeploySet {
-	return &DeploySet{
-		Items: []*Deploy{},
+func NewDeployConfigSet() *DeployConfigSet {
+	return &DeployConfigSet{
+		Items: []*DeployConfig{},
 	}
 }
 
-func (s *DeploySet) Add(item *Deploy) {
+func (s *DeployConfigSet) Add(item *DeployConfig) {
 	s.Items = append(s.Items, item)
 }
 
-func NewDefaultDeploy() *Deploy {
-	return &Deploy{
-		Spec: NewCreateDeployRequest(),
+func NewDefaultDeploy() *DeployConfig {
+	return &DeployConfig{
+		Spec: NewCreateDeployConfigRequest(),
 	}
 }

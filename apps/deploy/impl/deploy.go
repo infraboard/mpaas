@@ -12,8 +12,8 @@ import (
 	"go.mongodb.org/mongo-driver/mongo"
 )
 
-func (i *impl) CreateDeploy(ctx context.Context, in *deploy.CreateDeployRequest) (
-	*deploy.Deploy, error) {
+func (i *impl) CreateDeploy(ctx context.Context, in *deploy.CreateDeployConfigRequest) (
+	*deploy.DeployConfig, error) {
 	ins, err := deploy.New(in)
 	if err != nil {
 		return nil, exception.NewBadRequest(err.Error())
@@ -25,8 +25,8 @@ func (i *impl) CreateDeploy(ctx context.Context, in *deploy.CreateDeployRequest)
 	return ins, nil
 }
 
-func (i *impl) QueryDeploy(ctx context.Context, in *deploy.QueryDeployRequest) (
-	*deploy.DeploySet, error) {
+func (i *impl) QueryDeploy(ctx context.Context, in *deploy.QueryDeployConfigRequest) (
+	*deploy.DeployConfigSet, error) {
 	r := newQueryRequest(in)
 	resp, err := i.col.Find(ctx, r.FindFilter(), r.FindOptions())
 
@@ -34,7 +34,7 @@ func (i *impl) QueryDeploy(ctx context.Context, in *deploy.QueryDeployRequest) (
 		return nil, exception.NewInternalServerError("find deploy error, error is %s", err)
 	}
 
-	set := deploy.NewDeploySet()
+	set := deploy.NewDeployConfigSet()
 	// 循环
 	for resp.Next(ctx) {
 		ins := deploy.NewDefaultDeploy()
@@ -53,7 +53,7 @@ func (i *impl) QueryDeploy(ctx context.Context, in *deploy.QueryDeployRequest) (
 	return set, nil
 }
 
-func (i *impl) DescribeDeploy(ctx context.Context, req *deploy.DescribeDeployRequest) (*deploy.Deploy, error) {
+func (i *impl) DescribeDeploy(ctx context.Context, req *deploy.DescribeDeployConfigRequest) (*deploy.DeployConfig, error) {
 	if err := req.Validate(); err != nil {
 		return nil, exception.NewBadRequest(err.Error())
 	}
@@ -76,13 +76,13 @@ func (i *impl) DescribeDeploy(ctx context.Context, req *deploy.DescribeDeployReq
 	return d, nil
 }
 
-func (i *impl) UpdateDeploy(ctx context.Context, in *deploy.UpdateDeployRequest) (
-	*deploy.Deploy, error) {
+func (i *impl) UpdateDeploy(ctx context.Context, in *deploy.UpdateDeployConfigRequest) (
+	*deploy.DeployConfig, error) {
 	if err := in.Validate(); err != nil {
 		return nil, exception.NewBadRequest(err.Error())
 	}
 
-	req := deploy.NewDescribeDeployRequest(in.Id)
+	req := deploy.NewDescribeDeployConfigRequest(in.Id)
 	d, err := i.DescribeDeploy(ctx, req)
 	if err != nil {
 		return nil, err
@@ -111,10 +111,10 @@ func (i *impl) UpdateDeploy(ctx context.Context, in *deploy.UpdateDeployRequest)
 	return d, nil
 }
 
-func (i *impl) DeleteDeploy(ctx context.Context, in *deploy.DeleteDeployRequest) (
-	*deploy.Deploy, error) {
+func (i *impl) DeleteDeploy(ctx context.Context, in *deploy.DeleteDeployConfigRequest) (
+	*deploy.DeployConfig, error) {
 
-	req := deploy.NewDescribeDeployRequest(in.Id)
+	req := deploy.NewDescribeDeployConfigRequest(in.Id)
 	d, err := i.DescribeDeploy(ctx, req)
 	if err != nil {
 		return nil, err

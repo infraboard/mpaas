@@ -7,8 +7,8 @@ import (
 )
 
 func TestQueryDeploy(t *testing.T) {
-	req := deploy.NewQueryDeployRequest()
-	ds, err := impl.QueryDeploy(ctx, req)
+	req := deploy.NewQueryDeployConfigRequest()
+	ds, err := impl.QueryDeployConfig(ctx, req)
 	if err != nil {
 		t.Fatal(err)
 	}

@@ -22,9 +22,9 @@ const _ = grpc.SupportPackageIsVersion7
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type RPCClient interface {
-	UpdateDeploy(ctx context.Context, in *UpdateDeployRequest, opts ...grpc.CallOption) (*Deploy, error)
-	QueryDeploy(ctx context.Context, in *QueryDeployRequest, opts ...grpc.CallOption) (*DeploySet, error)
-	DescribeDeploy(ctx context.Context, in *DescribeDeployRequest, opts ...grpc.CallOption) (*Deploy, error)
+	UpdateDeployConfig(ctx context.Context, in *UpdateDeployConfigRequest, opts ...grpc.CallOption) (*DeployConfig, error)
+	QueryDeployConfig(ctx context.Context, in *QueryDeployConfigRequest, opts ...grpc.CallOption) (*DeployConfigSet, error)
+	DescribeDeployConfig(ctx context.Context, in *DescribeDeployConfigRequest, opts ...grpc.CallOption) (*DeployConfig, error)
 }
 
 type rPCClient struct {
@@ -35,27 +35,27 @@ func NewRPCClient(cc grpc.ClientConnInterface) RPCClient {
 	return &rPCClient{cc}
 }
 
-func (c *rPCClient) UpdateDeploy(ctx context.Context, in *UpdateDeployRequest, opts ...grpc.CallOption) (*Deploy, error) {
-	out := new(Deploy)
-	err := c.cc.Invoke(ctx, "/infraboard.mpaas.deploy.RPC/UpdateDeploy", in, out, opts...)
+func (c *rPCClient) UpdateDeployConfig(ctx context.Context, in *UpdateDeployConfigRequest, opts ...grpc.CallOption) (*DeployConfig, error) {
+	out := new(DeployConfig)
+	err := c.cc.Invoke(ctx, "/infraboard.mpaas.deploy.RPC/UpdateDeployConfig", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *rPCClient) QueryDeploy(ctx context.Context, in *QueryDeployRequest, opts ...grpc.CallOption) (*DeploySet, error) {
-	out := new(DeploySet)
-	err := c.cc.Invoke(ctx, "/infraboard.mpaas.deploy.RPC/QueryDeploy", in, out, opts...)
+func (c *rPCClient) QueryDeployConfig(ctx context.Context, in *QueryDeployConfigRequest, opts ...grpc.CallOption) (*DeployConfigSet, error) {
+	out := new(DeployConfigSet)
+	err := c.cc.Invoke(ctx, "/infraboard.mpaas.deploy.RPC/QueryDeployConfig", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *rPCClient) DescribeDeploy(ctx context.Context, in *DescribeDeployRequest, opts ...grpc.CallOption) (*Deploy, error) {
-	out := new(Deploy)
-	err := c.cc.Invoke(ctx, "/infraboard.mpaas.deploy.RPC/DescribeDeploy", in, out, opts...)
+func (c *rPCClient) DescribeDeployConfig(ctx context.Context, in *DescribeDeployConfigRequest, opts ...grpc.CallOption) (*DeployConfig, error) {
+	out := new(DeployConfig)
+	err := c.cc.Invoke(ctx, "/infraboard.mpaas.deploy.RPC/DescribeDeployConfig", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -66,9 +66,9 @@ func (c *rPCClient) DescribeDeploy(ctx context.Context, in *DescribeDeployReques
 // All implementations must embed UnimplementedRPCServer
 // for forward compatibility
 type RPCServer interface {
-	UpdateDeploy(context.Context, *UpdateDeployRequest) (*Deploy, error)
-	QueryDeploy(context.Context, *QueryDeployRequest) (*DeploySet, error)
-	DescribeDeploy(context.Context, *DescribeDeployRequest) (*Deploy, error)
+	UpdateDeployConfig(context.Context, *UpdateDeployConfigRequest) (*DeployConfig, error)
+	QueryDeployConfig(context.Context, *QueryDeployConfigRequest) (*DeployConfigSet, error)
+	DescribeDeployConfig(context.Context, *DescribeDeployConfigRequest) (*DeployConfig, error)
 	mustEmbedUnimplementedRPCServer()
 }
 
@@ -76,14 +76,14 @@ type RPCServer interface {
 type UnimplementedRPCServer struct {
 }
 
-func (UnimplementedRPCServer) UpdateDeploy(context.Context, *UpdateDeployRequest) (*Deploy, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method UpdateDeploy not implemented")
+func (UnimplementedRPCServer) UpdateDeployConfig(context.Context, *UpdateDeployConfigRequest) (*DeployConfig, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UpdateDeployConfig not implemented")
 }
-func (UnimplementedRPCServer) QueryDeploy(context.Context, *QueryDeployRequest) (*DeploySet, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method QueryDeploy not implemented")
+func (UnimplementedRPCServer) QueryDeployConfig(context.Context, *QueryDeployConfigRequest) (*DeployConfigSet, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method QueryDeployConfig not implemented")
 }
-func (UnimplementedRPCServer) DescribeDeploy(context.Context, *DescribeDeployRequest) (*Deploy, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method DescribeDeploy not implemented")
+func (UnimplementedRPCServer) DescribeDeployConfig(context.Context, *DescribeDeployConfigRequest) (*DeployConfig, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DescribeDeployConfig not implemented")
 }
 func (UnimplementedRPCServer) mustEmbedUnimplementedRPCServer() {}
 
@@ -98,56 +98,56 @@ func RegisterRPCServer(s grpc.ServiceRegistrar, srv RPCServer) {
 	s.RegisterService(&RPC_ServiceDesc, srv)
 }
 
-func _RPC_UpdateDeploy_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(UpdateDeployRequest)
+func _RPC_UpdateDeployConfig_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(UpdateDeployConfigRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(RPCServer).UpdateDeploy(ctx, in)
+		return srv.(RPCServer).UpdateDeployConfig(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/infraboard.mpaas.deploy.RPC/UpdateDeploy",
+		FullMethod: "/infraboard.mpaas.deploy.RPC/UpdateDeployConfig",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(RPCServer).UpdateDeploy(ctx, req.(*UpdateDeployRequest))
+		return srv.(RPCServer).UpdateDeployConfig(ctx, req.(*UpdateDeployConfigRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _RPC_QueryDeploy_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(QueryDeployRequest)
+func _RPC_QueryDeployConfig_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(QueryDeployConfigRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(RPCServer).QueryDeploy(ctx, in)
+		return srv.(RPCServer).QueryDeployConfig(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/infraboard.mpaas.deploy.RPC/QueryDeploy",
+		FullMethod: "/infraboard.mpaas.deploy.RPC/QueryDeployConfig",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(RPCServer).QueryDeploy(ctx, req.(*QueryDeployRequest))
+		return srv.(RPCServer).QueryDeployConfig(ctx, req.(*QueryDeployConfigRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _RPC_DescribeDeploy_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(DescribeDeployRequest)
+func _RPC_DescribeDeployConfig_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(DescribeDeployConfigRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(RPCServer).DescribeDeploy(ctx, in)
+		return srv.(RPCServer).DescribeDeployConfig(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/infraboard.mpaas.deploy.RPC/DescribeDeploy",
+		FullMethod: "/infraboard.mpaas.deploy.RPC/DescribeDeployConfig",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(RPCServer).DescribeDeploy(ctx, req.(*DescribeDeployRequest))
+		return srv.(RPCServer).DescribeDeployConfig(ctx, req.(*DescribeDeployConfigRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -160,16 +160,16 @@ var RPC_ServiceDesc = grpc.ServiceDesc{
 	HandlerType: (*RPCServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
-			MethodName: "UpdateDeploy",
-			Handler:    _RPC_UpdateDeploy_Handler,
+			MethodName: "UpdateDeployConfig",
+			Handler:    _RPC_UpdateDeployConfig_Handler,
 		},
 		{
-			MethodName: "QueryDeploy",
-			Handler:    _RPC_QueryDeploy_Handler,
+			MethodName: "QueryDeployConfig",
+			Handler:    _RPC_QueryDeployConfig_Handler,
 		},
 		{
-			MethodName: "DescribeDeploy",
-			Handler:    _RPC_DescribeDeploy_Handler,
+			MethodName: "DescribeDeployConfig",
+			Handler:    _RPC_DescribeDeployConfig_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

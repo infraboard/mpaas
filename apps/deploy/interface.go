@@ -17,18 +17,18 @@ const (
 )
 
 type Service interface {
-	CreateDeploy(context.Context, *CreateDeployRequest) (*Deploy, error)
-	DeleteDeploy(context.Context, *DeleteDeployRequest) (*Deploy, error)
+	CreateDeployConfig(context.Context, *CreateDeployConfigRequest) (*DeployConfig, error)
+	DeleteDeployConfig(context.Context, *DeleteDeployConfigRequest) (*DeployConfig, error)
 	RPCServer
 }
 
 // New 新建一个domain
-func New(req *CreateDeployRequest) (*Deploy, error) {
+func New(req *CreateDeployConfigRequest) (*DeployConfig, error) {
 	if err := req.Validate(); err != nil {
 		return nil, err
 	}
 
-	d := &Deploy{
+	d := &DeployConfig{
 		Id:       xid.New().String(),
 		CreateAt: time.Now().UnixMilli(),
 		Spec:     req,
@@ -37,28 +37,28 @@ func New(req *CreateDeployRequest) (*Deploy, error) {
 	return d, nil
 }
 
-func (req *CreateDeployRequest) Validate() error {
+func (req *CreateDeployConfigRequest) Validate() error {
 	return validate.Validate(req)
 }
 
-func NewQueryDeployRequestFromHttp(r *http.Request) *QueryDeployRequest {
-	req := NewQueryDeployRequest()
+func NewQueryDeployConfigRequestFromHttp(r *http.Request) *QueryDeployConfigRequest {
+	req := NewQueryDeployConfigRequest()
 	req.Page = request.NewPageRequestFromHTTP(r)
 	return req
 }
 
-func NewQueryDeployRequest() *QueryDeployRequest {
-	return &QueryDeployRequest{
+func NewQueryDeployConfigRequest() *QueryDeployConfigRequest {
+	return &QueryDeployConfigRequest{
 		Page: request.NewDefaultPageRequest(),
 	}
 }
 
-func NewCreateDeployRequest() *CreateDeployRequest {
-	return &CreateDeployRequest{}
+func NewCreateDeployConfigRequest() *CreateDeployConfigRequest {
+	return &CreateDeployConfigRequest{}
 }
 
 // Validate 校验请求是否合法
-func (req *UpdateDeployRequest) Validate() error {
+func (req *UpdateDeployConfigRequest) Validate() error {
 	if req.Id == "" {
 		return fmt.Errorf("id required")
 	}
@@ -69,34 +69,34 @@ func (req *UpdateDeployRequest) Validate() error {
 	return nil
 }
 
-func NewDescribeDeployRequest(id string) *DescribeDeployRequest {
-	return &DescribeDeployRequest{
+func NewDescribeDeployConfigRequest(id string) *DescribeDeployConfigRequest {
+	return &DescribeDeployConfigRequest{
 		DescribeValue: id,
 	}
 }
 
-func (req *DescribeDeployRequest) Validate() error {
+func (req *DescribeDeployConfigRequest) Validate() error {
 	return validate.Validate(req)
 }
 
-func NewPutDeployRequest(id string) *UpdateDeployRequest {
-	return &UpdateDeployRequest{
+func NewPutDeployRequest(id string) *UpdateDeployConfigRequest {
+	return &UpdateDeployConfigRequest{
 		Id:         id,
 		UpdateMode: pb_request.UpdateMode_PUT,
-		Spec:       NewCreateDeployRequest(),
+		Spec:       NewCreateDeployConfigRequest(),
 	}
 }
 
-func NewPatchDeployRequest(id string) *UpdateDeployRequest {
-	return &UpdateDeployRequest{
+func NewPatchDeployRequest(id string) *UpdateDeployConfigRequest {
+	return &UpdateDeployConfigRequest{
 		Id:         id,
 		UpdateMode: pb_request.UpdateMode_PATCH,
-		Spec:       NewCreateDeployRequest(),
+		Spec:       NewCreateDeployConfigRequest(),
 	}
 }
 
-func NewDeleteDeployRequest(id string) *DeleteDeployRequest {
-	return &DeleteDeployRequest{
+func NewDeleteDeployConfigRequest(id string) *DeleteDeployConfigRequest {
+	return &DeleteDeployConfigRequest{
 		Id: id,
 	}
 }
