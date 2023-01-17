@@ -14,9 +14,12 @@ require (
 	github.com/imdario/mergo v0.3.13
 	github.com/infraboard/mcenter v0.0.8-0.20221217020658-11dc700054ee
 	github.com/infraboard/mcube v1.9.5-0.20221216020326-5052205e3d66
+	github.com/kvtools/valkeyrie v1.0.0
 	github.com/rs/xid v1.4.0
 	github.com/spf13/cobra v1.4.0
 	github.com/stretchr/testify v1.8.0
+	github.com/traefik/paerser v0.1.9
+	go.etcd.io/etcd/client/v3 v3.5.5
 	go.mongodb.org/mongo-driver v1.9.1
 	google.golang.org/grpc v1.50.1
 	google.golang.org/protobuf v1.27.1
@@ -28,6 +31,8 @@ require (
 
 require (
 	github.com/alibabacloud-go/debug v0.0.0-20190504072949-9472017b5c68 // indirect
+	github.com/coreos/go-semver v0.3.0 // indirect
+	github.com/coreos/go-systemd/v22 v22.3.2 // indirect
 	github.com/davecgh/go-spew v1.1.1 // indirect
 	github.com/fsnotify/fsnotify v1.5.1 // indirect
 	github.com/gin-contrib/sse v0.1.0 // indirect
@@ -64,6 +69,8 @@ require (
 	github.com/xdg-go/scram v1.1.0 // indirect
 	github.com/xdg-go/stringprep v1.0.2 // indirect
 	github.com/youmark/pkcs8 v0.0.0-20181117223130-1be2e3e5546d // indirect
+	go.etcd.io/etcd/api/v3 v3.5.5 // indirect
+	go.etcd.io/etcd/client/pkg/v3 v3.5.5 // indirect
 	go.uber.org/atomic v1.7.0 // indirect
 	go.uber.org/multierr v1.6.0 // indirect
 	go.uber.org/zap v1.20.0 // indirect
