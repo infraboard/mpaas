@@ -83,7 +83,7 @@ func (c *Client) ServerVersion() (string, error) {
 }
 
 func (c *Client) ServerResources() ([]*metav1.APIResourceList, error) {
-	return c.client.ServerResources()
+	return c.client.ServerPreferredResources()
 }
 
 func (c *Client) GetContexts() map[string]*clientcmdapi.Context {
