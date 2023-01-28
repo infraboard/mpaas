@@ -1,5 +1,5 @@
 package image
 
 const (
-	AppName = "image"
+	AppName = "images"
 )

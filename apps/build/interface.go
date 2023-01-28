@@ -6,7 +6,7 @@ import (
 )
 
 const (
-	AppName = "build"
+	AppName = "builds"
 )
 
 type Service interface {

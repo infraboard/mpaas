@@ -9,7 +9,7 @@ import (
 )
 
 const (
-	AppName = "gateway"
+	AppName = "gateways"
 )
 
 type Service interface {

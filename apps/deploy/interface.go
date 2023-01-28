@@ -13,7 +13,7 @@ import (
 )
 
 const (
-	AppName = "deploy"
+	AppName = "deploys"
 )
 
 type Service interface {

@@ -6,7 +6,7 @@ import (
 )
 
 const (
-	AppName = "trigger"
+	AppName = "triggers"
 )
 
 type Service interface {

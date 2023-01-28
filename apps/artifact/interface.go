@@ -1,5 +1,5 @@
 package artifact
 
 const (
-	AppName = "artifact"
+	AppName = "artifacts"
 )
