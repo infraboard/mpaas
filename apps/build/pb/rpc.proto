@@ -44,8 +44,5 @@ message QueryBuildConfigRequest {
     // 所属服务
     // @gotags: json:"service_id"
     string service_id = 4;
-    // 构建Id
-    // @gotags: json:"task_ids"
-    repeated string task_ids = 5;
 }
 
