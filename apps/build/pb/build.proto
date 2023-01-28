@@ -4,17 +4,15 @@ package infraboard.mpaas.build;
 option go_package = "github.com/infraboard/mpaas/apps/build";
 
 
-message BuildTaskSet {
-    // 总数量
-    // @gotags: bson:"total" json:"total"
+message BuildConfigSet {
+    // 总数
     int64 total = 1;
-    // 数据项
-    // @gotags: bson:"items" json:"items"
-    repeated BuildTask items = 2;
+    // 清单
+    repeated BuildConfig items = 2;
 }
 
-message BuildTask {
-    // 编号
+message BuildConfig  {
+    // 构建配置Id
     // @gotags: bson:"_id" json:"id"
     string id = 1;
     // 所属Domain
@@ -23,24 +21,52 @@ message BuildTask {
     // 所属空间
     // @gotags: bson:"namespace" json:"namespace"
     string namespace = 3;
-    // 构建定义
+    // 创建时间
+    // @gotags: bson:"create_at" json:"create_at"
+    int64 create_at = 4;
+    // 更新时间
+    // @gotags: bson:"update_at" json:"update_at"
+    int64 update_at = 5;
+    // 创建信息
     // @gotags: bson:"spec" json:"spec"
-    BuildTaskRequest spec = 4;
+    CreateBuildConfigRequest spec = 6;
 }
 
-message BuildTaskRequest {
-    // 构建服务的Id
+message CreateBuildConfigRequest {
+    // 那个服务的构建
     // @gotags: bson:"service_id" json:"service_id"
     string service_id = 1;
+	// 触发条件
+	// @gotags: bson:"condition" json:"condition"
+	Trigger condition = 2;
+    // 构建的名称
+    // @gotags: bson:"name" json:"name"
+    string name = 3;
+    // 构建描述信息
+    // @gotags: bson:"describe" json:"describe"
+    string describe = 4;
     // 构建目标类型
     // @gotags: bson:"target_type" json:"target_type"
-    TARGET_TYPE target_type = 2;
+    TARGET_TYPE target_type = 5;
     // 镜像构建配置
     // @gotags: bson:"image_build" json:"image_build"
-    ImageBuildConfig image_build = 3;
+    ImageBuildConfig image_build = 6;
     // 包构建配置
     // @gotags: bson:"pkg_build" json:"pkg_build"
-    PkgBuildConfig pkg_build = 4;
+    PkgBuildConfig pkg_build = 7;
+    // 构建配置标签
+    // @gotags: bson:"labels" json:"labels"
+    map<string,string> labels = 11;
+}
+
+// 触发执行的条件
+message Trigger {
+	// 事件名称,那些事件可以触发
+	// @gotags: bson:"events" json:"events"
+	repeated string events = 1;
+	// 分支名称, 那些分支可以触发, 支持正则
+	// @gotags: bson:"branches" json:"branches"
+	repeated string branches = 2;
 }
 
 // 构建目标的类型

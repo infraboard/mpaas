@@ -8,8 +8,8 @@ import "github.com/infraboard/mcube/pb/page/page.proto";
 
 // RPC 构建服务
 service RPC {
-	rpc RunBuild(RunBuildRequest) returns(BuildTask);
-	rpc QueryBuild(QueryBuildRequest) returns(BuildTaskSet);
+	rpc CreateBuildConfig(CreateBuildConfigRequest) returns(BuildConfig);
+	rpc QueryBuildConfig(QueryBuildConfigRequest) returns(BuildConfigSet);
 }
 
 message RunBuildRequest {
@@ -31,7 +31,7 @@ message AutoDeployOptions {
     repeated string envs = 2;
 }
 
-message QueryBuildRequest {
+message QueryBuildConfigRequest {
     // 分页参数
     // @gotags: json:"page"
     infraboard.mcube.page.PageRequest page = 1;

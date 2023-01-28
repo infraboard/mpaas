@@ -22,8 +22,8 @@ const _ = grpc.SupportPackageIsVersion7
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type RPCClient interface {
-	RunBuild(ctx context.Context, in *RunBuildRequest, opts ...grpc.CallOption) (*BuildTask, error)
-	QueryBuild(ctx context.Context, in *QueryBuildRequest, opts ...grpc.CallOption) (*BuildTaskSet, error)
+	CreateBuildConfig(ctx context.Context, in *CreateBuildConfigRequest, opts ...grpc.CallOption) (*BuildConfig, error)
+	QueryBuildConfig(ctx context.Context, in *QueryBuildConfigRequest, opts ...grpc.CallOption) (*BuildConfigSet, error)
 }
 
 type rPCClient struct {
@@ -34,18 +34,18 @@ func NewRPCClient(cc grpc.ClientConnInterface) RPCClient {
 	return &rPCClient{cc}
 }
 
-func (c *rPCClient) RunBuild(ctx context.Context, in *RunBuildRequest, opts ...grpc.CallOption) (*BuildTask, error) {
-	out := new(BuildTask)
-	err := c.cc.Invoke(ctx, "/infraboard.mpaas.build.RPC/RunBuild", in, out, opts...)
+func (c *rPCClient) CreateBuildConfig(ctx context.Context, in *CreateBuildConfigRequest, opts ...grpc.CallOption) (*BuildConfig, error) {
+	out := new(BuildConfig)
+	err := c.cc.Invoke(ctx, "/infraboard.mpaas.build.RPC/CreateBuildConfig", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *rPCClient) QueryBuild(ctx context.Context, in *QueryBuildRequest, opts ...grpc.CallOption) (*BuildTaskSet, error) {
-	out := new(BuildTaskSet)
-	err := c.cc.Invoke(ctx, "/infraboard.mpaas.build.RPC/QueryBuild", in, out, opts...)
+func (c *rPCClient) QueryBuildConfig(ctx context.Context, in *QueryBuildConfigRequest, opts ...grpc.CallOption) (*BuildConfigSet, error) {
+	out := new(BuildConfigSet)
+	err := c.cc.Invoke(ctx, "/infraboard.mpaas.build.RPC/QueryBuildConfig", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -56,8 +56,8 @@ func (c *rPCClient) QueryBuild(ctx context.Context, in *QueryBuildRequest, opts 
 // All implementations must embed UnimplementedRPCServer
 // for forward compatibility
 type RPCServer interface {
-	RunBuild(context.Context, *RunBuildRequest) (*BuildTask, error)
-	QueryBuild(context.Context, *QueryBuildRequest) (*BuildTaskSet, error)
+	CreateBuildConfig(context.Context, *CreateBuildConfigRequest) (*BuildConfig, error)
+	QueryBuildConfig(context.Context, *QueryBuildConfigRequest) (*BuildConfigSet, error)
 	mustEmbedUnimplementedRPCServer()
 }
 
@@ -65,11 +65,11 @@ type RPCServer interface {
 type UnimplementedRPCServer struct {
 }
 
-func (UnimplementedRPCServer) RunBuild(context.Context, *RunBuildRequest) (*BuildTask, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method RunBuild not implemented")
+func (UnimplementedRPCServer) CreateBuildConfig(context.Context, *CreateBuildConfigRequest) (*BuildConfig, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CreateBuildConfig not implemented")
 }
-func (UnimplementedRPCServer) QueryBuild(context.Context, *QueryBuildRequest) (*BuildTaskSet, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method QueryBuild not implemented")
+func (UnimplementedRPCServer) QueryBuildConfig(context.Context, *QueryBuildConfigRequest) (*BuildConfigSet, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method QueryBuildConfig not implemented")
 }
 func (UnimplementedRPCServer) mustEmbedUnimplementedRPCServer() {}
 
@@ -84,38 +84,38 @@ func RegisterRPCServer(s grpc.ServiceRegistrar, srv RPCServer) {
 	s.RegisterService(&RPC_ServiceDesc, srv)
 }
 
-func _RPC_RunBuild_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(RunBuildRequest)
+func _RPC_CreateBuildConfig_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(CreateBuildConfigRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(RPCServer).RunBuild(ctx, in)
+		return srv.(RPCServer).CreateBuildConfig(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/infraboard.mpaas.build.RPC/RunBuild",
+		FullMethod: "/infraboard.mpaas.build.RPC/CreateBuildConfig",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(RPCServer).RunBuild(ctx, req.(*RunBuildRequest))
+		return srv.(RPCServer).CreateBuildConfig(ctx, req.(*CreateBuildConfigRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _RPC_QueryBuild_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(QueryBuildRequest)
+func _RPC_QueryBuildConfig_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(QueryBuildConfigRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(RPCServer).QueryBuild(ctx, in)
+		return srv.(RPCServer).QueryBuildConfig(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/infraboard.mpaas.build.RPC/QueryBuild",
+		FullMethod: "/infraboard.mpaas.build.RPC/QueryBuildConfig",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(RPCServer).QueryBuild(ctx, req.(*QueryBuildRequest))
+		return srv.(RPCServer).QueryBuildConfig(ctx, req.(*QueryBuildConfigRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -128,12 +128,12 @@ var RPC_ServiceDesc = grpc.ServiceDesc{
 	HandlerType: (*RPCServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
-			MethodName: "RunBuild",
-			Handler:    _RPC_RunBuild_Handler,
+			MethodName: "CreateBuildConfig",
+			Handler:    _RPC_CreateBuildConfig_Handler,
 		},
 		{
-			MethodName: "QueryBuild",
-			Handler:    _RPC_QueryBuild_Handler,
+			MethodName: "QueryBuildConfig",
+			Handler:    _RPC_QueryBuildConfig_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

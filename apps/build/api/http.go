@@ -5,7 +5,7 @@ import (
 	"github.com/infraboard/mcube/logger/zap"
 
 	"github.com/infraboard/mcube/app"
-	"github.com/infraboard/mpaas/apps/deploy"
+	"github.com/infraboard/mpaas/apps/build"
 )
 
 var (
@@ -13,18 +13,18 @@ var (
 )
 
 type handler struct {
-	service deploy.Service
+	service build.Service
 	log     logger.Logger
 }
 
 func (h *handler) Config() error {
-	h.log = zap.L().Named(deploy.AppName)
-	h.service = app.GetGrpcApp(deploy.AppName).(deploy.Service)
+	h.log = zap.L().Named(build.AppName)
+	h.service = app.GetGrpcApp(build.AppName).(build.Service)
 	return nil
 }
 
 func (h *handler) Name() string {
-	return deploy.AppName
+	return build.AppName
 }
 
 func (h *handler) Version() string {
