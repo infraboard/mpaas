@@ -11,68 +11,87 @@ enum RUNNER_TYPE {
 	K8S_JOB = 0;
 }
 
+// JobSet 列表
+message JobSet {
+	// 总数量
+	// @gotags: bson:"total" json:"total"
+    int64 total = 1;
+	// 清单
+	// @gotags: bson:"items" json:"items"
+    repeated Job items = 2;
+}
+
 message Job {
+    // job Id
+	// @gotags: bson:"_id" json:"id"
+    string id = 1;
+    // 创建时间
+	// @gotags: bson:"create_at" json:"create_at"
+    int64 create_at = 2;
+    // 更新时间
+    // @gotags: bson:"update_at" json:"update_at"
+    int64 update_at = 3;
     // job创建信息
 	// @gotags: bson:"spec" json:"spec"
-    CreateJobRequest spec = 2; 
+    CreateJobRequest spec = 15; 
 }
 
 message CreateJobRequest {
 	// 执行器类型, 默认采用k8s job执行
-	// @gotags: json:"runner_type"
+	// @gotags: bson:"runner_type" json:"runner_type"
 	RUNNER_TYPE runner_type = 1;
+	// 执行器定义, 比如 k8s job 定义
+	// @gotags: bson:"runner_spec" json:"runner_spec"
+	string runner_spec = 2;
 	// 所属域
-	// @gotags: json:"domain" validate:"required"
-	string domain = 2;
+	// @gotags: bson:"domain" json:"domain" validate:"required"
+	string domain = 3;
 	// 所属空间
-	// @gotags: json:"namespace" validate:"required"
-	string namespace = 3;
+	// @gotags: bson:"namespace" json:"namespace" validate:"required"
+	string namespace = 4;
 	// 创建人
-	// @gotags: json:"create_by" validate:"required"
-	string create_by = 4;
+	// @gotags: bson:"create_by" json:"create_by" validate:"required"
+	string create_by = 5;
 	// 图片
-	// @gotags: json:"logo"
-	string logo = 5;
+	// @gotags: bson:"logo" json:"logo"
+	string logo = 6;
 	// 名称
-	// @gotags: json:"name" validate:"required"
-	string name = 6;
-	// Action对应的版本, 推荐默认v1
-	// @gotags: json:"version" validate:"required"
-	string version = 7;
+	// @gotags: bson:"name" json:"name" validate:"required"
+	string name = 7;
+	// Job对应的版本, 推荐默认latest
+	// @gotags: bson:"version" json:"version" validate:"required"
+	string version = 8;
 	// 展示名称
-	// @gotags: json:"display_name"
-	string display_name = 8;
+	// @gotags: bson:"display_name" json:"display_name"
+	string display_name = 9;
 	// 是否是公开Job, 默认只能本空间内访问
-	// @gotags: json:"is_public"
-	mcube.resource.VISIABLE_MODE visiable_mode = 15;
+	// @gotags: bson:"visiable_mode" json:"visiable_mode"
+	mcube.resource.VISIABLE_MODE visiable_mode = 10;
 	// 运行时 Runner传人参数, 创建完成后不能修改, 要修改请新建版本
 	// @gotags: bson:"runner_params" json:"runner_params"
-	map<string, string> runner_params = 10;
+	map<string, string> runner_params = 11;
 	// 运行时 用户传人的参数说明
 	// @gotags: bson:"run_params" json:"run_params"
-	repeated RunParamDesc run_params = 11;
+	repeated RunParamDesc run_params = 12;
 	// 标签
-	// @gotags: json:"labels"
-	map<string, string> labels = 12;
+	// @gotags: bson:"labels" json:"labels"
+	map<string, string> labels = 13;
 	// 描述
-	// @gotags: json:"description"
-	string description = 13;
+	// @gotags: bson:"description" json:"description"
+	string description = 14;
 }
 
 message RunParamDesc {
 	// 可选/必传
 	// @gotags: bson:"required" json:"required"
 	bool required = 1;
-	// 建的名称
-	// @gotags: bson:"key_name" json:"key_name" validate:"required"
-	string key_name = 4;
-	// 建的描述
-	// @gotags: bson:"key_desc" json:"key_desc"
-	string key_desc = 5;
+	// 参数名称
+	// @gotags: bson:"param_name" json:"param_name" validate:"required"
+	string param_name = 2;
+	// 参数描述
+	// @gotags: bson:"param_desc" json:"param_desc"
+	string param_desc = 3;
 	// 默认值, action运行时如果未传人，会填充默认值
 	// @gotags: bson:"default_value" json:"default_value"
-	string default_value = 2;
-	// 值描述
-	// @gotags: bson:"value_desc" json:"value_desc"
-	string value_desc = 3;
+	string default_value = 4;
 }
