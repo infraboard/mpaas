@@ -13,7 +13,7 @@ require (
 	github.com/gorilla/websocket v1.5.0
 	github.com/imdario/mergo v0.3.13
 	github.com/infraboard/mcenter v0.0.8-0.20221217020658-11dc700054ee
-	github.com/infraboard/mcube v1.9.6
+	github.com/infraboard/mcube v1.9.7
 	github.com/kvtools/valkeyrie v1.0.0
 	github.com/rs/xid v1.4.0
 	github.com/spf13/cobra v1.6.1
