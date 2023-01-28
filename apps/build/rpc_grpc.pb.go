@@ -24,6 +24,7 @@ const _ = grpc.SupportPackageIsVersion7
 type RPCClient interface {
 	CreateBuildConfig(ctx context.Context, in *CreateBuildConfigRequest, opts ...grpc.CallOption) (*BuildConfig, error)
 	QueryBuildConfig(ctx context.Context, in *QueryBuildConfigRequest, opts ...grpc.CallOption) (*BuildConfigSet, error)
+	UpdateBuildConfig(ctx context.Context, in *UpdateBuildConfigRequest, opts ...grpc.CallOption) (*BuildConfig, error)
 }
 
 type rPCClient struct {
@@ -52,12 +53,22 @@ func (c *rPCClient) QueryBuildConfig(ctx context.Context, in *QueryBuildConfigRe
 	return out, nil
 }
 
+func (c *rPCClient) UpdateBuildConfig(ctx context.Context, in *UpdateBuildConfigRequest, opts ...grpc.CallOption) (*BuildConfig, error) {
+	out := new(BuildConfig)
+	err := c.cc.Invoke(ctx, "/infraboard.mpaas.build.RPC/UpdateBuildConfig", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // RPCServer is the server API for RPC service.
 // All implementations must embed UnimplementedRPCServer
 // for forward compatibility
 type RPCServer interface {
 	CreateBuildConfig(context.Context, *CreateBuildConfigRequest) (*BuildConfig, error)
 	QueryBuildConfig(context.Context, *QueryBuildConfigRequest) (*BuildConfigSet, error)
+	UpdateBuildConfig(context.Context, *UpdateBuildConfigRequest) (*BuildConfig, error)
 	mustEmbedUnimplementedRPCServer()
 }
 
@@ -70,6 +81,9 @@ func (UnimplementedRPCServer) CreateBuildConfig(context.Context, *CreateBuildCon
 }
 func (UnimplementedRPCServer) QueryBuildConfig(context.Context, *QueryBuildConfigRequest) (*BuildConfigSet, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method QueryBuildConfig not implemented")
+}
+func (UnimplementedRPCServer) UpdateBuildConfig(context.Context, *UpdateBuildConfigRequest) (*BuildConfig, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UpdateBuildConfig not implemented")
 }
 func (UnimplementedRPCServer) mustEmbedUnimplementedRPCServer() {}
 
@@ -120,6 +134,24 @@ func _RPC_QueryBuildConfig_Handler(srv interface{}, ctx context.Context, dec fun
 	return interceptor(ctx, in, info, handler)
 }
 
+func _RPC_UpdateBuildConfig_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(UpdateBuildConfigRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(RPCServer).UpdateBuildConfig(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/infraboard.mpaas.build.RPC/UpdateBuildConfig",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(RPCServer).UpdateBuildConfig(ctx, req.(*UpdateBuildConfigRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // RPC_ServiceDesc is the grpc.ServiceDesc for RPC service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -134,6 +166,10 @@ var RPC_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "QueryBuildConfig",
 			Handler:    _RPC_QueryBuildConfig_Handler,
+		},
+		{
+			MethodName: "UpdateBuildConfig",
+			Handler:    _RPC_UpdateBuildConfig_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
