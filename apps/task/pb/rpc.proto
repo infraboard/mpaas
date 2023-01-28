@@ -1,0 +1,16 @@
+syntax = "proto3";
+
+package infraboard.mpaas.task;
+option go_package = "github.com/infraboard/mpaas/apps/task";
+
+import "apps/task/pb/task.proto";
+
+// RPC 执行Job
+service RPC {
+    // 执行Job
+    rpc RunJob(RunJobRequest) returns(Task);
+}
+
+message RunJobRequest {
+    
+}

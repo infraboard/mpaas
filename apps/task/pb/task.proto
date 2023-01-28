@@ -1,0 +1,13 @@
+syntax = "proto3";
+
+package infraboard.mpaas.task;
+option go_package = "github.com/infraboard/mpaas/apps/task";
+
+
+message TaskSet {
+
+}
+
+message Task {
+
+}
