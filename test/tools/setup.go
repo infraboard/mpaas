@@ -27,16 +27,32 @@ func DevelopmentSetup() {
 	}
 }
 
-func ReadJsonFile(filepath string, v any) error {
+func ReadContentFile(filepath string) ([]byte, error) {
 	fd, err := os.Open(filepath)
 	if err != nil {
-		return err
+		return nil, err
 	}
 	defer fd.Close()
 
 	payload, err := io.ReadAll(fd)
 	if err != nil {
+		return nil, err
+	}
+	return payload, nil
+}
+
+func MustReadContentFile(filepath string) string {
+	content, err := ReadContentFile(filepath)
+	if err != nil {
+		panic(err)
+	}
+	return string(content)
+}
+
+func ReadJsonFile(filepath string, v any) error {
+	content, err := ReadContentFile(filepath)
+	if err != nil {
 		return err
 	}
-	return json.Unmarshal(payload, v)
+	return json.Unmarshal(content, v)
 }
