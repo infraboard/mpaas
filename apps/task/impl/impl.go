@@ -8,6 +8,7 @@ import (
 	"github.com/infraboard/mcube/logger/zap"
 	"google.golang.org/grpc"
 
+	"github.com/infraboard/mpaas/apps/job"
 	"github.com/infraboard/mpaas/apps/task"
 	"github.com/infraboard/mpaas/conf"
 )
@@ -21,6 +22,8 @@ type impl struct {
 	col *mongo.Collection
 	log logger.Logger
 	task.UnimplementedRPCServer
+
+	job job.Service
 }
 
 func (i *impl) Config() error {
@@ -30,6 +33,8 @@ func (i *impl) Config() error {
 	}
 	i.col = db.Collection(i.Name())
 	i.log = zap.L().Named(i.Name())
+
+	i.job = app.GetInternalApp(job.AppName).(job.Service)
 	return nil
 }
 

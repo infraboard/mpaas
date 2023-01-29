@@ -15,7 +15,25 @@ message TaskSet {
 }
 
 message Task {
+	// task定义
+	// @gotags: bson:"spec" json:"spec"
+	RunJobRequest spec = 1;
 	// 关联Job
 	// @gotags: bson:"job" json:"job"
-	job.Job job = 1;
+	job.Job job = 2;
+}
+
+message RunJobRequest {
+	// task执行的域
+	// @gotags: bson:"domain" json:"domain"
+    string domain = 1;
+	// task执行的空间
+	// @gotags: bson:"namespace" json:"namespace"
+    string namespace = 2;
+	// job名称: name@version
+	// @gotags: bson:"job" json:"job"
+    string job = 3;
+	// 参数
+	// @gotags: bson:"with" json:"with"
+	map<string, string> with = 4;
 }

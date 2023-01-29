@@ -10,7 +10,3 @@ service RPC {
     // 执行Job
     rpc RunJob(RunJobRequest) returns(Task);
 }
-
-message RunJobRequest {
-
-}

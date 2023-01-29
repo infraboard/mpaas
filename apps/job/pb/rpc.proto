@@ -12,12 +12,20 @@ service RPC {
     rpc QueryJob(QueryJobRequest) returns(JobSet);
 }
 
-
 message QueryJobRequest {
     // 分页请求
     // @gotags: json:"page"
     infraboard.mcube.page.PageRequest page = 1;
+    // job 所属域
+    // @gotags: json:"domain"
+    string domain = 2;
+    // 是否查询公开Job
+    // @gotags: json:"with_global"
+    bool with_global = 3;
     // job Id列表
     // @gotags: json:"ids"
-    repeated string ids = 2;
+    repeated string ids = 4;
+    // job 名称列表
+    // @gotags: json:"names"
+    repeated string names = 5; 
 }

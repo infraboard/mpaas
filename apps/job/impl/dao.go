@@ -32,10 +32,16 @@ func (r *queryRequest) FindOptions() *options.FindOptions {
 }
 
 func (r *queryRequest) FindFilter() bson.M {
-	filter := bson.M{}
+	filter := bson.M{
+		"spec.domain": r.Domain,
+	}
 
 	if len(r.Ids) > 0 {
 		filter["_id"] = bson.M{"$in": r.Ids}
+	}
+
+	if len(r.Names) > 0 {
+		filter["spec.name"] = bson.M{"$in": r.Names}
 	}
 
 	return filter
