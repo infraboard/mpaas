@@ -46,10 +46,5 @@ func (i *impl) QueryJob(ctx context.Context, in *job.QueryJobRequest) (
 	}
 	set.Total = count
 
-	// 补充全局的
-	if in.WithGlobal {
-
-	}
-
 	return set, nil
 }

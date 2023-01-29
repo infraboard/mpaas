@@ -23,9 +23,8 @@ func NewCreateJobRequest() *CreateJobRequest {
 
 func NewQueryJobRequest() *QueryJobRequest {
 	return &QueryJobRequest{
-		Page:       request.NewDefaultPageRequest(),
-		WithGlobal: true,
-		Ids:        []string{},
-		Names:      []string{},
+		Page:  request.NewDefaultPageRequest(),
+		Ids:   []string{},
+		Names: []string{},
 	}
 }

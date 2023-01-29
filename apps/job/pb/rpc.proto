@@ -5,6 +5,7 @@ option go_package = "github.com/infraboard/mpaas/apps/job";
 
 import "apps/job/pb/job.proto";
 import "github.com/infraboard/mcube/pb/page/page.proto";
+import "github.com/infraboard/mcube/pb/resource/base.proto";
 
 // RPC Job定义
 service RPC {
@@ -16,16 +17,19 @@ message QueryJobRequest {
     // 分页请求
     // @gotags: json:"page"
     infraboard.mcube.page.PageRequest page = 1;
+    // 是否是公开Job, 默认只能本空间内访问
+	// @gotags: bson:"visiable_mode" json:"visiable_mode"
+	optional mcube.resource.VISIABLE_MODE visiable_mode = 2;
     // job 所属域
     // @gotags: json:"domain"
-    string domain = 2;
-    // 是否查询公开Job
-    // @gotags: json:"with_global"
-    bool with_global = 3;
+    string domain = 3;
+    // job 所属空间
+    // @gotags: json:"namespace"
+    string namespace = 4;
     // job Id列表
     // @gotags: json:"ids"
-    repeated string ids = 4;
+    repeated string ids = 5;
     // job 名称列表
     // @gotags: json:"names"
-    repeated string names = 5; 
+    repeated string names = 6; 
 }

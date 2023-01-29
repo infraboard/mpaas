@@ -32,8 +32,18 @@ func (r *queryRequest) FindOptions() *options.FindOptions {
 }
 
 func (r *queryRequest) FindFilter() bson.M {
-	filter := bson.M{
-		"spec.domain": r.Domain,
+	filter := bson.M{"$or": bson.A{}}
+
+	if r.VisiableMode != nil {
+		filter["spec.visiable_mode"] = *r.VisiableMode
+	}
+
+	if r.Domain != "" {
+		filter["spec.domain"] = r.Domain
+	}
+
+	if r.Namespace != "" {
+		filter["spec.namespace"] = r.Namespace
 	}
 
 	if len(r.Ids) > 0 {

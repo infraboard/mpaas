@@ -30,10 +30,13 @@ message RunJobRequest {
 	// task执行的空间
 	// @gotags: bson:"namespace" json:"namespace"
     string namespace = 2;
-	// job名称: name@version
+	// job名称: name
 	// @gotags: bson:"job" json:"job"
     string job = 3;
-	// 参数
+	// job版本
+	// @gotags: bson:"version" json:"version"
+    string version = 4;
+	// job版本对应的参数
 	// @gotags: bson:"with" json:"with"
-	map<string, string> with = 4;
+	map<string, string> with = 5;
 }
