@@ -2,6 +2,11 @@
 
 [k8s 核心概念](https://kubernetes.io/docs/concepts/)
 
+## 环境准备
+
++ [Docker Desktop](https://docs.docker.com/desktop/release-notes/#collapseThree)
++ [How Kubernetes works under the hood with Docker Desktop](https://www.docker.com/blog/how-kubernetes-works-under-the-hood-with-docker-desktop/)
+
 ## 参考
 
 + [client-go](https://github.com/kubernetes/client-go)
