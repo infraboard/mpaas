@@ -22,7 +22,7 @@ type Service interface {
 	RPCServer
 }
 
-// New 新建一个domain
+// New 新建一个部署配置
 func New(req *CreateDeployConfigRequest) (*DeployConfig, error) {
 	if err := req.Validate(); err != nil {
 		return nil, err

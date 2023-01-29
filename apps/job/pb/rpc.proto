@@ -2,3 +2,22 @@ syntax = "proto3";
 
 package infraboard.mpaas.job;
 option go_package = "github.com/infraboard/mpaas/apps/job";
+
+import "apps/job/pb/job.proto";
+import "github.com/infraboard/mcube/pb/page/page.proto";
+
+// RPC Job定义
+service RPC {
+    rpc CreateJob(CreateJobRequest) returns(Job);
+    rpc QueryJob(QueryJobRequest) returns(JobSet);
+}
+
+
+message QueryJobRequest {
+    // 分页请求
+    // @gotags: json:"page"
+    infraboard.mcube.page.PageRequest page = 1;
+    // job Id列表
+    // @gotags: json:"ids"
+    repeated string ids = 2;
+}

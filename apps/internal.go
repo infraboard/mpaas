@@ -9,5 +9,6 @@ import (
 	_ "github.com/infraboard/mpaas/apps/cluster/impl"
 	_ "github.com/infraboard/mpaas/apps/deploy/impl"
 	_ "github.com/infraboard/mpaas/apps/gateway/impl"
+	_ "github.com/infraboard/mpaas/apps/job/impl"
 	_ "github.com/infraboard/mpaas/apps/trigger/impl"
 )
