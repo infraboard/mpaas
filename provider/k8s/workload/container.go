@@ -40,7 +40,7 @@ type ContainerExecutor interface {
 }
 
 // 登录容器
-func (c *Workload) LoginContainer(req *LoginContainerRequest) error {
+func (c *Workload) LoginContainer(ctx context.Context, req *LoginContainerRequest) error {
 	restReq := c.corev1.RESTClient().Post().
 		Resource("pods").
 		Name(req.PodName).
@@ -61,7 +61,7 @@ func (c *Workload) LoginContainer(req *LoginContainerRequest) error {
 		return err
 	}
 
-	return executor.Stream(remotecommand.StreamOptions{
+	return executor.StreamWithContext(ctx, remotecommand.StreamOptions{
 		Stdin:             req.Excutor,
 		Stdout:            req.Excutor,
 		Stderr:            req.Excutor,

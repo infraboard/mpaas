@@ -155,7 +155,7 @@ func (h *handler) LoginContainer(r *restful.Request, w *restful.Response) {
 	req := workload.NewLoginContainerRequest([]string{"sh", "-c", defaultCmd}, term)
 	term.ParseParame(req)
 
-	err = client.WorkLoad().LoginContainer(req)
+	err = client.WorkLoad().LoginContainer(r.Request.Context(), req)
 	if err != nil {
 		term.WriteMessage(k8s.NewOperatinonParamMessage(err.Error()))
 		return
