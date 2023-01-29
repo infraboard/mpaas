@@ -8,6 +8,7 @@ import (
 	"github.com/infraboard/mcube/app"
 	"github.com/infraboard/mcube/logger/zap"
 	"github.com/infraboard/mpaas/conf"
+	"sigs.k8s.io/yaml"
 )
 
 func DevelopmentSetup() {
@@ -55,4 +56,19 @@ func ReadJsonFile(filepath string, v any) error {
 		return err
 	}
 	return json.Unmarshal(content, v)
+}
+
+func ReadYamlFile(filepath string, v any) error {
+	content, err := ReadContentFile(filepath)
+	if err != nil {
+		return err
+	}
+	return yaml.Unmarshal(content, v)
+}
+
+func MustReadYamlFile(filepath string, v any) {
+	err := ReadYamlFile(filepath, v)
+	if err != nil {
+		panic(err)
+	}
 }
