@@ -32,3 +32,13 @@ func NewQueryJobRequest() *QueryJobRequest {
 		Names: []string{},
 	}
 }
+
+func NewDescribeJobRequest(id string) *DescribeJobRequest {
+	return &DescribeJobRequest{
+		DescribeValue: id,
+	}
+}
+
+func (req *DescribeJobRequest) Validate() error {
+	return validate.Validate(req)
+}

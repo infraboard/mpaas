@@ -11,6 +11,7 @@ import "github.com/infraboard/mcube/pb/resource/base.proto";
 service RPC {
     rpc CreateJob(CreateJobRequest) returns(Job);
     rpc QueryJob(QueryJobRequest) returns(JobSet);
+    rpc DescribeJob(DescribeJobRequest) returns(Job);
 }
 
 message QueryJobRequest {
@@ -32,4 +33,19 @@ message QueryJobRequest {
     // job 名称列表
     // @gotags: json:"names"
     repeated string names = 6; 
+}
+
+
+enum DESCRIBE_BY {
+    // 用户的ID
+    ID = 0;
+}
+
+message DescribeJobRequest {
+    // 查询方式
+    // @gotags: json:"describe_by"
+    DESCRIBE_BY describe_by = 1;
+    // 查询值
+    // @gotags: json:"describe_value"  validate:"required"
+    string describe_value = 2;
 }

@@ -9,31 +9,40 @@ import (
 
 func TestQueryDeploy(t *testing.T) {
 	req := job.NewQueryJobRequest()
-	ds, err := impl.QueryJob(ctx, req)
+	set, err := impl.QueryJob(ctx, req)
 	if err != nil {
 		t.Fatal(err)
 	}
-	t.Log(ds)
+	t.Log(set)
 }
 
 func TestCreateBuildJob(t *testing.T) {
 	req := job.NewCreateJobRequest()
 	req.Name = "容器镜像构建"
 	req.RunnerSpec = tools.MustReadContentFile("test/build.yaml")
-	ds, err := impl.CreateJob(ctx, req)
+	ins, err := impl.CreateJob(ctx, req)
 	if err != nil {
 		t.Fatal(err)
 	}
-	t.Log(ds)
+	t.Log(ins)
 }
 
 func TestCreateDeployJob(t *testing.T) {
 	req := job.NewCreateJobRequest()
 	req.Name = "容器镜像部署"
 	req.RunnerSpec = tools.MustReadContentFile("test/deploy.yaml")
-	ds, err := impl.CreateJob(ctx, req)
+	ins, err := impl.CreateJob(ctx, req)
 	if err != nil {
 		t.Fatal(err)
 	}
-	t.Log(ds)
+	t.Log(ins)
+}
+
+func TestDescribeJob(t *testing.T) {
+	req := job.NewDescribeJobRequest("xxx")
+	ins, err := impl.DescribeJob(ctx, req)
+	if err != nil {
+		t.Fatal(err)
+	}
+	t.Log(ins)
 }

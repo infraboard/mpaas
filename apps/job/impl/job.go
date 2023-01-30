@@ -5,6 +5,8 @@ import (
 
 	"github.com/infraboard/mcube/exception"
 	"github.com/infraboard/mpaas/apps/job"
+	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/mongo"
 )
 
 func (i *impl) CreateJob(ctx context.Context, in *job.CreateJobRequest) (
@@ -47,4 +49,28 @@ func (i *impl) QueryJob(ctx context.Context, in *job.QueryJobRequest) (
 	set.Total = count
 
 	return set, nil
+}
+
+func (i *impl) DescribeJob(ctx context.Context, in *job.DescribeJobRequest) (
+	*job.Job, error) {
+	if err := in.Validate(); err != nil {
+		return nil, exception.NewBadRequest(err.Error())
+	}
+
+	filter := bson.M{}
+	switch in.DescribeBy {
+	case job.DESCRIBE_BY_ID:
+		filter["_id"] = in.DescribeValue
+	}
+
+	ins := job.NewDefaultJob()
+	if err := i.col.FindOne(ctx, filter).Decode(ins); err != nil {
+		if err == mongo.ErrNoDocuments {
+			return nil, exception.NewNotFound("job %s not found", in)
+		}
+
+		return nil, exception.NewInternalServerError("find job %s error, %s", in.DescribeValue, err)
+	}
+
+	return ins, nil
 }

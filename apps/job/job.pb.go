@@ -240,7 +240,7 @@ type CreateJobRequest struct {
 	// 运行时 Runner传人参数, 创建完成后不能修改, 要修改请新建版本
 	// @gotags: bson:"runner_params" json:"runner_params"
 	RunnerParams map[string]string `protobuf:"bytes,10,rep,name=runner_params,json=runnerParams,proto3" json:"runner_params" protobuf_key:"bytes,1,opt,name=key,proto3" protobuf_val:"bytes,2,opt,name=value,proto3" bson:"runner_params"`
-	// 运行时 用户传人的参数说明
+	// 运行时 用户传人的参数说明(不同版本有不同参数)
 	// @gotags: bson:"run_params" json:"run_params"
 	RunParams []*VersionedRunParamDesc `protobuf:"bytes,11,rep,name=run_params,json=runParams,proto3" json:"run_params" bson:"run_params"`
 	// 标签
