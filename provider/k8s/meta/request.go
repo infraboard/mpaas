@@ -46,16 +46,23 @@ type GetRequest struct {
 }
 
 func NewDeleteRequest(name string) *DeleteRequest {
-	return &DeleteRequest{
+	req := &DeleteRequest{
 		Namespace: DEFAULT_NAMESPACE,
 		Name:      name,
+		Opts:      metav1.DeleteOptions{},
 	}
+	req.SetPropagationPolicy(metav1.DeletePropagationBackground)
+	return req
 }
 
 type DeleteRequest struct {
 	Namespace string
 	Name      string
 	Opts      metav1.DeleteOptions
+}
+
+func (req *DeleteRequest) SetPropagationPolicy(dp metav1.DeletionPropagation) {
+	req.Opts.PropagationPolicy = &dp
 }
 
 func NewListRequest() *ListRequest {

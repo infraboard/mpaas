@@ -1,12 +1,11 @@
 package k8s_test
 
 import (
-	"os"
-	"path/filepath"
 	"testing"
 
 	"github.com/infraboard/mcube/logger/zap"
 	"github.com/infraboard/mpaas/provider/k8s"
+	"github.com/infraboard/mpaas/test/tools"
 )
 
 var (
@@ -37,19 +36,10 @@ func TestServerResources(t *testing.T) {
 func init() {
 	zap.DevelopmentSetup()
 
-	wd, err := os.Getwd()
+	kubeConf := tools.MustReadContentFile("kube_config.yml")
+	c, err := k8s.NewClient(kubeConf)
 	if err != nil {
 		panic(err)
 	}
-
-	kc, err := os.ReadFile(filepath.Join(wd, "kube_config.yml"))
-	if err != nil {
-		panic(err)
-	}
-
-	client, err = k8s.NewClient(string(kc))
-	if err != nil {
-		panic(err)
-	}
-
+	client = c
 }

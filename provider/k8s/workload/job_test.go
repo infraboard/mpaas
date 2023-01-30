@@ -10,8 +10,7 @@ import (
 
 func TestListJob(t *testing.T) {
 	req := meta.NewListRequest()
-	req.Namespace = "kube-system"
-	req.Opts.LabelSelector = "k8s-app=kube-dns"
+	req.Namespace = "default"
 	list, err := impl.ListJob(ctx, req)
 	if err != nil {
 		t.Fatal(err)
@@ -31,4 +30,12 @@ func TestCreateJob(t *testing.T) {
 		t.Fatal(err)
 	}
 	t.Log(job)
+}
+
+func TestDeleteJob(t *testing.T) {
+	req := meta.NewDeleteRequest("test-job")
+	err := impl.DeleteJob(ctx, req)
+	if err != nil {
+		t.Fatal(err)
+	}
 }

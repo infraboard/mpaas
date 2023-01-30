@@ -8,6 +8,8 @@ import (
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
+// job使用文档: https://kubernetes.io/docs/concepts/workloads/controllers/job/
+
 func (b *Workload) ListJob(ctx context.Context, req *meta.ListRequest) (*v1.JobList, error) {
 	return b.batchV1.Jobs(req.Namespace).List(ctx, req.Opts)
 }
@@ -18,4 +20,8 @@ func (b *Workload) GetJob(ctx context.Context, req *meta.GetRequest) (*v1.Job, e
 
 func (b *Workload) CreateJob(ctx context.Context, job *v1.Job) (*v1.Job, error) {
 	return b.batchV1.Jobs(job.Namespace).Create(ctx, job, metav1.CreateOptions{})
+}
+
+func (c *Workload) DeleteJob(ctx context.Context, req *meta.DeleteRequest) error {
+	return c.batchV1.Jobs(req.Namespace).Delete(ctx, req.Name, req.Opts)
 }
