@@ -19,7 +19,7 @@ func (req *CreateJobRequest) Validate() error {
 
 func NewCreateJobRequest() *CreateJobRequest {
 	return &CreateJobRequest{
-		RunParams: []*VersionedRunParamDesc{},
+		RunParams: []*VersionedRunParam{},
 		Labels:    make(map[string]string),
 	}
 }

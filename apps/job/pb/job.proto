@@ -66,7 +66,7 @@ message CreateJobRequest {
 	mcube.resource.VISIABLE_MODE visiable_mode = 9;
 	// 运行时 用户传人的参数说明(不同版本有不同参数)
 	// @gotags: bson:"run_params" json:"run_params"
-	repeated VersionedRunParamDesc run_params = 10;
+	repeated VersionedRunParam run_params = 10;
 	// 标签
 	// @gotags: bson:"labels" json:"labels"
 	map<string, string> labels = 11;
@@ -75,7 +75,7 @@ message CreateJobRequest {
 	string description = 12;
 }
 
-message VersionedRunParamDesc {
+message VersionedRunParam {
 	// 版本
 	// @gotags: bson:"version" json:"version" validate:"required"
 	string version = 1;
