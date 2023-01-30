@@ -64,18 +64,15 @@ message CreateJobRequest {
 	// 是否是公开Job, 默认只能本空间内访问
 	// @gotags: bson:"visiable_mode" json:"visiable_mode"
 	mcube.resource.VISIABLE_MODE visiable_mode = 9;
-	// 运行时 Runner传人参数, 创建完成后不能修改, 要修改请新建版本
-	// @gotags: bson:"runner_params" json:"runner_params"
-	map<string, string> runner_params = 10;
 	// 运行时 用户传人的参数说明(不同版本有不同参数)
 	// @gotags: bson:"run_params" json:"run_params"
-	repeated VersionedRunParamDesc run_params = 11;
+	repeated VersionedRunParamDesc run_params = 10;
 	// 标签
 	// @gotags: bson:"labels" json:"labels"
-	map<string, string> labels = 12;
+	map<string, string> labels = 11;
 	// 描述
 	// @gotags: bson:"description" json:"description"
-	string description = 14;
+	string description = 12;
 }
 
 message VersionedRunParamDesc {
@@ -87,20 +84,20 @@ message VersionedRunParamDesc {
 	string description = 2;
 	// 运行时 用户传人的参数说明
 	// @gotags: bson:"run_params" json:"run_params"
-	repeated RunParamDesc run_params = 3;
+	repeated RunParam run_params = 3;
 }
 
-message RunParamDesc {
+message RunParam {
 	// 可选/必传
 	// @gotags: bson:"required" json:"required"
 	bool required = 1;
 	// 参数名称
-	// @gotags: bson:"param_name" json:"param_name" validate:"required"
-	string param_name = 2;
+	// @gotags: bson:"name" json:"name" validate:"required"
+	string name = 2;
 	// 参数描述
-	// @gotags: bson:"param_desc" json:"param_desc"
-	string param_desc = 3;
-	// 默认值, action运行时如果未传人，会填充默认值
-	// @gotags: bson:"default_value" json:"default_value"
-	string default_value = 4;
+	// @gotags: bson:"desc" json:"desc"
+	string desc = 3;
+	// 默认值, task运行时如果未传人，会填充默认值
+	// @gotags: bson:"value" json:"value"
+	string value = 4;
 }

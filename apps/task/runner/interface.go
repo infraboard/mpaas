@@ -11,4 +11,5 @@ type Runner interface {
 }
 
 type RunRequest struct {
+	RunnerSpec string
 }

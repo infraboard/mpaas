@@ -40,3 +40,9 @@ message RunJobRequest {
 	// @gotags: bson:"with" json:"with"
 	map<string, string> with = 5;
 }
+
+message K8sJobRunParams {
+	// 用于执行k8s job的集群
+	// @gotags: bson:"cluster_id" json:"cluster_id"
+	string cluster_id = 1;
+}
