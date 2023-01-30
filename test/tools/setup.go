@@ -12,7 +12,6 @@ import (
 )
 
 func DevelopmentSetup() {
-
 	// 初始化日志实例
 	zap.DevelopmentSetup()
 
@@ -71,4 +70,12 @@ func MustReadYamlFile(filepath string, v any) {
 	if err != nil {
 		panic(err)
 	}
+}
+
+func MustToYaml(v any) string {
+	b, err := yaml.Marshal(v)
+	if err != nil {
+		panic(err)
+	}
+	return string(b)
 }

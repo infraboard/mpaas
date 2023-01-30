@@ -1,39 +1,24 @@
 package workload_test
 
 import (
+	"io"
 	"testing"
 
-	"github.com/infraboard/mpaas/provider/k8s/meta"
-	"sigs.k8s.io/yaml"
+	"github.com/infraboard/mpaas/provider/k8s/workload"
 )
 
-func TestListPod(t *testing.T) {
-	req := meta.NewListRequest()
-	req.Namespace = "kube-system"
-	req.Opts.LabelSelector = "k8s-app=kube-dns"
-	pods, err := impl.ListPod(ctx, req)
+func TestWatchConainterLog(t *testing.T) {
+	req := workload.NewWatchConainterLogRequest()
+	req.Namespace = "default"
+	req.PodName = "test-job-kscwv"
+	stream, err := impl.WatchConainterLog(ctx, req)
 	if err != nil {
 		t.Fatal(err)
 	}
-
-	// 序列化
-	for _, v := range pods.Items {
-		t.Log(v.Namespace, v.Name)
-	}
-}
-
-func TestGetPod(t *testing.T) {
-	req := meta.NewGetRequest("kubernetes-proxy-78d4f87b58-crmlm")
-
-	pods, err := impl.GetPod(ctx, req)
+	defer stream.Close()
+	b, err := io.ReadAll(stream)
 	if err != nil {
 		t.Fatal(err)
 	}
-
-	// 序列化
-	yd, err := yaml.Marshal(pods)
-	if err != nil {
-		t.Fatal(err)
-	}
-	t.Log(string(yd))
+	t.Log(string(b))
 }

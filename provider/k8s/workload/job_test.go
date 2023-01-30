@@ -18,7 +18,7 @@ func TestListJob(t *testing.T) {
 
 	// 序列化
 	for _, v := range list.Items {
-		t.Log(v.Namespace, v.Name)
+		t.Log(tools.MustToYaml(v))
 	}
 }
 

@@ -72,19 +72,18 @@ func (c *Workload) LoginContainer(ctx context.Context, req *LoginContainerReques
 
 func NewWatchConainterLogRequest() *WatchConainterLogRequest {
 	return &WatchConainterLogRequest{
-		TailLines: 100,
-		Follow:    false,
-		Previous:  false,
+		PodLogOptions: &v1.PodLogOptions{
+			Follow:                       false,
+			Previous:                     false,
+			InsecureSkipTLSVerifyBackend: true,
+		},
 	}
 }
 
 type WatchConainterLogRequest struct {
-	Namespace     string `json:"namespace" validate:"required"`
-	PodName       string `json:"pod_name" validate:"required"`
-	ContainerName string `json:"container_name"`
-	TailLines     int64  `json:"tail_lines"`
-	Follow        bool   `json:"follow"`
-	Previous      bool   `json:"previous"`
+	Namespace string `json:"namespace" validate:"required"`
+	PodName   string `json:"pod_name" validate:"required"`
+	*v1.PodLogOptions
 }
 
 func (req *WatchConainterLogRequest) Validate() error {
@@ -93,14 +92,6 @@ func (req *WatchConainterLogRequest) Validate() error {
 
 // 查看容器日志
 func (c *Workload) WatchConainterLog(ctx context.Context, req *WatchConainterLogRequest) (io.ReadCloser, error) {
-	opt := &v1.PodLogOptions{
-		Container:                    req.ContainerName,
-		Follow:                       req.Follow,
-		TailLines:                    &req.TailLines,
-		Previous:                     req.Previous,
-		InsecureSkipTLSVerifyBackend: true,
-	}
-
-	restReq := c.corev1.Pods(req.Namespace).GetLogs(req.PodName, opt)
+	restReq := c.corev1.Pods(req.Namespace).GetLogs(req.PodName, req.PodLogOptions)
 	return restReq.Stream(ctx)
 }
