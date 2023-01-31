@@ -50,12 +50,16 @@ func (r *VersionedRunParam) Add(item *RunParam) {
 }
 
 // 从参数中提取k8s job执行器(runner)需要的参数
-// 这里采用反射来获取Struc Tag, 然后根据Struct Tag 获取参数的具体指
+// 这里采用反射来获取Struc Tag, 然后根据Struct Tag 获取参数的具体值
 // 关于反射 可以参考: https://blog.csdn.net/bocai_xiaodaidai/article/details/123668047
 func (r *VersionedRunParam) K8SJobRunnerParams() *K8SJobRunnerParams {
 	params := NewK8SJobRunnerParams()
 
+	// params是一个Pointer Value, 如果需要获取值的类型需要这样处理:
+	//	reflect.Indirect(reflect.ValueOf(params)).Type()
+	// 因此这里直接采用K8SJobRunnerParams{}获取类型
 	pt := reflect.TypeOf(K8SJobRunnerParams{})
+
 	if field, ok := pt.FieldByName("ClusterId"); ok {
 		tagValue := field.Tag.Get("param")
 		params.ClusterId = r.GetParamValue(tagValue)
