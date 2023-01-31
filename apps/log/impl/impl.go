@@ -6,7 +6,7 @@ import (
 	"github.com/infraboard/mcube/logger/zap"
 	"go.mongodb.org/mongo-driver/mongo"
 
-	"github.com/infraboard/mpaas/apps/storage"
+	"github.com/infraboard/mpaas/apps/log"
 	"github.com/infraboard/mpaas/conf"
 )
 
@@ -32,7 +32,7 @@ func (s *service) Config() error {
 }
 
 func (s *service) Name() string {
-	return storage.AppName
+	return log.AppName
 }
 
 func init() {

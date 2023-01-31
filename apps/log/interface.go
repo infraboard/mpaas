@@ -1,4 +1,4 @@
-package storage
+package log
 
 import (
 	"fmt"
@@ -7,7 +7,7 @@ import (
 )
 
 const (
-	AppName = "storage"
+	AppName = "log"
 )
 
 type Service interface {

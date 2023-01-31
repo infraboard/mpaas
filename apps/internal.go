@@ -10,6 +10,6 @@ import (
 	_ "github.com/infraboard/mpaas/apps/deploy/impl"
 	_ "github.com/infraboard/mpaas/apps/gateway/impl"
 	_ "github.com/infraboard/mpaas/apps/job/impl"
-	_ "github.com/infraboard/mpaas/apps/storage/impl"
+	_ "github.com/infraboard/mpaas/apps/log/impl"
 	_ "github.com/infraboard/mpaas/apps/trigger/impl"
 )

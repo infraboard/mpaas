@@ -8,10 +8,10 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/options"
 
 	"github.com/infraboard/mcube/exception"
-	"github.com/infraboard/mpaas/apps/storage"
+	"github.com/infraboard/mpaas/apps/log"
 )
 
-func (s *service) UploadFile(req *storage.UploadFileRequest) error {
+func (s *service) UploadFile(req *log.UploadFileRequest) error {
 	s.log.Debugf("bucket name: %s, db file name: %s", req.BucketName, req.FileName)
 
 	if err := req.Validate(); err != nil {
@@ -45,7 +45,7 @@ func (s *service) UploadFile(req *storage.UploadFileRequest) error {
 	return nil
 }
 
-func (s *service) Download(req *storage.DownloadFileRequest) error {
+func (s *service) Download(req *log.DownloadFileRequest) error {
 	if err := req.Validate(); err != nil {
 		return exception.NewBadRequest("valiate upload file request error, %s", err)
 	}
