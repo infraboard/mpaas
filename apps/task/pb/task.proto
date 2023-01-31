@@ -21,6 +21,9 @@ message Task {
 	// 关联Job
 	// @gotags: bson:"job" json:"job"
 	job.Job job = 2;
+	// 任务当前状态
+	// @gotags: bson:"status" json:"status"
+	Status status = 3;
 }
 
 message RunJobRequest {
@@ -38,6 +41,27 @@ message RunJobRequest {
 	job.VersionedRunParam params = 4;
 }
 
+enum STAGE {
+	// 运行中
+	ACTIVE = 0;
+	// 运行成功
+	SUCCEEDED = 1;
+	// 运行失败
+	FAILED = 2;
+}
+
+message Status {
+	// 任务当前状态
+	// @gotags: bson:"stage" json:"stage"
+    STAGE stage = 1;
+	// 状态描述
+	// @gotags: bson:"message" json:"message"
+	string message = 2;
+	// 任务状态详细描述, 用于Debug
+	// @gotags: bson:"detail" json:"detail"
+	string detail = 3;
+}
+
 message RunTaskRequest {
 	// job名称定义
 	// @gotags: bson:"job_spec" json:"job_spec"
@@ -46,3 +70,4 @@ message RunTaskRequest {
 	// @gotags: bson:"params" json:"params"
 	job.VersionedRunParam params = 2;
 }
+

@@ -17,10 +17,11 @@ func (i *impl) RunJob(ctx context.Context, in *task.RunJobRequest) (
 
 	// 2. 执行Job
 	r := runner.GetRunner(j.Spec.RunnerType)
-	t, err := r.Run(ctx, task.NewRunTaskRequest(j.Spec.RunnerSpec, in.Params))
+	status, err := r.Run(ctx, task.NewRunTaskRequest(j.Spec.RunnerSpec, in.Params))
 	if err != nil {
 		return nil, err
 	}
 
+	t := task.NewTask(in, j, status)
 	return t, nil
 }

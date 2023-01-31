@@ -2,7 +2,6 @@ package k8s
 
 import (
 	"context"
-	"fmt"
 
 	"github.com/infraboard/mpaas/apps/cluster"
 	"github.com/infraboard/mpaas/apps/task"
@@ -10,7 +9,7 @@ import (
 	"sigs.k8s.io/yaml"
 )
 
-func (r *K8sRunner) Run(ctx context.Context, in *task.RunTaskRequest) (*task.Task, error) {
+func (r *K8sRunner) Run(ctx context.Context, in *task.RunTaskRequest) (*task.Status, error) {
 	runnerParams := in.Params.K8SJobRunnerParams()
 	cReq := cluster.NewDescribeClusterRequest(runnerParams.ClusterId)
 	c, err := r.cluster.DescribeCluster(ctx, cReq)
@@ -32,6 +31,11 @@ func (r *K8sRunner) Run(ctx context.Context, in *task.RunTaskRequest) (*task.Tas
 		return nil, err
 	}
 
-	fmt.Println(obj)
-	return nil, nil
+	status := task.NewStatus()
+	objYaml, err := yaml.Marshal(obj)
+	if err != nil {
+		return nil, err
+	}
+	status.Detail = string(objYaml)
+	return status, nil
 }
