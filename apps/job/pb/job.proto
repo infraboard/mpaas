@@ -11,6 +11,13 @@ enum RUNNER_TYPE {
 	K8S_JOB = 0;
 }
 
+// 用于从job的run_params中提取出job允许所必须的参数
+message K8sJobRunnerParams {
+    // 集群Id
+	// @gotags: bson:"cluster_id" json:"cluster_id" param:"cluster_id"
+    string cluster_id = 1;
+}
+
 // JobSet 列表
 message JobSet {
 	// 总数量
@@ -43,30 +50,30 @@ message CreateJobRequest {
 	// 执行器定义, 比如 k8s job 定义
 	// @gotags: bson:"runner_spec" json:"runner_spec"
 	string runner_spec = 2;
-	// 所属域
-	// @gotags: bson:"domain" json:"domain" validate:"required"
-	string domain = 3;
-	// 所属空间
-	// @gotags: bson:"namespace" json:"namespace" validate:"required"
-	string namespace = 4;
-	// 创建人
-	// @gotags: bson:"create_by" json:"create_by" validate:"required"
-	string create_by = 5;
-	// 图片
-	// @gotags: bson:"logo" json:"logo"
-	string logo = 6;
-	// 名称
-	// @gotags: bson:"name" json:"name" validate:"required"
-	string name = 7;
-	// 展示名称
-	// @gotags: bson:"display_name" json:"display_name"
-	string display_name = 8;
-	// 是否是公开Job, 默认只能本空间内访问
-	// @gotags: bson:"visiable_mode" json:"visiable_mode"
-	mcube.resource.VISIABLE_MODE visiable_mode = 9;
 	// 运行时 用户传人的参数说明(不同版本有不同参数)
 	// @gotags: bson:"run_params" json:"run_params"
-	repeated VersionedRunParam run_params = 10;
+	repeated VersionedRunParam run_params = 3;
+	// 所属域
+	// @gotags: bson:"domain" json:"domain" validate:"required"
+	string domain = 4;
+	// 所属空间
+	// @gotags: bson:"namespace" json:"namespace" validate:"required"
+	string namespace = 5;
+	// 创建人
+	// @gotags: bson:"create_by" json:"create_by" validate:"required"
+	string create_by = 6;
+	// 图片
+	// @gotags: bson:"logo" json:"logo"
+	string logo = 7;
+	// 名称
+	// @gotags: bson:"name" json:"name" validate:"required"
+	string name = 8;
+	// 展示名称
+	// @gotags: bson:"display_name" json:"display_name"
+	string display_name = 9;
+	// 是否是公开Job, 默认只能本空间内访问
+	// @gotags: bson:"visiable_mode" json:"visiable_mode"
+	mcube.resource.VISIABLE_MODE visiable_mode = 10;
 	// 标签
 	// @gotags: bson:"labels" json:"labels"
 	map<string, string> labels = 11;
@@ -76,20 +83,20 @@ message CreateJobRequest {
 }
 
 message VersionedRunParam {
-	// 版本
+	// Job的版本
 	// @gotags: bson:"version" json:"version" validate:"required"
 	string version = 1;
-	// 描述
+	// 版本的描述
 	// @gotags: bson:"description" json:"description"
 	string description = 2;
 	// 运行时 用户传人的参数说明
-	// @gotags: bson:"run_params" json:"run_params"
-	repeated RunParam run_params = 3;
+	// @gotags: bson:"items" json:"items"
+	repeated RunParam items = 3;
 }
 
 message RunParam {
 	// 可选/必传
-	// @gotags: bson:"required" json:"required"
+	// @gotags: bson:"required"
 	bool required = 1;
 	// 参数名称
 	// @gotags: bson:"name" json:"name" validate:"required"

@@ -1,6 +1,7 @@
 package job
 
 import (
+	"reflect"
 	"time"
 
 	"github.com/rs/xid"
@@ -35,4 +36,45 @@ func NewDefaultJob() *Job {
 	return &Job{
 		Spec: NewCreateJobRequest(),
 	}
+}
+
+func NewVersionedRunParam(version string) *VersionedRunParam {
+	return &VersionedRunParam{
+		Version: version,
+		Items:   []*RunParam{},
+	}
+}
+
+func (r *VersionedRunParam) Add(item *RunParam) {
+	r.Items = append(r.Items, item)
+}
+
+// 从参数中提取k8s job执行器(runner)需要的参数
+// 这里采用反射来获取Struc Tag, 然后根据Struct Tag 获取参数的具体指
+// 关于反射 可以参考: https://blog.csdn.net/bocai_xiaodaidai/article/details/123668047
+func (r *VersionedRunParam) K8SJobRunnerParams() *K8SJobRunnerParams {
+	params := NewK8SJobRunnerParams()
+
+	pt := reflect.TypeOf(K8SJobRunnerParams{})
+	if field, ok := pt.FieldByName("ClusterId"); ok {
+		tagValue := field.Tag.Get("param")
+		params.ClusterId = r.GetParamValue(tagValue)
+	}
+
+	return params
+}
+
+// 获取参数的值
+func (r *VersionedRunParam) GetParamValue(key string) string {
+	for i := range r.Items {
+		item := r.Items[i]
+		if item.Name == key {
+			return item.Value
+		}
+	}
+	return ""
+}
+
+func NewK8SJobRunnerParams() *K8SJobRunnerParams {
+	return &K8SJobRunnerParams{}
 }
