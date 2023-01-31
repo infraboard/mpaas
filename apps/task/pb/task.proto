@@ -15,7 +15,7 @@ message TaskSet {
 }
 
 message Task {
-	// task定义
+	// task定义, job运行时参数
 	// @gotags: bson:"spec" json:"spec"
 	RunJobRequest spec = 1;
 	// 关联Job
@@ -36,4 +36,13 @@ message RunJobRequest {
 	// job运行时参数
 	// @gotags: bson:"params" json:"params"
 	job.VersionedRunParam params = 4;
+}
+
+message RunTaskRequest {
+	// job名称定义
+	// @gotags: bson:"job_spec" json:"job_spec"
+    string job_spec = 1;
+	// job运行时参数
+	// @gotags: bson:"params" json:"params"
+	job.VersionedRunParam params = 2;
 }
