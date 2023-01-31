@@ -1,6 +1,7 @@
 package log
 
 import (
+	"context"
 	"fmt"
 	"io"
 	"net/http"
@@ -11,8 +12,8 @@ const (
 )
 
 type Service interface {
-	UploadFile(*UploadFileRequest) error
-	Download(*DownloadFileRequest) error
+	UploadFile(context.Context, *UploadFileRequest) error
+	Download(context.Context, *DownloadFileRequest) error
 }
 
 // NewUploadFileRequestFromHTTP todo
