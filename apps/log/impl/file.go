@@ -56,14 +56,14 @@ func (s *service) Download(ctx context.Context, req *log.DownloadFileRequest) er
 		return err
 	}
 
-	s.log.Debugf("start down file: %s ...", req.FileID)
+	s.log.Debugf("start download file: %s ...", req.FileID)
 	// 下载文件
 	size, err := bucket.DownloadToStream(req.FileID, req.Writer())
 	if err != nil {
 		return err
 	}
 
-	s.log.Debugf("down file: %s complete, size: %d", req.FileID, size)
+	s.log.Debugf("download file: %s complete, size: %d", req.FileID, size)
 
 	return nil
 }
