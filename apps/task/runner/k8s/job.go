@@ -5,6 +5,7 @@ import (
 
 	"github.com/infraboard/mpaas/apps/cluster"
 	"github.com/infraboard/mpaas/apps/task"
+	"github.com/infraboard/mpaas/provider/k8s/workload"
 	v1 "k8s.io/api/batch/v1"
 	"sigs.k8s.io/yaml"
 )
@@ -21,11 +22,17 @@ func (r *K8sRunner) Run(ctx context.Context, in *task.RunTaskRequest) (*task.Sta
 		return nil, err
 	}
 
-	// 执行Job
 	obj := new(v1.Job)
 	if err := yaml.Unmarshal([]byte(in.JobSpec), obj); err != nil {
 		return nil, err
 	}
+
+	// 给容器注入环境变量
+	for _, c := range obj.Spec.Template.Spec.Containers {
+		workload.InjectEnvVars(&c, in.Params.EnvVars())
+	}
+
+	// 执行Job
 	obj, err = k8sClient.WorkLoad().CreateJob(ctx, obj)
 	if err != nil {
 		return nil, err

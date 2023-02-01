@@ -7,6 +7,15 @@ import (
 	"github.com/infraboard/mpaas/test/tools"
 )
 
+func TestQueryCluster(t *testing.T) {
+	req := cluster.NewQueryClusterRequest()
+	set, err := impl.QueryCluster(ctx, req)
+	if err != nil {
+		t.Fatal(err)
+	}
+	t.Log(set)
+}
+
 func TestCreateCluster(t *testing.T) {
 	req := cluster.NewCreateClusterRequest()
 	req.Vendor = "腾讯云"
@@ -22,7 +31,7 @@ func TestCreateCluster(t *testing.T) {
 }
 
 func TestUpdateCluster(t *testing.T) {
-	req := cluster.NewPatchClusterRequest("cls-ot6msuhj-local")
+	req := cluster.NewPatchClusterRequest("k8s-test")
 	req.Data.KubeConfig = tools.MustReadContentFile("test/kube_config.yml")
 	set, err := impl.UpdateCluster(ctx, req)
 	if err != nil {
@@ -31,17 +40,8 @@ func TestUpdateCluster(t *testing.T) {
 	t.Log(set)
 }
 
-func TestQueryCluster(t *testing.T) {
-	req := cluster.NewQueryClusterRequest()
-	set, err := impl.QueryCluster(ctx, req)
-	if err != nil {
-		t.Fatal(err)
-	}
-	t.Log(set)
-}
-
 func TestDeleteCluster(t *testing.T) {
-	req := cluster.NewDeleteClusterRequestWithID("cls-ot6msuhj-local")
+	req := cluster.NewDeleteClusterRequestWithID("k8s-test")
 	set, err := impl.DeleteCluster(ctx, req)
 	if err != nil {
 		t.Fatal(err)

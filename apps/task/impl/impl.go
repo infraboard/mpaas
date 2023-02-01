@@ -38,7 +38,11 @@ func (i *impl) Config() error {
 	i.col = db.Collection(i.Name())
 	i.log = zap.L().Named(i.Name())
 	i.job = app.GetInternalApp(job.AppName).(job.Service)
-	return runner.Init()
+	if err := runner.Init(); err != nil {
+		return err
+	}
+	i.log.Debug("init task impl ok")
+	return nil
 }
 
 func (i *impl) Name() string {

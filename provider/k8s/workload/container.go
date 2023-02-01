@@ -95,3 +95,45 @@ func (c *Workload) WatchConainterLog(ctx context.Context, req *WatchConainterLog
 	restReq := c.corev1.Pods(req.Namespace).GetLogs(req.PodName, req.PodLogOptions)
 	return restReq.Stream(ctx)
 }
+
+func InjectEnvVars(c *v1.Container, envs []v1.EnvVar) {
+	set := NewEnvVarSet(c.Env)
+
+	for _, env := range envs {
+		e := set.GetOrNewEnv(env.Name)
+		e.Value = env.Value
+		e.ValueFrom = nil
+	}
+	c.Env = set.Items
+}
+
+func NewEnvVarSet(envs []v1.EnvVar) *EnvVarSet {
+	return &EnvVarSet{
+		Items: envs,
+	}
+}
+
+type EnvVarSet struct {
+	Items []v1.EnvVar
+}
+
+func (s *EnvVarSet) Add(item v1.EnvVar) {
+	s.Items = append(s.Items, item)
+}
+
+// 如果有就返回已有的Env, 如果没有则创建新的Env
+func (s *EnvVarSet) GetOrNewEnv(name string) *v1.EnvVar {
+	for i := range s.Items {
+		item := s.Items[i]
+		if item.Name == name {
+			return &item
+		}
+	}
+
+	newEnv := v1.EnvVar{
+		Name: name,
+	}
+	s.Add(newEnv)
+
+	return &newEnv
+}

@@ -11,5 +11,6 @@ import (
 	_ "github.com/infraboard/mpaas/apps/gateway/impl"
 	_ "github.com/infraboard/mpaas/apps/job/impl"
 	_ "github.com/infraboard/mpaas/apps/log/impl"
+	_ "github.com/infraboard/mpaas/apps/task/impl"
 	_ "github.com/infraboard/mpaas/apps/trigger/impl"
 )

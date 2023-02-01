@@ -4,6 +4,9 @@ import (
 	"github.com/infraboard/mcube/app"
 	"github.com/infraboard/mcube/logger/zap"
 	"github.com/infraboard/mpaas/conf"
+
+	// 注册所有服务
+	_ "github.com/infraboard/mpaas/apps"
 )
 
 func DevelopmentSetup() {

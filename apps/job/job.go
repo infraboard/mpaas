@@ -3,8 +3,10 @@ package job
 import (
 	"reflect"
 	"time"
+	"unicode"
 
 	"github.com/rs/xid"
+	corev1 "k8s.io/api/core/v1"
 )
 
 // New 新建一个部署配置
@@ -45,8 +47,8 @@ func NewVersionedRunParam(version string) *VersionedRunParam {
 	}
 }
 
-func (r *VersionedRunParam) Add(item *RunParam) {
-	r.Items = append(r.Items, item)
+func (r *VersionedRunParam) Add(items ...*RunParam) {
+	r.Items = append(r.Items, items...)
 }
 
 // 从参数中提取k8s job执行器(runner)需要的参数
@@ -66,6 +68,22 @@ func (r *VersionedRunParam) K8SJobRunnerParams() *K8SJobRunnerParams {
 	}
 
 	return params
+}
+
+// 获取需要注入容器的环境变量参数
+// 注意: 只有大写的变量才会被导出, 因为一般环境变量都是大写的, 比如 DB_PASS,
+// 小写的变量用于系统内部使用, 比如 K8SJobRunnerParams 中的cluster_id
+func (r *VersionedRunParam) EnvVars() (envs []corev1.EnvVar) {
+	for i := range r.Items {
+		item := r.Items[i]
+		if item.Name != "" && unicode.IsUpper(rune(item.Name[0])) {
+			envs = append(envs, corev1.EnvVar{
+				Name:  item.Name,
+				Value: item.Value,
+			})
+		}
+	}
+	return
 }
 
 // 获取参数的值

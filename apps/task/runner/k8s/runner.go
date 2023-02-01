@@ -15,7 +15,6 @@ type K8sRunner struct {
 }
 
 func (r *K8sRunner) Init() error {
-
 	r.cluster = app.GetInternalApp(cluster.AppName).(cluster.Service)
 	r.log = zap.L().Named("runner.k8s")
 	return nil

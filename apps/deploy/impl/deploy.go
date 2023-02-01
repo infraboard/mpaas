@@ -12,7 +12,7 @@ import (
 	"go.mongodb.org/mongo-driver/mongo"
 )
 
-func (i *impl) CreateDeploy(ctx context.Context, in *deploy.CreateDeployConfigRequest) (
+func (i *impl) CreateDeployConfig(ctx context.Context, in *deploy.CreateDeployConfigRequest) (
 	*deploy.DeployConfig, error) {
 	ins, err := deploy.New(in)
 	if err != nil {
@@ -25,7 +25,7 @@ func (i *impl) CreateDeploy(ctx context.Context, in *deploy.CreateDeployConfigRe
 	return ins, nil
 }
 
-func (i *impl) QueryDeploy(ctx context.Context, in *deploy.QueryDeployConfigRequest) (
+func (i *impl) QueryDeployConfig(ctx context.Context, in *deploy.QueryDeployConfigRequest) (
 	*deploy.DeployConfigSet, error) {
 	r := newQueryRequest(in)
 	resp, err := i.col.Find(ctx, r.FindFilter(), r.FindOptions())
@@ -53,7 +53,7 @@ func (i *impl) QueryDeploy(ctx context.Context, in *deploy.QueryDeployConfigRequ
 	return set, nil
 }
 
-func (i *impl) DescribeDeploy(ctx context.Context, req *deploy.DescribeDeployConfigRequest) (*deploy.DeployConfig, error) {
+func (i *impl) DescribeDeployConfig(ctx context.Context, req *deploy.DescribeDeployConfigRequest) (*deploy.DeployConfig, error) {
 	if err := req.Validate(); err != nil {
 		return nil, exception.NewBadRequest(err.Error())
 	}
@@ -76,14 +76,14 @@ func (i *impl) DescribeDeploy(ctx context.Context, req *deploy.DescribeDeployCon
 	return d, nil
 }
 
-func (i *impl) UpdateDeploy(ctx context.Context, in *deploy.UpdateDeployConfigRequest) (
+func (i *impl) UpdateDeployConfig(ctx context.Context, in *deploy.UpdateDeployConfigRequest) (
 	*deploy.DeployConfig, error) {
 	if err := in.Validate(); err != nil {
 		return nil, exception.NewBadRequest(err.Error())
 	}
 
 	req := deploy.NewDescribeDeployConfigRequest(in.Id)
-	d, err := i.DescribeDeploy(ctx, req)
+	d, err := i.DescribeDeployConfig(ctx, req)
 	if err != nil {
 		return nil, err
 	}
@@ -111,11 +111,11 @@ func (i *impl) UpdateDeploy(ctx context.Context, in *deploy.UpdateDeployConfigRe
 	return d, nil
 }
 
-func (i *impl) DeleteDeploy(ctx context.Context, in *deploy.DeleteDeployConfigRequest) (
+func (i *impl) DeleteDeployConfig(ctx context.Context, in *deploy.DeleteDeployConfigRequest) (
 	*deploy.DeployConfig, error) {
 
 	req := deploy.NewDescribeDeployConfigRequest(in.Id)
-	d, err := i.DescribeDeploy(ctx, req)
+	d, err := i.DescribeDeployConfig(ctx, req)
 	if err != nil {
 		return nil, err
 	}
