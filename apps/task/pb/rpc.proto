@@ -19,7 +19,7 @@ message QueryTaskRequest {
     // 分页请求
     // @gotags: json:"page"
     mcube.page.PageRequest page = 1;
-    // 部署Id列表
+    // 任务Id列表
     // @gotags: json:"ids"
     repeated string ids = 2;
 }

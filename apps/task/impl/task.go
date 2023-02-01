@@ -56,6 +56,5 @@ func (i *impl) QueryTask(ctx context.Context, in *task.QueryTaskRequest) (
 		return nil, exception.NewInternalServerError("get deploy count error, error is %s", err)
 	}
 	set.Total = count
-
 	return set, nil
 }

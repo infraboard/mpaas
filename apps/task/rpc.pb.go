@@ -29,7 +29,7 @@ type QueryTaskRequest struct {
 	// 分页请求
 	// @gotags: json:"page"
 	Page *request.PageRequest `protobuf:"bytes,1,opt,name=page,proto3" json:"page"`
-	// 部署Id列表
+	// 任务Id列表
 	// @gotags: json:"ids"
 	Ids []string `protobuf:"bytes,2,rep,name=ids,proto3" json:"ids"`
 }
