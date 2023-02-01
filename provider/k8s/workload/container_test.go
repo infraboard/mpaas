@@ -5,6 +5,9 @@ import (
 	"testing"
 
 	"github.com/infraboard/mpaas/provider/k8s/workload"
+	"github.com/infraboard/mpaas/test/tools"
+	batchv1 "k8s.io/api/batch/v1"
+	corev1 "k8s.io/api/core/v1"
 )
 
 func TestWatchConainterLog(t *testing.T) {
@@ -21,4 +24,22 @@ func TestWatchConainterLog(t *testing.T) {
 		t.Fatal(err)
 	}
 	t.Log(string(b))
+}
+
+func TestInjectEnvVars(t *testing.T) {
+	obj := new(batchv1.Job)
+	tools.MustReadYamlFile("test/job.yml", obj)
+
+	// 给容器注入环境变量
+	for i := range obj.Spec.Template.Spec.Containers {
+		c := obj.Spec.Template.Spec.Containers[i]
+		workload.InjectEnvVars(&c, []corev1.EnvVar{
+			{
+				Name:  "DB_PASS",
+				Value: "test",
+			},
+		})
+	}
+
+	t.Log(tools.MustToYaml(obj))
 }
