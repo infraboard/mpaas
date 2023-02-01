@@ -4,9 +4,22 @@ package infraboard.mpaas.task;
 option go_package = "github.com/infraboard/mpaas/apps/task";
 
 import "apps/task/pb/task.proto";
+import "github.com/infraboard/mcube/pb/page/page.proto";
 
 // RPC 执行Job
 service RPC {
     // 执行Job
     rpc RunJob(RunJobRequest) returns(Task);
+
+    // 查询任务
+    rpc QueryTask(QueryTaskRequest) returns(TaskSet);
+}
+
+message QueryTaskRequest {
+    // 分页请求
+    // @gotags: json:"page"
+    mcube.page.PageRequest page = 1;
+    // 部署Id列表
+    // @gotags: json:"ids"
+    repeated string ids = 2;
 }

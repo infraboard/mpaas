@@ -17,7 +17,7 @@ service RPC {
 message QueryDeployConfigRequest {
     // 分页请求
     // @gotags: json:"page"
-    infraboard.mcube.page.PageRequest page = 1;
+    mcube.page.PageRequest page = 1;
     // 部署Id列表
     // @gotags: json:"ids"
     repeated string ids = 2;

@@ -24,6 +24,8 @@ const _ = grpc.SupportPackageIsVersion7
 type RPCClient interface {
 	// 执行Job
 	RunJob(ctx context.Context, in *RunJobRequest, opts ...grpc.CallOption) (*Task, error)
+	// 查询任务
+	QueryTask(ctx context.Context, in *QueryTaskRequest, opts ...grpc.CallOption) (*TaskSet, error)
 }
 
 type rPCClient struct {
@@ -43,12 +45,23 @@ func (c *rPCClient) RunJob(ctx context.Context, in *RunJobRequest, opts ...grpc.
 	return out, nil
 }
 
+func (c *rPCClient) QueryTask(ctx context.Context, in *QueryTaskRequest, opts ...grpc.CallOption) (*TaskSet, error) {
+	out := new(TaskSet)
+	err := c.cc.Invoke(ctx, "/infraboard.mpaas.task.RPC/QueryTask", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // RPCServer is the server API for RPC service.
 // All implementations must embed UnimplementedRPCServer
 // for forward compatibility
 type RPCServer interface {
 	// 执行Job
 	RunJob(context.Context, *RunJobRequest) (*Task, error)
+	// 查询任务
+	QueryTask(context.Context, *QueryTaskRequest) (*TaskSet, error)
 	mustEmbedUnimplementedRPCServer()
 }
 
@@ -58,6 +71,9 @@ type UnimplementedRPCServer struct {
 
 func (UnimplementedRPCServer) RunJob(context.Context, *RunJobRequest) (*Task, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method RunJob not implemented")
+}
+func (UnimplementedRPCServer) QueryTask(context.Context, *QueryTaskRequest) (*TaskSet, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method QueryTask not implemented")
 }
 func (UnimplementedRPCServer) mustEmbedUnimplementedRPCServer() {}
 
@@ -90,6 +106,24 @@ func _RPC_RunJob_Handler(srv interface{}, ctx context.Context, dec func(interfac
 	return interceptor(ctx, in, info, handler)
 }
 
+func _RPC_QueryTask_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(QueryTaskRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(RPCServer).QueryTask(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/infraboard.mpaas.task.RPC/QueryTask",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(RPCServer).QueryTask(ctx, req.(*QueryTaskRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // RPC_ServiceDesc is the grpc.ServiceDesc for RPC service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -100,6 +134,10 @@ var RPC_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "RunJob",
 			Handler:    _RPC_RunJob_Handler,
+		},
+		{
+			MethodName: "QueryTask",
+			Handler:    _RPC_QueryTask_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

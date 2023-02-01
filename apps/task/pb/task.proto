@@ -15,15 +15,24 @@ message TaskSet {
 }
 
 message Task {
+    // 部署Id
+    // @gotags: bson:"_id" json:"id"
+    string id = 1;
+    // 创建时间
+    // @gotags: bson:"create_at" json:"create_at"
+    int64 create_at = 2;
+    // 更新时间
+    // @gotags: bson:"update_at" json:"update_at"
+    int64 update_at = 3;
 	// task定义, job运行时参数
 	// @gotags: bson:"spec" json:"spec"
-	RunJobRequest spec = 1;
+	RunJobRequest spec = 4;
 	// 关联Job
 	// @gotags: bson:"job" json:"job"
-	job.Job job = 2;
+	job.Job job = 5;
 	// 任务当前状态
 	// @gotags: bson:"status" json:"status"
-	Status status = 3;
+	Status status = 6;
 }
 
 message RunJobRequest {
