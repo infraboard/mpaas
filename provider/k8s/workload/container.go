@@ -2,7 +2,6 @@ package workload
 
 import (
 	"context"
-	"fmt"
 	"io"
 
 	"github.com/go-playground/validator/v10"
@@ -98,14 +97,13 @@ func (c *Workload) WatchConainterLog(ctx context.Context, req *WatchConainterLog
 	return restReq.Stream(ctx)
 }
 
-func InjectEnvVars(c *v1.Container, envs []v1.EnvVar) {
+func InjectContainerEnvVars(c *v1.Container, envs []v1.EnvVar) {
 	set := NewEnvVarSet(c.Env)
 	for _, env := range envs {
 		e := set.GetOrNewEnv(env.Name)
 		e.Value = env.Value
 		e.ValueFrom = nil
 	}
-	fmt.Println(set.Items)
 	c.Env = set.EnvVars()
 }
 

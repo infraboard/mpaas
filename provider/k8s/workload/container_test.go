@@ -31,14 +31,14 @@ func TestInjectEnvVars(t *testing.T) {
 	tools.MustReadYamlFile("test/job.yml", obj)
 
 	// 给容器注入环境变量
-	for i := range obj.Spec.Template.Spec.Containers {
-		c := obj.Spec.Template.Spec.Containers[i]
-		workload.InjectEnvVars(&c, []corev1.EnvVar{
+	for i, c := range obj.Spec.Template.Spec.Containers {
+		workload.InjectContainerEnvVars(&c, []corev1.EnvVar{
 			{
 				Name:  "DB_PASS",
 				Value: "test",
 			},
 		})
+		obj.Spec.Template.Spec.Containers[i] = c
 	}
 
 	t.Log(tools.MustToYaml(obj))

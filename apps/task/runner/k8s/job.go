@@ -28,9 +28,7 @@ func (r *K8sRunner) Run(ctx context.Context, in *task.RunTaskRequest) (*task.Sta
 	}
 
 	// 给容器注入环境变量
-	for _, c := range obj.Spec.Template.Spec.Containers {
-		workload.InjectEnvVars(&c, in.Params.EnvVars())
-	}
+	workload.InjectPodEnvVars(&obj.Spec.Template.Spec, in.Params.EnvVars())
 
 	// 执行Job
 	obj, err = k8sClient.WorkLoad().CreateJob(ctx, obj)

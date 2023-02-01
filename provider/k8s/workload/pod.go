@@ -22,3 +22,12 @@ func (c *Workload) GetPod(ctx context.Context, req *meta.GetRequest) (*v1.Pod, e
 func (c *Workload) DeletePod(ctx context.Context, req *meta.DeleteRequest) error {
 	return c.corev1.Pods("").Delete(ctx, "", req.Opts)
 }
+
+func InjectPodEnvVars(pod *v1.PodSpec, envs []v1.EnvVar) {
+	// 给容器注入环境变量
+	for i, c := range pod.Containers {
+		InjectContainerEnvVars(&c, envs)
+		// 替换掉原来的container的值
+		pod.Containers[i] = c
+	}
+}
