@@ -1,8 +1,11 @@
 package tools
 
 import (
+	"encoding/json"
 	"io"
 	"os"
+
+	"sigs.k8s.io/yaml"
 )
 
 func ReadFile(path string) (string, error) {
@@ -16,4 +19,57 @@ func ReadFile(path string) (string, error) {
 	}
 
 	return string(content), nil
+}
+
+func ReadContentFile(filepath string) ([]byte, error) {
+	fd, err := os.Open(filepath)
+	if err != nil {
+		return nil, err
+	}
+	defer fd.Close()
+
+	payload, err := io.ReadAll(fd)
+	if err != nil {
+		return nil, err
+	}
+	return payload, nil
+}
+
+func MustReadContentFile(filepath string) string {
+	content, err := ReadContentFile(filepath)
+	if err != nil {
+		panic(err)
+	}
+	return string(content)
+}
+
+func ReadJsonFile(filepath string, v any) error {
+	content, err := ReadContentFile(filepath)
+	if err != nil {
+		return err
+	}
+	return json.Unmarshal(content, v)
+}
+
+func ReadYamlFile(filepath string, v any) error {
+	content, err := ReadContentFile(filepath)
+	if err != nil {
+		return err
+	}
+	return yaml.Unmarshal(content, v)
+}
+
+func MustReadYamlFile(filepath string, v any) {
+	err := ReadYamlFile(filepath, v)
+	if err != nil {
+		panic(err)
+	}
+}
+
+func MustToYaml(v any) string {
+	b, err := yaml.Marshal(v)
+	if err != nil {
+		panic(err)
+	}
+	return string(b)
 }
