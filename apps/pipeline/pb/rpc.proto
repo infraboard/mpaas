@@ -2,3 +2,19 @@ syntax = "proto3";
 
 package infraboard.mpaas.pipeline;
 option go_package = "github.com/infraboard/mpaas/apps/pipeline";
+
+import "apps/pipeline/pb/pipeline.proto";
+
+// RPC Pipeline管理
+service RPC {
+
+    // 查询Pipeline
+    rpc QueryPipeline(QueryPipelineRequest) returns(PipelineSet);
+    // 创建一个Pipeline
+    rpc CreatePipeline(CreatePipelineRequest) returns(Pipeline);
+}
+
+
+message QueryPipelineRequest {
+
+}

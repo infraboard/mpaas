@@ -6,6 +6,16 @@ option go_package = "github.com/infraboard/mpaas/apps/pipeline";
 import "apps/job/pb/job.proto";
 import "apps/task/pb/task.proto";
 
+message PipelineSet {
+	// 总数量
+	// @gotags: bson:"total" json:"total"
+    int64 total = 1;
+	// 清单
+	// @gotags: bson:"items" json:"items"
+    repeated Pipeline items = 2;
+}
+
+
 // 流水线
 message Pipeline {
     // 唯一ID
@@ -14,9 +24,12 @@ message Pipeline {
 	// 创建时间
 	// @gotags: bson:"create_at" json:"create_at"
 	int64 create_at = 2;
+	// 更新时间
+	// @gotags: bson:"update_at" json:"update_at"
+	int64 update_at = 3;
 	// 流水线定义
 	// @gotags: bson:"spec" json:"spec"
-	CreatePipelineRequest spec = 3;
+	CreatePipelineRequest spec = 4;
 }
 
 message CreatePipelineRequest {
@@ -35,9 +48,6 @@ message CreatePipelineRequest {
 	// 描述
 	// @gotags: bson:"description" json:"description"
 	string description = 5;
-	// 运行时 全局参数, 会传递给每个Task
-	// @gotags: bson:"with" json:"with"
-	repeated job.RunParam with = 6;
 	// 具体编排阶段
 	// @gotags: bson:"stages" json:"stages"
 	repeated Stage stages = 12;
@@ -51,7 +61,10 @@ message Stage {
     // 名称
 	// @gotags: bson:"name" json:"name" validate:"required"
     string name = 1;
+	// 运行时 全局参数, 会传递给该stage的每个Task
+	// @gotags: bson:"with" json:"with"
+	repeated job.RunParam with = 2;
 	// 具体任务
 	// @gotags: bson:"tasks" json:"tasks"
-	repeated task.RunJobRequest tasks = 2;
+	repeated task.RunJobRequest tasks = 3;
 }
