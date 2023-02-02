@@ -22,6 +22,8 @@ const _ = grpc.SupportPackageIsVersion7
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type RPCClient interface {
+	// 执行Pipelne
+	RunPipeline(ctx context.Context, in *RunPipelineRequest, opts ...grpc.CallOption) (*Pipeline, error)
 	// 查询Pipeline
 	QueryPipeline(ctx context.Context, in *QueryPipelineRequest, opts ...grpc.CallOption) (*PipelineSet, error)
 	// 创建一个Pipeline
@@ -34,6 +36,15 @@ type rPCClient struct {
 
 func NewRPCClient(cc grpc.ClientConnInterface) RPCClient {
 	return &rPCClient{cc}
+}
+
+func (c *rPCClient) RunPipeline(ctx context.Context, in *RunPipelineRequest, opts ...grpc.CallOption) (*Pipeline, error) {
+	out := new(Pipeline)
+	err := c.cc.Invoke(ctx, "/infraboard.mpaas.pipeline.RPC/RunPipeline", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
 }
 
 func (c *rPCClient) QueryPipeline(ctx context.Context, in *QueryPipelineRequest, opts ...grpc.CallOption) (*PipelineSet, error) {
@@ -58,6 +69,8 @@ func (c *rPCClient) CreatePipeline(ctx context.Context, in *CreatePipelineReques
 // All implementations must embed UnimplementedRPCServer
 // for forward compatibility
 type RPCServer interface {
+	// 执行Pipelne
+	RunPipeline(context.Context, *RunPipelineRequest) (*Pipeline, error)
 	// 查询Pipeline
 	QueryPipeline(context.Context, *QueryPipelineRequest) (*PipelineSet, error)
 	// 创建一个Pipeline
@@ -69,6 +82,9 @@ type RPCServer interface {
 type UnimplementedRPCServer struct {
 }
 
+func (UnimplementedRPCServer) RunPipeline(context.Context, *RunPipelineRequest) (*Pipeline, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method RunPipeline not implemented")
+}
 func (UnimplementedRPCServer) QueryPipeline(context.Context, *QueryPipelineRequest) (*PipelineSet, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method QueryPipeline not implemented")
 }
@@ -86,6 +102,24 @@ type UnsafeRPCServer interface {
 
 func RegisterRPCServer(s grpc.ServiceRegistrar, srv RPCServer) {
 	s.RegisterService(&RPC_ServiceDesc, srv)
+}
+
+func _RPC_RunPipeline_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(RunPipelineRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(RPCServer).RunPipeline(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/infraboard.mpaas.pipeline.RPC/RunPipeline",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(RPCServer).RunPipeline(ctx, req.(*RunPipelineRequest))
+	}
+	return interceptor(ctx, in, info, handler)
 }
 
 func _RPC_QueryPipeline_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
@@ -131,6 +165,10 @@ var RPC_ServiceDesc = grpc.ServiceDesc{
 	ServiceName: "infraboard.mpaas.pipeline.RPC",
 	HandlerType: (*RPCServer)(nil),
 	Methods: []grpc.MethodDesc{
+		{
+			MethodName: "RunPipeline",
+			Handler:    _RPC_RunPipeline_Handler,
+		},
 		{
 			MethodName: "QueryPipeline",
 			Handler:    _RPC_QueryPipeline_Handler,

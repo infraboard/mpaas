@@ -30,6 +30,9 @@ message Pipeline {
 	// 流水线定义
 	// @gotags: bson:"spec" json:"spec"
 	CreatePipelineRequest spec = 4;
+	// 流水线状态
+	// @gotags: bson:"status" json:"status"
+	Status status = 5;
 }
 
 message CreatePipelineRequest {
@@ -67,4 +70,19 @@ message Stage {
 	// 具体任务
 	// @gotags: bson:"tasks" json:"tasks"
 	repeated task.RunJobRequest tasks = 3;
+}
+
+message Status {
+    // 阶段状态
+	// @gotags: bson:"stage_status" json:"stage_status"
+	repeated StageStatus stage_status = 1;
+}
+
+message StageStatus {
+    // 名称
+	// @gotags: bson:"name" json:"name" validate:"required"
+    string name = 1;
+	// 任务状态
+	// @gotags: bson:"status" json:"status"
+	repeated task.Task status = 2;
 }

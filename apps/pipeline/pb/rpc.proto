@@ -7,11 +7,19 @@ import "apps/pipeline/pb/pipeline.proto";
 
 // RPC Pipeline管理
 service RPC {
+    // 执行Pipelne
+    rpc RunPipeline(RunPipelineRequest) returns(Pipeline);
 
     // 查询Pipeline
     rpc QueryPipeline(QueryPipelineRequest) returns(PipelineSet);
     // 创建一个Pipeline
     rpc CreatePipeline(CreatePipelineRequest) returns(Pipeline);
+}
+
+message RunPipelineRequest {
+    // pipeline id
+	// @gotags: json:"id"
+    string id = 1;
 }
 
 
