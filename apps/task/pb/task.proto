@@ -42,15 +42,18 @@ message RunJobRequest {
 	// task执行的空间
 	// @gotags: bson:"namespace" json:"namespace"
     string namespace = 2;
+	// task属于那个Pipeline 可以为空
+	// @gotags: bson:"pipeline" json:"pipeline"
+    string pipeline = 3;
 	// job名称: name
 	// @gotags: bson:"job" json:"job"
-    string job = 3;
+    string job = 4;
 	// job运行时参数
 	// @gotags: bson:"params" json:"params"
-	job.VersionedRunParam params = 4;
+	job.VersionedRunParam params = 5;
     // 任务标签
     // @gotags: bson:"labels" json:"labels"
-    map<string,string> labels = 5;
+    map<string,string> labels = 6;
 }
 
 enum STAGE {

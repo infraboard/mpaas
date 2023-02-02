@@ -26,6 +26,12 @@ type RPCClient interface {
 	RunJob(ctx context.Context, in *RunJobRequest, opts ...grpc.CallOption) (*Task, error)
 	// 查询任务
 	QueryTask(ctx context.Context, in *QueryTaskRequest, opts ...grpc.CallOption) (*TaskSet, error)
+	// 更新任务
+	UpdateTaskStatus(ctx context.Context, in *UpdateTaskStatusRequest, opts ...grpc.CallOption) (*Task, error)
+	// 任务执行详情
+	DescribeTask(ctx context.Context, in *DescribeTaskRequest, opts ...grpc.CallOption) (*Task, error)
+	// 删除任务
+	DeleteTask(ctx context.Context, in *DeleteTaskRequest, opts ...grpc.CallOption) (*TaskSet, error)
 }
 
 type rPCClient struct {
@@ -54,6 +60,33 @@ func (c *rPCClient) QueryTask(ctx context.Context, in *QueryTaskRequest, opts ..
 	return out, nil
 }
 
+func (c *rPCClient) UpdateTaskStatus(ctx context.Context, in *UpdateTaskStatusRequest, opts ...grpc.CallOption) (*Task, error) {
+	out := new(Task)
+	err := c.cc.Invoke(ctx, "/infraboard.mpaas.task.RPC/UpdateTaskStatus", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *rPCClient) DescribeTask(ctx context.Context, in *DescribeTaskRequest, opts ...grpc.CallOption) (*Task, error) {
+	out := new(Task)
+	err := c.cc.Invoke(ctx, "/infraboard.mpaas.task.RPC/DescribeTask", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *rPCClient) DeleteTask(ctx context.Context, in *DeleteTaskRequest, opts ...grpc.CallOption) (*TaskSet, error) {
+	out := new(TaskSet)
+	err := c.cc.Invoke(ctx, "/infraboard.mpaas.task.RPC/DeleteTask", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // RPCServer is the server API for RPC service.
 // All implementations must embed UnimplementedRPCServer
 // for forward compatibility
@@ -62,6 +95,12 @@ type RPCServer interface {
 	RunJob(context.Context, *RunJobRequest) (*Task, error)
 	// 查询任务
 	QueryTask(context.Context, *QueryTaskRequest) (*TaskSet, error)
+	// 更新任务
+	UpdateTaskStatus(context.Context, *UpdateTaskStatusRequest) (*Task, error)
+	// 任务执行详情
+	DescribeTask(context.Context, *DescribeTaskRequest) (*Task, error)
+	// 删除任务
+	DeleteTask(context.Context, *DeleteTaskRequest) (*TaskSet, error)
 	mustEmbedUnimplementedRPCServer()
 }
 
@@ -74,6 +113,15 @@ func (UnimplementedRPCServer) RunJob(context.Context, *RunJobRequest) (*Task, er
 }
 func (UnimplementedRPCServer) QueryTask(context.Context, *QueryTaskRequest) (*TaskSet, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method QueryTask not implemented")
+}
+func (UnimplementedRPCServer) UpdateTaskStatus(context.Context, *UpdateTaskStatusRequest) (*Task, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UpdateTaskStatus not implemented")
+}
+func (UnimplementedRPCServer) DescribeTask(context.Context, *DescribeTaskRequest) (*Task, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DescribeTask not implemented")
+}
+func (UnimplementedRPCServer) DeleteTask(context.Context, *DeleteTaskRequest) (*TaskSet, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DeleteTask not implemented")
 }
 func (UnimplementedRPCServer) mustEmbedUnimplementedRPCServer() {}
 
@@ -124,6 +172,60 @@ func _RPC_QueryTask_Handler(srv interface{}, ctx context.Context, dec func(inter
 	return interceptor(ctx, in, info, handler)
 }
 
+func _RPC_UpdateTaskStatus_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(UpdateTaskStatusRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(RPCServer).UpdateTaskStatus(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/infraboard.mpaas.task.RPC/UpdateTaskStatus",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(RPCServer).UpdateTaskStatus(ctx, req.(*UpdateTaskStatusRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _RPC_DescribeTask_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(DescribeTaskRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(RPCServer).DescribeTask(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/infraboard.mpaas.task.RPC/DescribeTask",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(RPCServer).DescribeTask(ctx, req.(*DescribeTaskRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _RPC_DeleteTask_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(DeleteTaskRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(RPCServer).DeleteTask(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/infraboard.mpaas.task.RPC/DeleteTask",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(RPCServer).DeleteTask(ctx, req.(*DeleteTaskRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // RPC_ServiceDesc is the grpc.ServiceDesc for RPC service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -138,6 +240,18 @@ var RPC_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "QueryTask",
 			Handler:    _RPC_QueryTask_Handler,
+		},
+		{
+			MethodName: "UpdateTaskStatus",
+			Handler:    _RPC_UpdateTaskStatus_Handler,
+		},
+		{
+			MethodName: "DescribeTask",
+			Handler:    _RPC_DescribeTask_Handler,
+		},
+		{
+			MethodName: "DeleteTask",
+			Handler:    _RPC_DeleteTask_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

@@ -13,6 +13,12 @@ service RPC {
 
     // 查询任务
     rpc QueryTask(QueryTaskRequest) returns(TaskSet);
+    // 更新任务
+    rpc UpdateTaskStatus(UpdateTaskStatusRequest) returns(Task);
+    // 任务执行详情
+    rpc DescribeTask(DescribeTaskRequest) returns(Task);
+    // 删除任务
+    rpc DeleteTask(DeleteTaskRequest) returns(TaskSet);
 }
 
 message QueryTaskRequest {
@@ -22,4 +28,36 @@ message QueryTaskRequest {
     // 任务Id列表
     // @gotags: json:"ids"
     repeated string ids = 2;
+}
+
+message UpdateTaskStatusRequest {
+	// 任务当前状态
+	// @gotags: bson:"stage" json:"stage"
+    STAGE stage = 1;
+	// 状态描述
+	// @gotags: bson:"message" json:"message"
+	string message = 2;
+	// 任务状态详细描述, 用于Debug
+	// @gotags: bson:"detail" json:"detail"
+	string detail = 3;
+}
+
+message DescribeTaskRequest {
+
+}
+
+enum DELETE_BY {
+    // 指定task来进行删除
+    TASK_ID = 0;
+    // 多少天之前的进行删除
+    AFTER_DAYS = 1;
+}
+
+message DeleteTaskRequest {
+	// 以那种维度来进行删除
+	// @gotags: bson:"delete_by" json:"delete_by"
+    DELETE_BY delete_by = 1;
+	// 具体指定的值
+	// @gotags: bson:"delete_value" json:"delete_value"
+    string delete_value = 2;
 }

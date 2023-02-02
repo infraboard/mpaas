@@ -58,3 +58,20 @@ func (i *impl) QueryTask(ctx context.Context, in *task.QueryTaskRequest) (
 	set.Total = count
 	return set, nil
 }
+
+func (i *impl) UpdateTaskStatus(ctx context.Context, in *task.UpdateTaskStatusRequest) (
+	*task.Task, error) {
+	return nil, nil
+}
+
+// 任务执行详情
+func (i *impl) DescribeTask(ctx context.Context, in *task.DescribeTaskRequest) (
+	*task.Task, error) {
+	return nil, nil
+}
+
+// 删除任务
+func (i *impl) DeleteTask(ctx context.Context, in *task.DeleteTaskRequest) (
+	*task.TaskSet, error) {
+	return nil, nil
+}
