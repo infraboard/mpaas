@@ -25,10 +25,10 @@ func NewQueryTaskRequest() *QueryJobTaskRequest {
 	}
 }
 
-func NewRunJobRequest(job string, params *job.VersionedRunParam) *RunJobRequest {
+func NewRunJobRequest(jobName string) *RunJobRequest {
 	return &RunJobRequest{
-		Job:    job,
-		Params: params,
+		Job:    jobName,
+		Params: job.NewVersionedRunParam(""),
 	}
 }
 

@@ -1,23 +1,32 @@
 package pipeline
 
-import job "github.com/infraboard/mpaas/apps/job"
+import (
+	"strings"
 
-func (p *Pipeline) GetFirstJob() *Job {
-	for i := range p.Spec.Stages {
-		s := p.Spec.Stages[i]
-		if len(s.Jobs) > 0 {
-			return s.Jobs[0]
-		}
-	}
-	return nil
-}
+	job "github.com/infraboard/mpaas/apps/job"
+)
 
 func (j *Job) JobName() string {
-	return j.Name
+	_, n := j.ParseName()
+	return n
 }
 
 func (j *Job) JobVersion() string {
-	return ""
+	v, _ := j.ParseName()
+	return v
+}
+
+// 比如 build@v1
+func (j *Job) ParseName() (name, version string) {
+	if j.Name != "" {
+		nv := strings.Split(j.Name, NAME_VERSION_SPLITER)
+		if len(nv) > 1 {
+			return nv[0], nv[1]
+		}
+		return nv[0], ""
+	}
+
+	return "", ""
 }
 
 func (j *Job) RunParams() []*job.RunParam {

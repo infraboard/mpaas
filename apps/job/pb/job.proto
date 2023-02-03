@@ -90,8 +90,8 @@ message VersionedRunParam {
 	// @gotags: bson:"description" json:"description"
 	string description = 2;
 	// 运行时 用户传人的参数说明
-	// @gotags: bson:"items" json:"items"
-	repeated RunParam items = 3;
+	// @gotags: bson:"params" json:"params"
+	repeated RunParam params = 3;
 }
 
 message RunParam {

@@ -59,6 +59,6 @@ message StageStatus {
 	// @gotags: bson:"stage" json:"stage"
     STAGE stage = 2;
 	// 任务状态
-	// @gotags: bson:"status" json:"status"
-	repeated JobTask status = 3;
+	// @gotags: bson:"job_tasks" json:"job_tasks"
+	repeated JobTask job_tasks = 3;
 }

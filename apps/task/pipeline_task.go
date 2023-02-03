@@ -22,6 +22,16 @@ func NewDefaultPipelineTask() *PipelineTask {
 	}
 }
 
+func (p *PipelineTask) GetFirstJobTask() *JobTask {
+	for i := range p.Status.StageStatus {
+		s := p.Status.StageStatus[i]
+		if len(s.JobTasks) > 0 {
+			return s.JobTasks[0]
+		}
+	}
+	return nil
+}
+
 func NewPipelineTaskStatus() *PipelineTaskStatus {
 	return &PipelineTaskStatus{
 		StageStatus: []*StageStatus{},
@@ -34,14 +44,18 @@ func (s *PipelineTaskStatus) AddStage(item *StageStatus) {
 
 func NewStageStatus(s *pipeline.Stage) *StageStatus {
 	status := &StageStatus{
-		Name:   s.Name,
-		Status: []*JobTask{},
+		Name:     s.Name,
+		JobTasks: []*JobTask{},
 	}
 
 	for i := range s.Jobs {
 		spec := s.Jobs[i]
+		// 获取pipeline job参数, 构造task run 参数
+		req := NewRunJobRequest(spec.JobName())
 		jopParams := job.NewVersionedRunParam(spec.JobVersion())
-		req := NewRunJobRequest(spec.JobName(), jopParams)
+		jopParams.Params = spec.RunParams()
+		req.Params = jopParams
+
 		jobTask := NewJobTask(req)
 		status.Add(jobTask)
 	}
@@ -50,5 +64,5 @@ func NewStageStatus(s *pipeline.Stage) *StageStatus {
 }
 
 func (s *StageStatus) Add(item *JobTask) {
-	s.Status = append(s.Status, item)
+	s.JobTasks = append(s.JobTasks, item)
 }

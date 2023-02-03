@@ -354,7 +354,7 @@ type Job struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	// job名称: name
+	// job名称和版本, 比如 docker_build@v1, #id@v1
 	// @gotags: bson:"name" json:"name"
 	Name string `protobuf:"bytes,4,opt,name=name,proto3" json:"name" bson:"name"`
 	// job运行时参数 用户传人的参数说明

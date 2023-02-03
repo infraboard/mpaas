@@ -43,12 +43,12 @@ func NewDefaultJob() *Job {
 func NewVersionedRunParam(version string) *VersionedRunParam {
 	return &VersionedRunParam{
 		Version: version,
-		Items:   []*RunParam{},
+		Params:  []*RunParam{},
 	}
 }
 
 func (r *VersionedRunParam) Add(items ...*RunParam) {
-	r.Items = append(r.Items, items...)
+	r.Params = append(r.Params, items...)
 }
 
 // 从参数中提取k8s job执行器(runner)需要的参数
@@ -74,8 +74,8 @@ func (r *VersionedRunParam) K8SJobRunnerParams() *K8SJobRunnerParams {
 // 注意: 只有大写的变量才会被导出, 因为一般环境变量都是大写的, 比如 DB_PASS,
 // 小写的变量用于系统内部使用, 比如 K8SJobRunnerParams 中的cluster_id
 func (r *VersionedRunParam) EnvVars() (envs []corev1.EnvVar) {
-	for i := range r.Items {
-		item := r.Items[i]
+	for i := range r.Params {
+		item := r.Params[i]
 		if item.Name != "" && unicode.IsUpper(rune(item.Name[0])) {
 			envs = append(envs, corev1.EnvVar{
 				Name:  item.Name,
@@ -88,8 +88,8 @@ func (r *VersionedRunParam) EnvVars() (envs []corev1.EnvVar) {
 
 // 获取参数的值
 func (r *VersionedRunParam) GetParamValue(key string) string {
-	for i := range r.Items {
-		item := r.Items[i]
+	for i := range r.Params {
+		item := r.Params[i]
 		if item.Name == key {
 			return item.Value
 		}
@@ -99,4 +99,32 @@ func (r *VersionedRunParam) GetParamValue(key string) string {
 
 func NewK8SJobRunnerParams() *K8SJobRunnerParams {
 	return &K8SJobRunnerParams{}
+}
+
+func NewRunParam(name, value string) *RunParam {
+	return &RunParam{
+		Name:  name,
+		Value: value,
+	}
+}
+
+func NewRunParamWithKVPaire(kvs ...string) (params []*RunParam) {
+	if len(kvs)%2 != 0 {
+		panic("kvs must paire")
+	}
+
+	if len(kvs) == 0 {
+		return
+	}
+
+	kv := []string{}
+	for i, v := range kvs {
+		kv = append(kv, v)
+		if i%2 != 0 {
+			params = append(params, NewRunParam(kv[0], kv[1]))
+			kv = []string{}
+		}
+	}
+
+	return
 }

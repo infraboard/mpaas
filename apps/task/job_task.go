@@ -17,7 +17,7 @@ func (s *JobTaskSet) Add(task *JobTask) {
 }
 
 func NewDefaultTask() *JobTask {
-	req := NewRunJobRequest("", job.NewVersionedRunParam(""))
+	req := NewRunJobRequest("")
 	return NewJobTask(req)
 }
 
@@ -27,6 +27,11 @@ func NewJobTask(req *RunJobRequest) *JobTask {
 		Job:    nil,
 		Status: NewJobTaskStatus(),
 	}
+}
+
+func (t *JobTask) Update(job *job.Job, status *JobTaskStatus) {
+	t.Job = job
+	t.Status = status
 }
 
 func NewJobTaskStatus() *JobTaskStatus {

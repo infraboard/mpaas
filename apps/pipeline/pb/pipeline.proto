@@ -71,7 +71,7 @@ message Stage {
 }
 
 message Job {
-	// job名称: name
+	// job名称和版本, 比如 docker_build@v1, #id@v1
 	// @gotags: bson:"name" json:"name"
     string name = 4;
 	// job运行时参数 用户传人的参数说明

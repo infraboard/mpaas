@@ -15,3 +15,8 @@ func TestK8SJobRunnerParams(t *testing.T) {
 	})
 	t.Log(param.K8SJobRunnerParams())
 }
+
+func TestNewRunParamWithKVPaire(t *testing.T) {
+	param := job.NewRunParamWithKVPaire("key1", "value1", "key2", "value2")
+	t.Log(param)
+}

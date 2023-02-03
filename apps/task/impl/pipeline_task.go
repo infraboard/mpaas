@@ -2,7 +2,6 @@ package impl
 
 import (
 	"context"
-	"fmt"
 
 	"github.com/infraboard/mpaas/apps/task"
 )
@@ -15,12 +14,19 @@ func (i *impl) RunPipeline(ctx context.Context, in *task.RunPipelineRequest) (
 	if err != nil {
 		return nil, err
 	}
-	fmt.Println(p)
+	ins := task.NewPipelineTask(p)
 
 	// 从pipeline 取出需要执行的任务
-	p.GetFirstJob()
+	jt := ins.GetFirstJobTask()
 
-	return nil, nil
+	// 运行Job
+	resp, err := i.RunJob(ctx, jt.Spec)
+	if err != nil {
+		return nil, err
+	}
+	jt.Update(resp.Job, resp.Status)
+
+	return ins, nil
 }
 
 // 查询Pipeline任务
