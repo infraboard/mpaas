@@ -10,8 +10,12 @@ const (
 )
 
 type Service interface {
+	JobService
+	PipelineService
+}
+
+type JobService interface {
 	JobRPCServer
-	PipelineRPCServer
 }
 
 func NewQueryTaskRequest() *QueryJobTaskRequest {
@@ -30,4 +34,12 @@ func NewRunTaskRequest(spec string, params *job.VersionedRunParam) *RunTaskReque
 		JobSpec: spec,
 		Params:  params,
 	}
+}
+
+type PipelineService interface {
+	PipelineRPCServer
+}
+
+func NewRunPipelineRequest() *RunPipelineRequest {
+	return &RunPipelineRequest{}
 }

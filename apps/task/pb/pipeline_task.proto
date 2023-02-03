@@ -6,6 +6,15 @@ option go_package = "github.com/infraboard/mpaas/apps/task";
 import "apps/task/pb/job_task.proto";
 import "apps/pipeline/pb/pipeline.proto";
 
+message PipelineTaskSet {
+	// 总数量
+	// @gotags: bson:"total" json:"total"
+    int64 total = 1;
+	// 清单
+	// @gotags: bson:"items" json:"items"
+    repeated PipelineTask items = 2;
+}
+
 message PipelineTask {
     // 部署Id
     // @gotags: bson:"_id" json:"id"

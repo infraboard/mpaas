@@ -25,7 +25,7 @@ func (i *impl) RunJob(ctx context.Context, in *task.RunJobRequest) (
 
 	// 3. 保存任务
 	ins := task.NewTask(in, j, status)
-	if _, err := i.col.InsertOne(ctx, ins); err != nil {
+	if _, err := i.jcol.InsertOne(ctx, ins); err != nil {
 		return nil, exception.NewInternalServerError("inserted a task document error, %s", err)
 	}
 	return ins, nil
@@ -34,7 +34,7 @@ func (i *impl) RunJob(ctx context.Context, in *task.RunJobRequest) (
 func (i *impl) QueryJobTask(ctx context.Context, in *task.QueryJobTaskRequest) (
 	*task.JobTaskSet, error) {
 	r := newQueryRequest(in)
-	resp, err := i.col.Find(ctx, r.FindFilter(), r.FindOptions())
+	resp, err := i.jcol.Find(ctx, r.FindFilter(), r.FindOptions())
 
 	if err != nil {
 		return nil, exception.NewInternalServerError("find deploy error, error is %s", err)
@@ -51,7 +51,7 @@ func (i *impl) QueryJobTask(ctx context.Context, in *task.QueryJobTaskRequest) (
 	}
 
 	// count
-	count, err := i.col.CountDocuments(ctx, r.FindFilter())
+	count, err := i.jcol.CountDocuments(ctx, r.FindFilter())
 	if err != nil {
 		return nil, exception.NewInternalServerError("get deploy count error, error is %s", err)
 	}

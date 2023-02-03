@@ -23,8 +23,9 @@ var (
 )
 
 type impl struct {
-	col *mongo.Collection
-	log logger.Logger
+	jcol *mongo.Collection
+	pcol *mongo.Collection
+	log  logger.Logger
 	task.UnimplementedJobRPCServer
 	task.UnimplementedPipelineRPCServer
 
@@ -36,12 +37,14 @@ func (i *impl) Config() error {
 	if err != nil {
 		return err
 	}
-	i.col = db.Collection(i.Name())
+	i.jcol = db.Collection("job_tasks")
+	i.pcol = db.Collection("pipeline_tasks")
 	i.log = zap.L().Named(i.Name())
 	i.job = app.GetInternalApp(job.AppName).(job.Service)
 	if err := runner.Init(); err != nil {
 		return err
 	}
+
 	i.log.Debug("init task impl ok")
 	return nil
 }
