@@ -47,8 +47,8 @@ message PipelineTaskStatus {
 	// @gotags: bson:"message" json:"message"
 	string message = 4;
 	// 任务状态详细描述, 用于Debug
-	// @gotags: bson:"detail" json:"detail"
-	StageStatus detail = 5;
+	// @gotags: bson:"stage_status" json:"stage_status"
+	repeated StageStatus stage_status = 5;
 }
 
 message StageStatus {

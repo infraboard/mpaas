@@ -36,9 +36,12 @@ message QueryPipelineRequest {
     // pipeline 所属空间
     // @gotags: json:"namespace"
     string namespace = 3;
+	// 是否是模版, 用于快速继承模版参数进行修改, 模版不能用于执行
+	// @gotags: json:"is_template"
+	optional bool is_template = 4;
     // pipeline Id列表
     // @gotags: json:"ids"
-    repeated string ids = 4;
+    repeated string ids = 15;
 }
 
 message DescribePipelineRequest {

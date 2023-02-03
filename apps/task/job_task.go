@@ -17,18 +17,19 @@ func (s *JobTaskSet) Add(task *JobTask) {
 }
 
 func NewDefaultTask() *JobTask {
-	return NewTask(NewRunJobRequest(), nil, NewStatus())
+	req := NewRunJobRequest("", job.NewVersionedRunParam(""))
+	return NewJobTask(req)
 }
 
-func NewTask(req *RunJobRequest, job *job.Job, status *JobTaskStatus) *JobTask {
+func NewJobTask(req *RunJobRequest) *JobTask {
 	return &JobTask{
 		Spec:   req,
-		Job:    job,
-		Status: status,
+		Job:    nil,
+		Status: NewJobTaskStatus(),
 	}
 }
 
-func NewStatus() *JobTaskStatus {
+func NewJobTaskStatus() *JobTaskStatus {
 	return &JobTaskStatus{
 		StartAt: time.Now().Unix(),
 	}

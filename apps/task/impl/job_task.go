@@ -10,11 +10,14 @@ import (
 
 func (i *impl) RunJob(ctx context.Context, in *task.RunJobRequest) (
 	*task.JobTask, error) {
+	ins := task.NewJobTask(in)
+
 	// 1. 查询需要执行的Job
 	j, err := i.job.DescribeJob(ctx, nil)
 	if err != nil {
 		return nil, err
 	}
+	ins.Job = j
 
 	// 2. 执行Job
 	r := runner.GetRunner(j.Spec.RunnerType)
@@ -22,9 +25,9 @@ func (i *impl) RunJob(ctx context.Context, in *task.RunJobRequest) (
 	if err != nil {
 		return nil, err
 	}
+	ins.Status = status
 
 	// 3. 保存任务
-	ins := task.NewTask(in, j, status)
 	if _, err := i.jcol.InsertOne(ctx, ins); err != nil {
 		return nil, exception.NewInternalServerError("inserted a task document error, %s", err)
 	}

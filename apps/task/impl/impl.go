@@ -9,6 +9,7 @@ import (
 	"google.golang.org/grpc"
 
 	"github.com/infraboard/mpaas/apps/job"
+	"github.com/infraboard/mpaas/apps/pipeline"
 	"github.com/infraboard/mpaas/apps/task"
 	"github.com/infraboard/mpaas/conf"
 
@@ -29,7 +30,8 @@ type impl struct {
 	task.UnimplementedJobRPCServer
 	task.UnimplementedPipelineRPCServer
 
-	job job.Service
+	job      job.Service
+	pipeline pipeline.Service
 }
 
 func (i *impl) Config() error {
@@ -41,6 +43,7 @@ func (i *impl) Config() error {
 	i.pcol = db.Collection("pipeline_tasks")
 	i.log = zap.L().Named(i.Name())
 	i.job = app.GetInternalApp(job.AppName).(job.Service)
+	i.pipeline = app.GetInternalApp(pipeline.AppName).(pipeline.Service)
 	if err := runner.Init(); err != nil {
 		return err
 	}

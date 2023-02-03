@@ -36,7 +36,7 @@ func (r *K8sRunner) Run(ctx context.Context, in *task.RunTaskRequest) (*task.Job
 		return nil, err
 	}
 
-	status := task.NewStatus()
+	status := task.NewJobTaskStatus()
 	objYaml, err := yaml.Marshal(obj)
 	if err != nil {
 		return nil, err

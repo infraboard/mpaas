@@ -7,7 +7,7 @@ import (
 )
 
 func TestRunJob(t *testing.T) {
-	req := task.NewRunJobRequest()
+	req := task.NewRunJobRequest("xxx", nil)
 	ins, err := impl.RunJob(ctx, req)
 	if err != nil {
 		t.Fatal(err)
