@@ -180,7 +180,7 @@ func (x *UpdateTaskStatusRequest) GetStage() STAGE {
 	if x != nil {
 		return x.Stage
 	}
-	return STAGE_ACTIVE
+	return STAGE_PENDDING
 }
 
 func (x *UpdateTaskStatusRequest) GetMessage() string {

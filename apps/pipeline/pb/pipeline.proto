@@ -72,17 +72,43 @@ message Stage {
 	repeated task.RunJobRequest tasks = 3;
 }
 
+enum STAGE {
+	// 等待执行
+	PENDDING = 0;
+	// 运行中
+	ACTIVE = 1;
+	// 运行成功
+	SUCCEEDED = 2;
+	// 运行失败
+	FAILED = 3;
+}
+
 message Status {
-    // 阶段状态
-	// @gotags: bson:"stage_status" json:"stage_status"
-	repeated StageStatus stage_status = 1;
+	// 任务当前状态
+	// @gotags: bson:"stage" json:"stage"
+    STAGE stage = 1;
+	// 任务开始时间
+	// @gotags: bson:"start_at" json:"start_at"
+    int64 start_at = 2;
+	// 任务结束时间
+	// @gotags: bson:"end_at" json:"end_at"
+    int64 end_at = 3;
+	// 状态描述
+	// @gotags: bson:"message" json:"message"
+	string message = 4;
+	// 任务状态详细描述, 用于Debug
+	// @gotags: bson:"detail" json:"detail"
+	StageStatus detail = 5;
 }
 
 message StageStatus {
     // 名称
 	// @gotags: bson:"name" json:"name" validate:"required"
     string name = 1;
+	// stage当前状态
+	// @gotags: bson:"stage" json:"stage"
+    STAGE stage = 2;
 	// 任务状态
 	// @gotags: bson:"status" json:"status"
-	repeated task.Task status = 2;
+	repeated task.Task status = 3;
 }

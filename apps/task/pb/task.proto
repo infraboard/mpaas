@@ -57,12 +57,14 @@ message RunJobRequest {
 }
 
 enum STAGE {
+	// 等待执行
+	PENDDING = 0;
 	// 运行中
-	ACTIVE = 0;
+	ACTIVE = 1;
 	// 运行成功
-	SUCCEEDED = 1;
+	SUCCEEDED = 2;
 	// 运行失败
-	FAILED = 2;
+	FAILED = 3;
 }
 
 message Status {
