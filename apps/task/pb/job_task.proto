@@ -5,16 +5,16 @@ option go_package = "github.com/infraboard/mpaas/apps/task";
 
 import "apps/job/pb/job.proto";
 
-message TaskSet {
+message JobTaskSet {
 	// 总数量
 	// @gotags: bson:"total" json:"total"
     int64 total = 1;
 	// 清单
 	// @gotags: bson:"items" json:"items"
-    repeated Task items = 2;
+    repeated JobTask items = 2;
 }
 
-message Task {
+message JobTask {
     // 部署Id
     // @gotags: bson:"_id" json:"id"
     string id = 1;
@@ -32,7 +32,7 @@ message Task {
 	job.Job job = 5;
 	// 任务当前状态
 	// @gotags: bson:"status" json:"status"
-	Status status = 6;
+	JobTaskStatus status = 6;
 }
 
 message RunJobRequest {
@@ -67,7 +67,7 @@ enum STAGE {
 	FAILED = 3;
 }
 
-message Status {
+message JobTaskStatus {
 	// 任务当前状态
 	// @gotags: bson:"stage" json:"stage"
     STAGE stage = 1;

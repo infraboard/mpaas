@@ -25,7 +25,8 @@ var (
 type impl struct {
 	col *mongo.Collection
 	log logger.Logger
-	task.UnimplementedRPCServer
+	task.UnimplementedJobRPCServer
+	task.UnimplementedPipelineRPCServer
 
 	job job.Service
 }
@@ -50,7 +51,8 @@ func (i *impl) Name() string {
 }
 
 func (i *impl) Registry(server *grpc.Server) {
-	task.RegisterRPCServer(server, svr)
+	task.RegisterJobRPCServer(server, svr)
+	task.RegisterPipelineRPCServer(server, svr)
 }
 
 func init() {

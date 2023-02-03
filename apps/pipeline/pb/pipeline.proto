@@ -4,7 +4,6 @@ package infraboard.mpaas.pipeline;
 option go_package = "github.com/infraboard/mpaas/apps/pipeline";
 
 import "apps/job/pb/job.proto";
-import "apps/task/pb/task.proto";
 
 message PipelineSet {
 	// 总数量
@@ -14,7 +13,6 @@ message PipelineSet {
 	// @gotags: bson:"items" json:"items"
     repeated Pipeline items = 2;
 }
-
 
 // 流水线
 message Pipeline {
@@ -30,9 +28,6 @@ message Pipeline {
 	// 流水线定义
 	// @gotags: bson:"spec" json:"spec"
 	CreatePipelineRequest spec = 4;
-	// 流水线状态
-	// @gotags: bson:"status" json:"status"
-	Status status = 5;
 }
 
 message CreatePipelineRequest {
@@ -67,48 +62,4 @@ message Stage {
 	// 运行时 全局参数, 会传递给该stage的每个Task
 	// @gotags: bson:"with" json:"with"
 	repeated job.RunParam with = 2;
-	// 具体任务
-	// @gotags: bson:"tasks" json:"tasks"
-	repeated task.RunJobRequest tasks = 3;
-}
-
-enum STAGE {
-	// 等待执行
-	PENDDING = 0;
-	// 运行中
-	ACTIVE = 1;
-	// 运行成功
-	SUCCEEDED = 2;
-	// 运行失败
-	FAILED = 3;
-}
-
-message Status {
-	// 任务当前状态
-	// @gotags: bson:"stage" json:"stage"
-    STAGE stage = 1;
-	// 任务开始时间
-	// @gotags: bson:"start_at" json:"start_at"
-    int64 start_at = 2;
-	// 任务结束时间
-	// @gotags: bson:"end_at" json:"end_at"
-    int64 end_at = 3;
-	// 状态描述
-	// @gotags: bson:"message" json:"message"
-	string message = 4;
-	// 任务状态详细描述, 用于Debug
-	// @gotags: bson:"detail" json:"detail"
-	StageStatus detail = 5;
-}
-
-message StageStatus {
-    // 名称
-	// @gotags: bson:"name" json:"name" validate:"required"
-    string name = 1;
-	// stage当前状态
-	// @gotags: bson:"stage" json:"stage"
-    STAGE stage = 2;
-	// 任务状态
-	// @gotags: bson:"status" json:"status"
-	repeated task.Task status = 3;
 }

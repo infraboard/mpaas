@@ -22,12 +22,16 @@ const _ = grpc.SupportPackageIsVersion7
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type RPCClient interface {
-	// 执行Pipelne
-	RunPipeline(ctx context.Context, in *RunPipelineRequest, opts ...grpc.CallOption) (*Pipeline, error)
-	// 查询Pipeline
+	// 查询Pipeline列表
 	QueryPipeline(ctx context.Context, in *QueryPipelineRequest, opts ...grpc.CallOption) (*PipelineSet, error)
-	// 创建一个Pipeline
+	// 查询Pipeline详情
+	DescribePipeline(ctx context.Context, in *DescribePipelineRequest, opts ...grpc.CallOption) (*Pipeline, error)
+	// 创建Pipeline
 	CreatePipeline(ctx context.Context, in *CreatePipelineRequest, opts ...grpc.CallOption) (*Pipeline, error)
+	// 更新Pipeline
+	UpdatePipeline(ctx context.Context, in *UpdatePipelineRequest, opts ...grpc.CallOption) (*Pipeline, error)
+	// 删除Pipeline
+	DeletePipeline(ctx context.Context, in *DeletePipelineRequest, opts ...grpc.CallOption) (*Pipeline, error)
 }
 
 type rPCClient struct {
@@ -38,18 +42,18 @@ func NewRPCClient(cc grpc.ClientConnInterface) RPCClient {
 	return &rPCClient{cc}
 }
 
-func (c *rPCClient) RunPipeline(ctx context.Context, in *RunPipelineRequest, opts ...grpc.CallOption) (*Pipeline, error) {
-	out := new(Pipeline)
-	err := c.cc.Invoke(ctx, "/infraboard.mpaas.pipeline.RPC/RunPipeline", in, out, opts...)
+func (c *rPCClient) QueryPipeline(ctx context.Context, in *QueryPipelineRequest, opts ...grpc.CallOption) (*PipelineSet, error) {
+	out := new(PipelineSet)
+	err := c.cc.Invoke(ctx, "/infraboard.mpaas.pipeline.RPC/QueryPipeline", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *rPCClient) QueryPipeline(ctx context.Context, in *QueryPipelineRequest, opts ...grpc.CallOption) (*PipelineSet, error) {
-	out := new(PipelineSet)
-	err := c.cc.Invoke(ctx, "/infraboard.mpaas.pipeline.RPC/QueryPipeline", in, out, opts...)
+func (c *rPCClient) DescribePipeline(ctx context.Context, in *DescribePipelineRequest, opts ...grpc.CallOption) (*Pipeline, error) {
+	out := new(Pipeline)
+	err := c.cc.Invoke(ctx, "/infraboard.mpaas.pipeline.RPC/DescribePipeline", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -65,16 +69,38 @@ func (c *rPCClient) CreatePipeline(ctx context.Context, in *CreatePipelineReques
 	return out, nil
 }
 
+func (c *rPCClient) UpdatePipeline(ctx context.Context, in *UpdatePipelineRequest, opts ...grpc.CallOption) (*Pipeline, error) {
+	out := new(Pipeline)
+	err := c.cc.Invoke(ctx, "/infraboard.mpaas.pipeline.RPC/UpdatePipeline", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *rPCClient) DeletePipeline(ctx context.Context, in *DeletePipelineRequest, opts ...grpc.CallOption) (*Pipeline, error) {
+	out := new(Pipeline)
+	err := c.cc.Invoke(ctx, "/infraboard.mpaas.pipeline.RPC/DeletePipeline", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // RPCServer is the server API for RPC service.
 // All implementations must embed UnimplementedRPCServer
 // for forward compatibility
 type RPCServer interface {
-	// 执行Pipelne
-	RunPipeline(context.Context, *RunPipelineRequest) (*Pipeline, error)
-	// 查询Pipeline
+	// 查询Pipeline列表
 	QueryPipeline(context.Context, *QueryPipelineRequest) (*PipelineSet, error)
-	// 创建一个Pipeline
+	// 查询Pipeline详情
+	DescribePipeline(context.Context, *DescribePipelineRequest) (*Pipeline, error)
+	// 创建Pipeline
 	CreatePipeline(context.Context, *CreatePipelineRequest) (*Pipeline, error)
+	// 更新Pipeline
+	UpdatePipeline(context.Context, *UpdatePipelineRequest) (*Pipeline, error)
+	// 删除Pipeline
+	DeletePipeline(context.Context, *DeletePipelineRequest) (*Pipeline, error)
 	mustEmbedUnimplementedRPCServer()
 }
 
@@ -82,14 +108,20 @@ type RPCServer interface {
 type UnimplementedRPCServer struct {
 }
 
-func (UnimplementedRPCServer) RunPipeline(context.Context, *RunPipelineRequest) (*Pipeline, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method RunPipeline not implemented")
-}
 func (UnimplementedRPCServer) QueryPipeline(context.Context, *QueryPipelineRequest) (*PipelineSet, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method QueryPipeline not implemented")
 }
+func (UnimplementedRPCServer) DescribePipeline(context.Context, *DescribePipelineRequest) (*Pipeline, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DescribePipeline not implemented")
+}
 func (UnimplementedRPCServer) CreatePipeline(context.Context, *CreatePipelineRequest) (*Pipeline, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CreatePipeline not implemented")
+}
+func (UnimplementedRPCServer) UpdatePipeline(context.Context, *UpdatePipelineRequest) (*Pipeline, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UpdatePipeline not implemented")
+}
+func (UnimplementedRPCServer) DeletePipeline(context.Context, *DeletePipelineRequest) (*Pipeline, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DeletePipeline not implemented")
 }
 func (UnimplementedRPCServer) mustEmbedUnimplementedRPCServer() {}
 
@@ -102,24 +134,6 @@ type UnsafeRPCServer interface {
 
 func RegisterRPCServer(s grpc.ServiceRegistrar, srv RPCServer) {
 	s.RegisterService(&RPC_ServiceDesc, srv)
-}
-
-func _RPC_RunPipeline_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(RunPipelineRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(RPCServer).RunPipeline(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/infraboard.mpaas.pipeline.RPC/RunPipeline",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(RPCServer).RunPipeline(ctx, req.(*RunPipelineRequest))
-	}
-	return interceptor(ctx, in, info, handler)
 }
 
 func _RPC_QueryPipeline_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
@@ -136,6 +150,24 @@ func _RPC_QueryPipeline_Handler(srv interface{}, ctx context.Context, dec func(i
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(RPCServer).QueryPipeline(ctx, req.(*QueryPipelineRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _RPC_DescribePipeline_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(DescribePipelineRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(RPCServer).DescribePipeline(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/infraboard.mpaas.pipeline.RPC/DescribePipeline",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(RPCServer).DescribePipeline(ctx, req.(*DescribePipelineRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -158,6 +190,42 @@ func _RPC_CreatePipeline_Handler(srv interface{}, ctx context.Context, dec func(
 	return interceptor(ctx, in, info, handler)
 }
 
+func _RPC_UpdatePipeline_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(UpdatePipelineRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(RPCServer).UpdatePipeline(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/infraboard.mpaas.pipeline.RPC/UpdatePipeline",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(RPCServer).UpdatePipeline(ctx, req.(*UpdatePipelineRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _RPC_DeletePipeline_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(DeletePipelineRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(RPCServer).DeletePipeline(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/infraboard.mpaas.pipeline.RPC/DeletePipeline",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(RPCServer).DeletePipeline(ctx, req.(*DeletePipelineRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // RPC_ServiceDesc is the grpc.ServiceDesc for RPC service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -166,16 +234,24 @@ var RPC_ServiceDesc = grpc.ServiceDesc{
 	HandlerType: (*RPCServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
-			MethodName: "RunPipeline",
-			Handler:    _RPC_RunPipeline_Handler,
-		},
-		{
 			MethodName: "QueryPipeline",
 			Handler:    _RPC_QueryPipeline_Handler,
 		},
 		{
+			MethodName: "DescribePipeline",
+			Handler:    _RPC_DescribePipeline_Handler,
+		},
+		{
 			MethodName: "CreatePipeline",
 			Handler:    _RPC_CreatePipeline_Handler,
+		},
+		{
+			MethodName: "UpdatePipeline",
+			Handler:    _RPC_UpdatePipeline_Handler,
+		},
+		{
+			MethodName: "DeletePipeline",
+			Handler:    _RPC_DeletePipeline_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

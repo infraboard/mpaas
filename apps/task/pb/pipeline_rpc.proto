@@ -1,0 +1,18 @@
+syntax = "proto3";
+
+package infraboard.mpaas.task;
+option go_package = "github.com/infraboard/mpaas/apps/task";
+
+import "apps/task/pb/pipeline_task.proto";
+
+// RPC 执行Pipeline
+service PipelineRPC {
+    // 执行Job
+    rpc RunPipeline(RunPipelineRequest) returns(PipelineTask);
+}
+
+message RunPipelineRequest {
+    // pipeline id
+	// @gotags: json:"id"
+    string id = 1;
+}

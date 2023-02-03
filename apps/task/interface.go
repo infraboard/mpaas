@@ -10,11 +10,12 @@ const (
 )
 
 type Service interface {
-	RPCServer
+	JobRPCServer
+	PipelineRPCServer
 }
 
-func NewQueryTaskRequest() *QueryTaskRequest {
-	return &QueryTaskRequest{
+func NewQueryTaskRequest() *QueryJobTaskRequest {
+	return &QueryJobTaskRequest{
 		Page: request.NewDefaultPageRequest(),
 		Ids:  []string{},
 	}

@@ -10,7 +10,7 @@ import (
 	"sigs.k8s.io/yaml"
 )
 
-func (r *K8sRunner) Run(ctx context.Context, in *task.RunTaskRequest) (*task.Status, error) {
+func (r *K8sRunner) Run(ctx context.Context, in *task.RunTaskRequest) (*task.JobTaskStatus, error) {
 	runnerParams := in.Params.K8SJobRunnerParams()
 	cReq := cluster.NewDescribeClusterRequest(runnerParams.ClusterId)
 	c, err := r.cluster.DescribeCluster(ctx, cReq)

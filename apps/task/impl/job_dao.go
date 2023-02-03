@@ -6,14 +6,14 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
-func newQueryRequest(r *task.QueryTaskRequest) *queryRequest {
+func newQueryRequest(r *task.QueryJobTaskRequest) *queryRequest {
 	return &queryRequest{
 		r,
 	}
 }
 
 type queryRequest struct {
-	*task.QueryTaskRequest
+	*task.QueryJobTaskRequest
 }
 
 func (r *queryRequest) FindOptions() *options.FindOptions {

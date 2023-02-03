@@ -1,0 +1,55 @@
+syntax = "proto3";
+
+package infraboard.mpaas.task;
+option go_package = "github.com/infraboard/mpaas/apps/task";
+
+import "apps/task/pb/job_task.proto";
+import "apps/pipeline/pb/pipeline.proto";
+
+message PipelineTask {
+    // 部署Id
+    // @gotags: bson:"_id" json:"id"
+    string id = 1;
+    // 创建时间
+    // @gotags: bson:"create_at" json:"create_at"
+    int64 create_at = 2;
+    // 更新时间
+    // @gotags: bson:"update_at" json:"update_at"
+    int64 update_at = 3;
+	// 关联Job
+	// @gotags: bson:"pipeline" json:"pipeline"
+	pipeline.Pipeline pipeline = 4;
+	// 任务当前状态
+	// @gotags: bson:"status" json:"status"
+	PipelineTaskStatus status = 5;
+}
+
+message PipelineTaskStatus {
+	// 任务当前状态
+	// @gotags: bson:"stage" json:"stage"
+    STAGE stage = 1;
+	// 任务开始时间
+	// @gotags: bson:"start_at" json:"start_at"
+    int64 start_at = 2;
+	// 任务结束时间
+	// @gotags: bson:"end_at" json:"end_at"
+    int64 end_at = 3;
+	// 状态描述
+	// @gotags: bson:"message" json:"message"
+	string message = 4;
+	// 任务状态详细描述, 用于Debug
+	// @gotags: bson:"detail" json:"detail"
+	StageStatus detail = 5;
+}
+
+message StageStatus {
+    // stage名称
+	// @gotags: bson:"name" json:"name" validate:"required"
+    string name = 1;
+	// stage当前状态, 通过动态计算task状态的获得
+	// @gotags: bson:"stage" json:"stage"
+    STAGE stage = 2;
+	// 任务状态
+	// @gotags: bson:"status" json:"status"
+	repeated JobTask status = 3;
+}

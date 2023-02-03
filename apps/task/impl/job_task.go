@@ -9,7 +9,7 @@ import (
 )
 
 func (i *impl) RunJob(ctx context.Context, in *task.RunJobRequest) (
-	*task.Task, error) {
+	*task.JobTask, error) {
 	// 1. 查询需要执行的Job
 	j, err := i.job.DescribeJob(ctx, nil)
 	if err != nil {
@@ -31,8 +31,8 @@ func (i *impl) RunJob(ctx context.Context, in *task.RunJobRequest) (
 	return ins, nil
 }
 
-func (i *impl) QueryTask(ctx context.Context, in *task.QueryTaskRequest) (
-	*task.TaskSet, error) {
+func (i *impl) QueryJobTask(ctx context.Context, in *task.QueryJobTaskRequest) (
+	*task.JobTaskSet, error) {
 	r := newQueryRequest(in)
 	resp, err := i.col.Find(ctx, r.FindFilter(), r.FindOptions())
 
@@ -59,19 +59,19 @@ func (i *impl) QueryTask(ctx context.Context, in *task.QueryTaskRequest) (
 	return set, nil
 }
 
-func (i *impl) UpdateTaskStatus(ctx context.Context, in *task.UpdateTaskStatusRequest) (
-	*task.Task, error) {
+func (i *impl) UpdateJobTaskStatus(ctx context.Context, in *task.UpdateJobTaskStatusRequest) (
+	*task.JobTask, error) {
 	return nil, nil
 }
 
 // 任务执行详情
-func (i *impl) DescribeTask(ctx context.Context, in *task.DescribeTaskRequest) (
-	*task.Task, error) {
+func (i *impl) DescribeJobTask(ctx context.Context, in *task.DescribeJobTaskRequest) (
+	*task.JobTask, error) {
 	return nil, nil
 }
 
 // 删除任务
-func (i *impl) DeleteTask(ctx context.Context, in *task.DeleteTaskRequest) (
-	*task.TaskSet, error) {
+func (i *impl) DeleteJobTask(ctx context.Context, in *task.DeleteJobTaskRequest) (
+	*task.JobTaskSet, error) {
 	return nil, nil
 }

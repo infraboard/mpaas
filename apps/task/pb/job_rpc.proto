@@ -3,25 +3,25 @@ syntax = "proto3";
 package infraboard.mpaas.task;
 option go_package = "github.com/infraboard/mpaas/apps/task";
 
-import "apps/task/pb/task.proto";
+import "apps/task/pb/job_task.proto";
 import "github.com/infraboard/mcube/pb/page/page.proto";
 
 // RPC 执行Job
-service RPC {
+service JobRPC {
     // 执行Job
-    rpc RunJob(RunJobRequest) returns(Task);
+    rpc RunJob(RunJobRequest) returns(JobTask);
 
     // 查询任务
-    rpc QueryTask(QueryTaskRequest) returns(TaskSet);
+    rpc QueryJobTask(QueryJobTaskRequest) returns(JobTaskSet);
     // 更新任务
-    rpc UpdateTaskStatus(UpdateTaskStatusRequest) returns(Task);
+    rpc UpdateJobTaskStatus(UpdateJobTaskStatusRequest) returns(JobTask);
     // 任务执行详情
-    rpc DescribeTask(DescribeTaskRequest) returns(Task);
+    rpc DescribeJobTask(DescribeJobTaskRequest) returns(JobTask);
     // 删除任务
-    rpc DeleteTask(DeleteTaskRequest) returns(TaskSet);
+    rpc DeleteJobTask(DeleteJobTaskRequest) returns(JobTaskSet);
 }
 
-message QueryTaskRequest {
+message QueryJobTaskRequest {
     // 分页请求
     // @gotags: json:"page"
     mcube.page.PageRequest page = 1;
@@ -30,7 +30,7 @@ message QueryTaskRequest {
     repeated string ids = 2;
 }
 
-message UpdateTaskStatusRequest {
+message UpdateJobTaskStatusRequest {
 	// 任务当前状态
 	// @gotags: bson:"stage" json:"stage"
     STAGE stage = 1;
@@ -42,7 +42,7 @@ message UpdateTaskStatusRequest {
 	string detail = 3;
 }
 
-message DescribeTaskRequest {
+message DescribeJobTaskRequest {
 
 }
 
@@ -53,7 +53,7 @@ enum DELETE_BY {
     AFTER_DAYS = 1;
 }
 
-message DeleteTaskRequest {
+message DeleteJobTaskRequest {
 	// 以那种维度来进行删除
 	// @gotags: bson:"delete_by" json:"delete_by"
     DELETE_BY delete_by = 1;

@@ -18,7 +18,7 @@ type Register interface {
 }
 
 type Runner interface {
-	Run(context.Context, *task.RunTaskRequest) (*task.Status, error)
+	Run(context.Context, *task.RunTaskRequest) (*task.JobTaskStatus, error)
 }
 
 func Init() error {

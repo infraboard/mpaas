@@ -4,16 +4,20 @@ package infraboard.mpaas.pipeline;
 option go_package = "github.com/infraboard/mpaas/apps/pipeline";
 
 import "apps/pipeline/pb/pipeline.proto";
+import "github.com/infraboard/mcube/pb/page/page.proto";
 
 // RPC Pipeline管理
 service RPC {
-    // 执行Pipelne
-    rpc RunPipeline(RunPipelineRequest) returns(Pipeline);
-
-    // 查询Pipeline
+    // 查询Pipeline列表
     rpc QueryPipeline(QueryPipelineRequest) returns(PipelineSet);
-    // 创建一个Pipeline
+    // 查询Pipeline详情
+    rpc DescribePipeline(DescribePipelineRequest) returns(Pipeline);
+    // 创建Pipeline
     rpc CreatePipeline(CreatePipelineRequest) returns(Pipeline);
+    // 更新Pipeline
+    rpc UpdatePipeline(UpdatePipelineRequest) returns(Pipeline);
+    // 删除Pipeline
+    rpc DeletePipeline(DeletePipelineRequest) returns(Pipeline);
 }
 
 message RunPipelineRequest {
@@ -22,7 +26,30 @@ message RunPipelineRequest {
     string id = 1;
 }
 
-
 message QueryPipelineRequest {
+    // 分页请求
+    // @gotags: json:"page"
+    infraboard.mcube.page.PageRequest page = 1;
+    // pipeline 所属域
+    // @gotags: json:"domain"
+    string domain = 2;
+    // pipeline 所属空间
+    // @gotags: json:"namespace"
+    string namespace = 3;
+    // pipeline Id列表
+    // @gotags: json:"ids"
+    repeated string ids = 4;
+}
+
+message DescribePipelineRequest {
+    
+}
+
+
+message UpdatePipelineRequest {
+
+}
+
+message DeletePipelineRequest {
 
 }
