@@ -1,6 +1,9 @@
 package impl
 
 import (
+	"context"
+
+	"github.com/infraboard/mcube/exception"
 	"github.com/infraboard/mpaas/apps/job"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo/options"
@@ -32,7 +35,7 @@ func (r *queryRequest) FindOptions() *options.FindOptions {
 }
 
 func (r *queryRequest) FindFilter() bson.M {
-	filter := bson.M{"$or": bson.A{}}
+	filter := bson.M{}
 
 	if r.VisiableMode != nil {
 		filter["spec.visiable_mode"] = *r.VisiableMode
@@ -55,4 +58,13 @@ func (r *queryRequest) FindFilter() bson.M {
 	}
 
 	return filter
+}
+
+func (i *impl) update(ctx context.Context, ins *job.Job) error {
+	if _, err := i.col.UpdateByID(ctx, ins.Id, bson.M{"$set": ins}); err != nil {
+		return exception.NewInternalServerError("inserted job(%s) document error, %s",
+			ins.Spec.Name, err)
+	}
+
+	return nil
 }

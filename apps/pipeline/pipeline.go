@@ -3,6 +3,7 @@ package pipeline
 import (
 	"strings"
 
+	"github.com/infraboard/mcube/http/request"
 	job "github.com/infraboard/mpaas/apps/job"
 )
 
@@ -31,4 +32,10 @@ func (j *Job) ParseName() (name, version string) {
 
 func (j *Job) RunParams() []*job.RunParam {
 	return j.With
+}
+
+func NewQueryPipelineRequest() *QueryPipelineRequest {
+	return &QueryPipelineRequest{
+		Page: request.NewDefaultPageRequest(),
+	}
 }

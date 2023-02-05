@@ -19,6 +19,7 @@ func TestQueryDeploy(t *testing.T) {
 func TestCreateBuildJob(t *testing.T) {
 	req := job.NewCreateJobRequest()
 	req.Name = "容器镜像构建"
+	req.CreateBy = "test"
 	req.RunnerSpec = tools.MustReadContentFile("test/build.yaml")
 	ins, err := impl.CreateJob(ctx, req)
 	if err != nil {
@@ -29,7 +30,7 @@ func TestCreateBuildJob(t *testing.T) {
 
 func TestCreateDeployJob(t *testing.T) {
 	req := job.NewCreateJobRequest()
-	req.Name = "容器镜像部署"
+	req.Name = "docker_build"
 	req.RunnerSpec = tools.MustReadContentFile("test/deploy.yaml")
 	ins, err := impl.CreateJob(ctx, req)
 	if err != nil {
@@ -38,8 +39,18 @@ func TestCreateDeployJob(t *testing.T) {
 	t.Log(ins)
 }
 
+func TestUpdateJob(t *testing.T) {
+	req := job.NewPatchJobRequest("cffgnols99bpvbu67og0")
+	req.Spec.Name = "docker_build"
+	ins, err := impl.UpdateJob(ctx, req)
+	if err != nil {
+		t.Fatal(err)
+	}
+	t.Log(ins)
+}
+
 func TestDescribeJob(t *testing.T) {
-	req := job.NewDescribeJobRequest("xxx")
+	req := job.NewDescribeJobRequest("xx")
 	ins, err := impl.DescribeJob(ctx, req)
 	if err != nil {
 		t.Fatal(err)

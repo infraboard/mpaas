@@ -8,7 +8,6 @@ import (
 )
 
 func TestRunJob(t *testing.T) {
-
 	req := task.NewRunJobRequest("docker_build")
 	version := job.NewVersionedRunParam("v1")
 	version.Params = job.NewRunParamWithKVPaire(

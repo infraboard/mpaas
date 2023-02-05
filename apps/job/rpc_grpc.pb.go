@@ -25,6 +25,7 @@ type RPCClient interface {
 	CreateJob(ctx context.Context, in *CreateJobRequest, opts ...grpc.CallOption) (*Job, error)
 	QueryJob(ctx context.Context, in *QueryJobRequest, opts ...grpc.CallOption) (*JobSet, error)
 	DescribeJob(ctx context.Context, in *DescribeJobRequest, opts ...grpc.CallOption) (*Job, error)
+	UpdateJob(ctx context.Context, in *UpdateJobRequest, opts ...grpc.CallOption) (*Job, error)
 }
 
 type rPCClient struct {
@@ -62,6 +63,15 @@ func (c *rPCClient) DescribeJob(ctx context.Context, in *DescribeJobRequest, opt
 	return out, nil
 }
 
+func (c *rPCClient) UpdateJob(ctx context.Context, in *UpdateJobRequest, opts ...grpc.CallOption) (*Job, error) {
+	out := new(Job)
+	err := c.cc.Invoke(ctx, "/infraboard.mpaas.job.RPC/UpdateJob", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // RPCServer is the server API for RPC service.
 // All implementations must embed UnimplementedRPCServer
 // for forward compatibility
@@ -69,6 +79,7 @@ type RPCServer interface {
 	CreateJob(context.Context, *CreateJobRequest) (*Job, error)
 	QueryJob(context.Context, *QueryJobRequest) (*JobSet, error)
 	DescribeJob(context.Context, *DescribeJobRequest) (*Job, error)
+	UpdateJob(context.Context, *UpdateJobRequest) (*Job, error)
 	mustEmbedUnimplementedRPCServer()
 }
 
@@ -84,6 +95,9 @@ func (UnimplementedRPCServer) QueryJob(context.Context, *QueryJobRequest) (*JobS
 }
 func (UnimplementedRPCServer) DescribeJob(context.Context, *DescribeJobRequest) (*Job, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method DescribeJob not implemented")
+}
+func (UnimplementedRPCServer) UpdateJob(context.Context, *UpdateJobRequest) (*Job, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UpdateJob not implemented")
 }
 func (UnimplementedRPCServer) mustEmbedUnimplementedRPCServer() {}
 
@@ -152,6 +166,24 @@ func _RPC_DescribeJob_Handler(srv interface{}, ctx context.Context, dec func(int
 	return interceptor(ctx, in, info, handler)
 }
 
+func _RPC_UpdateJob_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(UpdateJobRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(RPCServer).UpdateJob(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/infraboard.mpaas.job.RPC/UpdateJob",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(RPCServer).UpdateJob(ctx, req.(*UpdateJobRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // RPC_ServiceDesc is the grpc.ServiceDesc for RPC service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -170,6 +202,10 @@ var RPC_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "DescribeJob",
 			Handler:    _RPC_DescribeJob_Handler,
+		},
+		{
+			MethodName: "UpdateJob",
+			Handler:    _RPC_UpdateJob_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

@@ -5,6 +5,7 @@ import (
 	"time"
 	"unicode"
 
+	"github.com/imdario/mergo"
 	"github.com/rs/xid"
 	corev1 "k8s.io/api/core/v1"
 )
@@ -127,4 +128,16 @@ func NewRunParamWithKVPaire(kvs ...string) (params []*RunParam) {
 	}
 
 	return
+}
+
+func (i *Job) Update(req *UpdateJobRequest) {
+	i.UpdateAt = time.Now().UnixMicro()
+	i.UpdateBy = req.UpdateBy
+	i.Spec = req.Spec
+}
+
+func (i *Job) Patch(req *UpdateJobRequest) error {
+	i.UpdateAt = time.Now().UnixMicro()
+	i.UpdateBy = req.UpdateBy
+	return mergo.MergeWithOverwrite(i.Spec, req.Spec)
 }

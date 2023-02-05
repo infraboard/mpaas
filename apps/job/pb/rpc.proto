@@ -6,12 +6,14 @@ option go_package = "github.com/infraboard/mpaas/apps/job";
 import "apps/job/pb/job.proto";
 import "github.com/infraboard/mcube/pb/page/page.proto";
 import "github.com/infraboard/mcube/pb/resource/base.proto";
+import "github.com/infraboard/mcube/pb/request/request.proto";
 
 // RPC Job定义
 service RPC {
     rpc CreateJob(CreateJobRequest) returns(Job);
     rpc QueryJob(QueryJobRequest) returns(JobSet);
     rpc DescribeJob(DescribeJobRequest) returns(Job);
+    rpc UpdateJob(UpdateJobRequest) returns(Job);
 }
 
 message QueryJobRequest {
@@ -48,4 +50,22 @@ message DescribeJobRequest {
     // 查询值
     // @gotags: json:"describe_value"  validate:"required"
     string describe_value = 2;
+}
+
+message UpdateJobRequest {
+    // Cluster id
+    // @gotags: json:"id"
+    string id = 1;
+    // 更新模式
+    // @gotags: json:"update_mode"
+    infraboard.mcube.request.UpdateMode update_mode = 2;
+    // 更新人
+    // @gotags: json:"update_by"
+    string update_by = 3;
+    // 更新时间
+    // @gotags: json:"update_at"
+    int64 update_at = 4;
+    // 更新的信息
+    // @gotags: json:"spec"
+    CreateJobRequest spec = 5;
 }

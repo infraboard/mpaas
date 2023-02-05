@@ -38,6 +38,9 @@ message Job {
     // 更新时间
     // @gotags: bson:"update_at" json:"update_at"
     int64 update_at = 3;
+    // job 更新人
+	// @gotags: bson:"update_by" json:"update_by"
+    string update_by = 4;
     // job创建信息
 	// @gotags: bson:"spec" json:"spec"
     CreateJobRequest spec = 15; 

@@ -4,6 +4,7 @@ import (
 	"context"
 
 	"github.com/infraboard/mcube/exception"
+	"github.com/infraboard/mcube/pb/request"
 	"github.com/infraboard/mpaas/apps/job"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
@@ -70,6 +71,35 @@ func (i *impl) DescribeJob(ctx context.Context, in *job.DescribeJobRequest) (
 		}
 
 		return nil, exception.NewInternalServerError("find job %s error, %s", in.DescribeValue, err)
+	}
+
+	return ins, nil
+}
+
+func (i *impl) UpdateJob(ctx context.Context, in *job.UpdateJobRequest) (
+	*job.Job, error) {
+	ins, err := i.DescribeJob(ctx, job.NewDescribeJobRequest(in.Id))
+	if err != nil {
+		return nil, err
+	}
+
+	switch in.UpdateMode {
+	case request.UpdateMode_PUT:
+		ins.Update(in)
+	case request.UpdateMode_PATCH:
+		err := ins.Patch(in)
+		if err != nil {
+			return nil, err
+		}
+	}
+
+	// 校验更新后数据合法性
+	if err := ins.Spec.Validate(); err != nil {
+		return nil, err
+	}
+
+	if err := i.update(ctx, ins); err != nil {
+		return nil, err
 	}
 
 	return ins, nil

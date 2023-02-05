@@ -115,7 +115,7 @@ func (s *service) query(ctx context.Context, req *queryclusterRequest) (*cluster
 }
 
 func (s *service) update(ctx context.Context, ins *cluster.Cluster) error {
-	if _, err := s.col.UpdateByID(ctx, ins.Id, ins); err != nil {
+	if _, err := s.col.UpdateByID(ctx, ins.Id, bson.M{"$set": ins}); err != nil {
 		return exception.NewInternalServerError("inserted cluster(%s) document error, %s",
 			ins.Data.Name, err)
 	}
