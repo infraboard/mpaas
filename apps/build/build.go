@@ -14,7 +14,7 @@ func New(req *CreateBuildConfigRequest) (*BuildConfig, error) {
 
 	d := &BuildConfig{
 		Id:       xid.New().String(),
-		CreateAt: time.Now().UnixMilli(),
+		CreateAt: time.Now().Unix(),
 		Spec:     req,
 	}
 

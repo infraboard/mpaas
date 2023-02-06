@@ -42,7 +42,7 @@ func New(req *CreateGatewayRequest) (*Gateway, error) {
 		return nil, err
 	}
 
-	now := time.Now().UnixMilli()
+	now := time.Now().Unix()
 	return &Gateway{
 		Id:       xid.New().String(),
 		CreateAt: now,

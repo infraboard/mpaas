@@ -18,7 +18,7 @@ func New(req *CreateJobRequest) (*Job, error) {
 
 	d := &Job{
 		Id:       xid.New().String(),
-		CreateAt: time.Now().UnixMilli(),
+		CreateAt: time.Now().Unix(),
 		Spec:     req,
 	}
 

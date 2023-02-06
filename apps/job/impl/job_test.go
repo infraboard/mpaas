@@ -7,7 +7,7 @@ import (
 	"github.com/infraboard/mpaas/test/tools"
 )
 
-func TestQueryDeploy(t *testing.T) {
+func TestQueryJob(t *testing.T) {
 	req := job.NewQueryJobRequest()
 	set, err := impl.QueryJob(ctx, req)
 	if err != nil {
@@ -18,7 +18,7 @@ func TestQueryDeploy(t *testing.T) {
 
 func TestCreateBuildJob(t *testing.T) {
 	req := job.NewCreateJobRequest()
-	req.Name = "容器镜像构建"
+	req.Name = "docker_build"
 	req.CreateBy = "test"
 	req.RunnerSpec = tools.MustReadContentFile("test/build.yaml")
 	ins, err := impl.CreateJob(ctx, req)

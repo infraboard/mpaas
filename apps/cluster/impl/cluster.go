@@ -55,7 +55,7 @@ func (s *service) checkStatus(ins *cluster.Cluster) {
 	}
 
 	// 检查凭证是否可用
-	ins.Status.CheckAt = time.Now().UnixMilli()
+	ins.Status.CheckAt = time.Now().Unix()
 	v, err := client.ServerVersion()
 	if err != nil {
 		ins.Status.IsAlive = false

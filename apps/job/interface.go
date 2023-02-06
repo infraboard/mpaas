@@ -46,6 +46,7 @@ func NewDescribeJobRequest(id string) *DescribeJobRequest {
 }
 
 func (req *DescribeJobRequest) Validate() error {
+
 	return validate.Validate(req)
 }
 

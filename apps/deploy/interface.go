@@ -30,7 +30,7 @@ func New(req *CreateDeployConfigRequest) (*DeployConfig, error) {
 
 	d := &DeployConfig{
 		Id:       xid.New().String(),
-		CreateAt: time.Now().UnixMilli(),
+		CreateAt: time.Now().Unix(),
 		Spec:     req,
 	}
 
