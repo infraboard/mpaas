@@ -4,11 +4,12 @@ import (
 	"testing"
 
 	"github.com/infraboard/mpaas/apps/job"
+	"github.com/infraboard/mpaas/apps/pipeline"
 	"github.com/infraboard/mpaas/apps/task"
 )
 
 func TestRunJob(t *testing.T) {
-	req := task.NewRunJobRequest("docker_build")
+	req := pipeline.NewRunJobRequest("docker_build")
 	version := job.NewVersionedRunParam("v1")
 	version.Params = job.NewRunParamWithKVPaire(
 		"cluster_id", "k8s-test",

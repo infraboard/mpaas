@@ -3,7 +3,6 @@ package task
 import (
 	"time"
 
-	job "github.com/infraboard/mpaas/apps/job"
 	"github.com/infraboard/mpaas/apps/pipeline"
 	"github.com/rs/xid"
 )
@@ -49,13 +48,7 @@ func NewStageStatus(s *pipeline.Stage) *StageStatus {
 	}
 
 	for i := range s.Jobs {
-		spec := s.Jobs[i]
-		// 获取pipeline job参数, 构造task run 参数
-		req := NewRunJobRequest(spec.JobName())
-		jopParams := job.NewVersionedRunParam(spec.JobVersion())
-		jopParams.Params = spec.RunParams()
-		req.Params = jopParams
-
+		req := s.Jobs[i]
 		jobTask := NewJobTask(req)
 		status.Add(jobTask)
 	}

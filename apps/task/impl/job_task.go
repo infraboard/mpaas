@@ -5,11 +5,12 @@ import (
 
 	"github.com/infraboard/mcube/exception"
 	"github.com/infraboard/mpaas/apps/job"
+	"github.com/infraboard/mpaas/apps/pipeline"
 	"github.com/infraboard/mpaas/apps/task"
 	"github.com/infraboard/mpaas/apps/task/runner"
 )
 
-func (i *impl) RunJob(ctx context.Context, in *task.RunJobRequest) (
+func (i *impl) RunJob(ctx context.Context, in *pipeline.RunJobRequest) (
 	*task.JobTask, error) {
 	ins := task.NewJobTask(in)
 

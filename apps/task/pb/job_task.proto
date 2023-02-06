@@ -4,6 +4,7 @@ package infraboard.mpaas.task;
 option go_package = "github.com/infraboard/mpaas/apps/task";
 
 import "apps/job/pb/job.proto";
+import "apps/pipeline/pb/pipeline.proto";
 
 message JobTaskSet {
 	// 总数量
@@ -26,34 +27,13 @@ message JobTask {
     int64 update_at = 3;
 	// task定义, job运行时参数
 	// @gotags: bson:"spec" json:"spec"
-	RunJobRequest spec = 4;
+	pipeline.RunJobRequest spec = 4;
 	// 关联Job
 	// @gotags: bson:"job" json:"job"
 	job.Job job = 5;
 	// 任务当前状态
 	// @gotags: bson:"status" json:"status"
 	JobTaskStatus status = 6;
-}
-
-message RunJobRequest {
-	// task执行的域
-	// @gotags: bson:"domain" json:"domain"
-    string domain = 1;
-	// task执行的空间
-	// @gotags: bson:"namespace" json:"namespace"
-    string namespace = 2;
-	// task属于那个Pipeline 可以为空
-	// @gotags: bson:"pipeline" json:"pipeline"
-    string pipeline = 3;
-	// job名称: name
-	// @gotags: bson:"job" json:"job"
-    string job = 4;
-	// job运行时参数
-	// @gotags: bson:"params" json:"params"
-	job.VersionedRunParam params = 5;
-    // 任务标签
-    // @gotags: bson:"labels" json:"labels"
-    map<string,string> labels = 6;
 }
 
 enum STAGE {

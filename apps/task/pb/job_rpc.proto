@@ -4,12 +4,13 @@ package infraboard.mpaas.task;
 option go_package = "github.com/infraboard/mpaas/apps/task";
 
 import "apps/task/pb/job_task.proto";
+import "apps/pipeline/pb/pipeline.proto";
 import "github.com/infraboard/mcube/pb/page/page.proto";
 
 // RPC 执行Job
 service JobRPC {
     // 执行Job
-    rpc RunJob(RunJobRequest) returns(JobTask);
+    rpc RunJob(pipeline.RunJobRequest) returns(JobTask);
 
     // 查询任务
     rpc QueryJobTask(QueryJobTaskRequest) returns(JobTaskSet);

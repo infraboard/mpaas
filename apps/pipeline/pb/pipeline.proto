@@ -67,16 +67,25 @@ message Stage {
 	repeated job.RunParam with = 2;
 	// 需要执行的job
 	// @gotags: bson:"jobs" json:"jobs"
-	repeated Job jobs = 3;
+	repeated RunJobRequest jobs = 3;
 }
 
-message Job {
-	// job名称和版本, 比如 docker_build@v1, #id@v1
-	// @gotags: bson:"name" json:"name"
-    string name = 4;
-	// job运行时参数 用户传人的参数说明
-	// @gotags: bson:"with" json:"with"
-	repeated job.RunParam with = 3;
+message RunJobRequest {
+	// task执行的域
+	// @gotags: bson:"domain" json:"domain"
+    string domain = 1;
+	// task执行的空间
+	// @gotags: bson:"namespace" json:"namespace"
+    string namespace = 2;
+	// task属于那个Pipeline 可以为空
+	// @gotags: bson:"pipeline" json:"pipeline"
+    string pipeline = 3;
+	// job名称: name
+	// @gotags: bson:"job" json:"job"
+    string job = 4;
+	// job运行时参数
+	// @gotags: bson:"params" json:"params"
+	job.VersionedRunParam params = 5;
     // 任务标签
     // @gotags: bson:"labels" json:"labels"
     map<string,string> labels = 6;

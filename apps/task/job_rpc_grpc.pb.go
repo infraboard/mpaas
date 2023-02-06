@@ -8,6 +8,7 @@ package task
 
 import (
 	context "context"
+	pipeline "github.com/infraboard/mpaas/apps/pipeline"
 	grpc "google.golang.org/grpc"
 	codes "google.golang.org/grpc/codes"
 	status "google.golang.org/grpc/status"
@@ -23,7 +24,7 @@ const _ = grpc.SupportPackageIsVersion7
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type JobRPCClient interface {
 	// 执行Job
-	RunJob(ctx context.Context, in *RunJobRequest, opts ...grpc.CallOption) (*JobTask, error)
+	RunJob(ctx context.Context, in *pipeline.RunJobRequest, opts ...grpc.CallOption) (*JobTask, error)
 	// 查询任务
 	QueryJobTask(ctx context.Context, in *QueryJobTaskRequest, opts ...grpc.CallOption) (*JobTaskSet, error)
 	// 更新任务
@@ -42,7 +43,7 @@ func NewJobRPCClient(cc grpc.ClientConnInterface) JobRPCClient {
 	return &jobRPCClient{cc}
 }
 
-func (c *jobRPCClient) RunJob(ctx context.Context, in *RunJobRequest, opts ...grpc.CallOption) (*JobTask, error) {
+func (c *jobRPCClient) RunJob(ctx context.Context, in *pipeline.RunJobRequest, opts ...grpc.CallOption) (*JobTask, error) {
 	out := new(JobTask)
 	err := c.cc.Invoke(ctx, "/infraboard.mpaas.task.JobRPC/RunJob", in, out, opts...)
 	if err != nil {
@@ -92,7 +93,7 @@ func (c *jobRPCClient) DeleteJobTask(ctx context.Context, in *DeleteJobTaskReque
 // for forward compatibility
 type JobRPCServer interface {
 	// 执行Job
-	RunJob(context.Context, *RunJobRequest) (*JobTask, error)
+	RunJob(context.Context, *pipeline.RunJobRequest) (*JobTask, error)
 	// 查询任务
 	QueryJobTask(context.Context, *QueryJobTaskRequest) (*JobTaskSet, error)
 	// 更新任务
@@ -108,7 +109,7 @@ type JobRPCServer interface {
 type UnimplementedJobRPCServer struct {
 }
 
-func (UnimplementedJobRPCServer) RunJob(context.Context, *RunJobRequest) (*JobTask, error) {
+func (UnimplementedJobRPCServer) RunJob(context.Context, *pipeline.RunJobRequest) (*JobTask, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method RunJob not implemented")
 }
 func (UnimplementedJobRPCServer) QueryJobTask(context.Context, *QueryJobTaskRequest) (*JobTaskSet, error) {
@@ -137,7 +138,7 @@ func RegisterJobRPCServer(s grpc.ServiceRegistrar, srv JobRPCServer) {
 }
 
 func _JobRPC_RunJob_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(RunJobRequest)
+	in := new(pipeline.RunJobRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -149,7 +150,7 @@ func _JobRPC_RunJob_Handler(srv interface{}, ctx context.Context, dec func(inter
 		FullMethod: "/infraboard.mpaas.task.JobRPC/RunJob",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(JobRPCServer).RunJob(ctx, req.(*RunJobRequest))
+		return srv.(JobRPCServer).RunJob(ctx, req.(*pipeline.RunJobRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }

@@ -4,6 +4,7 @@ import (
 	"time"
 
 	"github.com/infraboard/mpaas/apps/job"
+	pipeline "github.com/infraboard/mpaas/apps/pipeline"
 )
 
 func NewTaskSet() *JobTaskSet {
@@ -17,11 +18,11 @@ func (s *JobTaskSet) Add(task *JobTask) {
 }
 
 func NewDefaultTask() *JobTask {
-	req := NewRunJobRequest("")
+	req := pipeline.NewRunJobRequest("")
 	return NewJobTask(req)
 }
 
-func NewJobTask(req *RunJobRequest) *JobTask {
+func NewJobTask(req *pipeline.RunJobRequest) *JobTask {
 	return &JobTask{
 		Spec:   req,
 		Job:    nil,
