@@ -20,7 +20,7 @@ func TestCreateCluster(t *testing.T) {
 	req := cluster.NewCreateClusterRequest()
 	req.Vendor = "腾讯云"
 	req.Region = "上海"
-	req.Name = "生产环境"
+	req.Name = "k8s-test"
 
 	req.KubeConfig = tools.MustReadContentFile("test/kube_config.yml")
 	ins, err := impl.CreateCluster(ctx, req)

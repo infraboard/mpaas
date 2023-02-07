@@ -15,6 +15,7 @@ func TestRunJob(t *testing.T) {
 		"cluster_id", "k8s-test",
 		"DB_PASS", "test",
 	)
+	req.Params = version
 
 	ins, err := impl.RunJob(ctx, req)
 	if err != nil {
