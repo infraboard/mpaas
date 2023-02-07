@@ -60,8 +60,13 @@ func (i *impl) DescribeJob(ctx context.Context, in *job.DescribeJobRequest) (
 
 	filter := bson.M{}
 	switch in.DescribeBy {
-	case job.DESCRIBE_BY_ID:
+	case job.DESCRIBE_BY_JOB_ID:
 		filter["_id"] = in.DescribeValue
+	case job.DESCRIBE_BY_JOB_UNIQ_NAME:
+		name, ns, domain := job.ParseUniqName(in.DescribeValue)
+		filter["spec.name"] = name
+		filter["spec.namespace"] = ns
+		filter["spec.domain"] = domain
 	}
 
 	ins := job.NewDefaultJob()

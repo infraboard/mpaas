@@ -9,7 +9,7 @@ import (
 )
 
 func TestRunJob(t *testing.T) {
-	req := pipeline.NewRunJobRequest("docker_build")
+	req := pipeline.NewRunJobRequest("docker_build@default.default")
 	version := job.NewVersionedRunParam("v1")
 	version.Params = job.NewRunParamWithKVPaire(
 		"cluster_id", "k8s-test",

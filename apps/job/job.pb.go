@@ -291,7 +291,7 @@ type CreateJobRequest struct {
 	// 图片
 	// @gotags: bson:"logo" json:"logo"
 	Logo string `protobuf:"bytes,7,opt,name=logo,proto3" json:"logo" bson:"logo"`
-	// 名称
+	// 名称, 不能包含特殊字符(. , #)
 	// @gotags: bson:"name" json:"name" validate:"required"
 	Name string `protobuf:"bytes,8,opt,name=name,proto3" json:"name" bson:"name" validate:"required"`
 	// 展示名称

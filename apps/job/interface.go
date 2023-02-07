@@ -1,6 +1,8 @@
 package job
 
 import (
+	"fmt"
+	"strings"
 	"time"
 
 	"github.com/infraboard/mcenter/apps/domain"
@@ -18,10 +20,6 @@ type Service interface {
 	RPCServer
 }
 
-func (req *CreateJobRequest) Validate() error {
-	return validate.Validate(req)
-}
-
 func NewCreateJobRequest() *CreateJobRequest {
 	return &CreateJobRequest{
 		Domain:    domain.DEFAULT_DOMAIN,
@@ -29,6 +27,24 @@ func NewCreateJobRequest() *CreateJobRequest {
 		RunParams: []*VersionedRunParam{},
 		Labels:    make(map[string]string),
 	}
+}
+
+var (
+	INVALIDATE_NAME_CHAR = []rune{'.'}
+)
+
+func (req *CreateJobRequest) Validate() error {
+	for _, c := range INVALIDATE_NAME_CHAR {
+		if strings.ContainsRune(req.Name, c) {
+			return fmt.Errorf("名称中不能出现特殊字符: %s", string(INVALIDATE_NAME_CHAR))
+		}
+	}
+
+	if strings.HasPrefix(req.Name, "#") {
+		return fmt.Errorf("名称不能以#开头")
+	}
+
+	return validate.Validate(req)
 }
 
 func NewQueryJobRequest() *QueryJobRequest {
@@ -39,9 +55,44 @@ func NewQueryJobRequest() *QueryJobRequest {
 	}
 }
 
-func NewDescribeJobRequest(id string) *DescribeJobRequest {
+func ParseDescribeName(name string) (DESCRIBE_BY, string) {
+	if name == "" {
+		return DESCRIBE_BY_JOB_ID, ""
+	}
+
+	switch name[0] {
+	case '#':
+		return DESCRIBE_BY_JOB_ID, name[1:]
+	default:
+		return DESCRIBE_BY_JOB_UNIQ_NAME, name
+	}
+}
+
+func ParseUniqName(name string) (jobname, namespace, domain string) {
+	if name == "" {
+		return
+	}
+
+	nv := strings.Split(name, UNIQ_NAME_SPLITER)
+	jobname = nv[0]
+
+	if len(nv) > 1 {
+		nd := strings.Split(nv[1], UNIQ_NAMESPACE_SPLITER)
+		if len(nd) > 0 {
+			namespace = nd[0]
+		}
+		if len(nd) > 1 {
+			domain = nd[1]
+		}
+	}
+	return
+}
+
+func NewDescribeJobRequest(name string) *DescribeJobRequest {
+	by, v := ParseDescribeName(name)
 	return &DescribeJobRequest{
-		DescribeValue: id,
+		DescribeBy:    by,
+		DescribeValue: v,
 	}
 }
 

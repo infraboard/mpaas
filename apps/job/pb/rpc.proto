@@ -39,8 +39,10 @@ message QueryJobRequest {
 
 
 enum DESCRIBE_BY {
-    // 用户的ID
-    ID = 0;
+    // Job的ID
+    JOB_ID = 0;
+    // Job的唯一名称, <job_name>.<namespace>.<domain>
+    JOB_UNIQ_NAME = 1;
 }
 
 message DescribeJobRequest {
