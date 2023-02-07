@@ -16,6 +16,15 @@ func TestQueryCluster(t *testing.T) {
 	t.Log(set)
 }
 
+func TestDescribeCluster(t *testing.T) {
+	req := cluster.NewDescribeClusterRequest("k8s-test")
+	set, err := impl.DescribeCluster(ctx, req)
+	if err != nil {
+		t.Fatal(err)
+	}
+	t.Log(set)
+}
+
 func TestCreateCluster(t *testing.T) {
 	req := cluster.NewCreateClusterRequest()
 	req.Vendor = "腾讯云"
