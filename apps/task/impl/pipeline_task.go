@@ -3,6 +3,8 @@ package impl
 import (
 	"context"
 
+	"github.com/infraboard/mcube/exception"
+	"github.com/infraboard/mpaas/apps/pipeline"
 	"github.com/infraboard/mpaas/apps/task"
 )
 
@@ -27,6 +29,32 @@ func (i *impl) RunPipeline(ctx context.Context, in *task.RunPipelineRequest) (
 	jt.Update(resp.Job, resp.Status)
 
 	return ins, nil
+}
+
+// Pipeline中任务有变化时,
+// 如果执行成功则 继续执行, 如果失败则标记Pipeline结束
+// 当所有任务成功结束时标记Pipeline执行成功
+func (i *impl) PipelineTaskStatusChanged(ctx context.Context, in *task.JobTask) (
+	*task.PipelineTaskSet, error) {
+	if in == nil && in.Status == nil {
+		return nil, exception.NewBadRequest("job task or job task status is nil")
+	}
+
+	if in.Spec.Pipeline == "" {
+		return nil, exception.NewBadRequest("Pipeline Id参数缺失")
+	}
+
+	// 获取Pipeline
+	p, err := i.pipeline.DescribePipeline(ctx, pipeline.NewDescribePipelineRequest(in.Spec.Pipeline))
+	if err != nil {
+		return nil, err
+	}
+
+	// 判断Task状态
+
+	i.log.Debug(p)
+
+	return nil, nil
 }
 
 // 查询Pipeline任务

@@ -1,6 +1,7 @@
 package task
 
 import (
+	"fmt"
 	"time"
 
 	"github.com/infraboard/mpaas/apps/job"
@@ -36,6 +37,10 @@ func NewJobTask(req *pipeline.RunJobRequest) *JobTask {
 func (t *JobTask) Update(job *job.Job, status *JobTaskStatus) {
 	t.Job = job
 	t.Status = status
+}
+
+func (s *JobTask) ShowTitle() string {
+	return fmt.Sprintf("任务[%s]当前状态: %s", s.Spec.Job, s.Status.Stage.String())
 }
 
 func NewJobTaskStatus() *JobTaskStatus {

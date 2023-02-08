@@ -86,7 +86,46 @@ message RunJobRequest {
 	// job运行时参数
 	// @gotags: bson:"params" json:"params"
 	job.VersionedRunParam params = 5;
+	// 忽略失败, 当Pipeline运行时, 不会因为执行失败而 中断Pipeline执行
+	// @gotags: bson:"ignore_failed" json:"ignore_failed"
+	bool ignore_failed = 6;
+	// WebHook配置, 及时把job执行状态推送给外部, 比如各种机器人
+	// @gotags: bson:"webhooks" json:"webhooks"
+	repeated WebHook webhooks = 7;
     // 任务标签
     // @gotags: bson:"labels" json:"labels"
-    map<string,string> labels = 6;
+    map<string,string> labels = 15;
+}
+
+message WebHook {
+	// POST URL
+	// @gotags: bson:"url" json:"url" validate:"required,url"
+	string url = 1;
+	// 需要自定义添加的头, 用于身份认证
+	// @gotags: bson:"header" json:"header"
+	map<string, string> header = 2;
+	// 那些状态下触发
+	// @gotags: bson:"events" json:"events"
+	repeated string events = 3;
+	// 简单的描述信息
+	// @gotags: bson:"description" json:"description"
+	string description = 4;
+	// 推送结果
+	// @gotags: bson:"status" json:"status"
+	WebHookStatus status = 5;
+}
+
+message WebHookStatus {
+	// 开始时间
+	// @gotags: bson:"start_at" json:"start_at"
+	int64 start_at = 1;
+	// 耗时多久，单位毫秒
+	// @gotags: bson:"cost" json:"cost"
+	int64 cost = 2;
+	// 是否推送成功
+	// @gotags: bson:"success" json:"success"
+	bool success = 3;
+	// 异常时的错误信息
+	// @gotags: bson:"message" json:"message"
+	string message = 4;
 }

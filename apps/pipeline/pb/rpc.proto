@@ -45,14 +45,19 @@ message QueryPipelineRequest {
 }
 
 message DescribePipelineRequest {
-    
+    // pipeline id
+	// @gotags: json:"id"
+    string id = 1;
 }
 
-
 message UpdatePipelineRequest {
-
+    // pipeline id
+	// @gotags: json:"id"
+    string id = 1;
 }
 
 message DeletePipelineRequest {
-
+    // pipeline id
+	// @gotags: json:"id"
+    string id = 1;
 }
