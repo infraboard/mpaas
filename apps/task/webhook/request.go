@@ -31,16 +31,16 @@ var (
 	}
 )
 
-func newRequest(hook *pipeline.WebHook, step *task.JobTask) *request {
+func newRequest(hook *pipeline.WebHook, task *task.JobTask) *request {
 	return &request{
 		hook: hook,
-		step: step,
+		task: task,
 	}
 }
 
 type request struct {
 	hook     *pipeline.WebHook
-	step     *task.JobTask
+	task     *task.JobTask
 	matchRes string
 }
 
@@ -54,13 +54,13 @@ func (r *request) Push() {
 		messageObj = r.NewFeishuMessage()
 		r.matchRes = `"StatusCode":0,`
 	case dingdingBot:
-		messageObj = dingding.NewStepCardMessage(r.step)
+		messageObj = dingding.NewStepCardMessage(r.task)
 		r.matchRes = `"errcode":0,`
 	case wechatBot:
-		messageObj = wechat.NewStepMarkdownMessage(r.step)
+		messageObj = wechat.NewStepMarkdownMessage(r.task)
 		r.matchRes = `"errcode":0,`
 	default:
-		messageObj = r.step
+		messageObj = r.task
 	}
 
 	body, err := json.Marshal(messageObj)
@@ -128,7 +128,7 @@ func (r *request) BotType() string {
 }
 
 func (r *request) NewFeishuMessage() *feishu.Message {
-	s := r.step
+	s := r.task
 	msg := &feishu.NotifyMessage{
 		Title:    s.ShowTitle(),
 		Content:  s.String(),

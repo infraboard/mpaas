@@ -77,9 +77,9 @@ message RunJobRequest {
 	// task执行的空间
 	// @gotags: bson:"namespace" json:"namespace"
     string namespace = 2;
-	// task属于那个Pipeline 可以为空
-	// @gotags: bson:"pipeline" json:"pipeline"
-    string pipeline = 3;
+	// task属于那个Pipeline 任务可, 以为空
+	// @gotags: bson:"pipeline_task" json:"pipeline_task"
+    string pipeline_task = 3;
 	// job名称: name
 	// @gotags: bson:"job" json:"job"
     string job = 4;

@@ -11,8 +11,10 @@ service PipelineRPC {
     // 执行Pipeline
     rpc RunPipeline(RunPipelineRequest) returns(PipelineTask);
 
-    // 查询Pipeline任务
+    // 查询Pipeline任务列表
     rpc QueryPipelineTask(QueryPipelineTaskRequest) returns(PipelineTaskSet);
+    // 查询Pipeline任务详情
+    rpc DescribePipelineTask(DescribePipelineTaskRequest) returns(PipelineTask);
 }
 
 message RunPipelineRequest {
@@ -28,4 +30,10 @@ message QueryPipelineTaskRequest {
     // 任务Id列表
     // @gotags: json:"ids"
     repeated string ids = 2;
+}
+
+message DescribePipelineTaskRequest {
+    // pipeline id
+	// @gotags: json:"id"
+    string id = 1;
 }

@@ -31,6 +31,11 @@ func (p *PipelineTask) GetFirstJobTask() *JobTask {
 	return nil
 }
 
+// 返回下个需要执行的JobTask
+func (p *PipelineTask) NextRun() *JobTask {
+	return nil
+}
+
 func NewPipelineTaskStatus() *PipelineTaskStatus {
 	return &PipelineTaskStatus{
 		StageStatus: []*StageStatus{},
@@ -58,4 +63,10 @@ func NewStageStatus(s *pipeline.Stage) *StageStatus {
 
 func (s *StageStatus) Add(item *JobTask) {
 	s.JobTasks = append(s.JobTasks, item)
+}
+
+func NewDescribePipelineTaskRequest(id string) *DescribePipelineTaskRequest {
+	return &DescribePipelineTaskRequest{
+		Id: id,
+	}
 }

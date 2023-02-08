@@ -92,7 +92,7 @@ func (i *impl) UpdateJobTaskStatus(ctx context.Context, in *task.UpdateJobTaskSt
 	}
 
 	// Pipeline回调
-	if ins.Spec.Pipeline != "" {
+	if ins.Spec.PipelineTask != "" {
 		i.PipelineTaskStatusChanged(ctx, ins)
 	}
 	return ins, nil
