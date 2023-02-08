@@ -32,15 +32,18 @@ message QueryJobTaskRequest {
 }
 
 message UpdateJobTaskStatusRequest {
+	// 任务Id
+	// @gotags: json:"id"
+    string id = 1;
 	// 任务当前状态
 	// @gotags: bson:"stage" json:"stage"
-    STAGE stage = 1;
+    STAGE stage = 2;
 	// 状态描述
 	// @gotags: bson:"message" json:"message"
-	string message = 2;
+	string message = 3;
 	// 任务状态详细描述, 用于Debug
 	// @gotags: bson:"detail" json:"detail"
-	string detail = 3;
+	string detail = 4;
 }
 
 message DescribeJobTaskRequest {

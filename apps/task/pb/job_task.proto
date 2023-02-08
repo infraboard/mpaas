@@ -66,11 +66,17 @@ message JobTaskStatus {
 }
 
 message RunTaskRequest {
+	// 任务名称
+	// @gotags: bson:"name" json:"name"
+    string name = 1;
 	// job名称定义
 	// @gotags: bson:"job_spec" json:"job_spec"
-    string job_spec = 1;
+    string job_spec = 2;
 	// job运行时参数
 	// @gotags: bson:"params" json:"params"
-	job.VersionedRunParam params = 2;
+	job.VersionedRunParam params = 3;
+	// 标签
+	// @gotags: bson:"labels" json:"labels"
+	map<string, string> labels = 4;
 }
 

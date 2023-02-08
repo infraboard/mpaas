@@ -25,3 +25,10 @@ func (b *Workload) CreateJob(ctx context.Context, job *v1.Job) (*v1.Job, error) 
 func (c *Workload) DeleteJob(ctx context.Context, req *meta.DeleteRequest) error {
 	return c.batchV1.Jobs(req.Namespace).Delete(ctx, req.Name, req.Opts)
 }
+
+// 注入Job标签
+func InjectJobLabels(pod *v1.Job, labels map[string]string) {
+	for k, v := range labels {
+		pod.Labels[k] = v
+	}
+}

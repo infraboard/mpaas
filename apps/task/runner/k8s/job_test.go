@@ -24,7 +24,7 @@ func TestRun(t *testing.T) {
 		},
 	)
 
-	req := task.NewRunTaskRequest(jobSpec, params)
+	req := task.NewRunTaskRequest("test-job", jobSpec, params)
 	ins, err := impl.Run(ctx, req)
 	if err != nil {
 		t.Fatal(err)

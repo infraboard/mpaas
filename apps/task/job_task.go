@@ -43,3 +43,28 @@ func NewJobTaskStatus() *JobTaskStatus {
 		StartAt: time.Now().Unix(),
 	}
 }
+
+var (
+	COMPLETE_STGGE = []STAGE{STAGE_FAILED, STAGE_SUCCEEDED}
+)
+
+func (t *JobTaskStatus) IsComplete() bool {
+	for _, s := range COMPLETE_STGGE {
+		if t.Stage.Equal(s) {
+			return true
+		}
+	}
+
+	return false
+}
+
+func (t *JobTaskStatus) Update(req *UpdateJobTaskStatusRequest) {
+	t.Stage = req.Stage
+	t.Message = req.Message
+	t.Detail = req.Detail
+
+	// 结束时标记结束时间
+	if req.Stage.IsIn(COMPLETE_STGGE...) {
+		t.EndAt = time.Now().Unix()
+	}
+}

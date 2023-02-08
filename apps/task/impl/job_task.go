@@ -4,10 +4,12 @@ import (
 	"context"
 
 	"github.com/infraboard/mcube/exception"
+	"github.com/infraboard/mpaas/apps/cluster"
 	"github.com/infraboard/mpaas/apps/job"
 	"github.com/infraboard/mpaas/apps/pipeline"
 	"github.com/infraboard/mpaas/apps/task"
 	"github.com/infraboard/mpaas/apps/task/runner"
+	"github.com/infraboard/mpaas/provider/k8s/meta"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
 )
@@ -26,7 +28,9 @@ func (i *impl) RunJob(ctx context.Context, in *pipeline.RunJobRequest) (
 
 	// 2. 执行Job
 	r := runner.GetRunner(j.Spec.RunnerType)
-	status, err := r.Run(ctx, task.NewRunTaskRequest(j.Spec.RunnerSpec, in.Params))
+	runReq := task.NewRunTaskRequest(ins.Id, j.Spec.RunnerSpec, in.Params)
+	runReq.Labels = in.Labels
+	status, err := r.Run(ctx, runReq)
 	if err != nil {
 		return nil, err
 	}
@@ -67,9 +71,28 @@ func (i *impl) QueryJobTask(ctx context.Context, in *task.QueryJobTaskRequest) (
 	return set, nil
 }
 
+// 更新Job状态
 func (i *impl) UpdateJobTaskStatus(ctx context.Context, in *task.UpdateJobTaskStatusRequest) (
 	*task.JobTask, error) {
-	return nil, nil
+	ins, err := i.DescribeJobTask(ctx, task.NewDescribeJobTaskRequest(in.Id))
+	if err != nil {
+		return nil, err
+	}
+
+	// 修改任务状态
+	if ins.Status.IsComplete() {
+		return nil, exception.NewBadRequest("已经结束的任务不能更新状态")
+	}
+	ins.Status.Update(in)
+
+	// 更新数据库
+	if _, err := i.jcol.UpdateByID(ctx, ins.Id, bson.M{"$set": ins}); err != nil {
+		return nil, exception.NewInternalServerError("update task(%s) document error, %s",
+			in.Id, err)
+	}
+
+	// 执行回调
+	return ins, nil
 }
 
 // 任务执行详情
@@ -101,7 +124,10 @@ func (i *impl) DeleteJobTask(ctx context.Context, in *task.DeleteJobTaskRequest)
 	// 任务清理
 	switch ins.Job.Spec.RunnerType {
 	case job.RUNNER_TYPE_K8S_JOB:
-		// 删除k8s中对应的job
+		err = i.deleteK8sJob(ctx, ins)
+		if err != nil {
+			i.log.Warnf("delete k8s job error, %s", err)
+		}
 	}
 
 	// 删除本地记录
@@ -111,4 +137,21 @@ func (i *impl) DeleteJobTask(ctx context.Context, in *task.DeleteJobTaskRequest)
 	}
 
 	return ins, nil
+}
+
+// 删除k8s中对应的job
+func (i *impl) deleteK8sJob(ctx context.Context, ins *task.JobTask) error {
+	k8sParams := ins.Spec.Params.K8SJobRunnerParams()
+	c, err := i.cluster.DescribeCluster(ctx, cluster.NewDescribeClusterRequest(k8sParams.ClusterId))
+	if err != nil {
+		return err
+	}
+	k8sClient, err := c.Client()
+	if err != nil {
+		return err
+	}
+
+	req := meta.NewDeleteRequest(ins.Id)
+	req.Namespace = ins.Spec.Namespace
+	return k8sClient.WorkLoad().DeleteJob(ctx, req)
 }
