@@ -17,6 +17,6 @@ coverage.txt
 etc/mpaas.toml
 etc/mpaas.env
 etc/ssl
-unit-test.env
+unit_test.env
 kube_config.yml
 mpaas
