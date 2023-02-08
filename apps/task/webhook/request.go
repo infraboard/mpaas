@@ -133,7 +133,7 @@ func (r *request) NewFeishuMessage() *feishu.Message {
 		Title:    s.ShowTitle(),
 		Content:  s.String(),
 		RobotURL: r.hook.Url,
-		Note:     []string{"💡 该消息由极乐研发云[研发交付系统]提供"},
+		Note:     []string{"💡 该消息由极乐研发云提供"},
 		Color:    feishu.COLOR_PURPLE,
 	}
 	return feishu.NewCardMessage(msg)

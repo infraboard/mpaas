@@ -2,6 +2,7 @@ package webhook_test
 
 import (
 	"context"
+	"os"
 	"testing"
 
 	"github.com/infraboard/mpaas/apps/pipeline"
@@ -12,16 +13,10 @@ import (
 	"github.com/infraboard/mpaas/apps/task/webhook"
 )
 
-var (
-	feishuBotURL = "https://open.feishu.cn/open-apis/bot/v2/hook/461ead7b-d856-472c-babc-2d3d0ec9fabb"
-	dingBotURL   = "https://oapi.dingtalk.com/robot/send?access_token=xxxx"
-	wechatBotURL = "https://qyapi.weixin.qq.com/cgi-bin/webhook/send?key=693axxx6-7aoc-4bc4-97a0-0ec2sifa5aaa"
-)
-
 func TestFeishuWebHook(t *testing.T) {
 	should := assert.New(t)
 
-	hooks := testPipelineWebHook(feishuBotURL)
+	hooks := testPipelineWebHook(os.Getenv("FEISHU_BOT_URL"))
 	sender := webhook.NewWebHook()
 	err := sender.Send(
 		context.Background(),
@@ -35,7 +30,7 @@ func TestFeishuWebHook(t *testing.T) {
 func TestDingDingWebHook(t *testing.T) {
 	should := assert.New(t)
 
-	hooks := testPipelineWebHook(dingBotURL)
+	hooks := testPipelineWebHook(os.Getenv("DINGDING_BOT_URL"))
 	sender := webhook.NewWebHook()
 	err := sender.Send(
 		context.Background(),
@@ -50,7 +45,7 @@ func TestDingDingWebHook(t *testing.T) {
 func TestWechatWebHook(t *testing.T) {
 	should := assert.New(t)
 
-	hooks := testPipelineWebHook(wechatBotURL)
+	hooks := testPipelineWebHook(os.Getenv("WECHAT_BOT_URL"))
 	sender := webhook.NewWebHook()
 	err := sender.Send(
 		context.Background(),
@@ -71,7 +66,8 @@ func testPipelineWebHook(url string) []*pipeline.WebHook {
 }
 
 func testPipelineStep() *task.JobTask {
-	return &task.JobTask{}
+	t := task.NewJobTask(pipeline.NewRunJobRequest("test"))
+	return t
 }
 
 func init() {
