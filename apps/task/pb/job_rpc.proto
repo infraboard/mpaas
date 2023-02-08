@@ -19,7 +19,7 @@ service JobRPC {
     // 任务执行详情
     rpc DescribeJobTask(DescribeJobTaskRequest) returns(JobTask);
     // 删除任务
-    rpc DeleteJobTask(DeleteJobTaskRequest) returns(JobTaskSet);
+    rpc DeleteJobTask(DeleteJobTaskRequest) returns(JobTask);
 }
 
 message QueryJobTaskRequest {
@@ -44,21 +44,13 @@ message UpdateJobTaskStatusRequest {
 }
 
 message DescribeJobTaskRequest {
-
-}
-
-enum DELETE_BY {
-    // 指定task来进行删除
-    TASK_ID = 0;
-    // 多少天之前的进行删除
-    AFTER_DAYS = 1;
+	// 任务Id
+	// @gotags: json:"id"
+    string id = 1;
 }
 
 message DeleteJobTaskRequest {
-	// 以那种维度来进行删除
-	// @gotags: bson:"delete_by" json:"delete_by"
-    DELETE_BY delete_by = 1;
-	// 具体指定的值
-	// @gotags: bson:"delete_value" json:"delete_value"
-    string delete_value = 2;
+	// 任务Id
+	// @gotags: json:"id"
+    string id = 1;
 }

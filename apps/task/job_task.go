@@ -5,6 +5,7 @@ import (
 
 	"github.com/infraboard/mpaas/apps/job"
 	pipeline "github.com/infraboard/mpaas/apps/pipeline"
+	"github.com/rs/xid"
 )
 
 func NewTaskSet() *JobTaskSet {
@@ -17,16 +18,18 @@ func (s *JobTaskSet) Add(task *JobTask) {
 	s.Items = append(s.Items, task)
 }
 
-func NewDefaultTask() *JobTask {
+func NewDefaultJobTask() *JobTask {
 	req := pipeline.NewRunJobRequest("")
 	return NewJobTask(req)
 }
 
 func NewJobTask(req *pipeline.RunJobRequest) *JobTask {
 	return &JobTask{
-		Spec:   req,
-		Job:    nil,
-		Status: NewJobTaskStatus(),
+		Id:       xid.New().String(),
+		CreateAt: time.Now().Unix(),
+		Spec:     req,
+		Job:      nil,
+		Status:   NewJobTaskStatus(),
 	}
 }
 

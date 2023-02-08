@@ -6,6 +6,7 @@ import (
 	"github.com/infraboard/mpaas/apps/job"
 	"github.com/infraboard/mpaas/apps/pipeline"
 	"github.com/infraboard/mpaas/apps/task"
+	"github.com/infraboard/mpaas/test/tools"
 )
 
 func TestRunJob(t *testing.T) {
@@ -27,6 +28,25 @@ func TestRunJob(t *testing.T) {
 func TestQueryTask(t *testing.T) {
 	req := task.NewQueryTaskRequest()
 	set, err := impl.QueryJobTask(ctx, req)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	t.Log(tools.MustToYaml(set))
+}
+
+func TestDescribeJobTask(t *testing.T) {
+	req := task.NewDescribeJobTaskRequest("cfhfufua0brh83njg8ag")
+	set, err := impl.DescribeJobTask(ctx, req)
+	if err != nil {
+		t.Fatal(err)
+	}
+	t.Log(set)
+}
+
+func TestDeleteJobTask(t *testing.T) {
+	req := task.NewDeleteJobTaskRequest("")
+	set, err := impl.DeleteJobTask(ctx, req)
 	if err != nil {
 		t.Fatal(err)
 	}

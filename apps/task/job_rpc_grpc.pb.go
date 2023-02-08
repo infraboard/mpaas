@@ -32,7 +32,7 @@ type JobRPCClient interface {
 	// 任务执行详情
 	DescribeJobTask(ctx context.Context, in *DescribeJobTaskRequest, opts ...grpc.CallOption) (*JobTask, error)
 	// 删除任务
-	DeleteJobTask(ctx context.Context, in *DeleteJobTaskRequest, opts ...grpc.CallOption) (*JobTaskSet, error)
+	DeleteJobTask(ctx context.Context, in *DeleteJobTaskRequest, opts ...grpc.CallOption) (*JobTask, error)
 }
 
 type jobRPCClient struct {
@@ -79,8 +79,8 @@ func (c *jobRPCClient) DescribeJobTask(ctx context.Context, in *DescribeJobTaskR
 	return out, nil
 }
 
-func (c *jobRPCClient) DeleteJobTask(ctx context.Context, in *DeleteJobTaskRequest, opts ...grpc.CallOption) (*JobTaskSet, error) {
-	out := new(JobTaskSet)
+func (c *jobRPCClient) DeleteJobTask(ctx context.Context, in *DeleteJobTaskRequest, opts ...grpc.CallOption) (*JobTask, error) {
+	out := new(JobTask)
 	err := c.cc.Invoke(ctx, "/infraboard.mpaas.task.JobRPC/DeleteJobTask", in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -101,7 +101,7 @@ type JobRPCServer interface {
 	// 任务执行详情
 	DescribeJobTask(context.Context, *DescribeJobTaskRequest) (*JobTask, error)
 	// 删除任务
-	DeleteJobTask(context.Context, *DeleteJobTaskRequest) (*JobTaskSet, error)
+	DeleteJobTask(context.Context, *DeleteJobTaskRequest) (*JobTask, error)
 	mustEmbedUnimplementedJobRPCServer()
 }
 
@@ -121,7 +121,7 @@ func (UnimplementedJobRPCServer) UpdateJobTaskStatus(context.Context, *UpdateJob
 func (UnimplementedJobRPCServer) DescribeJobTask(context.Context, *DescribeJobTaskRequest) (*JobTask, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method DescribeJobTask not implemented")
 }
-func (UnimplementedJobRPCServer) DeleteJobTask(context.Context, *DeleteJobTaskRequest) (*JobTaskSet, error) {
+func (UnimplementedJobRPCServer) DeleteJobTask(context.Context, *DeleteJobTaskRequest) (*JobTask, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method DeleteJobTask not implemented")
 }
 func (UnimplementedJobRPCServer) mustEmbedUnimplementedJobRPCServer() {}

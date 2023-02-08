@@ -8,6 +8,8 @@ import (
 	"github.com/infraboard/mpaas/apps/pipeline"
 	"github.com/infraboard/mpaas/apps/task"
 	"github.com/infraboard/mpaas/apps/task/runner"
+	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/mongo"
 )
 
 func (i *impl) RunJob(ctx context.Context, in *pipeline.RunJobRequest) (
@@ -49,7 +51,7 @@ func (i *impl) QueryJobTask(ctx context.Context, in *task.QueryJobTaskRequest) (
 	set := task.NewTaskSet()
 	// 循环
 	for resp.Next(ctx) {
-		ins := task.NewDefaultTask()
+		ins := task.NewDefaultJobTask()
 		if err := resp.Decode(ins); err != nil {
 			return nil, exception.NewInternalServerError("decode deploy error, error is %s", err)
 		}
@@ -73,11 +75,40 @@ func (i *impl) UpdateJobTaskStatus(ctx context.Context, in *task.UpdateJobTaskSt
 // 任务执行详情
 func (i *impl) DescribeJobTask(ctx context.Context, in *task.DescribeJobTaskRequest) (
 	*task.JobTask, error) {
-	return nil, nil
+	if err := in.Validate(); err != nil {
+		return nil, err
+	}
+
+	ins := task.NewDefaultJobTask()
+	if err := i.jcol.FindOne(ctx, bson.M{"_id": in.Id}).Decode(ins); err != nil {
+		if err == mongo.ErrNoDocuments {
+			return nil, exception.NewNotFound("job task %s not found", in.Id)
+		}
+
+		return nil, exception.NewInternalServerError("find job task %s error, %s", in.Id, err)
+	}
+	return ins, nil
 }
 
 // 删除任务
 func (i *impl) DeleteJobTask(ctx context.Context, in *task.DeleteJobTaskRequest) (
-	*task.JobTaskSet, error) {
-	return nil, nil
+	*task.JobTask, error) {
+	ins, err := i.DescribeJobTask(ctx, task.NewDescribeJobTaskRequest(in.Id))
+	if err != nil {
+		return nil, err
+	}
+
+	// 任务清理
+	switch ins.Job.Spec.RunnerType {
+	case job.RUNNER_TYPE_K8S_JOB:
+		// 删除k8s中对应的job
+	}
+
+	// 删除本地记录
+	_, err = i.jcol.DeleteOne(ctx, bson.M{"_id": in.Id})
+	if err != nil {
+		return nil, err
+	}
+
+	return ins, nil
 }

@@ -1,6 +1,8 @@
 package task
 
 import (
+	"fmt"
+
 	"github.com/infraboard/mcube/http/request"
 	job "github.com/infraboard/mpaas/apps/job"
 )
@@ -38,4 +40,23 @@ type PipelineService interface {
 
 func NewRunPipelineRequest() *RunPipelineRequest {
 	return &RunPipelineRequest{}
+}
+
+func NewDescribeJobTaskRequest(id string) *DescribeJobTaskRequest {
+	return &DescribeJobTaskRequest{
+		Id: id,
+	}
+}
+
+func (r *DescribeJobTaskRequest) Validate() error {
+	if r.Id == "" {
+		return fmt.Errorf("job id required")
+	}
+	return nil
+}
+
+func NewDeleteJobTaskRequest(id string) *DeleteJobTaskRequest {
+	return &DeleteJobTaskRequest{
+		Id: id,
+	}
 }
