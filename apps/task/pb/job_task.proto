@@ -41,10 +41,14 @@ enum STAGE {
 	PENDDING = 0;
 	// 运行中
 	ACTIVE = 1;
+	// 取消中
+	CANCELING = 2;
+	// 任务被取消
+	CANCELED = 10;
 	// 运行成功
-	SUCCEEDED = 2;
+	SUCCEEDED = 11;
 	// 运行失败
-	FAILED = 3;
+	FAILED = 12;
 }
 
 message JobTaskStatus {
