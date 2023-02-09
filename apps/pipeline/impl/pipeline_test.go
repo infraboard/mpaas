@@ -8,6 +8,35 @@ import (
 	"github.com/infraboard/mpaas/test/tools"
 )
 
+func TestCreatePipeline(t *testing.T) {
+	req := pipeline.NewCreatePipelineRequest()
+	tools.MustReadYamlFile("test/create.yml", req)
+	ins, err := impl.CreatePipeline(ctx, req)
+	if err != nil {
+		t.Fatal(err)
+	}
+	t.Log(ins)
+}
+
+func TestUpdatePipeline(t *testing.T) {
+	req := pipeline.NewPutPipelineRequest("cfi9s16a0brmn92t1i7g")
+	tools.MustReadYamlFile("test/create.yml", req)
+	ins, err := impl.UpdatePipeline(ctx, req)
+	if err != nil {
+		t.Fatal(err)
+	}
+	t.Log(ins)
+}
+
+func TestDescribePipeline(t *testing.T) {
+	req := pipeline.NewDescribePipelineRequest("cfi9s16a0brmn92t1i7g")
+	ins, err := impl.DescribePipeline(ctx, req)
+	if err != nil {
+		t.Fatal(err)
+	}
+	t.Log(ins)
+}
+
 func TestQueryPipeline(t *testing.T) {
 	req := pipeline.NewQueryPipelineRequest()
 	set, err := impl.QueryPipeline(ctx, req)
@@ -15,6 +44,16 @@ func TestQueryPipeline(t *testing.T) {
 		t.Fatal(err)
 	}
 	t.Log(set)
+}
+
+func TestNewCreatePipelineRequestFromYAML(t *testing.T) {
+	yml := tools.MustReadContentFile("test/create.yml")
+
+	obj, err := pipeline.NewCreatePipelineRequestFromYAML(yml)
+	if err != nil {
+		t.Fatal(err)
+	}
+	t.Log(obj)
 }
 
 func TestToYaml(t *testing.T) {
@@ -51,5 +90,5 @@ func TestToYaml(t *testing.T) {
 			},
 		},
 	)
-	t.Log(tools.MustToYaml(in))
+	t.Log(in.ToYAML())
 }

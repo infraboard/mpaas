@@ -2,8 +2,10 @@ package pipeline
 
 import (
 	"fmt"
+	"time"
 
 	"github.com/infraboard/mcenter/common/validate"
+	pb_request "github.com/infraboard/mcube/pb/request"
 )
 
 const (
@@ -29,4 +31,22 @@ func (req *DescribePipelineRequest) Validate() error {
 
 func (req *CreatePipelineRequest) Validate() error {
 	return validate.Validate(req)
+}
+
+func NewPutPipelineRequest(id string) *UpdatePipelineRequest {
+	return &UpdatePipelineRequest{
+		Id:         id,
+		UpdateMode: pb_request.UpdateMode_PUT,
+		UpdateAt:   time.Now().Unix(),
+		Spec:       NewCreatePipelineRequest(),
+	}
+}
+
+func NewPatchPipelineRequest(id string) *UpdatePipelineRequest {
+	return &UpdatePipelineRequest{
+		Id:         id,
+		UpdateMode: pb_request.UpdateMode_PATCH,
+		UpdateAt:   time.Now().Unix(),
+		Spec:       NewCreatePipelineRequest(),
+	}
 }

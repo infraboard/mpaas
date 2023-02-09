@@ -119,7 +119,6 @@ func (s *service) update(ctx context.Context, ins *cluster.Cluster) error {
 		return exception.NewInternalServerError("inserted cluster(%s) document error, %s",
 			ins.Data.Name, err)
 	}
-
 	return nil
 }
 

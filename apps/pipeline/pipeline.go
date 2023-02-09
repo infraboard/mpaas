@@ -4,9 +4,11 @@ import (
 	"fmt"
 	"time"
 
+	"github.com/imdario/mergo"
 	"github.com/infraboard/mcube/http/request"
 	job "github.com/infraboard/mpaas/apps/job"
 	"github.com/rs/xid"
+	"sigs.k8s.io/yaml"
 )
 
 func NewPipelineSet() *PipelineSet {
@@ -39,11 +41,41 @@ func New(req *CreatePipelineRequest) (*Pipeline, error) {
 	return d, nil
 }
 
+func (i *Pipeline) Update(req *UpdatePipelineRequest) {
+	i.UpdateAt = time.Now().UnixMicro()
+	i.UpdateBy = req.UpdateBy
+	i.Spec = req.Spec
+}
+
+func (i *Pipeline) Patch(req *UpdatePipelineRequest) error {
+	i.UpdateAt = time.Now().UnixMicro()
+	i.UpdateBy = req.UpdateBy
+	return mergo.MergeWithOverwrite(i.Spec, req.Spec)
+}
+
+func NewCreatePipelineRequestFromYAML(yml string) (*CreatePipelineRequest, error) {
+	req := NewCreatePipelineRequest()
+
+	err := yaml.Unmarshal([]byte(yml), req)
+	if err != nil {
+		return nil, err
+	}
+	return req, nil
+}
+
 func NewCreatePipelineRequest() *CreatePipelineRequest {
 	return &CreatePipelineRequest{
 		Stages: []*Stage{},
 		Labels: map[string]string{},
 	}
+}
+
+func (req *CreatePipelineRequest) ToYAML() string {
+	yml, err := yaml.Marshal(req)
+	if err != nil {
+		panic(err)
+	}
+	return string(yml)
 }
 
 func (req *CreatePipelineRequest) AddStage(stages ...*Stage) {

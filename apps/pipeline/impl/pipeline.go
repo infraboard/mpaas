@@ -4,6 +4,7 @@ import (
 	"context"
 
 	"github.com/infraboard/mcube/exception"
+	"github.com/infraboard/mcube/pb/request"
 	"github.com/infraboard/mpaas/apps/pipeline"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
@@ -74,7 +75,32 @@ func (i *impl) CreatePipeline(ctx context.Context, in *pipeline.CreatePipelineRe
 // 更新Pipeline
 func (i *impl) UpdatePipeline(ctx context.Context, in *pipeline.UpdatePipelineRequest) (
 	*pipeline.Pipeline, error) {
-	return nil, nil
+	ins, err := i.DescribePipeline(ctx, pipeline.NewDescribePipelineRequest(in.Id))
+	if err != nil {
+		return nil, err
+	}
+
+	switch in.UpdateMode {
+	case request.UpdateMode_PUT:
+		ins.Update(in)
+	case request.UpdateMode_PATCH:
+		err := ins.Patch(in)
+		if err != nil {
+			return nil, err
+		}
+	}
+
+	// 校验更新后数据合法性
+	if err := ins.Spec.Validate(); err != nil {
+		return nil, err
+	}
+
+	// 更新数据库
+	if _, err := i.col.UpdateByID(ctx, ins.Id, bson.M{"$set": ins}); err != nil {
+		return nil, exception.NewInternalServerError("inserted cluster(%s) document error, %s",
+			ins.Spec.Name, err)
+	}
+	return ins, nil
 }
 
 // 删除Pipeline

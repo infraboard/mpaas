@@ -5,6 +5,7 @@ option go_package = "github.com/infraboard/mpaas/apps/pipeline";
 
 import "apps/pipeline/pb/pipeline.proto";
 import "github.com/infraboard/mcube/pb/page/page.proto";
+import "github.com/infraboard/mcube/pb/request/request.proto";
 
 // RPC Pipeline管理
 service RPC {
@@ -54,6 +55,18 @@ message UpdatePipelineRequest {
     // pipeline id
 	// @gotags: json:"id"
     string id = 1;
+    // 更新模式
+    // @gotags: json:"update_mode"
+    infraboard.mcube.request.UpdateMode update_mode = 2;
+    // 更新人
+    // @gotags: json:"update_by"
+    string update_by = 3;
+    // 更新时间
+    // @gotags: json:"update_at"
+    int64 update_at = 4;
+    // 定义
+    // @gotags: json:"spec"
+    CreatePipelineRequest spec = 5;
 }
 
 message DeletePipelineRequest {

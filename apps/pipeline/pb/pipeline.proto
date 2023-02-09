@@ -25,9 +25,12 @@ message Pipeline {
 	// 更新时间
 	// @gotags: bson:"update_at" json:"update_at"
 	int64 update_at = 3;
+    // 唯一人
+	// @gotags: bson:"update_by" json:"update_by"
+    string update_by = 4;
 	// 流水线定义
 	// @gotags: bson:"spec" json:"spec"
-	CreatePipelineRequest spec = 4;
+	CreatePipelineRequest spec = 10;
 }
 
 message CreatePipelineRequest {
@@ -41,7 +44,7 @@ message CreatePipelineRequest {
 	// @gotags: bson:"create_by" json:"create_by"
 	string create_by = 3;
     // 名称
-	// @gotags: bson:"name" json:"name"
+	// @gotags: bson:"name" json:"name" validate:"required"
     string name = 4;
 	// 描述
 	// @gotags: bson:"description" json:"description"
@@ -81,7 +84,7 @@ message RunJobRequest {
 	// @gotags: bson:"pipeline_task" json:"pipeline_task"
     string pipeline_task = 3;
 	// job名称: name
-	// @gotags: bson:"job" json:"job"
+	// @gotags: bson:"job" json:"job" validate:"required"
     string job = 4;
 	// job运行时参数
 	// @gotags: bson:"params" json:"params"
