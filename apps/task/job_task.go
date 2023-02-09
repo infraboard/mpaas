@@ -56,7 +56,11 @@ func (t *JobTaskStatus) IsComplete() bool {
 func (t *JobTaskStatus) Update(req *UpdateJobTaskStatusRequest) {
 	t.Stage = req.Stage
 	t.Message = req.Message
-	t.Detail = req.Detail
+
+	// 取消的任务 不需要更新detail详情
+	if !t.Stage.Equal(STAGE_CANCELED) {
+		t.Detail = req.Detail
+	}
 
 	// 结束时标记结束时间
 	if t.IsComplete() {

@@ -50,8 +50,6 @@ func (i *impl) Config() error {
 	if err := runner.Init(); err != nil {
 		return err
 	}
-
-	i.log.Debug("init task impl ok")
 	return nil
 }
 

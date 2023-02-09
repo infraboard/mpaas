@@ -1,0 +1,33 @@
+name: pipeline_example
+description: example
+stages:
+  - name: stage_01
+    with:
+      - desc: ""
+        name: param1
+        value: value1
+    jobs:
+      - job: job01
+        ignore_failed: false
+        params:
+          version: v0.1
+          params:
+            - desc: ""
+              name: param1
+              value: value1
+        webhooks: null
+  - name: stage_02
+    with:
+      - desc: ""
+        name: param1
+        value: value1
+    jobs:
+      - job: job01
+        ignore_failed: false
+        params:
+          version: v0.1
+          params:
+            - desc: ""
+              name: param1
+              value: value1
+        webhooks: null

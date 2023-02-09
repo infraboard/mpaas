@@ -113,7 +113,6 @@ func (i *impl) UpdateDeployConfig(ctx context.Context, in *deploy.UpdateDeployCo
 
 func (i *impl) DeleteDeployConfig(ctx context.Context, in *deploy.DeleteDeployConfigRequest) (
 	*deploy.DeployConfig, error) {
-
 	req := deploy.NewDescribeDeployConfigRequest(in.Id)
 	d, err := i.DescribeDeployConfig(ctx, req)
 	if err != nil {
@@ -124,6 +123,5 @@ func (i *impl) DeleteDeployConfig(ctx context.Context, in *deploy.DeleteDeployCo
 	if err != nil {
 		return nil, exception.NewInternalServerError("delete deploy(%s) error, %s", in.Id, err)
 	}
-
 	return d, nil
 }
