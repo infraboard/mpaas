@@ -2,6 +2,7 @@ package impl
 
 import (
 	"context"
+	"fmt"
 	"time"
 
 	"github.com/infraboard/mcube/exception"
@@ -54,6 +55,11 @@ func (i *impl) PipelineTaskStatusChanged(ctx context.Context, in *task.JobTask) 
 	}
 
 	// 更新Pipeline中, 该任务的状态
+	t := p.GetJobTask(in.Id)
+	if t == nil {
+		return nil, fmt.Errorf("pipeline task %s not found job task %s", p.Id, in.Id)
+	}
+	t.Status = in.Status
 
 	// 任务执行失败, 更新Pipeline状态为失败
 	if !in.Spec.IgnoreFailed && in.Status.Stage.Equal(task.STAGE_FAILED) {

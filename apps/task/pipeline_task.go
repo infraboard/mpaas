@@ -46,6 +46,10 @@ func (p *PipelineTask) NextRun() *JobTaskSet {
 	return nil
 }
 
+func (p *PipelineTask) GetJobTask(id string) *JobTask {
+	return p.Status.GetJobTask(id)
+}
+
 // 返回下个需要执行的JobTask
 func (p *PipelineTask) MarkSuccess() {
 	p.Status.Stage = STAGE_SUCCEEDED
@@ -68,6 +72,18 @@ func (s *PipelineTaskStatus) AddStage(item *StageStatus) {
 	s.StageStatus = append(s.StageStatus, item)
 }
 
+func (s *PipelineTaskStatus) GetJobTask(id string) *JobTask {
+	for i := range s.StageStatus {
+		stage := s.StageStatus[i]
+		jobTask := stage.GetJobTask(id)
+		if jobTask != nil {
+			return jobTask
+		}
+	}
+
+	return nil
+}
+
 func NewStageStatus(s *pipeline.Stage) *StageStatus {
 	status := &StageStatus{
 		Spec:     s,
@@ -85,6 +101,17 @@ func NewStageStatus(s *pipeline.Stage) *StageStatus {
 
 func (s *StageStatus) Add(item *JobTask) {
 	s.JobTasks = append(s.JobTasks, item)
+}
+
+// 根据Job Task id获取当前stage中的Job Task
+func (s *StageStatus) GetJobTask(id string) *JobTask {
+	for i := range s.JobTasks {
+		item := s.JobTasks[i]
+		if item.Id == id {
+			return item
+		}
+	}
+	return nil
 }
 
 func (s *StageStatus) NextRun() []*JobTask {

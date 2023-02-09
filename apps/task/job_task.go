@@ -25,8 +25,12 @@ func NewDefaultJobTask() *JobTask {
 }
 
 func NewJobTask(req *pipeline.RunJobRequest) *JobTask {
+	if req.Id == "" {
+		req.Id = xid.New().String()
+	}
+
 	return &JobTask{
-		Id:       xid.New().String(),
+		Id:       req.Id,
 		CreateAt: time.Now().Unix(),
 		Spec:     req,
 		Job:      nil,

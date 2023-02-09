@@ -98,6 +98,9 @@ message RunJobRequest {
 	// WebHook配置, 及时把job执行状态推送给外部, 比如各种机器人
 	// @gotags: bson:"webhooks" json:"webhooks"
 	repeated WebHook webhooks = 7;
+    // 唯一ID, 如果不传，则由系统自动生成
+	// @gotags: bson:"-" json:"id,omitempty"
+    string id = 8;
     // 任务标签
     // @gotags: bson:"labels" json:"labels"
     map<string,string> labels = 15;

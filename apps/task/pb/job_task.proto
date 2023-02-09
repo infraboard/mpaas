@@ -22,18 +22,15 @@ message JobTask {
     // 创建时间
     // @gotags: bson:"create_at" json:"create_at"
     int64 create_at = 2;
-    // 更新时间
-    // @gotags: bson:"update_at" json:"update_at"
-    int64 update_at = 3;
 	// task定义, job运行时参数
 	// @gotags: bson:"spec" json:"spec"
-	pipeline.RunJobRequest spec = 4;
+	pipeline.RunJobRequest spec = 3;
 	// 关联Job
 	// @gotags: bson:"job" json:"job"
-	job.Job job = 5;
+	job.Job job = 4;
 	// 任务当前状态
 	// @gotags: bson:"status" json:"status"
-	JobTaskStatus status = 6;
+	JobTaskStatus status = 15;
 }
 
 enum STAGE {
