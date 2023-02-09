@@ -2,9 +2,12 @@ package impl
 
 import (
 	"context"
+	"time"
 
 	"github.com/infraboard/mcube/exception"
 	"github.com/infraboard/mpaas/apps/task"
+	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/mongo"
 )
 
 // 执行Pipeline
@@ -52,7 +55,11 @@ func (i *impl) PipelineTaskStatusChanged(ctx context.Context, in *task.JobTask) 
 
 	// 任务执行失败, 更新Pipeline状态为失败
 	if !in.Spec.IgnoreFailed && in.Status.Stage.Equal(task.STAGE_FAILED) {
-		return nil, nil
+		p.MarkFailed()
+		if err := i.updatePipelineStatus(ctx, p); err != nil {
+			return nil, err
+		}
+		return p, nil
 	}
 
 	// 获取下个需要执行的任务
@@ -60,7 +67,11 @@ func (i *impl) PipelineTaskStatusChanged(ctx context.Context, in *task.JobTask) 
 
 	// 没有需要执行的任务, Pipeline执行结束, 更新Pipeline状态为成功
 	if next == nil {
-
+		p.MarkSuccess()
+		if err := i.updatePipelineStatus(ctx, p); err != nil {
+			return nil, err
+		}
+		return p, nil
 	}
 
 	// 执行JobTask
@@ -72,18 +83,63 @@ func (i *impl) PipelineTaskStatusChanged(ctx context.Context, in *task.JobTask) 
 	next.Job = t.Job
 
 	// 更新Pipeline, Job Task状态变化
-
+	if err := i.updatePipelineStatus(ctx, p); err != nil {
+		return nil, err
+	}
 	return p, nil
+}
+
+// 更新Pipeline状态
+func (i *impl) updatePipelineStatus(ctx context.Context, in *task.PipelineTask) error {
+	in.Status.UpdateAt = time.Now().Unix()
+	if _, err := i.pcol.UpdateByID(ctx, in.Id, bson.M{"$set": bson.M{"status": in.Status}}); err != nil {
+		return exception.NewInternalServerError("update task(%s) document error, %s",
+			in.Id, err)
+	}
+	return nil
 }
 
 // 查询Pipeline任务
 func (i *impl) QueryPipelineTask(ctx context.Context, in *task.QueryPipelineTaskRequest) (
 	*task.PipelineTaskSet, error) {
-	return nil, nil
+	r := newQueryPipelineTaskRequest(in)
+	resp, err := i.pcol.Find(ctx, r.FindFilter(), r.FindOptions())
+
+	if err != nil {
+		return nil, exception.NewInternalServerError("find pipeline task error, error is %s", err)
+	}
+
+	set := task.NewPipelineTaskSet()
+	// 循环
+	for resp.Next(ctx) {
+		ins := task.NewDefaultPipelineTask()
+		if err := resp.Decode(ins); err != nil {
+			return nil, exception.NewInternalServerError("decode pipeline task  error, error is %s", err)
+		}
+		set.Add(ins)
+	}
+
+	// count
+	count, err := i.pcol.CountDocuments(ctx, r.FindFilter())
+	if err != nil {
+		return nil, exception.NewInternalServerError("get pipeline task count error, error is %s", err)
+	}
+	set.Total = count
+	return set, nil
 }
 
 // 查询Pipeline任务详情
 func (i *impl) DescribePipelineTask(ctx context.Context, in *task.DescribePipelineTaskRequest) (
 	*task.PipelineTask, error) {
-	return nil, nil
+	filter := bson.M{"_id": in.Id}
+
+	ins := task.NewDefaultPipelineTask()
+	if err := i.pcol.FindOne(ctx, filter).Decode(ins); err != nil {
+		if err == mongo.ErrNoDocuments {
+			return nil, exception.NewNotFound("pipeline task %s not found", in.Id)
+		}
+
+		return nil, exception.NewInternalServerError("find pipeline task %s error, %s", in.Id, err)
+	}
+	return ins, nil
 }

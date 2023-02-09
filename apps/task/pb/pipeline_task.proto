@@ -22,15 +22,12 @@ message PipelineTask {
     // 创建时间
     // @gotags: bson:"create_at" json:"create_at"
     int64 create_at = 2;
-    // 更新时间
-    // @gotags: bson:"update_at" json:"update_at"
-    int64 update_at = 3;
 	// 关联Job
 	// @gotags: bson:"pipeline" json:"pipeline"
-	pipeline.Pipeline pipeline = 4;
+	pipeline.Pipeline pipeline = 3;
 	// 任务当前状态
 	// @gotags: bson:"status" json:"status"
-	PipelineTaskStatus status = 5;
+	PipelineTaskStatus status = 4;
 }
 
 message PipelineTaskStatus {
@@ -40,15 +37,18 @@ message PipelineTaskStatus {
 	// 任务开始时间
 	// @gotags: bson:"start_at" json:"start_at"
     int64 start_at = 2;
+    // 任务更新时间, 当pipeline job task运行结束时更新
+    // @gotags: bson:"update_at" json:"update_at"
+    int64 update_at = 3;
 	// 任务结束时间
 	// @gotags: bson:"end_at" json:"end_at"
-    int64 end_at = 3;
+    int64 end_at = 4;
 	// 状态描述
 	// @gotags: bson:"message" json:"message"
-	string message = 4;
+	string message = 5;
 	// 任务状态详细描述, 用于Debug
 	// @gotags: bson:"stage_status" json:"stage_status"
-	repeated StageStatus stage_status = 5;
+	repeated StageStatus stage_status = 6;
 }
 
 message StageStatus {

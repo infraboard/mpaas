@@ -7,6 +7,16 @@ import (
 	"github.com/rs/xid"
 )
 
+func NewPipelineTaskSet() *PipelineTaskSet {
+	return &PipelineTaskSet{
+		Items: []*PipelineTask{},
+	}
+}
+
+func (s *PipelineTaskSet) Add(item *PipelineTask) {
+	s.Items = append(s.Items, item)
+}
+
 func NewPipelineTask(p *pipeline.Pipeline) *PipelineTask {
 	t := NewDefaultPipelineTask()
 	t.Pipeline = p
@@ -34,6 +44,18 @@ func (p *PipelineTask) GetFirstJobTask() *JobTask {
 // 返回下个需要执行的JobTask
 func (p *PipelineTask) NextRun() *JobTask {
 	return nil
+}
+
+// 返回下个需要执行的JobTask
+func (p *PipelineTask) MarkSuccess() {
+	p.Status.Stage = STAGE_SUCCEEDED
+	p.Status.EndAt = time.Now().Unix()
+}
+
+// 返回下个需要执行的JobTask
+func (p *PipelineTask) MarkFailed() {
+	p.Status.Stage = STAGE_FAILED
+	p.Status.EndAt = time.Now().Unix()
 }
 
 func NewPipelineTaskStatus() *PipelineTaskStatus {

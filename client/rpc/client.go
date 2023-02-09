@@ -6,6 +6,7 @@ import (
 
 	"github.com/infraboard/mcenter/client/rpc"
 	"github.com/infraboard/mcenter/client/rpc/resolver"
+	"github.com/infraboard/mpaas/apps/task"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
 
@@ -44,4 +45,9 @@ type ClientSet struct {
 	conf *rpc.Config
 	conn *grpc.ClientConn
 	log  logger.Logger
+}
+
+// Job Task 管理接口
+func (s *ClientSet) JobTask() task.JobRPCClient {
+	return task.NewJobRPCClient(s.conn)
 }
