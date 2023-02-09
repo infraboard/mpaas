@@ -88,7 +88,6 @@ func (s *StageStatus) Add(item *JobTask) {
 }
 
 func (s *StageStatus) NextRun() *JobTaskSet {
-
 	return nil
 }
 
