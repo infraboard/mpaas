@@ -53,8 +53,8 @@ message PipelineTaskStatus {
 
 message StageStatus {
     // stage名称
-	// @gotags: bson:"name" json:"name" validate:"required"
-    string name = 1;
+	// @gotags: bson:"spec" json:"spec"
+    pipeline.Stage spec = 1;
 	// stage当前状态, 通过动态计算task状态的获得
 	// @gotags: bson:"stage" json:"stage"
     STAGE stage = 2;

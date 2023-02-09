@@ -1,0 +1,33 @@
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  creationTimestamp: null
+  name: manager-role
+rules:
+- apiGroups:
+  - traefik.devcloud.com
+  resources:
+  - NodeServices
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - traefik.devcloud.com
+  resources:
+  - NodeServices/finalizers
+  verbs:
+  - update
+- apiGroups:
+  - traefik.devcloud.com
+  resources:
+  - NodeServices/status
+  verbs:
+  - get
+  - patch
+  - update

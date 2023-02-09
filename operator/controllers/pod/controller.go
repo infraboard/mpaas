@@ -33,9 +33,9 @@ type PodReconciler struct {
 	Scheme *runtime.Scheme
 }
 
-//+kubebuilder:rbac:groups=traefik.magedu.com,resources=NodeServices,verbs=get;list;watch;create;update;patch;delete
-//+kubebuilder:rbac:groups=traefik.magedu.com,resources=NodeServices/status,verbs=get;update;patch
-//+kubebuilder:rbac:groups=traefik.magedu.com,resources=NodeServices/finalizers,verbs=update
+//+kubebuilder:rbac:groups=traefik.devcloud.com,resources=NodeServices,verbs=get;list;watch;create;update;patch;delete
+//+kubebuilder:rbac:groups=traefik.devcloud.com,resources=NodeServices/status,verbs=get;update;patch
+//+kubebuilder:rbac:groups=traefik.devcloud.com,resources=NodeServices/finalizers,verbs=update
 
 // Reconcile is part of the main kubernetes reconciliation loop which aims to
 // move the current state of the cluster closer to the desired state.
@@ -45,7 +45,7 @@ type PodReconciler struct {
 // the user.
 //
 // For more details, check Reconcile and its Result here:
-// - https://pkg.go.dev/sigs.k8s.io/controller-runtime@v0.11.0/pkg/reconcile
+// - https://pkg.go.dev/sigs.k8s.io/controller-runtime@v0.14.1/pkg/reconcile
 func (r *PodReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.Result, error) {
 	// 获取日志对象
 	l := log.FromContext(ctx)

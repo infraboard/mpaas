@@ -53,6 +53,8 @@ func (i *impl) PipelineTaskStatusChanged(ctx context.Context, in *task.JobTask) 
 		return nil, err
 	}
 
+	// 更新Pipeline中, 该任务的状态
+
 	// 任务执行失败, 更新Pipeline状态为失败
 	if !in.Spec.IgnoreFailed && in.Status.Stage.Equal(task.STAGE_FAILED) {
 		p.MarkFailed()

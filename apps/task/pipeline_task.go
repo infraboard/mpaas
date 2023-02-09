@@ -70,7 +70,7 @@ func (s *PipelineTaskStatus) AddStage(item *StageStatus) {
 
 func NewStageStatus(s *pipeline.Stage) *StageStatus {
 	status := &StageStatus{
-		Name:     s.Name,
+		Spec:     s,
 		JobTasks: []*JobTask{},
 	}
 
@@ -87,7 +87,12 @@ func (s *StageStatus) Add(item *JobTask) {
 	s.JobTasks = append(s.JobTasks, item)
 }
 
-func (s *StageStatus) NextRun() *JobTaskSet {
+func (s *StageStatus) NextRun() []*JobTask {
+	// 并行任务 返回该Stage所有等待执行的job
+	if s.Spec.IsParallel {
+		return s.JobTasks
+	}
+
 	return nil
 }
 
