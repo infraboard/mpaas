@@ -34,7 +34,7 @@ func (i *impl) RunPipeline(ctx context.Context, in *task.RunPipelineRequest) (
 // 如果执行成功则 继续执行, 如果失败则标记Pipeline结束
 // 当所有任务成功结束时标记Pipeline执行成功
 func (i *impl) PipelineTaskStatusChanged(ctx context.Context, in *task.JobTask) (
-	*task.PipelineTaskSet, error) {
+	*task.PipelineTask, error) {
 	if in == nil && in.Status == nil {
 		return nil, exception.NewBadRequest("job task or job task status is nil")
 	}
@@ -58,14 +58,22 @@ func (i *impl) PipelineTaskStatusChanged(ctx context.Context, in *task.JobTask) 
 	// 获取下个需要执行的任务
 	next := p.NextRun()
 
-	// 没有需要执行的任务Pipeline执行结束, 更新Pipeline状态为成功
+	// 没有需要执行的任务, Pipeline执行结束, 更新Pipeline状态为成功
 	if next == nil {
 
 	}
 
-	i.log.Debug(p)
+	// 执行JobTask
+	t, err := i.RunJob(ctx, next.Spec)
+	if err != nil {
+		return nil, err
+	}
+	next.Status = t.Status
+	next.Job = t.Job
 
-	return nil, nil
+	// 更新Pipeline, Job Task状态变化
+
+	return p, nil
 }
 
 // 查询Pipeline任务
