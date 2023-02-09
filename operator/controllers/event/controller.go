@@ -53,7 +53,7 @@ func (r *EventReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl
 	// TODO(user): your logic here
 
 	// 1.通过名称获取Pod对象, 并打印
-	var obj v1.Pod
+	var obj v1.Event
 	if err := r.Get(ctx, req.NamespacedName, &obj); err != nil {
 		// 如果Pod对象不存在就删除该Pod
 		if apierrors.IsNotFound(err) {

@@ -20,7 +20,6 @@ import (
 	"context"
 
 	batchv1 "k8s.io/api/batch/v1"
-	v1 "k8s.io/api/core/v1"
 	apierrors "k8s.io/apimachinery/pkg/api/errors"
 	"k8s.io/apimachinery/pkg/runtime"
 	ctrl "sigs.k8s.io/controller-runtime"
@@ -54,7 +53,7 @@ func (r *CronJobReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ct
 	// TODO(user): your logic here
 
 	// 1.通过名称获取Pod对象, 并打印
-	var obj v1.Pod
+	var obj batchv1.CronJob
 	if err := r.Get(ctx, req.NamespacedName, &obj); err != nil {
 		// 如果Pod对象不存在就删除该Pod
 		if apierrors.IsNotFound(err) {

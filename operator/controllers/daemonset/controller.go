@@ -20,7 +20,6 @@ import (
 	"context"
 
 	appsv1 "k8s.io/api/apps/v1"
-	v1 "k8s.io/api/core/v1"
 	apierrors "k8s.io/apimachinery/pkg/api/errors"
 	"k8s.io/apimachinery/pkg/runtime"
 	ctrl "sigs.k8s.io/controller-runtime"
@@ -54,7 +53,7 @@ func (r *DaemonSetReconciler) Reconcile(ctx context.Context, req ctrl.Request) (
 	// TODO(user): your logic here
 
 	// 1.通过名称获取Pod对象, 并打印
-	var obj v1.Pod
+	var obj appsv1.DaemonSet
 	if err := r.Get(ctx, req.NamespacedName, &obj); err != nil {
 		// 如果Pod对象不存在就删除该Pod
 		if apierrors.IsNotFound(err) {
