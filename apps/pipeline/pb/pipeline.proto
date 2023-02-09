@@ -65,12 +65,15 @@ message Stage {
     // 名称
 	// @gotags: bson:"name" json:"name" validate:"required"
     string name = 1;
+	// 是否并行, 如果并行执行 该Task里面的任务会同时执行, 否则串行
+	// @gotags: bson:"is_parallel" json:"is_parallel"
+	bool is_parallel = 2;
 	// 运行时 全局参数, 会传递给该stage的每个Task
 	// @gotags: bson:"with" json:"with"
-	repeated job.RunParam with = 2;
+	repeated job.RunParam with = 10;
 	// 需要执行的job
 	// @gotags: bson:"jobs" json:"jobs"
-	repeated RunJobRequest jobs = 3;
+	repeated RunJobRequest jobs = 11;
 }
 
 message RunJobRequest {

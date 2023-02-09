@@ -63,10 +63,10 @@ func (i *impl) PipelineTaskStatusChanged(ctx context.Context, in *task.JobTask) 
 	}
 
 	// 获取下个需要执行的任务
-	next := p.NextRun()
+	nexts := p.NextRun()
 
 	// 没有需要执行的任务, Pipeline执行结束, 更新Pipeline状态为成功
-	if next == nil {
+	if nexts == nil {
 		p.MarkSuccess()
 		if err := i.updatePipelineStatus(ctx, p); err != nil {
 			return nil, err
@@ -75,12 +75,15 @@ func (i *impl) PipelineTaskStatusChanged(ctx context.Context, in *task.JobTask) 
 	}
 
 	// 执行JobTask
-	t, err := i.RunJob(ctx, next.Spec)
-	if err != nil {
-		return nil, err
+	for index := range nexts.Items {
+		item := nexts.Items[index]
+		t, err := i.RunJob(ctx, item.Spec)
+		if err != nil {
+			return nil, err
+		}
+		item.Status = t.Status
+		item.Job = t.Job
 	}
-	next.Status = t.Status
-	next.Job = t.Job
 
 	// 更新Pipeline, Job Task状态变化
 	if err := i.updatePipelineStatus(ctx, p); err != nil {
