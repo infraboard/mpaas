@@ -20,6 +20,8 @@ func (s *PipelineTaskSet) Add(item *PipelineTask) {
 func NewPipelineTask(p *pipeline.Pipeline) *PipelineTask {
 	t := NewDefaultPipelineTask()
 	t.Pipeline = p
+
+	// 初始化所有的JobTask
 	return t
 }
 

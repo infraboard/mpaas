@@ -1,0 +1,55 @@
+create_at: 1675927044
+id: cfi9s16a0brmn92t1i7g
+spec:
+  create_by: ""
+  description: example
+  domain: ""
+  is_template: false
+  labels: {}
+  name: pipeline_example
+  namespace: ""
+  stages:
+    - is_parallel: false
+      jobs:
+        - domain: ""
+          ignore_failed: false
+          job: job01
+          labels: null
+          namespace: ""
+          params:
+            description: ""
+            params:
+              - desc: ""
+                name: param1
+                value: value1
+            version: v0.1
+          pipeline_task: ""
+          webhooks: null
+      name: stage_01
+      with:
+        - desc: ""
+          name: param1
+          value: value1
+    - is_parallel: false
+      jobs:
+        - domain: ""
+          ignore_failed: false
+          job: job01
+          labels: null
+          namespace: ""
+          params:
+            description: ""
+            params:
+              - desc: ""
+                name: param1
+                value: value1
+            version: v0.1
+          pipeline_task: ""
+          webhooks: null
+      name: stage_02
+      with:
+        - desc: ""
+          name: param1
+          value: value1
+update_at: 0
+update_by: ""

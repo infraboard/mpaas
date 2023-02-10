@@ -34,7 +34,7 @@ func TestDescribePipeline(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	t.Log(ins)
+	t.Log(tools.MustToYaml(ins))
 }
 
 func TestQueryPipeline(t *testing.T) {
