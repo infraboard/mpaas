@@ -14,3 +14,21 @@ func TestRunPipeline(t *testing.T) {
 	}
 	t.Log(ins)
 }
+
+func TestQueryPipelineTask(t *testing.T) {
+	req := task.NewQueryPipelineTaskRequest()
+	ins, err := impl.QueryPipelineTask(ctx, req)
+	if err != nil {
+		t.Fatal(err)
+	}
+	t.Log(ins)
+}
+
+func TestDescribePipelineTask(t *testing.T) {
+	req := task.NewDescribePipelineTaskRequest("")
+	ins, err := impl.DescribePipelineTask(ctx, req)
+	if err != nil {
+		t.Fatal(err)
+	}
+	t.Log(ins)
+}

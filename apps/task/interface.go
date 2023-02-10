@@ -67,3 +67,9 @@ func NewUpdateJobTaskStatusRequest(id string) *UpdateJobTaskStatusRequest {
 		Id: id,
 	}
 }
+
+func NewQueryPipelineTaskRequest() *QueryPipelineTaskRequest {
+	return &QueryPipelineTaskRequest{
+		Page: request.NewDefaultPageRequest(),
+	}
+}

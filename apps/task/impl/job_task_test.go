@@ -57,7 +57,7 @@ func TestUpdateJobTaskStatus(t *testing.T) {
 }
 
 func TestDeleteJobTask(t *testing.T) {
-	req := task.NewDeleteJobTaskRequest("cfhfufua0brh83njg8ag")
+	req := task.NewDeleteJobTaskRequest("cfirkjua0brtti6r1brg")
 	set, err := impl.DeleteJobTask(ctx, req)
 	if err != nil {
 		t.Fatal(err)

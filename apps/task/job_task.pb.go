@@ -150,7 +150,7 @@ type JobTask struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	// 部署Id
+	// 任务Id
 	// @gotags: bson:"_id" json:"id"
 	Id string `protobuf:"bytes,1,opt,name=id,proto3" json:"id" bson:"_id"`
 	// 创建时间

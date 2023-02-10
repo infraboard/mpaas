@@ -16,7 +16,7 @@ message JobTaskSet {
 }
 
 message JobTask {
-    // 部署Id
+    // 任务Id
     // @gotags: bson:"_id" json:"id"
     string id = 1;
     // 创建时间
