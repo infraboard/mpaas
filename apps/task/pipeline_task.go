@@ -22,6 +22,11 @@ func NewPipelineTask(p *pipeline.Pipeline) *PipelineTask {
 	t.Pipeline = p
 
 	// 初始化所有的JobTask
+	for i := range p.Spec.Stages {
+		spec := p.Spec.Stages[i]
+		ss := NewStageStatus(spec)
+		t.Status.AddStage(ss)
+	}
 	return t
 }
 

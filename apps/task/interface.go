@@ -61,3 +61,9 @@ func NewDeleteJobTaskRequest(id string) *DeleteJobTaskRequest {
 		Id: id,
 	}
 }
+
+func NewUpdateJobTaskStatusRequest(id string) *UpdateJobTaskStatusRequest {
+	return &UpdateJobTaskStatusRequest{
+		Id: id,
+	}
+}

@@ -19,6 +19,10 @@ func (s *JobTaskSet) Add(tasks ...*JobTask) {
 	s.Items = append(s.Items, tasks...)
 }
 
+func (s *JobTaskSet) Len() int {
+	return len(s.Items)
+}
+
 func NewDefaultJobTask() *JobTask {
 	req := pipeline.NewRunJobRequest("")
 	return NewJobTask(req)

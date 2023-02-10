@@ -36,12 +36,24 @@ func TestQueryTask(t *testing.T) {
 }
 
 func TestDescribeJobTask(t *testing.T) {
-	req := task.NewDescribeJobTaskRequest("cfhfufua0brh83njg8ag")
-	set, err := impl.DescribeJobTask(ctx, req)
+	req := task.NewDescribeJobTaskRequest("cfirkjua0brtti6r1brg")
+	ins, err := impl.DescribeJobTask(ctx, req)
 	if err != nil {
 		t.Fatal(err)
 	}
-	t.Log(set)
+	t.Log(tools.MustToYaml(ins))
+}
+
+func TestUpdateJobTaskStatus(t *testing.T) {
+	req := task.NewUpdateJobTaskStatusRequest("cfirkjua0brtti6r1brg")
+	req.Stage = task.STAGE_SUCCEEDED
+	req.Message = "执行成功"
+	req.Detail = tools.MustReadContentFile("test/k8s_job.yml")
+	ins, err := impl.UpdateJobTaskStatus(ctx, req)
+	if err != nil {
+		t.Fatal(err)
+	}
+	t.Log(tools.MustToYaml(ins))
 }
 
 func TestDeleteJobTask(t *testing.T) {

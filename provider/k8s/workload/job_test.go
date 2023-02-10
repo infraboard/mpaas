@@ -22,6 +22,18 @@ func TestListJob(t *testing.T) {
 	}
 }
 
+func TestGetJob(t *testing.T) {
+	req := meta.NewGetRequest("test-job")
+	req.Namespace = "default"
+	ins, err := impl.GetJob(ctx, req)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	// 序列化
+	t.Log(tools.MustToYaml(ins))
+}
+
 func TestCreateJob(t *testing.T) {
 	job := &v1.Job{}
 	tools.MustReadYamlFile("test/job.yml", job)

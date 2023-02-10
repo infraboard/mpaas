@@ -13,4 +13,7 @@ func TestNewPipelineTask(t *testing.T) {
 	tools.MustReadYamlFile("impl/test/pipeline.yml", p)
 	pt := task.NewPipelineTask(p)
 	t.Log(tools.MustToYaml(pt))
+
+	tasks := pt.NextRun()
+	t.Log(tools.MustToYaml(tasks))
 }
