@@ -34,13 +34,15 @@ func (r *K8sRunner) Run(ctx context.Context, in *task.RunTaskRequest) (*task.Job
 	// 给容器注入环境变量
 	workload.InjectPodEnvVars(&obj.Spec.Template.Spec, in.Params.EnvVars())
 
+	status := task.NewJobTaskStatus()
+	status.MarkRunning()
+
 	// 执行Job
 	obj, err = k8sClient.WorkLoad().CreateJob(ctx, obj)
 	if err != nil {
 		return nil, err
 	}
 
-	status := task.NewJobTaskStatus()
 	objYaml, err := yaml.Marshal(obj)
 	if err != nil {
 		return nil, err

@@ -65,6 +65,11 @@ func NewJobTaskStatus() *JobTaskStatus {
 	}
 }
 
+func (t *JobTaskStatus) MarkRunning() {
+	t.StartAt = time.Now().Unix()
+	t.Stage = STAGE_ACTIVE
+}
+
 func (t *JobTaskStatus) IsComplete() bool {
 	return t.Stage > 10
 }
@@ -78,8 +83,8 @@ func (t *JobTaskStatus) Update(req *UpdateJobTaskStatusRequest) {
 		t.Detail = req.Detail
 	}
 
-	// 结束时标记结束时间
-	if t.IsComplete() {
+	// 如果没传递结束时间, 则自动生成结束时间
+	if t.IsComplete() && t.EndAt == 0 {
 		t.EndAt = time.Now().Unix()
 	}
 }

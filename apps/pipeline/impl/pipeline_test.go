@@ -18,25 +18,6 @@ func TestCreatePipeline(t *testing.T) {
 	t.Log(ins)
 }
 
-func TestUpdatePipeline(t *testing.T) {
-	req := pipeline.NewPutPipelineRequest("cfi9s16a0brmn92t1i7g")
-	tools.MustReadYamlFile("test/create.yml", req)
-	ins, err := impl.UpdatePipeline(ctx, req)
-	if err != nil {
-		t.Fatal(err)
-	}
-	t.Log(ins)
-}
-
-func TestDescribePipeline(t *testing.T) {
-	req := pipeline.NewDescribePipelineRequest("cfi9s16a0brmn92t1i7g")
-	ins, err := impl.DescribePipeline(ctx, req)
-	if err != nil {
-		t.Fatal(err)
-	}
-	t.Log(tools.MustToYaml(ins))
-}
-
 func TestQueryPipeline(t *testing.T) {
 	req := pipeline.NewQueryPipelineRequest()
 	set, err := impl.QueryPipeline(ctx, req)
@@ -44,6 +25,25 @@ func TestQueryPipeline(t *testing.T) {
 		t.Fatal(err)
 	}
 	t.Log(set)
+}
+
+func TestDescribePipeline(t *testing.T) {
+	req := pipeline.NewDescribePipelineRequest("cfiucuea0brqa1kj3go0")
+	ins, err := impl.DescribePipeline(ctx, req)
+	if err != nil {
+		t.Fatal(err)
+	}
+	t.Log(tools.MustToYaml(ins))
+}
+
+func TestUpdatePipeline(t *testing.T) {
+	req := pipeline.NewPutPipelineRequest("cfiucuea0brqa1kj3go0")
+	tools.MustReadYamlFile("test/create.yml", req.Spec)
+	ins, err := impl.UpdatePipeline(ctx, req)
+	if err != nil {
+		t.Fatal(err)
+	}
+	t.Log(ins)
 }
 
 func TestNewCreatePipelineRequestFromYAML(t *testing.T) {

@@ -38,6 +38,11 @@ func NewDefaultPipelineTask() *PipelineTask {
 	}
 }
 
+func (p *PipelineTask) MarkRunning() {
+	p.Status.Stage = STAGE_ACTIVE
+	p.Status.StartAt = time.Now().Unix()
+}
+
 func (p *PipelineTask) GetFirstJobTask() *JobTask {
 	for i := range p.Status.StageStatus {
 		s := p.Status.StageStatus[i]

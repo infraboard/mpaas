@@ -39,8 +39,10 @@ type PipelineService interface {
 	PipelineRPCServer
 }
 
-func NewRunPipelineRequest() *RunPipelineRequest {
-	return &RunPipelineRequest{}
+func NewRunPipelineRequest(id string) *RunPipelineRequest {
+	return &RunPipelineRequest{
+		Id: id,
+	}
 }
 
 func NewDescribeJobTaskRequest(id string) *DescribeJobTaskRequest {

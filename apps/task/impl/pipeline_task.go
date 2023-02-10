@@ -6,6 +6,7 @@ import (
 	"time"
 
 	"github.com/infraboard/mcube/exception"
+	"github.com/infraboard/mpaas/apps/pipeline"
 	"github.com/infraboard/mpaas/apps/task"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
@@ -15,7 +16,7 @@ import (
 func (i *impl) RunPipeline(ctx context.Context, in *task.RunPipelineRequest) (
 	*task.PipelineTask, error) {
 	// 1. 查询需要执行的Pipeline
-	p, err := i.pipeline.DescribePipeline(ctx, nil)
+	p, err := i.pipeline.DescribePipeline(ctx, pipeline.NewDescribePipelineRequest(in.Id))
 	if err != nil {
 		return nil, err
 	}
@@ -28,10 +29,13 @@ func (i *impl) RunPipeline(ctx context.Context, in *task.RunPipelineRequest) (
 	}
 
 	// 运行Job
+	ins.MarkRunning()
 	resp, err := i.RunJob(ctx, t.Spec)
 	if err != nil {
 		return nil, err
 	}
+
+	// 更新状态
 	t.Update(resp.Job, resp.Status)
 
 	// 保存状态
