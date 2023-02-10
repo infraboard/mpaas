@@ -15,6 +15,14 @@ service PipelineRPC {
     rpc QueryPipelineTask(QueryPipelineTaskRequest) returns(PipelineTaskSet);
     // 查询Pipeline任务详情
     rpc DescribePipelineTask(DescribePipelineTaskRequest) returns(PipelineTask);
+    // 删除Pipeline任务详情
+    rpc DeletePipelineTask(DeletePipelineTaskRequest) returns(PipelineTask);
+}
+
+message DeletePipelineTaskRequest {
+    // pipeline id
+	// @gotags: json:"id"
+    string id = 1;
 }
 
 message RunPipelineRequest {

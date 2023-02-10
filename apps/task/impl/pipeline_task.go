@@ -165,3 +165,29 @@ func (i *impl) DescribePipelineTask(ctx context.Context, in *task.DescribePipeli
 	}
 	return ins, nil
 }
+
+// 删除Pipeline任务详情
+func (i *impl) DeletePipelineTask(ctx context.Context, in *task.DeletePipelineTaskRequest) (
+	*task.PipelineTask, error) {
+	ins, err := i.DescribePipelineTask(ctx, task.NewDescribePipelineTaskRequest(in.Id))
+	if err != nil {
+		return nil, err
+	}
+	// TODO: 运行中的流水线不运行删除, 先取消 才能删除
+
+	// 删除该Pipeline下所有的Job Task
+	tasks := ins.Status.JobTasks()
+	for index := range tasks.Items {
+		t := tasks.Items[index]
+		_, err := i.DeleteJobTask(ctx, task.NewDeleteJobTaskRequest(t.Id))
+		if err != nil {
+			return nil, err
+		}
+	}
+
+	if err := i.deletecluster(ctx, ins); err != nil {
+		return nil, err
+	}
+
+	return ins, nil
+}

@@ -33,3 +33,12 @@ func TestDescribePipelineTask(t *testing.T) {
 	}
 	t.Log(tools.MustToYaml(ins))
 }
+
+func TestDeletePipelineTask(t *testing.T) {
+	req := task.NewDeletePipelineTaskRequest("cfiuic6a0brro18jh7kg")
+	ins, err := impl.DeletePipelineTask(ctx, req)
+	if err != nil {
+		t.Fatal(err)
+	}
+	t.Log(tools.MustToYaml(ins))
+}

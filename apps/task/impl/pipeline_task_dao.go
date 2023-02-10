@@ -1,6 +1,10 @@
 package impl
 
 import (
+	"context"
+	"fmt"
+
+	"github.com/infraboard/mcube/exception"
 	"github.com/infraboard/mpaas/apps/task"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo/options"
@@ -39,4 +43,21 @@ func (r *queryPipelineTaskRequest) FindFilter() bson.M {
 	}
 
 	return filter
+}
+
+func (i *impl) deletecluster(ctx context.Context, ins *task.PipelineTask) error {
+	if ins == nil || ins.Id == "" {
+		return fmt.Errorf("cluster is nil")
+	}
+
+	result, err := i.pcol.DeleteOne(ctx, bson.M{"_id": ins.Id})
+	if err != nil {
+		return exception.NewInternalServerError("delete pipeline task(%s) error, %s", ins.Id, err)
+	}
+
+	if result.DeletedCount == 0 {
+		return exception.NewNotFound("pipeline task %s not found", ins.Id)
+	}
+
+	return nil
 }

@@ -28,6 +28,8 @@ type PipelineRPCClient interface {
 	QueryPipelineTask(ctx context.Context, in *QueryPipelineTaskRequest, opts ...grpc.CallOption) (*PipelineTaskSet, error)
 	// 查询Pipeline任务详情
 	DescribePipelineTask(ctx context.Context, in *DescribePipelineTaskRequest, opts ...grpc.CallOption) (*PipelineTask, error)
+	// 删除Pipeline任务详情
+	DeletePipelineTask(ctx context.Context, in *DeletePipelineTaskRequest, opts ...grpc.CallOption) (*PipelineTask, error)
 }
 
 type pipelineRPCClient struct {
@@ -65,6 +67,15 @@ func (c *pipelineRPCClient) DescribePipelineTask(ctx context.Context, in *Descri
 	return out, nil
 }
 
+func (c *pipelineRPCClient) DeletePipelineTask(ctx context.Context, in *DeletePipelineTaskRequest, opts ...grpc.CallOption) (*PipelineTask, error) {
+	out := new(PipelineTask)
+	err := c.cc.Invoke(ctx, "/infraboard.mpaas.task.PipelineRPC/DeletePipelineTask", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // PipelineRPCServer is the server API for PipelineRPC service.
 // All implementations must embed UnimplementedPipelineRPCServer
 // for forward compatibility
@@ -75,6 +86,8 @@ type PipelineRPCServer interface {
 	QueryPipelineTask(context.Context, *QueryPipelineTaskRequest) (*PipelineTaskSet, error)
 	// 查询Pipeline任务详情
 	DescribePipelineTask(context.Context, *DescribePipelineTaskRequest) (*PipelineTask, error)
+	// 删除Pipeline任务详情
+	DeletePipelineTask(context.Context, *DeletePipelineTaskRequest) (*PipelineTask, error)
 	mustEmbedUnimplementedPipelineRPCServer()
 }
 
@@ -90,6 +103,9 @@ func (UnimplementedPipelineRPCServer) QueryPipelineTask(context.Context, *QueryP
 }
 func (UnimplementedPipelineRPCServer) DescribePipelineTask(context.Context, *DescribePipelineTaskRequest) (*PipelineTask, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method DescribePipelineTask not implemented")
+}
+func (UnimplementedPipelineRPCServer) DeletePipelineTask(context.Context, *DeletePipelineTaskRequest) (*PipelineTask, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DeletePipelineTask not implemented")
 }
 func (UnimplementedPipelineRPCServer) mustEmbedUnimplementedPipelineRPCServer() {}
 
@@ -158,6 +174,24 @@ func _PipelineRPC_DescribePipelineTask_Handler(srv interface{}, ctx context.Cont
 	return interceptor(ctx, in, info, handler)
 }
 
+func _PipelineRPC_DeletePipelineTask_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(DeletePipelineTaskRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(PipelineRPCServer).DeletePipelineTask(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/infraboard.mpaas.task.PipelineRPC/DeletePipelineTask",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(PipelineRPCServer).DeletePipelineTask(ctx, req.(*DeletePipelineTaskRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // PipelineRPC_ServiceDesc is the grpc.ServiceDesc for PipelineRPC service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -176,6 +210,10 @@ var PipelineRPC_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "DescribePipelineTask",
 			Handler:    _PipelineRPC_DescribePipelineTask_Handler,
+		},
+		{
+			MethodName: "DeletePipelineTask",
+			Handler:    _PipelineRPC_DeletePipelineTask_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

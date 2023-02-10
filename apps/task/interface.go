@@ -75,3 +75,9 @@ func NewQueryPipelineTaskRequest() *QueryPipelineTaskRequest {
 		Page: request.NewDefaultPageRequest(),
 	}
 }
+
+func NewDeletePipelineTaskRequest(id string) *DeletePipelineTaskRequest {
+	return &DeletePipelineTaskRequest{
+		Id: id,
+	}
+}

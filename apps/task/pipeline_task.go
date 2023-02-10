@@ -53,6 +53,15 @@ func (p *PipelineTask) GetFirstJobTask() *JobTask {
 	return nil
 }
 
+func (p *PipelineTask) JobTasks() *JobTaskSet {
+	set := NewJobTaskSet()
+	if p.Status != nil {
+		return set
+	}
+
+	return p.Status.JobTasks()
+}
+
 // 返回下个需要执行的JobTask, 允许一次并行执行多个(批量执行)
 func (p *PipelineTask) NextRun() *JobTaskSet {
 	return p.Status.NextRun()
@@ -78,6 +87,15 @@ func NewPipelineTaskStatus() *PipelineTaskStatus {
 	return &PipelineTaskStatus{
 		StageStatus: []*StageStatus{},
 	}
+}
+
+func (p *PipelineTaskStatus) JobTasks() *JobTaskSet {
+	set := NewJobTaskSet()
+	for i := range p.StageStatus {
+		stage := p.StageStatus[i]
+		set.Add(stage.JobTasks...)
+	}
+	return set
 }
 
 func (s *PipelineTaskStatus) NextRun() *JobTaskSet {
