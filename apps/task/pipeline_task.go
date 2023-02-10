@@ -38,9 +38,14 @@ func NewDefaultPipelineTask() *PipelineTask {
 	}
 }
 
-func (p *PipelineTask) MarkRunning() {
+func (p *PipelineTask) MarkedRunning() {
 	p.Status.Stage = STAGE_ACTIVE
 	p.Status.StartAt = time.Now().Unix()
+}
+
+func (p *PipelineTask) MarkedSucceed() {
+	p.Status.Stage = STAGE_SUCCEEDED
+	p.Status.EndAt = time.Now().Unix()
 }
 
 func (p *PipelineTask) GetFirstJobTask() *JobTask {
@@ -55,7 +60,7 @@ func (p *PipelineTask) GetFirstJobTask() *JobTask {
 
 func (p *PipelineTask) JobTasks() *JobTaskSet {
 	set := NewJobTaskSet()
-	if p.Status != nil {
+	if p.Status == nil {
 		return set
 	}
 
@@ -122,15 +127,21 @@ func (p *PipelineTask) GetJobTask(id string) *JobTask {
 	return p.Status.GetJobTask(id)
 }
 
-// 返回下个需要执行的JobTask
-func (p *PipelineTask) MarkSuccess() {
+// Pipeline执行成功
+func (p *PipelineTask) MarkedSuccess() {
 	p.Status.Stage = STAGE_SUCCEEDED
 	p.Status.EndAt = time.Now().Unix()
 }
 
-// 返回下个需要执行的JobTask
-func (p *PipelineTask) MarkFailed() {
+// Pipeline执行失败
+func (p *PipelineTask) MarkedFailed() {
 	p.Status.Stage = STAGE_FAILED
+	p.Status.EndAt = time.Now().Unix()
+}
+
+// Pipeline执行取消
+func (p *PipelineTask) MarkedCanceled() {
+	p.Status.Stage = STAGE_CANCELED
 	p.Status.EndAt = time.Now().Unix()
 }
 

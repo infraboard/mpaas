@@ -1,114 +1,118 @@
-metadata:
-  creationTimestamp: "2023-02-10T09:25:17Z"
-  labels:
-    app: app01
-  managedFields:
-    - apiVersion: batch/v1
-      fieldsType: FieldsV1
-      fieldsV1:
-        f:metadata:
-          f:labels:
-            .: {}
-            f:app: {}
-        f:spec:
-          f:activeDeadlineSeconds: {}
-          f:backoffLimit: {}
-          f:completions: {}
-          f:parallelism: {}
-          f:template:
-            f:metadata:
-              f:labels:
-                .: {}
-                f:app: {}
-            f:spec:
-              f:containers:
-                k:{"name":"counter"}:
+        metadata:
+          annotations:
+            batch.kubernetes.io/job-tracking: ""
+          creationTimestamp: "2023-02-10T12:43:55Z"
+          generation: 1
+          labels:
+            app: app01
+          managedFields:
+          - apiVersion: batch/v1
+            fieldsType: FieldsV1
+            fieldsV1:
+              f:metadata:
+                f:labels:
                   .: {}
-                  f:command: {}
-                  f:env:
-                    .: {}
-                    k:{"name":"DB_PASS"}:
+                  f:app: {}
+              f:spec:
+                f:activeDeadlineSeconds: {}
+                f:backoffLimit: {}
+                f:completionMode: {}
+                f:completions: {}
+                f:parallelism: {}
+                f:suspend: {}
+                f:template:
+                  f:metadata:
+                    f:labels:
                       .: {}
-                      f:name: {}
-                      f:value: {}
-                  f:image: {}
-                  f:imagePullPolicy: {}
-                  f:name: {}
-                  f:resources: {}
-                  f:terminationMessagePath: {}
-                  f:terminationMessagePolicy: {}
-              f:dnsPolicy: {}
-              f:restartPolicy: {}
-              f:schedulerName: {}
-              f:securityContext: {}
-              f:terminationGracePeriodSeconds: {}
-      manager: impl.test
-      operation: Update
-      time: "2023-02-10T09:25:17Z"
-    - apiVersion: batch/v1
-      fieldsType: FieldsV1
-      fieldsV1:
-        f:status:
-          f:completionTime: {}
-          f:conditions:
-            .: {}
-            k:{"type":"Complete"}:
-              .: {}
-              f:lastProbeTime: {}
-              f:lastTransitionTime: {}
-              f:status: {}
-              f:type: {}
-          f:startTime: {}
-          f:succeeded: {}
-      manager: kube-controller-manager
-      operation: Update
-      time: "2023-02-10T09:25:38Z"
-  name: cfj0qv6a0brmpgr7viag
-  namespace: default
-  resourceVersion: "459445561"
-  selfLink: /apis/batch/v1/namespaces/default/jobs/cfj0qv6a0brmpgr7viag
-  uid: 7a1092c2-39a2-4be0-b557-c9e4eb56b209
-spec:
-  activeDeadlineSeconds: 30
-  backoffLimit: 6
-  completions: 1
-  parallelism: 1
-  selector:
-    matchLabels:
-      controller-uid: 7a1092c2-39a2-4be0-b557-c9e4eb56b209
-  template:
-    metadata:
-      creationTimestamp: null
-      labels:
-        app: counter-pod
-        controller-uid: 7a1092c2-39a2-4be0-b557-c9e4eb56b209
-        job-name: cfj0qv6a0brmpgr7viag
-    spec:
-      containers:
-        - command:
-            - bin/sh
-            - -c
-            - for i in 9 8 7 6 5 4 3 2 1; do echo $i;sleep 2;done
-          env:
-            - name: DB_PASS
-              value: test
-          image: busybox:1.30
-          imagePullPolicy: IfNotPresent
-          name: counter
-          resources: {}
-          terminationMessagePath: /dev/termination-log
-          terminationMessagePolicy: File
-      dnsPolicy: ClusterFirst
-      restartPolicy: Never
-      schedulerName: default-scheduler
-      securityContext: {}
-      terminationGracePeriodSeconds: 30
-status:
-  completionTime: "2023-02-10T09:25:38Z"
-  conditions:
-    - lastProbeTime: "2023-02-10T09:25:38Z"
-      lastTransitionTime: "2023-02-10T09:25:38Z"
-      status: "True"
-      type: Complete
-  startTime: "2023-02-10T09:25:18Z"
-  succeeded: 1
+                      f:app: {}
+                  f:spec:
+                    f:containers:
+                      k:{"name":"counter"}:
+                        .: {}
+                        f:command: {}
+                        f:env:
+                          .: {}
+                          k:{"name":"DB_PASS"}:
+                            .: {}
+                            f:name: {}
+                            f:value: {}
+                        f:image: {}
+                        f:imagePullPolicy: {}
+                        f:name: {}
+                        f:resources: {}
+                        f:terminationMessagePath: {}
+                        f:terminationMessagePolicy: {}
+                    f:dnsPolicy: {}
+                    f:restartPolicy: {}
+                    f:schedulerName: {}
+                    f:securityContext: {}
+                    f:terminationGracePeriodSeconds: {}
+            manager: impl.test
+            operation: Update
+            time: "2023-02-10T12:43:55Z"
+          - apiVersion: batch/v1
+            fieldsType: FieldsV1
+            fieldsV1:
+              f:status:
+                f:completionTime: {}
+                f:conditions: {}
+                f:ready: {}
+                f:startTime: {}
+                f:succeeded: {}
+                f:uncountedTerminatedPods: {}
+            manager: kube-controller-manager
+            operation: Update
+            subresource: status
+            time: "2023-02-10T12:44:17Z"
+          name: cfj3o2ts99brj2n5l23g
+          namespace: default
+          resourceVersion: "158120"
+          uid: 56b4613d-3d0a-4a14-982c-8d94ccae8b08
+        spec:
+          activeDeadlineSeconds: 30
+          backoffLimit: 6
+          completionMode: NonIndexed
+          completions: 1
+          parallelism: 1
+          selector:
+            matchLabels:
+              controller-uid: 56b4613d-3d0a-4a14-982c-8d94ccae8b08
+          suspend: false
+          template:
+            metadata:
+              creationTimestamp: null
+              labels:
+                app: counter-pod
+                controller-uid: 56b4613d-3d0a-4a14-982c-8d94ccae8b08
+                job-name: cfj3o2ts99brj2n5l23g
+            spec:
+              containers:
+              - command:
+                - bin/sh
+                - -c
+                - for i in 9 8 7 6 5 4 3 2 1; do echo $i;sleep 2;done
+                env:
+                - name: DB_PASS
+                  value: test
+                image: busybox:1.30
+                imagePullPolicy: IfNotPresent
+                name: counter
+                resources: {}
+                terminationMessagePath: /dev/termination-log
+                terminationMessagePolicy: File
+              dnsPolicy: ClusterFirst
+              restartPolicy: Never
+              schedulerName: default-scheduler
+              securityContext: {}
+              terminationGracePeriodSeconds: 30
+        status:
+          completionTime: "2023-02-10T12:44:17Z"
+          conditions:
+          - lastProbeTime: "2023-02-10T12:44:17Z"
+            lastTransitionTime: "2023-02-10T12:44:17Z"
+            status: "True"
+            type: Complete
+          ready: 0
+          startTime: "2023-02-10T12:43:55Z"
+          succeeded: 1
+          uncountedTerminatedPods: {}

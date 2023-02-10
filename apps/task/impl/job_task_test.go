@@ -45,7 +45,7 @@ func TestDescribeJobTask(t *testing.T) {
 }
 
 func TestUpdateJobTaskStatus(t *testing.T) {
-	req := task.NewUpdateJobTaskStatusRequest("cfj0qv6a0brmpgr7viag")
+	req := task.NewUpdateJobTaskStatusRequest("cfj3o2ts99brj2n5l23g")
 	req.Stage = task.STAGE_SUCCEEDED
 	req.Message = "执行成功"
 	req.Detail = tools.MustReadContentFile("test/k8s_job.yml")

@@ -384,8 +384,8 @@ type RunJobRequest struct {
 	// @gotags: bson:"pipeline_task" json:"pipeline_task"
 	PipelineTask string `protobuf:"bytes,3,opt,name=pipeline_task,json=pipelineTask,proto3" json:"pipeline_task" bson:"pipeline_task"`
 	// task属于那个stage, 可以为空
-	// @gotags: bson:"pipeline_task" json:"stage_name"
-	StageName string `protobuf:"bytes,4,opt,name=stage_name,json=stageName,proto3" json:"stage_name" bson:"pipeline_task"`
+	// @gotags: bson:"stage_name" json:"stage_name"
+	StageName string `protobuf:"bytes,4,opt,name=stage_name,json=stageName,proto3" json:"stage_name" bson:"stage_name"`
 	// job名称: name
 	// @gotags: bson:"job" json:"job" validate:"required"
 	Job string `protobuf:"bytes,5,opt,name=job,proto3" json:"job" bson:"job" validate:"required"`

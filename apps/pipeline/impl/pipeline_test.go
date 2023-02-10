@@ -28,7 +28,7 @@ func TestQueryPipeline(t *testing.T) {
 }
 
 func TestDescribePipeline(t *testing.T) {
-	req := pipeline.NewDescribePipelineRequest("cfiucuea0brqa1kj3go0")
+	req := pipeline.NewDescribePipelineRequest("cfj3n4ts99brfo8rb8i0")
 	ins, err := impl.DescribePipeline(ctx, req)
 	if err != nil {
 		t.Fatal(err)

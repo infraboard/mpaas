@@ -48,6 +48,9 @@ func (i *impl) RunJob(ctx context.Context, in *pipeline.RunJobRequest) (
 }
 
 func (i *impl) JobTaskBatchSave(ctx context.Context, in *task.JobTaskSet) error {
+	if _, err := i.jcol.InsertMany(ctx, in.ToDocs()); err != nil {
+		return exception.NewInternalServerError("inserted job tasks document error, %s", err)
+	}
 	return nil
 }
 
@@ -99,7 +102,7 @@ func (i *impl) UpdateJobTaskStatus(ctx context.Context, in *task.UpdateJobTaskSt
 			in.Id, err)
 	}
 
-	// Pipeline回调
+	// Pipeline Task 状态变更回调
 	if ins.Spec.PipelineTask != "" {
 		i.PipelineTaskStatusChanged(ctx, ins)
 	}

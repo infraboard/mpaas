@@ -23,6 +23,13 @@ func (s *JobTaskSet) Len() int {
 	return len(s.Items)
 }
 
+func (s *JobTaskSet) ToDocs() (docs []any) {
+	for i := range s.Items {
+		docs = append(docs, s.Items[i])
+	}
+	return
+}
+
 func NewDefaultJobTask() *JobTask {
 	req := pipeline.NewRunJobRequest("")
 	return NewJobTask(req)
@@ -65,11 +72,15 @@ func NewJobTaskStatus() *JobTaskStatus {
 	}
 }
 
-func (t *JobTaskStatus) MarkRunning() {
+func (t *JobTaskStatus) MarkedRunning() {
 	t.StartAt = time.Now().Unix()
 	t.Stage = STAGE_ACTIVE
 }
 
+func (t *JobTaskStatus) MarkedSuccess() {
+	t.Stage = STAGE_SUCCEEDED
+	t.EndAt = time.Now().Unix()
+}
 func (t *JobTaskStatus) IsComplete() bool {
 	return t.Stage > 10
 }

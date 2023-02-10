@@ -35,7 +35,7 @@ func (r *K8sRunner) Run(ctx context.Context, in *task.RunTaskRequest) (*task.Job
 	workload.InjectPodEnvVars(&obj.Spec.Template.Spec, in.Params.EnvVars())
 
 	status := task.NewJobTaskStatus()
-	status.MarkRunning()
+	status.MarkedRunning()
 
 	// 执行Job
 	obj, err = k8sClient.WorkLoad().CreateJob(ctx, obj)

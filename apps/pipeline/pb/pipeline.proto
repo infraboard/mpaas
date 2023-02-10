@@ -87,7 +87,7 @@ message RunJobRequest {
 	// @gotags: bson:"pipeline_task" json:"pipeline_task"
     string pipeline_task = 3;
 	// task属于那个stage, 可以为空
-	// @gotags: bson:"pipeline_task" json:"stage_name"
+	// @gotags: bson:"stage_name" json:"stage_name"
     string stage_name = 4;
 	// job名称: name
 	// @gotags: bson:"job" json:"job" validate:"required"
