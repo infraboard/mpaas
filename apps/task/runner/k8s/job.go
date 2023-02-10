@@ -27,6 +27,8 @@ func (r *K8sRunner) Run(ctx context.Context, in *task.RunTaskRequest) (*task.Job
 		return nil, err
 	}
 
+	// 修改任务名称
+	obj.Name = in.Name
 	// Job注入标签
 	workload.InjectJobLabels(obj, in.Labels)
 	// 给容器注入环境变量

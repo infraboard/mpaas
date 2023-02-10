@@ -2,16 +2,20 @@ package impl
 
 import (
 	"context"
+	"fmt"
 
 	"github.com/infraboard/mcube/exception"
+	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/mongo"
+	v1 "k8s.io/api/batch/v1"
+	"sigs.k8s.io/yaml"
+
 	"github.com/infraboard/mpaas/apps/cluster"
 	"github.com/infraboard/mpaas/apps/job"
 	"github.com/infraboard/mpaas/apps/pipeline"
 	"github.com/infraboard/mpaas/apps/task"
 	"github.com/infraboard/mpaas/apps/task/runner"
 	"github.com/infraboard/mpaas/provider/k8s/meta"
-	"go.mongodb.org/mongo-driver/bson"
-	"go.mongodb.org/mongo-driver/mongo"
 )
 
 func (i *impl) RunJob(ctx context.Context, in *pipeline.RunJobRequest) (
@@ -129,7 +133,7 @@ func (i *impl) DeleteJobTask(ctx context.Context, in *task.DeleteJobTaskRequest)
 	case job.RUNNER_TYPE_K8S_JOB:
 		err = i.deleteK8sJob(ctx, ins)
 		if err != nil {
-			i.log.Warnf("delete k8s job error, %s", err)
+			return nil, fmt.Errorf("delete k8s job error, %s", err)
 		}
 	}
 
@@ -154,7 +158,20 @@ func (i *impl) deleteK8sJob(ctx context.Context, ins *task.JobTask) error {
 		return err
 	}
 
-	req := meta.NewDeleteRequest(ins.Id)
-	req.Namespace = ins.Spec.Namespace
+	detail := ins.GetStatusDetail()
+	if detail == "" {
+		return fmt.Errorf("no k8s job found in status detail")
+	}
+
+	fmt.Println(detail)
+	obj := new(v1.Job)
+	if err := yaml.Unmarshal([]byte(detail), obj); err != nil {
+		return err
+	}
+
+	fmt.Println(obj)
+
+	req := meta.NewDeleteRequest(obj.Name)
+	req.Namespace = obj.Namespace
 	return k8sClient.WorkLoad().DeleteJob(ctx, req)
 }

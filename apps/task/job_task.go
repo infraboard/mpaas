@@ -42,6 +42,14 @@ func NewJobTask(req *pipeline.RunJobRequest) *JobTask {
 	}
 }
 
+func (t *JobTask) GetStatusDetail() string {
+	if t.Status != nil {
+		return t.Status.Detail
+	}
+
+	return ""
+}
+
 func (t *JobTask) Update(job *job.Job, status *JobTaskStatus) {
 	t.Job = job
 	t.Status = status

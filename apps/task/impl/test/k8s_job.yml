@@ -1,73 +1,55 @@
 metadata:
-  creationTimestamp: "2023-02-10T03:30:25Z"
+  creationTimestamp: "2023-02-10T05:44:40Z"
   labels:
     app: app01
   managedFields:
-    - apiVersion: batch/v1
-      fieldsType: FieldsV1
-      fieldsV1:
-        f:metadata:
-          f:labels:
-            .: {}
-            f:app: {}
-        f:spec:
-          f:activeDeadlineSeconds: {}
-          f:backoffLimit: {}
-          f:completions: {}
-          f:parallelism: {}
-          f:template:
-            f:metadata:
-              f:labels:
-                .: {}
-                f:app: {}
-            f:spec:
-              f:containers:
-                k:{"name":"counter"}:
-                  .: {}
-                  f:command: {}
-                  f:env:
-                    .: {}
-                    k:{"name":"DB_PASS"}:
-                      .: {}
-                      f:name: {}
-                      f:value: {}
-                  f:image: {}
-                  f:imagePullPolicy: {}
-                  f:name: {}
-                  f:resources: {}
-                  f:terminationMessagePath: {}
-                  f:terminationMessagePolicy: {}
-              f:dnsPolicy: {}
-              f:restartPolicy: {}
-              f:schedulerName: {}
-              f:securityContext: {}
-              f:terminationGracePeriodSeconds: {}
-      manager: impl.test
-      operation: Update
-      time: "2023-02-10T03:30:25Z"
-    - apiVersion: batch/v1
-      fieldsType: FieldsV1
-      fieldsV1:
-        f:status:
-          f:completionTime: {}
-          f:conditions:
-            .: {}
-            k:{"type":"Complete"}:
+  - apiVersion: batch/v1
+    fieldsType: FieldsV1
+    fieldsV1:
+      f:metadata:
+        f:labels:
+          .: {}
+          f:app: {}
+      f:spec:
+        f:activeDeadlineSeconds: {}
+        f:backoffLimit: {}
+        f:completions: {}
+        f:parallelism: {}
+        f:template:
+          f:metadata:
+            f:labels:
               .: {}
-              f:lastProbeTime: {}
-              f:lastTransitionTime: {}
-              f:status: {}
-              f:type: {}
-          f:startTime: {}
-          f:succeeded: {}
-      manager: kube-controller-manager
-      operation: Update
-      time: "2023-02-10T03:30:50Z"
-  name: test-job
+              f:app: {}
+          f:spec:
+            f:containers:
+              k:{"name":"counter"}:
+                .: {}
+                f:command: {}
+                f:env:
+                  .: {}
+                  k:{"name":"DB_PASS"}:
+                    .: {}
+                    f:name: {}
+                    f:value: {}
+                f:image: {}
+                f:imagePullPolicy: {}
+                f:name: {}
+                f:resources: {}
+                f:terminationMessagePath: {}
+                f:terminationMessagePolicy: {}
+            f:dnsPolicy: {}
+            f:restartPolicy: {}
+            f:schedulerName: {}
+            f:securityContext: {}
+            f:terminationGracePeriodSeconds: {}
+    manager: impl.test
+    operation: Update
+    time: "2023-02-10T05:44:40Z"
+  name: cfitji6a0brkep9j5530
   namespace: default
-  resourceVersion: "459209176"
-  selfLink: /apis/batch/v1/namespaces/default/jobs/test-job
-  uid: 998b74f3-9254-49e1-baa5-ff0676648e32
+  resourceVersion: "459298395"
+  selfLink: /apis/batch/v1/namespaces/default/jobs/cfitji6a0brkep9j5530
+  uid: 5ea81fe1-4f80-48aa-b677-a4537600ade2
 spec:
   activeDeadlineSeconds: 30
   backoffLimit: 6
@@ -75,40 +57,31 @@ spec:
   parallelism: 1
   selector:
     matchLabels:
-      controller-uid: 998b74f3-9254-49e1-baa5-ff0676648e32
+      controller-uid: 5ea81fe1-4f80-48aa-b677-a4537600ade2
   template:
     metadata:
       creationTimestamp: null
       labels:
         app: counter-pod
-        controller-uid: 998b74f3-9254-49e1-baa5-ff0676648e32
-        job-name: test-job
+        controller-uid: 5ea81fe1-4f80-48aa-b677-a4537600ade2
+        job-name: cfitji6a0brkep9j5530
     spec:
       containers:
-        - command:
-            - bin/sh
-            - -c
-            - for i in 9 8 7 6 5 4 3 2 1; do echo $i;sleep 2;done
-          env:
-            - name: DB_PASS
-              value: test
-          image: busybox:1.30
-          imagePullPolicy: IfNotPresent
-          name: counter
-          resources: {}
-          terminationMessagePath: /dev/termination-log
-          terminationMessagePolicy: File
+      - command:
+        - bin/sh
+        - -c
+        - for i in 9 8 7 6 5 4 3 2 1; do echo $i;sleep 2;done
+        env:
+        - name: DB_PASS
+          value: test
+        image: busybox:1.30
+        imagePullPolicy: IfNotPresent
+        name: counter
+        resources: {}
+        terminationMessagePath: /dev/termination-log
+        terminationMessagePolicy: File
       dnsPolicy: ClusterFirst
       restartPolicy: Never
       schedulerName: default-scheduler
       securityContext: {}
       terminationGracePeriodSeconds: 30
-status:
-  completionTime: "2023-02-10T03:30:50Z"
-  conditions:
-    - lastProbeTime: "2023-02-10T03:30:50Z"
-      lastTransitionTime: "2023-02-10T03:30:50Z"
-      status: "True"
-      type: Complete
-  startTime: "2023-02-10T03:30:26Z"
-  succeeded: 1
