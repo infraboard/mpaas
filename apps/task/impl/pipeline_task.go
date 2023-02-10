@@ -176,7 +176,14 @@ func (i *impl) DescribePipelineTask(ctx context.Context, in *task.DescribePipeli
 		return nil, err
 	}
 
-	ins.GetStageStatusByName()
+	// 将tasks 填充给pipeline task
+	for i := range tasks.Items {
+		t := tasks.Items[i]
+		stage := ins.GetStage(t.Spec.StageName)
+		if stage != nil {
+			stage.Add(t)
+		}
+	}
 
 	return ins, nil
 }

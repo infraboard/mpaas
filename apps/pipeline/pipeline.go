@@ -41,16 +41,31 @@ func New(req *CreatePipelineRequest) (*Pipeline, error) {
 	return d, nil
 }
 
-func (i *Pipeline) Update(req *UpdatePipelineRequest) {
-	i.UpdateAt = time.Now().UnixMicro()
-	i.UpdateBy = req.UpdateBy
-	i.Spec = req.Spec
+func (p *Pipeline) Update(req *UpdatePipelineRequest) {
+	p.UpdateAt = time.Now().UnixMicro()
+	p.UpdateBy = req.UpdateBy
+	p.Spec = req.Spec
 }
 
-func (i *Pipeline) Patch(req *UpdatePipelineRequest) error {
-	i.UpdateAt = time.Now().UnixMicro()
-	i.UpdateBy = req.UpdateBy
-	return mergo.MergeWithOverwrite(i.Spec, req.Spec)
+func (p *Pipeline) Patch(req *UpdatePipelineRequest) error {
+	p.UpdateAt = time.Now().UnixMicro()
+	p.UpdateBy = req.UpdateBy
+	return mergo.MergeWithOverwrite(p.Spec, req.Spec)
+}
+
+func (p *Pipeline) GetStage(name string) *Stage {
+	if p.Spec == nil {
+		return nil
+	}
+
+	for i := range p.Spec.Stages {
+		stage := p.Spec.Stages[i]
+		if stage.Name == name {
+			return stage
+		}
+	}
+
+	return nil
 }
 
 func NewCreatePipelineRequestFromYAML(yml string) (*CreatePipelineRequest, error) {

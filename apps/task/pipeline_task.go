@@ -62,17 +62,60 @@ func (p *PipelineTask) JobTasks() *JobTaskSet {
 	return p.Status.JobTasks()
 }
 
-func (p *PipelineTask) GetStageStatusByName(name string) *StageStatus {
-	if p.Status != nil {
-		return p.Status.GetStageStatusByName(name)
-	}
-
-	return nil
-}
-
 // 返回下个需要执行的JobTask, 允许一次并行执行多个(批量执行)
 func (p *PipelineTask) NextRun() *JobTaskSet {
-	return p.Status.NextRun()
+	set := NewJobTaskSet()
+
+	if p.Status == nil || p.Pipeline == nil {
+		return set
+	}
+
+	stages := p.Status.StageStatus
+	for i := range stages {
+		s := stages[i]
+		tasks := s.PenddingJobTask()
+
+		// 没有需要执行的task, 寻找下个stage
+		if len(tasks) == 0 {
+			continue
+		}
+
+		stageSpec := p.Pipeline.GetStage(s.Name)
+		if stageSpec.IsParallel {
+			// 并行任务 返回该Stage所有等待执行的job
+			set.Add(tasks...)
+		} else {
+			// 串行任务取第一个
+			set.Add(tasks[0])
+		}
+	}
+	return set
+}
+
+func (p *PipelineTask) GetStage(name string) *StageStatus {
+	if p.Status == nil || p.Pipeline == nil {
+		return nil
+	}
+
+	stages := p.Status.StageStatus
+	// 先查 StageStatus 是否有
+	for i := range stages {
+		stage := stages[i]
+		if stage.Name == name {
+			return stage
+		}
+	}
+
+	// 如果没有动态创建
+	stageSpec := p.Pipeline.GetStage(name)
+	if stageSpec == nil {
+		return nil
+	}
+
+	stage := NewStageStatus(stageSpec, p.Id)
+	p.Status.AddStage(stage)
+
+	return stage
 }
 
 func (p *PipelineTask) GetJobTask(id string) *JobTask {
@@ -97,31 +140,11 @@ func NewPipelineTaskStatus() *PipelineTaskStatus {
 	}
 }
 
-func (p *PipelineTaskStatus) GetStageStatusByName(name string) *StageStatus {
-	for i := range p.StageStatus {
-		stage := p.StageStatus[i]
-		if stage.Spec.Name == name {
-			return stage
-		}
-	}
-
-	return nil
-}
-
 func (p *PipelineTaskStatus) JobTasks() *JobTaskSet {
 	set := NewJobTaskSet()
 	for i := range p.StageStatus {
 		stage := p.StageStatus[i]
 		set.Add(stage.JobTasks...)
-	}
-	return set
-}
-
-func (s *PipelineTaskStatus) NextRun() *JobTaskSet {
-	set := NewJobTaskSet()
-	for i := range s.StageStatus {
-		s := s.StageStatus[i]
-		set.Add(s.NextRun()...)
 	}
 	return set
 }
@@ -144,7 +167,7 @@ func (s *PipelineTaskStatus) GetJobTask(id string) *JobTask {
 
 func NewStageStatus(s *pipeline.Stage, pipelineTaskId string) *StageStatus {
 	status := &StageStatus{
-		Spec:     s,
+		Name:     s.Name,
 		JobTasks: []*JobTask{},
 	}
 
@@ -174,24 +197,7 @@ func (s *StageStatus) GetJobTask(id string) *JobTask {
 	return nil
 }
 
-func (s *StageStatus) NextRun() (jobs []*JobTask) {
-	tasks := s.PenddingJobs()
-	// 并行任务 返回该Stage所有等待执行的job
-	if s.Spec.IsParallel {
-		jobs = append(jobs, tasks...)
-		return
-	}
-
-	// 串行任务取第一个
-	if len(tasks) > 0 {
-		jobs = append(jobs, tasks[0])
-		return
-	}
-
-	return
-}
-
-func (s *StageStatus) PenddingJobs() (jobs []*JobTask) {
+func (s *StageStatus) PenddingJobTask() (jobs []*JobTask) {
 	for i := range s.JobTasks {
 		t := s.JobTasks[i]
 		if t.Status.Stage.Equal(STAGE_PENDDING) {

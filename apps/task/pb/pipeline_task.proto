@@ -53,8 +53,8 @@ message PipelineTaskStatus {
 
 message StageStatus {
     // stage名称
-	// @gotags: bson:"spec" json:"spec"
-    pipeline.Stage spec = 1;
+	// @gotags: bson:"name" json:"name"
+    string name = 1;
 	// 任务状态, pipeline task表不存储, 已存储在 job task表中, 通过关联查询获得
 	// @gotags: bson:"-" json:"job_tasks"
 	repeated JobTask job_tasks = 15;
