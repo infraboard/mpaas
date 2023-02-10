@@ -23,7 +23,7 @@ func TestListJob(t *testing.T) {
 }
 
 func TestGetJob(t *testing.T) {
-	req := meta.NewGetRequest("cfj3o2ts99brj2n5l23g")
+	req := meta.NewGetRequest("cfj566ls99bg2on65320")
 	req.Namespace = "default"
 	ins, err := impl.GetJob(ctx, req)
 	if err != nil {
@@ -45,7 +45,7 @@ func TestCreateJob(t *testing.T) {
 }
 
 func TestDeleteJob(t *testing.T) {
-	req := meta.NewDeleteRequest("test-job")
+	req := meta.NewDeleteRequest("cfj51sls99bvbmscmhcg")
 	err := impl.DeleteJob(ctx, req)
 	if err != nil {
 		t.Fatal(err)

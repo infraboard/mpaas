@@ -57,6 +57,14 @@ func (t *JobTask) GetStatusDetail() string {
 	return ""
 }
 
+func (s *JobTask) HasJobSpec() bool {
+	if s.Job != nil && s.Job.Spec != nil {
+		return true
+	}
+
+	return false
+}
+
 func (t *JobTask) Update(job *job.Job, status *JobTaskStatus) {
 	t.Job = job
 	t.Status = status

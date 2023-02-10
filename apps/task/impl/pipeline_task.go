@@ -92,7 +92,7 @@ func (i *impl) PipelineTaskStatusChanged(ctx context.Context, in *task.JobTask) 
 	nexts := p.NextRun()
 
 	// 如果没有需要执行的任务, Pipeline执行结束, 更新Pipeline状态为成功
-	if nexts == nil {
+	if nexts == nil && nexts.Len() == 0 {
 		p.MarkedSuccess()
 		return i.updatePipelineStatus(ctx, p)
 	}

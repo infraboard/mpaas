@@ -45,7 +45,7 @@ func TestDescribeJobTask(t *testing.T) {
 }
 
 func TestUpdateJobTaskStatus(t *testing.T) {
-	req := task.NewUpdateJobTaskStatusRequest("cfj3o2ts99brj2n5l23g")
+	req := task.NewUpdateJobTaskStatusRequest("cfj566ls99bg2on65320")
 	req.Stage = task.STAGE_SUCCEEDED
 	req.Message = "执行成功"
 	req.Detail = tools.MustReadContentFile("test/k8s_job.yml")
@@ -57,7 +57,7 @@ func TestUpdateJobTaskStatus(t *testing.T) {
 }
 
 func TestDeleteJobTask(t *testing.T) {
-	req := task.NewDeleteJobTaskRequest("cfj04fma0brgss1p9p5g")
+	req := task.NewDeleteJobTaskRequest("cfj51sls99bvbmscmhd0")
 	set, err := impl.DeleteJobTask(ctx, req)
 	if err != nil {
 		t.Fatal(err)

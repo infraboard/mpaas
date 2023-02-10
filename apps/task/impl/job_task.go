@@ -7,6 +7,7 @@ import (
 	"github.com/infraboard/mcube/exception"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
+	"go.mongodb.org/mongo-driver/mongo/options"
 	v1 "k8s.io/api/batch/v1"
 	"sigs.k8s.io/yaml"
 
@@ -41,7 +42,9 @@ func (i *impl) RunJob(ctx context.Context, in *pipeline.RunJobRequest) (
 	ins.Status = status
 
 	// 3. 保存任务
-	if _, err := i.jcol.InsertOne(ctx, ins); err != nil {
+	updateOpt := options.Update()
+	updateOpt.SetUpsert(true)
+	if _, err := i.jcol.UpdateByID(ctx, ins.Id, bson.M{"$set": ins}, updateOpt); err != nil {
 		return nil, exception.NewInternalServerError("inserted a job task document error, %s", err)
 	}
 	return ins, nil
@@ -136,11 +139,13 @@ func (i *impl) DeleteJobTask(ctx context.Context, in *task.DeleteJobTaskRequest)
 	}
 
 	// 任务清理
-	switch ins.Job.Spec.RunnerType {
-	case job.RUNNER_TYPE_K8S_JOB:
-		err = i.deleteK8sJob(ctx, ins)
-		if err != nil {
-			return nil, fmt.Errorf("delete k8s job error, %s", err)
+	if ins.HasJobSpec() {
+		switch ins.Job.Spec.RunnerType {
+		case job.RUNNER_TYPE_K8S_JOB:
+			err = i.deleteK8sJob(ctx, ins)
+			if err != nil {
+				return nil, fmt.Errorf("delete k8s job error, %s", err)
+			}
 		}
 	}
 
