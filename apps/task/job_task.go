@@ -9,14 +9,14 @@ import (
 	"github.com/rs/xid"
 )
 
-func NewTaskSet() *JobTaskSet {
+func NewJobTaskSet() *JobTaskSet {
 	return &JobTaskSet{
 		Items: []*JobTask{},
 	}
 }
 
-func (s *JobTaskSet) Add(task *JobTask) {
-	s.Items = append(s.Items, task)
+func (s *JobTaskSet) Add(tasks ...*JobTask) {
+	s.Items = append(s.Items, tasks...)
 }
 
 func NewDefaultJobTask() *JobTask {

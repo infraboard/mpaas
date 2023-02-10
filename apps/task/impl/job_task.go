@@ -38,7 +38,7 @@ func (i *impl) RunJob(ctx context.Context, in *pipeline.RunJobRequest) (
 
 	// 3. 保存任务
 	if _, err := i.jcol.InsertOne(ctx, ins); err != nil {
-		return nil, exception.NewInternalServerError("inserted a task document error, %s", err)
+		return nil, exception.NewInternalServerError("inserted a job task document error, %s", err)
 	}
 	return ins, nil
 }
@@ -52,7 +52,7 @@ func (i *impl) QueryJobTask(ctx context.Context, in *task.QueryJobTaskRequest) (
 		return nil, exception.NewInternalServerError("find deploy error, error is %s", err)
 	}
 
-	set := task.NewTaskSet()
+	set := task.NewJobTaskSet()
 	// 循环
 	for resp.Next(ctx) {
 		ins := task.NewDefaultJobTask()

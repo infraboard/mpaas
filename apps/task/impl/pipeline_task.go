@@ -22,15 +22,22 @@ func (i *impl) RunPipeline(ctx context.Context, in *task.RunPipelineRequest) (
 	ins := task.NewPipelineTask(p)
 
 	// 从pipeline 取出需要执行的任务
-	jt := ins.GetFirstJobTask()
+	t := ins.GetFirstJobTask()
+	if t == nil {
+		return nil, fmt.Errorf("not job task to run")
+	}
 
 	// 运行Job
-	resp, err := i.RunJob(ctx, jt.Spec)
+	resp, err := i.RunJob(ctx, t.Spec)
 	if err != nil {
 		return nil, err
 	}
-	jt.Update(resp.Job, resp.Status)
+	t.Update(resp.Job, resp.Status)
 
+	// 保存状态
+	if _, err := i.pcol.InsertOne(ctx, ins); err != nil {
+		return nil, exception.NewInternalServerError("inserted a pipeline task document error, %s", err)
+	}
 	return ins, nil
 }
 

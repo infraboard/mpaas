@@ -43,7 +43,7 @@ func (p *PipelineTask) GetFirstJobTask() *JobTask {
 
 // 返回下个需要执行的JobTask, 允许一次并行执行多个(批量执行)
 func (p *PipelineTask) NextRun() *JobTaskSet {
-	return nil
+	return p.Status.NextRun()
 }
 
 func (p *PipelineTask) GetJobTask(id string) *JobTask {
@@ -66,6 +66,15 @@ func NewPipelineTaskStatus() *PipelineTaskStatus {
 	return &PipelineTaskStatus{
 		StageStatus: []*StageStatus{},
 	}
+}
+
+func (s *PipelineTaskStatus) NextRun() *JobTaskSet {
+	set := NewJobTaskSet()
+	for i := range s.StageStatus {
+		s := s.StageStatus[i]
+		set.Add(s.NextRun()...)
+	}
+	return set
 }
 
 func (s *PipelineTaskStatus) AddStage(item *StageStatus) {
@@ -114,13 +123,31 @@ func (s *StageStatus) GetJobTask(id string) *JobTask {
 	return nil
 }
 
-func (s *StageStatus) NextRun() []*JobTask {
+func (s *StageStatus) NextRun() (jobs []*JobTask) {
+	tasks := s.PenddingJobs()
 	// 并行任务 返回该Stage所有等待执行的job
 	if s.Spec.IsParallel {
-		return s.JobTasks
+		jobs = append(jobs, tasks...)
+		return
 	}
 
-	return nil
+	// 串行任务取第一个
+	if len(tasks) > 0 {
+		jobs = append(jobs, tasks[0])
+		return
+	}
+
+	return
+}
+
+func (s *StageStatus) PenddingJobs() (jobs []*JobTask) {
+	for i := range s.JobTasks {
+		t := s.JobTasks[i]
+		if t.Status.Stage.Equal(STAGE_PENDDING) {
+			jobs = append(jobs, t)
+		}
+	}
+	return
 }
 
 func NewDescribePipelineTaskRequest(id string) *DescribePipelineTaskRequest {
