@@ -29,6 +29,9 @@ message QueryJobTaskRequest {
     // 任务Id列表
     // @gotags: json:"ids"
     repeated string ids = 2;
+	// 与该pipeline task关联的任务
+	// @gotags: json:"id"
+    string pipeline_task_id = 3;
 }
 
 message UpdateJobTaskStatusRequest {

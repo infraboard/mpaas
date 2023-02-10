@@ -28,20 +28,24 @@ func (i *impl) RunPipeline(ctx context.Context, in *task.RunPipelineRequest) (
 		return nil, fmt.Errorf("not job task to run")
 	}
 
-	// 运行Job
-	ins.MarkRunning()
-	resp, err := i.RunJob(ctx, t.Spec)
+	// 保存Job Task, 所有JobTask 批量生成, 全部处于Pendding状态, 然后入库 等待状态更新
+	err = i.JobTaskBatchSave(ctx, ins.JobTasks())
 	if err != nil {
 		return nil, err
 	}
 
-	// 更新状态
-	t.Update(resp.Job, resp.Status)
-
-	// 保存状态
+	// 保存Pipeline状态
 	if _, err := i.pcol.InsertOne(ctx, ins); err != nil {
 		return nil, exception.NewInternalServerError("inserted a pipeline task document error, %s", err)
 	}
+
+	// 运行 第一个Job, 驱动Pipeline执行
+	ins.MarkRunning()
+	_, err = i.RunJob(ctx, t.Spec)
+	if err != nil {
+		return nil, err
+	}
+
 	return ins, nil
 }
 
@@ -163,6 +167,17 @@ func (i *impl) DescribePipelineTask(ctx context.Context, in *task.DescribePipeli
 
 		return nil, exception.NewInternalServerError("find pipeline task %s error, %s", in.Id, err)
 	}
+
+	// 补充该PipelineTask管理的JobTask
+	query := task.NewQueryTaskRequest()
+	query.PipelineTaskId = in.Id
+	tasks, err := i.QueryJobTask(ctx, query)
+	if err != nil {
+		return nil, err
+	}
+
+	ins.GetStageStatusByName()
+
 	return ins, nil
 }
 
@@ -179,9 +194,17 @@ func (i *impl) DeletePipelineTask(ctx context.Context, in *task.DeletePipelineTa
 	tasks := ins.Status.JobTasks()
 	for index := range tasks.Items {
 		t := tasks.Items[index]
+
+		// 没有运行过的任务不需要清理
+		if t.Status.Stage.Equal(task.STAGE_PENDDING) {
+			continue
+		}
+
 		_, err := i.DeleteJobTask(ctx, task.NewDeleteJobTaskRequest(t.Id))
 		if err != nil {
-			return nil, err
+			if !exception.IsNotFoundError(err) {
+				return nil, err
+			}
 		}
 	}
 

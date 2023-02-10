@@ -47,6 +47,10 @@ func (i *impl) RunJob(ctx context.Context, in *pipeline.RunJobRequest) (
 	return ins, nil
 }
 
+func (i *impl) JobTaskBatchSave(ctx context.Context, in *task.JobTaskSet) error {
+	return nil
+}
+
 func (i *impl) QueryJobTask(ctx context.Context, in *task.QueryJobTaskRequest) (
 	*task.JobTaskSet, error) {
 	r := newQueryRequest(in)

@@ -26,7 +26,7 @@ func TestQueryPipelineTask(t *testing.T) {
 }
 
 func TestDescribePipelineTask(t *testing.T) {
-	req := task.NewDescribePipelineTaskRequest("cfiuic6a0brro18jh7kg")
+	req := task.NewDescribePipelineTaskRequest("cfj0p1ma0brmagh95rng")
 	ins, err := impl.DescribePipelineTask(ctx, req)
 	if err != nil {
 		t.Fatal(err)
@@ -35,7 +35,7 @@ func TestDescribePipelineTask(t *testing.T) {
 }
 
 func TestDeletePipelineTask(t *testing.T) {
-	req := task.NewDeletePipelineTaskRequest("cfiuic6a0brro18jh7kg")
+	req := task.NewDeletePipelineTaskRequest("cfj0jkma0brkunrgal70")
 	ins, err := impl.DeletePipelineTask(ctx, req)
 	if err != nil {
 		t.Fatal(err)

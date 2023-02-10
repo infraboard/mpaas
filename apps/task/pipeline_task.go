@@ -18,16 +18,16 @@ func (s *PipelineTaskSet) Add(item *PipelineTask) {
 }
 
 func NewPipelineTask(p *pipeline.Pipeline) *PipelineTask {
-	t := NewDefaultPipelineTask()
-	t.Pipeline = p
+	pt := NewDefaultPipelineTask()
+	pt.Pipeline = p
 
 	// 初始化所有的JobTask
 	for i := range p.Spec.Stages {
 		spec := p.Spec.Stages[i]
-		ss := NewStageStatus(spec)
-		t.Status.AddStage(ss)
+		ss := NewStageStatus(spec, pt.Id)
+		pt.Status.AddStage(ss)
 	}
-	return t
+	return pt
 }
 
 func NewDefaultPipelineTask() *PipelineTask {
@@ -62,6 +62,14 @@ func (p *PipelineTask) JobTasks() *JobTaskSet {
 	return p.Status.JobTasks()
 }
 
+func (p *PipelineTask) GetStageStatusByName(name string) *StageStatus {
+	if p.Status != nil {
+		return p.Status.GetStageStatusByName(name)
+	}
+
+	return nil
+}
+
 // 返回下个需要执行的JobTask, 允许一次并行执行多个(批量执行)
 func (p *PipelineTask) NextRun() *JobTaskSet {
 	return p.Status.NextRun()
@@ -87,6 +95,17 @@ func NewPipelineTaskStatus() *PipelineTaskStatus {
 	return &PipelineTaskStatus{
 		StageStatus: []*StageStatus{},
 	}
+}
+
+func (p *PipelineTaskStatus) GetStageStatusByName(name string) *StageStatus {
+	for i := range p.StageStatus {
+		stage := p.StageStatus[i]
+		if stage.Spec.Name == name {
+			return stage
+		}
+	}
+
+	return nil
 }
 
 func (p *PipelineTaskStatus) JobTasks() *JobTaskSet {
@@ -123,7 +142,7 @@ func (s *PipelineTaskStatus) GetJobTask(id string) *JobTask {
 	return nil
 }
 
-func NewStageStatus(s *pipeline.Stage) *StageStatus {
+func NewStageStatus(s *pipeline.Stage, pipelineTaskId string) *StageStatus {
 	status := &StageStatus{
 		Spec:     s,
 		JobTasks: []*JobTask{},
@@ -131,6 +150,8 @@ func NewStageStatus(s *pipeline.Stage) *StageStatus {
 
 	for i := range s.Jobs {
 		req := s.Jobs[i]
+		req.PipelineTask = pipelineTaskId
+		req.StageName = s.Name
 		jobTask := NewJobTask(req)
 		status.Add(jobTask)
 	}

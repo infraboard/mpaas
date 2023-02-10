@@ -1,0 +1,285 @@
+create_at: 1676020870
+id: cfj0p1ma0brmagh95rng
+pipeline:
+  create_at: 1676011129
+  id: cfiucuea0brqa1kj3go0
+  spec:
+    create_by: ""
+    description: example
+    domain: ""
+    is_template: false
+    labels: {}
+    name: pipeline_example
+    namespace: ""
+    stages:
+      - is_parallel: false
+        jobs:
+          - domain: ""
+            ignore_failed: false
+            job: docker_build@default.default
+            labels: null
+            namespace: ""
+            params:
+              description: ""
+              params:
+                - desc: k8s集群Id
+                  name: cluster_id
+                  value: k8s-test
+                - desc: job运行时的参数(大写开头的环境变量)
+                  name: DB_PASS
+                  value: test
+              version: v0.1
+            pipeline_task: cfj0p1ma0brmagh95rng
+            webhooks: null
+        name: stage_01
+        with: null
+      - is_parallel: false
+        jobs:
+          - domain: ""
+            ignore_failed: false
+            job: docker_build@default.default
+            labels: null
+            namespace: ""
+            params:
+              description: ""
+              params:
+                - desc: k8s集群Id
+                  name: cluster_id
+                  value: k8s-test
+                - desc: job运行时的参数(大写开头的环境变量)
+                  name: DB_PASS
+                  value: test
+              version: v0.1
+            pipeline_task: cfj0p1ma0brmagh95rng
+            webhooks: null
+        name: stage_02
+        with: null
+  update_at: 1676011805463193
+  update_by: ""
+status:
+  end_at: 0
+  message: ""
+  stage: ACTIVE
+  stage_status:
+    - job_tasks:
+        - create_at: 1676020870
+          id: cfj0p1ma0brmagh95ro0
+          job:
+            create_at: 1675647693614
+            id: cfg5ljea0brnvd2tpls0
+            spec:
+              create_by: test
+              description: ""
+              display_name: ""
+              domain: default
+              labels: {}
+              logo: ""
+              name: docker_build
+              namespace: default
+              run_params: []
+              runner_spec:
+                "apiVersion: batch/v1 # 版本号\nkind: Job # 类型       \nmetadata:
+                # 元数据\n  name: test-job # job 名称 \n  namespace: default # 所属命名空间 \n  labels:
+                #标签\n    app: app01\nspec: # 详情描述\n  completions: 1 # 指定 job 需要成功运行 Pods
+                的次数。默认值: 1\n  parallelism: 1 # 指定 job 在任一时刻应该并发运行 Pods 的数量。默认值: 1，如果上面的
+                completions 为 6 ，这个参数为 3 ，表示有 6 个 pod，允许有 3 个 pod 并发运行\n  activeDeadlineSeconds:
+                30 # 指定 job 可运行的时间期限，超过时间还未结束，系统将会尝试进行终止。\n  backoffLimit: 6 # 指定 job
+                失败后进行重试的次数。默认是 6\n  # manualSelector: true # 是否可以使用 selector 选择器选择 pod，默认是
+                false\n  # selector: # 选择器，通过它指定该控制器管理哪些 pod\n  #   matchLabels:      #
+                Labels 匹配规则\n  #     app: counter-pod\n    # matchExpressions: # Expressions
+                匹配规则\n    #   - {key: app, operator: In, values: [counter-pod]}\n  template:
+                # 模板，当副本数量不足时，会根据下面的模板创建 pod 副本\n    metadata:\n      labels:\n        app:
+                counter-pod\n    spec:\n      restartPolicy: Never # 重启策略只能设置为 Never 或者
+                OnFailure\n      containers:\n      - name: counter\n        image: busybox:1.30\n
+                \       command: [\"bin/sh\",\"-c\",\"for i in 9 8 7 6 5 4 3 2 1; do echo
+                $i;sleep 2;done\"]"
+              runner_type: K8S_JOB
+              visiable_mode: NAMESPACE
+            update_at: 0
+            update_by: ""
+          spec:
+            domain: ""
+            ignore_failed: false
+            job: docker_build@default.default
+            labels: null
+            namespace: ""
+            params:
+              description: ""
+              params:
+                - desc: k8s集群Id
+                  name: cluster_id
+                  value: k8s-test
+                - desc: job运行时的参数(大写开头的环境变量)
+                  name: DB_PASS
+                  value: test
+              version: v0.1
+            pipeline_task: cfj0p1ma0brmagh95rng
+            webhooks: null
+          status:
+            detail: |
+              metadata:
+                creationTimestamp: "2023-02-10T09:21:11Z"
+                labels:
+                  app: app01
+                managedFields:
+                - apiVersion: batch/v1
+                  fieldsType: FieldsV1
+                  fieldsV1:
+                    f:metadata:
+                      f:labels:
+                        .: {}
+                        f:app: {}
+                    f:spec:
+                      f:activeDeadlineSeconds: {}
+                      f:backoffLimit: {}
+                      f:completions: {}
+                      f:parallelism: {}
+                      f:template:
+                        f:metadata:
+                          f:labels:
+                            .: {}
+                            f:app: {}
+                        f:spec:
+                          f:containers:
+                            k:{"name":"counter"}:
+                              .: {}
+                              f:command: {}
+                              f:env:
+                                .: {}
+                                k:{"name":"DB_PASS"}:
+                                  .: {}
+                                  f:name: {}
+                                  f:value: {}
+                              f:image: {}
+                              f:imagePullPolicy: {}
+                              f:name: {}
+                              f:resources: {}
+                              f:terminationMessagePath: {}
+                              f:terminationMessagePolicy: {}
+                          f:dnsPolicy: {}
+                          f:restartPolicy: {}
+                          f:schedulerName: {}
+                          f:securityContext: {}
+                          f:terminationGracePeriodSeconds: {}
+                  manager: impl.test
+                  operation: Update
+                  time: "2023-02-10T09:21:11Z"
+                name: cfj0p1ma0brmagh95ro0
+                namespace: default
+                resourceVersion: "459442564"
+                selfLink: /apis/batch/v1/namespaces/default/jobs/cfj0p1ma0brmagh95ro0
+                uid: 9ca95e90-900e-4e1c-ad15-5b746a3f49c0
+              spec:
+                activeDeadlineSeconds: 30
+                backoffLimit: 6
+                completions: 1
+                parallelism: 1
+                selector:
+                  matchLabels:
+                    controller-uid: 9ca95e90-900e-4e1c-ad15-5b746a3f49c0
+                template:
+                  metadata:
+                    creationTimestamp: null
+                    labels:
+                      app: counter-pod
+                      controller-uid: 9ca95e90-900e-4e1c-ad15-5b746a3f49c0
+                      job-name: cfj0p1ma0brmagh95ro0
+                  spec:
+                    containers:
+                    - command:
+                      - bin/sh
+                      - -c
+                      - for i in 9 8 7 6 5 4 3 2 1; do echo $i;sleep 2;done
+                      env:
+                      - name: DB_PASS
+                        value: test
+                      image: busybox:1.30
+                      imagePullPolicy: IfNotPresent
+                      name: counter
+                      resources: {}
+                      terminationMessagePath: /dev/termination-log
+                      terminationMessagePolicy: File
+                    dnsPolicy: ClusterFirst
+                    restartPolicy: Never
+                    schedulerName: default-scheduler
+                    securityContext: {}
+                    terminationGracePeriodSeconds: 30
+              status: {}
+            end_at: 0
+            message: ""
+            stage: ACTIVE
+            start_at: 1676020870
+      spec:
+        is_parallel: false
+        jobs:
+          - domain: ""
+            ignore_failed: false
+            job: docker_build@default.default
+            labels: null
+            namespace: ""
+            params:
+              description: ""
+              params:
+                - desc: k8s集群Id
+                  name: cluster_id
+                  value: k8s-test
+                - desc: job运行时的参数(大写开头的环境变量)
+                  name: DB_PASS
+                  value: test
+              version: v0.1
+            pipeline_task: cfj0p1ma0brmagh95rng
+            webhooks: null
+        name: stage_01
+        with: null
+    - job_tasks:
+        - create_at: 1676020870
+          id: cfj0p1ma0brmagh95rog
+          job: null
+          spec:
+            domain: ""
+            ignore_failed: false
+            job: docker_build@default.default
+            labels: null
+            namespace: ""
+            params:
+              description: ""
+              params:
+                - desc: k8s集群Id
+                  name: cluster_id
+                  value: k8s-test
+                - desc: job运行时的参数(大写开头的环境变量)
+                  name: DB_PASS
+                  value: test
+              version: v0.1
+            pipeline_task: cfj0p1ma0brmagh95rng
+            webhooks: null
+          status:
+            detail: ""
+            end_at: 0
+            message: ""
+            stage: PENDDING
+            start_at: 1676020870
+      spec:
+        is_parallel: false
+        jobs:
+          - domain: ""
+            ignore_failed: false
+            job: docker_build@default.default
+            labels: null
+            namespace: ""
+            params:
+              description: ""
+              params:
+                - desc: k8s集群Id
+                  name: cluster_id
+                  value: k8s-test
+                - desc: job运行时的参数(大写开头的环境变量)
+                  name: DB_PASS
+                  value: test
+              version: v0.1
+            pipeline_task: cfj0p1ma0brmagh95rng
+            webhooks: null
+        name: stage_02
+        with: null
+  start_at: 1676020870
+  update_at: 0

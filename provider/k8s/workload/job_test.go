@@ -23,7 +23,7 @@ func TestListJob(t *testing.T) {
 }
 
 func TestGetJob(t *testing.T) {
-	req := meta.NewGetRequest("test-job")
+	req := meta.NewGetRequest("cfj0qv6a0brmpgr7viag")
 	req.Namespace = "default"
 	ins, err := impl.GetJob(ctx, req)
 	if err != nil {
