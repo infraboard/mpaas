@@ -1,6 +1,8 @@
 package build
 
 import (
+	"encoding/json"
+
 	"github.com/infraboard/mpaas/common/meta"
 )
 
@@ -32,6 +34,13 @@ func NewDefaultDeploy() *BuildConfig {
 	return &BuildConfig{
 		Spec: NewCreateDeployConfigRequest(),
 	}
+}
+
+func (b *BuildConfig) MarshalJSON() ([]byte, error) {
+	return json.Marshal(struct {
+		*meta.Meta
+		*CreateBuildConfigRequest
+	}{b.Meta, b.Spec})
 }
 
 func NewCreateDeployConfigRequest() *CreateBuildConfigRequest {

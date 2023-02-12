@@ -1,6 +1,7 @@
 package pipeline
 
 import (
+	"encoding/json"
 	"fmt"
 	"time"
 
@@ -50,6 +51,13 @@ func (p *Pipeline) Patch(req *UpdatePipelineRequest) error {
 	p.Meta.UpdateAt = time.Now().Unix()
 	p.Meta.UpdateBy = req.UpdateBy
 	return mergo.MergeWithOverwrite(p.Spec, req.Spec)
+}
+
+func (p *Pipeline) MarshalJSON() ([]byte, error) {
+	return json.Marshal(struct {
+		*meta.Meta
+		*CreatePipelineRequest
+	}{p.Meta, p.Spec})
 }
 
 func (p *Pipeline) GetStage(name string) *Stage {

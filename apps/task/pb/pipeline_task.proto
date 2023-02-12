@@ -24,7 +24,7 @@ message PipelineTask {
 	// @gotags: bson:"pipeline" json:"pipeline"
 	pipeline.Pipeline pipeline = 3;
 	// 任务当前状态
-	// @gotags: bson:"status" json:"status"
+	// @gotags: bson:",inline" json:"status"
 	PipelineTaskStatus status = 4;
 }
 

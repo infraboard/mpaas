@@ -1,6 +1,7 @@
 package job
 
 import (
+	"encoding/json"
 	"reflect"
 	"time"
 	"unicode"
@@ -38,6 +39,25 @@ func NewDefaultJob() *Job {
 	return &Job{
 		Spec: NewCreateJobRequest(),
 	}
+}
+
+func (i *Job) Update(req *UpdateJobRequest) {
+	i.Meta.UpdateAt = time.Now().Unix()
+	i.Meta.UpdateBy = req.UpdateBy
+	i.Spec = req.Spec
+}
+
+func (i *Job) Patch(req *UpdateJobRequest) error {
+	i.Meta.UpdateAt = time.Now().Unix()
+	i.Meta.UpdateBy = req.UpdateBy
+	return mergo.MergeWithOverwrite(i.Spec, req.Spec)
+}
+
+func (i *Job) MarshalJSON() ([]byte, error) {
+	return json.Marshal(struct {
+		*meta.Meta
+		*CreateJobRequest
+	}{i.Meta, i.Spec})
 }
 
 func NewVersionedRunParam(version string) *VersionedRunParam {
@@ -127,16 +147,4 @@ func NewRunParamWithKVPaire(kvs ...string) (params []*RunParam) {
 	}
 
 	return
-}
-
-func (i *Job) Update(req *UpdateJobRequest) {
-	i.Meta.UpdateAt = time.Now().Unix()
-	i.Meta.UpdateBy = req.UpdateBy
-	i.Spec = req.Spec
-}
-
-func (i *Job) Patch(req *UpdateJobRequest) error {
-	i.Meta.UpdateAt = time.Now().Unix()
-	i.Meta.UpdateBy = req.UpdateBy
-	return mergo.MergeWithOverwrite(i.Spec, req.Spec)
 }

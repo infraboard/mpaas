@@ -1,6 +1,7 @@
 package task
 
 import (
+	"encoding/json"
 	"fmt"
 	"time"
 
@@ -47,6 +48,15 @@ func NewJobTask(req *pipeline.RunJobRequest) *JobTask {
 		Job:    nil,
 		Status: NewJobTaskStatus(),
 	}
+}
+
+func (p *JobTask) MarshalJSON() ([]byte, error) {
+	return json.Marshal(struct {
+		*meta.Meta
+		*pipeline.RunJobRequest
+		*JobTaskStatus
+		Job *job.Job `json:"job"`
+	}{p.Meta, p.Spec, p.Status, p.Job})
 }
 
 func (t *JobTask) GetStatusDetail() string {

@@ -1,6 +1,7 @@
 package task
 
 import (
+	"encoding/json"
 	"time"
 
 	"github.com/infraboard/mpaas/apps/pipeline"
@@ -35,6 +36,14 @@ func NewDefaultPipelineTask() *PipelineTask {
 		Meta:   meta.NewMeta(),
 		Status: NewPipelineTaskStatus(),
 	}
+}
+
+func (p *PipelineTask) MarshalJSON() ([]byte, error) {
+	return json.Marshal(struct {
+		*meta.Meta
+		*PipelineTaskStatus
+		Pipeline *pipeline.Pipeline `json:"pipeline"`
+	}{p.Meta, p.Status, p.Pipeline})
 }
 
 func (p *PipelineTask) MarkedRunning() {

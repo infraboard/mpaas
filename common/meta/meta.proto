@@ -7,12 +7,6 @@ message Meta  {
     // 对象Id
     // @gotags: bson:"_id" json:"id"
     string id = 1;
-    // 所属空间
-    // @gotags: bson:"namespace" json:"namespace"
-    string namespace = 2;
-    // 所属Domain
-    // @gotags: bson:"domain" json:"domain"
-    string domain = 3;
     // 创建时间
     // @gotags: bson:"create_at" json:"create_at"
     int64 create_at = 4;
