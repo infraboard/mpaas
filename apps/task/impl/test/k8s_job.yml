@@ -1,7 +1,7 @@
 metadata:
   annotations:
     batch.kubernetes.io/job-tracking: ""
-  creationTimestamp: "2023-02-10T14:22:18Z"
+  creationTimestamp: "2023-02-12T13:53:21Z"
   generation: 1
   labels:
     app: app01
@@ -49,7 +49,7 @@ metadata:
               f:terminationGracePeriodSeconds: {}
       manager: impl.test
       operation: Update
-      time: "2023-02-10T14:22:18Z"
+      time: "2023-02-12T13:53:21Z"
     - apiVersion: batch/v1
       fieldsType: FieldsV1
       fieldsV1:
@@ -63,11 +63,11 @@ metadata:
       manager: kube-controller-manager
       operation: Update
       subresource: status
-      time: "2023-02-10T14:22:39Z"
-  name: cfj566ls99bg2on65320
+      time: "2023-02-12T13:53:43Z"
+  name: cfkeq7ds99bvnft65p30
   namespace: default
-  resourceVersion: "165499"
-  uid: 26e0ec8c-752c-4c32-b802-c4ff11aa19f3
+  resourceVersion: "223241"
+  uid: c9a9af61-abfa-4bc0-a1f5-44d40c9f56a7
 spec:
   activeDeadlineSeconds: 30
   backoffLimit: 6
@@ -76,15 +76,15 @@ spec:
   parallelism: 1
   selector:
     matchLabels:
-      controller-uid: 26e0ec8c-752c-4c32-b802-c4ff11aa19f3
+      controller-uid: c9a9af61-abfa-4bc0-a1f5-44d40c9f56a7
   suspend: false
   template:
     metadata:
       creationTimestamp: null
       labels:
         app: counter-pod
-        controller-uid: 26e0ec8c-752c-4c32-b802-c4ff11aa19f3
-        job-name: cfj566ls99bg2on65320
+        controller-uid: c9a9af61-abfa-4bc0-a1f5-44d40c9f56a7
+        job-name: cfkeq7ds99bvnft65p30
     spec:
       containers:
         - command:
@@ -106,13 +106,13 @@ spec:
       securityContext: {}
       terminationGracePeriodSeconds: 30
 status:
-  completionTime: "2023-02-10T14:22:39Z"
+  completionTime: "2023-02-12T13:53:43Z"
   conditions:
-    - lastProbeTime: "2023-02-10T14:22:39Z"
-      lastTransitionTime: "2023-02-10T14:22:39Z"
+    - lastProbeTime: "2023-02-12T13:53:43Z"
+      lastTransitionTime: "2023-02-12T13:53:43Z"
       status: "True"
       type: Complete
   ready: 0
-  startTime: "2023-02-10T14:22:18Z"
+  startTime: "2023-02-12T13:53:21Z"
   succeeded: 1
   uncountedTerminatedPods: {}

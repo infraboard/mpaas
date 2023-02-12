@@ -20,14 +20,16 @@ func TestNewPipelineTask(t *testing.T) {
 	}
 
 	// 即将运行的tasks
-	nexts := pt.NextRun()
-	for nexts.Len() > 0 {
-		for i := range nexts.Items {
-			next := nexts.Items[i]
-			next.Status.MarkedSuccess()
-			t.Log(next.Spec.Id, next.Spec.JobName, next.Status.Stage)
-		}
+	nexts, err := pt.NextRun()
+	if err != nil {
+		t.Fatal(err)
+	}
 
-		nexts = pt.NextRun()
+	for i := range nexts.Items {
+		nexts, err = pt.NextRun()
+		t.Log(nexts, err)
+
+		next := nexts.Items[i]
+		next.Status.MarkedSuccess()
 	}
 }

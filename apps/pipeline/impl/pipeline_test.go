@@ -24,16 +24,16 @@ func TestQueryPipeline(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	t.Log(set)
+	t.Log(tools.MustToJson(set))
 }
 
 func TestDescribePipeline(t *testing.T) {
-	req := pipeline.NewDescribePipelineRequest("cfj3n4ts99brfo8rb8i0")
+	req := pipeline.NewDescribePipelineRequest("cfkenp5s99bvhd6hgatg")
 	ins, err := impl.DescribePipeline(ctx, req)
 	if err != nil {
 		t.Fatal(err)
 	}
-	t.Log(tools.MustToYaml(ins))
+	t.Log(tools.MustToJson(ins))
 }
 
 func TestUpdatePipeline(t *testing.T) {
@@ -44,6 +44,15 @@ func TestUpdatePipeline(t *testing.T) {
 		t.Fatal(err)
 	}
 	t.Log(ins)
+}
+
+func TestDeletePipeline(t *testing.T) {
+	req := pipeline.NewDeletePipelineRequest("cfkei15s99bv5ckr4m00")
+	ins, err := impl.DeletePipeline(ctx, req)
+	if err != nil {
+		t.Fatal(err)
+	}
+	t.Log(tools.MustToJson(ins))
 }
 
 func TestNewCreatePipelineRequestFromYAML(t *testing.T) {

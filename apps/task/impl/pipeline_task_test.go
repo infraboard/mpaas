@@ -8,7 +8,7 @@ import (
 )
 
 func TestRunPipeline(t *testing.T) {
-	req := task.NewRunPipelineRequest("cfj3n4ts99brfo8rb8i0")
+	req := task.NewRunPipelineRequest("cfkenp5s99bvhd6hgatg")
 	ins, err := impl.RunPipeline(ctx, req)
 	if err != nil {
 		t.Fatal(err)
@@ -22,20 +22,20 @@ func TestQueryPipelineTask(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	t.Log(tools.MustToYaml(set))
+	t.Log(tools.MustToJson(set))
 }
 
 func TestDescribePipelineTask(t *testing.T) {
-	req := task.NewDescribePipelineTaskRequest("cfj55eds99bvvlq09keg")
+	req := task.NewDescribePipelineTaskRequest("cfkeq7ds99bvnft65p20")
 	ins, err := impl.DescribePipelineTask(ctx, req)
 	if err != nil {
 		t.Fatal(err)
 	}
-	t.Log(tools.MustToYaml(ins))
+	t.Log(tools.MustToJson(ins))
 }
 
 func TestDeletePipelineTask(t *testing.T) {
-	req := task.NewDeletePipelineTaskRequest("cfj55eds99bvvlq09keg")
+	req := task.NewDeletePipelineTaskRequest("cfkeq7ds99bvnft65p20")
 	ins, err := impl.DeletePipelineTask(ctx, req)
 	if err != nil {
 		t.Fatal(err)

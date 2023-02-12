@@ -27,6 +27,7 @@ func TestRunJob(t *testing.T) {
 
 func TestQueryJobTask(t *testing.T) {
 	req := task.NewQueryTaskRequest()
+	req.PipelineTaskId = "cfkeq7ds99bvnft65p20"
 	set, err := impl.QueryJobTask(ctx, req)
 	if err != nil {
 		t.Fatal(err)
@@ -36,7 +37,7 @@ func TestQueryJobTask(t *testing.T) {
 }
 
 func TestDescribeJobTask(t *testing.T) {
-	req := task.NewDescribeJobTaskRequest("cfk6gjds99bnlm5i5r50")
+	req := task.NewDescribeJobTaskRequest("cfk6mdls99bopbk780ig")
 	ins, err := impl.DescribeJobTask(ctx, req)
 	if err != nil {
 		t.Fatal(err)
@@ -45,7 +46,7 @@ func TestDescribeJobTask(t *testing.T) {
 }
 
 func TestUpdateJobTaskStatus(t *testing.T) {
-	req := task.NewUpdateJobTaskStatusRequest("cfj566ls99bg2on65320")
+	req := task.NewUpdateJobTaskStatusRequest("cfkeq7ds99bvnft65p30")
 	req.Stage = task.STAGE_SUCCEEDED
 	req.Message = "执行成功"
 	req.Detail = tools.MustReadContentFile("test/k8s_job.yml")
@@ -57,7 +58,7 @@ func TestUpdateJobTaskStatus(t *testing.T) {
 }
 
 func TestDeleteJobTask(t *testing.T) {
-	req := task.NewDeleteJobTaskRequest("cfj51sls99bvbmscmhd0")
+	req := task.NewDeleteJobTaskRequest("cfk6mdls99bopbk780ig")
 	set, err := impl.DeleteJobTask(ctx, req)
 	if err != nil {
 		t.Fatal(err)

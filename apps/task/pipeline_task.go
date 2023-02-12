@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"time"
 
+	"github.com/infraboard/mcube/exception"
 	"github.com/infraboard/mpaas/apps/pipeline"
 	"github.com/infraboard/mpaas/common/meta"
 )
@@ -76,33 +77,51 @@ func (p *PipelineTask) JobTasks() *JobTaskSet {
 }
 
 // 返回下个需要执行的JobTask, 允许一次并行执行多个(批量执行)
-func (p *PipelineTask) NextRun() *JobTaskSet {
+func (p *PipelineTask) NextRun() (*JobTaskSet, error) {
 	set := NewJobTaskSet()
+	var stage *StageStatus
 
 	if p.Status == nil || p.Pipeline == nil {
-		return set
+		return set, nil
 	}
 
+	// 需要未执行完成的Job Tasks
 	stages := p.Status.StageStatus
 	for i := range stages {
-		s := stages[i]
-		tasks := s.PenddingJobTask()
+		stage = stages[i]
 
-		// 没有需要执行的task, 寻找下个stage
-		if len(tasks) == 0 {
-			continue
-		}
+		// 找出Stage中未执行完的Job Task
+		set = stage.UnCompleteJobTask()
 
-		stageSpec := p.Pipeline.GetStage(s.Name)
-		if stageSpec.IsParallel {
-			// 并行任务 返回该Stage所有等待执行的job
-			set.Add(tasks...)
-		} else {
-			// 串行任务取第一个
-			set.Add(tasks[0])
+		// 如果找到 直接Break
+		if set.Len() > 0 {
+			break
 		}
 	}
-	return set
+
+	// 如果所有Stage寻找完，都没找到, 表示PipelineTask执行完成
+	if set.Len() == 0 {
+		return set, nil
+	}
+
+	// 如果这些未执行当中的Job Task 有处于运行中的, 不会执行下个一个任务
+	if set.HasStage(STAGE_ACTIVE) {
+		return set, exception.NewConflict("Stage 还处于运行中")
+	}
+
+	// 当未执行的任务中，没有运行中的时，剩下的就是需要被执行的任务
+	tasks := set.GetJobTaskByStage(STAGE_PENDDING)
+
+	stageSpec := p.Pipeline.GetStage(stage.Name)
+	if stageSpec.IsParallel {
+		// 并行任务 返回该Stage所有等待执行的job
+		set.Add(tasks...)
+	} else {
+		// 串行任务取第一个
+		set.Add(tasks[0])
+	}
+
+	return set, nil
 }
 
 func (p *PipelineTask) GetStage(name string) *StageStatus {
@@ -201,6 +220,20 @@ func NewStageStatus(s *pipeline.Stage, pipelineTaskId string) *StageStatus {
 	return status
 }
 
+// 获取Stage中未完成的任务, 包含 运行中和等待执行的
+func (s *StageStatus) UnCompleteJobTask() *JobTaskSet {
+	set := NewJobTaskSet()
+	for i := range s.JobTasks {
+		item := s.JobTasks[i]
+		// stage中任何一个job task未完成, 该stage都处于未完成
+		if item.Status != nil && !item.Status.IsComplete() {
+			set.Add(item)
+		}
+	}
+
+	return set
+}
+
 func (s *StageStatus) Add(item *JobTask) {
 	s.JobTasks = append(s.JobTasks, item)
 }
@@ -214,16 +247,6 @@ func (s *StageStatus) GetJobTask(id string) *JobTask {
 		}
 	}
 	return nil
-}
-
-func (s *StageStatus) PenddingJobTask() (jobs []*JobTask) {
-	for i := range s.JobTasks {
-		t := s.JobTasks[i]
-		if t.Status.Stage.Equal(STAGE_PENDDING) {
-			jobs = append(jobs, t)
-		}
-	}
-	return
 }
 
 func NewDescribePipelineTaskRequest(id string) *DescribePipelineTaskRequest {

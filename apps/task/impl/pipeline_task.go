@@ -88,8 +88,11 @@ func (i *impl) PipelineTaskStatusChanged(ctx context.Context, in *task.JobTask) 
 		// 任务运行成功, pipeline继续执行
 	}
 
-	// task执行成功或者忽略执行失败, pipeline 仍然处于运行中, 需要获取下一个任务执行
-	nexts := p.NextRun()
+	// task执行成功或者忽略执行失败, 此时pipeline 仍然处于运行中, 需要获取下一个任务执行
+	nexts, err := p.NextRun()
+	if err != nil {
+		return nil, err
+	}
 
 	// 如果没有需要执行的任务, Pipeline执行结束, 更新Pipeline状态为成功
 	if nexts == nil && nexts.Len() == 0 {
@@ -113,7 +116,7 @@ func (i *impl) PipelineTaskStatusChanged(ctx context.Context, in *task.JobTask) 
 
 // 更新Pipeline状态
 func (i *impl) updatePipelineStatus(ctx context.Context, in *task.PipelineTask) (*task.PipelineTask, error) {
-	in.Status.UpdateAt = time.Now().Unix()
+	in.Meta.UpdateAt = time.Now().Unix()
 	if _, err := i.pcol.UpdateByID(ctx, in.Meta.Id, bson.M{"$set": bson.M{"status": in.Status}}); err != nil {
 		return nil, exception.NewInternalServerError("update task(%s) document error, %s",
 			in.Meta.Id, err)

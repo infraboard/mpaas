@@ -50,3 +50,9 @@ func NewPatchPipelineRequest(id string) *UpdatePipelineRequest {
 		Spec:       NewCreatePipelineRequest(),
 	}
 }
+
+func NewDeletePipelineRequest(id string) *DeletePipelineRequest {
+	return &DeletePipelineRequest{
+		Id: id,
+	}
+}

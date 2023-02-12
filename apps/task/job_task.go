@@ -31,6 +31,27 @@ func (s *JobTaskSet) ToDocs() (docs []any) {
 	return
 }
 
+func (s *JobTaskSet) HasStage(stage STAGE) bool {
+	for i := range s.Items {
+		item := s.Items[i]
+		if item.Status != nil && item.Status.Stage.Equal(stage) {
+			return true
+		}
+	}
+	return false
+}
+
+// 查询Stage中 等待执行的Job Task
+func (s *JobTaskSet) GetJobTaskByStage(stage STAGE) (jobs []*JobTask) {
+	for i := range s.Items {
+		item := s.Items[i]
+		if item.Status != nil && item.Status.Stage.Equal(stage) {
+			jobs = append(jobs, item)
+		}
+	}
+	return
+}
+
 func NewDefaultJobTask() *JobTask {
 	req := pipeline.NewRunJobRequest("")
 	return NewJobTask(req)

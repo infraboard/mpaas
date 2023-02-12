@@ -39,7 +39,7 @@ func (r *queryRequest) FindFilter() bson.M {
 	}
 
 	if r.PipelineTaskId != "" {
-		filter["spec.pipeline_task"] = r.PipelineTaskId
+		filter["pipeline_task"] = r.PipelineTaskId
 	}
 
 	return filter

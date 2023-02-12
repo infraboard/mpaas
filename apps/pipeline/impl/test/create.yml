@@ -3,7 +3,7 @@ description: example
 stages:
   - name: stage_01
     jobs:
-      - job: docker_build@default.default
+      - job_name: docker_build@default.default
         ignore_failed: false
         params:
           version: v0.1
@@ -16,7 +16,7 @@ stages:
               desc: "job运行时的参数(大写开头的环境变量)"
   - name: stage_02
     jobs:
-      - job: docker_build@default.default
+      - job_name: docker_build@default.default
         ignore_failed: false
         params:
           version: v0.1
