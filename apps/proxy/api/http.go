@@ -73,7 +73,7 @@ func (h *handler) ClusterMiddleware(
 		return
 	}
 
-	client, err := k8s.NewClient(ins.Data.KubeConfig)
+	client, err := k8s.NewClient(ins.Spec.KubeConfig)
 	if err != nil {
 		response.Failed(resp, fmt.Errorf("new k8s client error, %s", err))
 		return

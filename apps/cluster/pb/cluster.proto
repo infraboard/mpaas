@@ -3,8 +3,20 @@ syntax = "proto3";
 package infraboard.mpaas.cluster;
 option go_package = "github.com/infraboard/mpaas/apps/cluster";
 
-// Cluster todo
+// Cluster k8s集群相关信息
 message Cluster {
+    // 集群状态
+    // @gotags: json:"meta" bson:"meta"
+    Meta meta = 1;
+    // 基础信息
+    // @gotags: json:"spec" bson:"spec"
+    CreateClusterRequest spec = 2;
+    // 集群状态
+    // @gotags: json:"status" bson:"status"
+    Status status = 3;
+}
+
+message Meta {
     // 唯一ID
     // @gotags: json:"id" bson:"_id"
     string id = 1;
@@ -20,12 +32,6 @@ message Cluster {
     // 集群相关信息
     // @gotags: json:"server_info" bson:"server_info"
     ServerInfo server_info = 8;
-    // 基础信息
-    // @gotags: json:"data" bson:"data"
-    CreateClusterRequest data = 9;
-    // 集群状态
-    // @gotags: json:"status" bson:"status"
-    Status status = 10;
 }
 
 message ServerInfo {

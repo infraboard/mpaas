@@ -41,7 +41,7 @@ func TestCreateCluster(t *testing.T) {
 
 func TestUpdateCluster(t *testing.T) {
 	req := cluster.NewPatchClusterRequest("k8s-test")
-	req.Data.KubeConfig = tools.MustReadContentFile("test/kube_config.yml")
+	req.Spec.KubeConfig = tools.MustReadContentFile("test/kube_config.yml")
 	set, err := impl.UpdateCluster(ctx, req)
 	if err != nil {
 		t.Fatal(err)

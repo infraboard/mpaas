@@ -15,7 +15,7 @@ import (
 func (s *service) save(ctx context.Context, ins *cluster.Cluster) error {
 	if _, err := s.col.InsertOne(ctx, ins); err != nil {
 		return exception.NewInternalServerError("inserted cluster(%s) document error, %s",
-			ins.Data.Name, err)
+			ins.Spec.Name, err)
 	}
 	return nil
 }
@@ -115,25 +115,25 @@ func (s *service) query(ctx context.Context, req *queryclusterRequest) (*cluster
 }
 
 func (s *service) update(ctx context.Context, ins *cluster.Cluster) error {
-	if _, err := s.col.UpdateByID(ctx, ins.Id, bson.M{"$set": ins}); err != nil {
+	if _, err := s.col.UpdateByID(ctx, ins.Meta.Id, bson.M{"$set": ins}); err != nil {
 		return exception.NewInternalServerError("inserted cluster(%s) document error, %s",
-			ins.Data.Name, err)
+			ins.Spec.Name, err)
 	}
 	return nil
 }
 
 func (s *service) deletecluster(ctx context.Context, ins *cluster.Cluster) error {
-	if ins == nil || ins.Id == "" {
+	if ins == nil || ins.Meta.Id == "" {
 		return fmt.Errorf("cluster is nil")
 	}
 
-	result, err := s.col.DeleteOne(ctx, bson.M{"_id": ins.Id})
+	result, err := s.col.DeleteOne(ctx, bson.M{"_id": ins.Meta.Id})
 	if err != nil {
-		return exception.NewInternalServerError("delete cluster(%s) error, %s", ins.Id, err)
+		return exception.NewInternalServerError("delete cluster(%s) error, %s", ins.Meta.Id, err)
 	}
 
 	if result.DeletedCount == 0 {
-		return exception.NewNotFound("cluster %s not found", ins.Id)
+		return exception.NewNotFound("cluster %s not found", ins.Meta.Id)
 	}
 
 	return nil

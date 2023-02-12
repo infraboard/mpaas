@@ -126,7 +126,7 @@ func (h *handler) PutCluster(r *restful.Request, w *restful.Response) {
 	tk := r.Attribute("token").(*token.Token)
 
 	req := cluster.NewPutClusterRequest(r.PathParameter("id"))
-	if err := r.ReadEntity(req.Data); err != nil {
+	if err := r.ReadEntity(req.Spec); err != nil {
 		response.Failed(w, err)
 		return
 	}
@@ -144,7 +144,7 @@ func (h *handler) PatchCluster(r *restful.Request, w *restful.Response) {
 	tk := r.Attribute("token").(*token.Token)
 	req := cluster.NewPatchClusterRequest(r.PathParameter("id"))
 
-	if err := r.ReadEntity(req.Data); err != nil {
+	if err := r.ReadEntity(req.Spec); err != nil {
 		response.Failed(w, err)
 		return
 	}

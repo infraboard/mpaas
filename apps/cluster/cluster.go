@@ -2,6 +2,7 @@ package cluster
 
 import (
 	"encoding/base64"
+	"encoding/json"
 	"fmt"
 	"net/http"
 	"strings"
@@ -39,12 +40,18 @@ func NewCluster(req *CreateClusterRequest) (*Cluster, error) {
 	}
 
 	return &Cluster{
+		Meta:   NewMeta(),
+		Spec:   req,
+		Status: &Status{},
+	}, nil
+}
+
+func NewMeta() *Meta {
+	return &Meta{
 		Id:         xid.New().String(),
 		CreateAt:   time.Now().UnixMicro(),
-		Data:       req,
 		ServerInfo: &ServerInfo{},
-		Status:     &Status{},
-	}, nil
+	}
 }
 
 func (req *CreateClusterRequest) Validate() error {
@@ -80,7 +87,7 @@ func (s *ClusterSet) DecryptKubeConf(key string) error {
 		if err != nil {
 			errs = append(errs, fmt.Sprintf(
 				"decrypt %s kubeconf error, %s",
-				s.Items[i].Data.Name,
+				s.Items[i].Spec.Name,
 				err))
 		}
 	}
@@ -94,8 +101,16 @@ func (s *ClusterSet) DecryptKubeConf(key string) error {
 
 func NewDefaultCluster() *Cluster {
 	return &Cluster{
-		Data: &CreateClusterRequest{},
+		Spec: &CreateClusterRequest{},
 	}
+}
+
+func (i *Cluster) MarshalJSON() ([]byte, error) {
+	return json.Marshal(struct {
+		*Meta
+		*CreateClusterRequest
+		*Status
+	}{i.Meta, i.Spec, i.Status})
 }
 
 func (i *Cluster) IsAlive() error {
@@ -111,40 +126,42 @@ func (i *Cluster) IsAlive() error {
 }
 
 func (i *Cluster) Update(req *UpdateClusterRequest) {
-	i.UpdateAt = time.Now().UnixMicro()
-	i.UpdateBy = req.UpdateBy
-	i.Data = req.Data
+	m := i.Meta
+	m.UpdateAt = time.Now().Unix()
+	m.UpdateBy = req.UpdateBy
+	i.Spec = req.Spec
 }
 
 func (i *Cluster) Patch(req *UpdateClusterRequest) error {
-	i.UpdateAt = time.Now().UnixMicro()
-	i.UpdateBy = req.UpdateBy
-	return mergo.MergeWithOverwrite(i.Data, req.Data)
+	m := i.Meta
+	m.UpdateAt = time.Now().Unix()
+	m.UpdateBy = req.UpdateBy
+	return mergo.MergeWithOverwrite(i.Spec, req.Spec)
 }
 
 func (i *Cluster) EncryptKubeConf(key string) error {
 	// 判断文本是否已经加密
-	if strings.HasPrefix(i.Data.KubeConfig, conf.CIPHER_TEXT_PREFIX) {
+	if strings.HasPrefix(i.Spec.KubeConfig, conf.CIPHER_TEXT_PREFIX) {
 		return fmt.Errorf("text has ciphered")
 	}
 
-	cipherText, err := cbc.Encrypt([]byte(i.Data.KubeConfig), []byte(key))
+	cipherText, err := cbc.Encrypt([]byte(i.Spec.KubeConfig), []byte(key))
 	if err != nil {
 		return err
 	}
 
 	base64Str := base64.StdEncoding.EncodeToString(cipherText)
-	i.Data.KubeConfig = fmt.Sprintf("%s%s", conf.CIPHER_TEXT_PREFIX, base64Str)
+	i.Spec.KubeConfig = fmt.Sprintf("%s%s", conf.CIPHER_TEXT_PREFIX, base64Str)
 	return nil
 }
 
 func (i *Cluster) DecryptKubeConf(key string) error {
 	// 判断文本是否已经是明文
-	if !strings.HasPrefix(i.Data.KubeConfig, conf.CIPHER_TEXT_PREFIX) {
+	if !strings.HasPrefix(i.Spec.KubeConfig, conf.CIPHER_TEXT_PREFIX) {
 		return nil
 	}
 
-	base64CipherText := strings.TrimPrefix(i.Data.KubeConfig, conf.CIPHER_TEXT_PREFIX)
+	base64CipherText := strings.TrimPrefix(i.Spec.KubeConfig, conf.CIPHER_TEXT_PREFIX)
 
 	cipherText, err := base64.StdEncoding.DecodeString(base64CipherText)
 	if err != nil {
@@ -156,18 +173,18 @@ func (i *Cluster) DecryptKubeConf(key string) error {
 		return err
 	}
 
-	i.Data.KubeConfig = string(planText)
+	i.Spec.KubeConfig = string(planText)
 	return nil
 }
 
 func (i *Cluster) Desense() {
-	if i.Data.KubeConfig != "" {
-		i.Data.KubeConfig = "****"
+	if i.Spec.KubeConfig != "" {
+		i.Spec.KubeConfig = "****"
 	}
 }
 
 func (i *Cluster) Client() (*k8s.Client, error) {
-	return k8s.NewClient(i.Data.KubeConfig)
+	return k8s.NewClient(i.Spec.KubeConfig)
 }
 
 func NewDescribeClusterRequest(id string) *DescribeClusterRequest {
@@ -203,7 +220,7 @@ func NewPutClusterRequest(id string) *UpdateClusterRequest {
 		Id:         id,
 		UpdateMode: pb_request.UpdateMode_PUT,
 		UpdateAt:   time.Now().UnixMicro(),
-		Data:       NewCreateClusterRequest(),
+		Spec:       NewCreateClusterRequest(),
 	}
 }
 
@@ -212,7 +229,7 @@ func NewPatchClusterRequest(id string) *UpdateClusterRequest {
 		Id:         id,
 		UpdateMode: pb_request.UpdateMode_PATCH,
 		UpdateAt:   time.Now().UnixMicro(),
-		Data:       NewCreateClusterRequest(),
+		Spec:       NewCreateClusterRequest(),
 	}
 }
 

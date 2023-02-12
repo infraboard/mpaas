@@ -39,19 +39,19 @@ func (s *service) CreateCluster(ctx context.Context, req *cluster.CreateClusterR
 }
 
 func (s *service) checkStatus(ins *cluster.Cluster) {
-	client, err := k8s.NewClient(ins.Data.KubeConfig)
+	client, err := k8s.NewClient(ins.Spec.KubeConfig)
 	if err != nil {
 		ins.Status.Message = err.Error()
 		return
 	}
 
 	if ctx := client.CurrentContext(); ctx != nil {
-		ins.Id = ctx.Cluster
-		ins.ServerInfo.AuthUser = ctx.AuthInfo
+		ins.Meta.Id = ctx.Cluster
+		ins.Meta.ServerInfo.AuthUser = ctx.AuthInfo
 	}
 
 	if k := client.CurrentCluster(); k != nil {
-		ins.ServerInfo.Server = k.Server
+		ins.Meta.ServerInfo.Server = k.Server
 	}
 
 	// 检查凭证是否可用
@@ -62,7 +62,7 @@ func (s *service) checkStatus(ins *cluster.Cluster) {
 		ins.Status.Message = err.Error()
 	} else {
 		ins.Status.IsAlive = true
-		ins.ServerInfo.Version = v
+		ins.Meta.ServerInfo.Version = v
 	}
 }
 
@@ -99,7 +99,7 @@ func (s *service) UpdateCluster(ctx context.Context, req *cluster.UpdateClusterR
 	}
 
 	// 配置kubeconfig是否有变更
-	isKubeConfigChanged := req.Data.KubeConfig == ins.Data.KubeConfig
+	isKubeConfigChanged := req.Spec.KubeConfig == ins.Spec.KubeConfig
 
 	switch req.UpdateMode {
 	case request.UpdateMode_PUT:
@@ -112,7 +112,7 @@ func (s *service) UpdateCluster(ctx context.Context, req *cluster.UpdateClusterR
 	}
 
 	// 校验更新后数据合法性
-	if err := ins.Data.Validate(); err != nil {
+	if err := ins.Spec.Validate(); err != nil {
 		return nil, err
 	}
 
