@@ -64,9 +64,9 @@ func (i *impl) DescribeJob(ctx context.Context, in *job.DescribeJobRequest) (
 		filter["_id"] = in.DescribeValue
 	case job.DESCRIBE_BY_JOB_UNIQ_NAME:
 		name, ns, domain := job.ParseUniqName(in.DescribeValue)
-		filter["spec.name"] = name
-		filter["spec.namespace"] = ns
-		filter["spec.domain"] = domain
+		filter["name"] = name
+		filter["namespace"] = ns
+		filter["domain"] = domain
 	}
 
 	ins := job.NewDefaultJob()

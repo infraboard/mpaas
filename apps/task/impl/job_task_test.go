@@ -22,7 +22,7 @@ func TestRunJob(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	t.Log(ins)
+	t.Log(tools.MustToJson(ins))
 }
 
 func TestQueryJobTask(t *testing.T) {
@@ -32,7 +32,7 @@ func TestQueryJobTask(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	t.Log(tools.MustToYaml(set))
+	t.Log(tools.MustToJson(set))
 }
 
 func TestDescribeJobTask(t *testing.T) {
@@ -41,7 +41,7 @@ func TestDescribeJobTask(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	t.Log(tools.MustToYaml(ins))
+	t.Log(tools.MustToJson(ins))
 }
 
 func TestUpdateJobTaskStatus(t *testing.T) {

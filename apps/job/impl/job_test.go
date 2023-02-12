@@ -13,7 +13,7 @@ func TestQueryJob(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	t.Log(set)
+	t.Log(tools.MustToJson(set))
 }
 
 func TestCreateBuildJob(t *testing.T) {
@@ -25,18 +25,19 @@ func TestCreateBuildJob(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	t.Log(ins)
+	t.Log(tools.MustToJson(ins))
 }
 
 func TestCreateDeployJob(t *testing.T) {
 	req := job.NewCreateJobRequest()
 	req.Name = "docker_build"
+	req.CreateBy = "test"
 	req.RunnerSpec = tools.MustReadContentFile("test/deploy.yaml")
 	ins, err := impl.CreateJob(ctx, req)
 	if err != nil {
 		t.Fatal(err)
 	}
-	t.Log(ins)
+	t.Log(tools.MustToJson(ins))
 }
 
 func TestUpdateJob(t *testing.T) {
@@ -46,7 +47,7 @@ func TestUpdateJob(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	t.Log(ins)
+	t.Log(tools.MustToJson(ins))
 }
 
 func TestDescribeJob(t *testing.T) {
@@ -55,5 +56,5 @@ func TestDescribeJob(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	t.Log(ins)
+	t.Log(tools.MustToJson(ins))
 }

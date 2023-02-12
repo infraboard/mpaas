@@ -1,6 +1,7 @@
 package tools
 
 import (
+	"github.com/infraboard/mpaas/common/format"
 	"sigs.k8s.io/yaml"
 )
 
@@ -10,4 +11,8 @@ func MustToYaml(v any) string {
 		panic(err)
 	}
 	return string(b)
+}
+
+func MustToJson(v any) string {
+	return format.Prettify(v)
 }

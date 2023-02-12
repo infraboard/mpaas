@@ -45,7 +45,7 @@ func TestCreateJob(t *testing.T) {
 }
 
 func TestDeleteJob(t *testing.T) {
-	req := meta.NewDeleteRequest("cfj51sls99bvbmscmhcg")
+	req := meta.NewDeleteRequest("cfk6505s99bmg2fdbt9g")
 	err := impl.DeleteJob(ctx, req)
 	if err != nil {
 		t.Fatal(err)
