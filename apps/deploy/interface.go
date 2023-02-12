@@ -4,12 +4,11 @@ import (
 	context "context"
 	"fmt"
 	"net/http"
-	"time"
 
 	"github.com/infraboard/mcenter/common/validate"
 	"github.com/infraboard/mcube/http/request"
 	pb_request "github.com/infraboard/mcube/pb/request"
-	"github.com/rs/xid"
+	"github.com/infraboard/mpaas/common/meta"
 )
 
 const (
@@ -29,9 +28,8 @@ func New(req *CreateDeployConfigRequest) (*DeployConfig, error) {
 	}
 
 	d := &DeployConfig{
-		Id:       xid.New().String(),
-		CreateAt: time.Now().Unix(),
-		Spec:     req,
+		Meta: meta.NewMeta(),
+		Spec: req,
 	}
 
 	return d, nil

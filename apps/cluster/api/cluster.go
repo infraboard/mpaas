@@ -27,7 +27,7 @@ func (h *handler) Registry(ws *restful.WebService) {
 		Metadata(restfulspec.KeyOpenAPITags, tags).
 		Metadata(label.Resource, h.Name()).
 		Metadata(label.Action, label.List.Value()).
-		Metadata(label.Auth, label.Enable).
+		Metadata(label.Auth, label.Disable).
 		Metadata(label.Permission, label.Enable).
 		Reads(cluster.QueryClusterRequest{}).
 		Writes(cluster.ClusterSet{}).
@@ -39,7 +39,7 @@ func (h *handler) Registry(ws *restful.WebService) {
 		Metadata(restfulspec.KeyOpenAPITags, tags).
 		Metadata(label.Resource, h.Name()).
 		Metadata(label.Action, label.Get.Value()).
-		Metadata(label.Auth, label.Enable).
+		Metadata(label.Auth, label.Disable).
 		Metadata(label.Permission, label.Enable).
 		Writes(cluster.Cluster{}).
 		Returns(200, "OK", cluster.Cluster{}).

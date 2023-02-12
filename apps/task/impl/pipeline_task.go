@@ -114,9 +114,9 @@ func (i *impl) PipelineTaskStatusChanged(ctx context.Context, in *task.JobTask) 
 // 更新Pipeline状态
 func (i *impl) updatePipelineStatus(ctx context.Context, in *task.PipelineTask) (*task.PipelineTask, error) {
 	in.Status.UpdateAt = time.Now().Unix()
-	if _, err := i.pcol.UpdateByID(ctx, in.Id, bson.M{"$set": bson.M{"status": in.Status}}); err != nil {
+	if _, err := i.pcol.UpdateByID(ctx, in.Meta.Id, bson.M{"$set": bson.M{"status": in.Status}}); err != nil {
 		return nil, exception.NewInternalServerError("update task(%s) document error, %s",
-			in.Id, err)
+			in.Meta.Id, err)
 	}
 	return in, nil
 }
@@ -203,7 +203,7 @@ func (i *impl) DeletePipelineTask(ctx context.Context, in *task.DeletePipelineTa
 			continue
 		}
 
-		_, err := i.DeleteJobTask(ctx, task.NewDeleteJobTaskRequest(t.Id))
+		_, err := i.DeleteJobTask(ctx, task.NewDeleteJobTaskRequest(t.Meta.Id))
 		if err != nil {
 			if !exception.IsNotFoundError(err) {
 				return nil, err

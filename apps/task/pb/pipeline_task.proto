@@ -3,6 +3,7 @@ syntax = "proto3";
 package infraboard.mpaas.task;
 option go_package = "github.com/infraboard/mpaas/apps/task";
 
+import "common/meta/meta.proto";
 import "apps/task/pb/job_task.proto";
 import "apps/pipeline/pb/pipeline.proto";
 
@@ -16,12 +17,9 @@ message PipelineTaskSet {
 }
 
 message PipelineTask {
-    // 部署Id
-    // @gotags: bson:"_id" json:"id"
-    string id = 1;
-    // 创建时间
-    // @gotags: bson:"create_at" json:"create_at"
-    int64 create_at = 2;
+    // 元信息
+    // @gotags: bson:",inline" json:"meta"
+    common.meta.Meta meta = 1;
 	// 关联Job
 	// @gotags: bson:"pipeline" json:"pipeline"
 	pipeline.Pipeline pipeline = 3;

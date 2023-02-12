@@ -3,6 +3,7 @@ syntax = "proto3";
 package infraboard.mpaas.gateway;
 option go_package = "github.com/infraboard/mpaas/apps/gateway";
 
+import "common/meta/meta.proto";
 
 enum TYPE {
     // 基于Etcd对接的Traefik网关
@@ -10,18 +11,12 @@ enum TYPE {
 }
 
 message Gateway {
-    // 网关ID
-    // @gotags: bson:"_id" json:"id"
-    string id = 1;
-    // 创建时间
-    // @gotags: bson:"create_at" json:"create_at"
-    int64 create_at = 2;
-    // 更新时间
-    // @gotags: bson:"update_at" json:"update_at"
-    int64 update_at = 3;
+    // 元信息
+    // @gotags: bson:",inline" json:"meta"
+    common.meta.Meta meta = 1;
     // 网关信息
-    // @gotags: bson:"spec" json:"spec"
-    CreateGatewayRequest spec = 5;
+    // @gotags: bson:",inline" json:"spec"
+    CreateGatewayRequest spec = 2;
 }
 
 message GatewaySet {

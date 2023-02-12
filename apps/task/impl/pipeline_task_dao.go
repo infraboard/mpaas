@@ -46,17 +46,17 @@ func (r *queryPipelineTaskRequest) FindFilter() bson.M {
 }
 
 func (i *impl) deletecluster(ctx context.Context, ins *task.PipelineTask) error {
-	if ins == nil || ins.Id == "" {
+	if ins == nil || ins.Meta.Id == "" {
 		return fmt.Errorf("cluster is nil")
 	}
 
-	result, err := i.pcol.DeleteOne(ctx, bson.M{"_id": ins.Id})
+	result, err := i.pcol.DeleteOne(ctx, bson.M{"_id": ins.Meta.Id})
 	if err != nil {
-		return exception.NewInternalServerError("delete pipeline task(%s) error, %s", ins.Id, err)
+		return exception.NewInternalServerError("delete pipeline task(%s) error, %s", ins.Meta.Id, err)
 	}
 
 	if result.DeletedCount == 0 {
-		return exception.NewNotFound("pipeline task %s not found", ins.Id)
+		return exception.NewNotFound("pipeline task %s not found", ins.Meta.Id)
 	}
 
 	return nil

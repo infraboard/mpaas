@@ -38,15 +38,15 @@ func (r *queryRequest) FindFilter() bson.M {
 	filter := bson.M{}
 
 	if r.VisiableMode != nil {
-		filter["spec.visiable_mode"] = *r.VisiableMode
+		filter["visiable_mode"] = *r.VisiableMode
 	}
 
 	if r.Domain != "" {
-		filter["spec.domain"] = r.Domain
+		filter["domain"] = r.Domain
 	}
 
 	if r.Namespace != "" {
-		filter["spec.namespace"] = r.Namespace
+		filter["namespace"] = r.Namespace
 	}
 
 	if len(r.Ids) > 0 {
@@ -54,14 +54,14 @@ func (r *queryRequest) FindFilter() bson.M {
 	}
 
 	if len(r.Names) > 0 {
-		filter["spec.name"] = bson.M{"$in": r.Names}
+		filter["name"] = bson.M{"$in": r.Names}
 	}
 
 	return filter
 }
 
 func (i *impl) update(ctx context.Context, ins *job.Job) error {
-	if _, err := i.col.UpdateByID(ctx, ins.Id, bson.M{"$set": ins}); err != nil {
+	if _, err := i.col.UpdateByID(ctx, ins.Meta.Id, bson.M{"$set": ins}); err != nil {
 		return exception.NewInternalServerError("inserted job(%s) document error, %s",
 			ins.Spec.Name, err)
 	}

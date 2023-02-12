@@ -27,14 +27,14 @@ type Cluster struct {
 	unknownFields protoimpl.UnknownFields
 
 	// 集群状态
-	// @gotags: json:"meta" bson:"meta"
-	Meta *Meta `protobuf:"bytes,1,opt,name=meta,proto3" json:"meta" bson:"meta"`
+	// @gotags: json:"meta" bson:",inline"
+	Meta *Meta `protobuf:"bytes,1,opt,name=meta,proto3" json:"meta" bson:",inline"`
 	// 基础信息
-	// @gotags: json:"spec" bson:"spec"
-	Spec *CreateClusterRequest `protobuf:"bytes,2,opt,name=spec,proto3" json:"spec" bson:"spec"`
+	// @gotags: json:"spec" bson:",inline"
+	Spec *CreateClusterRequest `protobuf:"bytes,2,opt,name=spec,proto3" json:"spec" bson:",inline"`
 	// 集群状态
-	// @gotags: json:"status" bson:"status"
-	Status *Status `protobuf:"bytes,3,opt,name=status,proto3" json:"status" bson:"status"`
+	// @gotags: json:"status" bson:",inline"
+	Status *Status `protobuf:"bytes,3,opt,name=status,proto3" json:"status" bson:",inline"`
 }
 
 func (x *Cluster) Reset() {

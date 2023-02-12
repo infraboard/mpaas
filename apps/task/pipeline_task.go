@@ -4,7 +4,7 @@ import (
 	"time"
 
 	"github.com/infraboard/mpaas/apps/pipeline"
-	"github.com/rs/xid"
+	"github.com/infraboard/mpaas/common/meta"
 )
 
 func NewPipelineTaskSet() *PipelineTaskSet {
@@ -24,7 +24,7 @@ func NewPipelineTask(p *pipeline.Pipeline) *PipelineTask {
 	// 初始化所有的JobTask
 	for i := range p.Spec.Stages {
 		spec := p.Spec.Stages[i]
-		ss := NewStageStatus(spec, pt.Id)
+		ss := NewStageStatus(spec, pt.Meta.Id)
 		pt.Status.AddStage(ss)
 	}
 	return pt
@@ -32,9 +32,8 @@ func NewPipelineTask(p *pipeline.Pipeline) *PipelineTask {
 
 func NewDefaultPipelineTask() *PipelineTask {
 	return &PipelineTask{
-		Id:       xid.New().String(),
-		CreateAt: time.Now().Unix(),
-		Status:   NewPipelineTaskStatus(),
+		Meta:   meta.NewMeta(),
+		Status: NewPipelineTaskStatus(),
 	}
 }
 
@@ -117,7 +116,7 @@ func (p *PipelineTask) GetStage(name string) *StageStatus {
 		return nil
 	}
 
-	stage := NewStageStatus(stageSpec, p.Id)
+	stage := NewStageStatus(stageSpec, p.Meta.Id)
 	p.Status.AddStage(stage)
 
 	return stage
@@ -201,7 +200,7 @@ func (s *StageStatus) Add(item *JobTask) {
 func (s *StageStatus) GetJobTask(id string) *JobTask {
 	for i := range s.JobTasks {
 		item := s.JobTasks[i]
-		if item.Id == id {
+		if item.Meta.Id == id {
 			return item
 		}
 	}

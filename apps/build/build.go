@@ -1,9 +1,7 @@
 package build
 
 import (
-	"time"
-
-	"github.com/rs/xid"
+	"github.com/infraboard/mpaas/common/meta"
 )
 
 // New 新建一个domain
@@ -13,9 +11,8 @@ func New(req *CreateBuildConfigRequest) (*BuildConfig, error) {
 	}
 
 	d := &BuildConfig{
-		Id:       xid.New().String(),
-		CreateAt: time.Now().Unix(),
-		Spec:     req,
+		Meta: meta.NewMeta(),
+		Spec: req,
 	}
 
 	return d, nil

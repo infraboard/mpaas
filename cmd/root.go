@@ -5,6 +5,9 @@ import (
 	"fmt"
 
 	"github.com/infraboard/mcube/app"
+	"github.com/infraboard/mcube/cache"
+	"github.com/infraboard/mcube/cache/memory"
+	"github.com/infraboard/mcube/cache/redis"
 	"github.com/infraboard/mcube/logger/zap"
 	"github.com/spf13/cobra"
 
@@ -58,6 +61,26 @@ func loadGlobalConfig(configType string) error {
 	return nil
 }
 
+func loadCache() error {
+	l := zap.L().Named("INIT")
+	c := conf.C()
+	// 设置全局缓存
+	switch c.Cache.Type {
+	case "memory", "":
+		ins := memory.NewCache(c.Cache.Memory)
+		cache.SetGlobal(ins)
+		l.Info("use cache in local memory")
+	case "redis":
+		ins := redis.NewCache(c.Cache.Redis)
+		cache.SetGlobal(ins)
+		l.Info("use redis to cache")
+	default:
+		return fmt.Errorf("unknown cache type: %s", c.Cache.Type)
+	}
+
+	return nil
+}
+
 // log 为全局变量, 只需要load 即可全局可用户, 依赖全局配置先初始化
 func loadGlobalLogger() error {
 	var (
@@ -101,6 +124,10 @@ func initail() {
 
 	// 初始化全局日志配置
 	err = loadGlobalLogger()
+	cobra.CheckErr(err)
+
+	// 加载缓存
+	err = loadCache()
 	cobra.CheckErr(err)
 
 	// 初始化全局app

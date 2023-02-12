@@ -102,10 +102,10 @@ func (i *impl) UpdateDeployConfig(ctx context.Context, in *deploy.UpdateDeployCo
 		return nil, exception.NewBadRequest("unknown update mode: %s", in.UpdateMode)
 	}
 
-	d.UpdateAt = time.Now().Unix()
-	_, err = i.col.UpdateOne(ctx, bson.M{"_id": d.Id}, bson.M{"$set": d})
+	d.Meta.UpdateAt = time.Now().Unix()
+	_, err = i.col.UpdateOne(ctx, bson.M{"_id": d.Meta.Id}, bson.M{"$set": d})
 	if err != nil {
-		return nil, exception.NewInternalServerError("update deploy(%s) error, %s", d.Id, err)
+		return nil, exception.NewInternalServerError("update deploy(%s) error, %s", d.Meta.Id, err)
 	}
 
 	return d, nil

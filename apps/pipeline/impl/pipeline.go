@@ -96,7 +96,7 @@ func (i *impl) UpdatePipeline(ctx context.Context, in *pipeline.UpdatePipelineRe
 	}
 
 	// 更新数据库
-	if _, err := i.col.UpdateByID(ctx, ins.Id, bson.M{"$set": ins}); err != nil {
+	if _, err := i.col.UpdateByID(ctx, ins.Meta.Id, bson.M{"$set": ins}); err != nil {
 		return nil, exception.NewInternalServerError("inserted cluster(%s) document error, %s",
 			ins.Spec.Name, err)
 	}
@@ -112,7 +112,7 @@ func (i *impl) DeletePipeline(ctx context.Context, in *pipeline.DeletePipelineRe
 		return nil, err
 	}
 
-	_, err = i.col.DeleteOne(ctx, bson.M{"_id": ins.Id})
+	_, err = i.col.DeleteOne(ctx, bson.M{"_id": ins.Meta.Id})
 	if err != nil {
 		return nil, exception.NewInternalServerError("delete pipeline(%s) error, %s", in.Id, err)
 	}

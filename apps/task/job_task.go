@@ -6,6 +6,7 @@ import (
 
 	"github.com/infraboard/mpaas/apps/job"
 	pipeline "github.com/infraboard/mpaas/apps/pipeline"
+	"github.com/infraboard/mpaas/common/meta"
 	"github.com/rs/xid"
 )
 
@@ -41,11 +42,10 @@ func NewJobTask(req *pipeline.RunJobRequest) *JobTask {
 	}
 
 	return &JobTask{
-		Id:       req.Id,
-		CreateAt: time.Now().Unix(),
-		Spec:     req,
-		Job:      nil,
-		Status:   NewJobTaskStatus(),
+		Meta:   meta.NewMeta(),
+		Spec:   req,
+		Job:    nil,
+		Status: NewJobTaskStatus(),
 	}
 }
 

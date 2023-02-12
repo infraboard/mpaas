@@ -6,7 +6,7 @@ import (
 	"unicode"
 
 	"github.com/imdario/mergo"
-	"github.com/rs/xid"
+	"github.com/infraboard/mpaas/common/meta"
 	corev1 "k8s.io/api/core/v1"
 )
 
@@ -17,9 +17,8 @@ func New(req *CreateJobRequest) (*Job, error) {
 	}
 
 	d := &Job{
-		Id:       xid.New().String(),
-		CreateAt: time.Now().Unix(),
-		Spec:     req,
+		Meta: meta.NewMeta(),
+		Spec: req,
 	}
 
 	return d, nil
@@ -131,13 +130,13 @@ func NewRunParamWithKVPaire(kvs ...string) (params []*RunParam) {
 }
 
 func (i *Job) Update(req *UpdateJobRequest) {
-	i.UpdateAt = time.Now().UnixMicro()
-	i.UpdateBy = req.UpdateBy
+	i.Meta.UpdateAt = time.Now().Unix()
+	i.Meta.UpdateBy = req.UpdateBy
 	i.Spec = req.Spec
 }
 
 func (i *Job) Patch(req *UpdateJobRequest) error {
-	i.UpdateAt = time.Now().UnixMicro()
-	i.UpdateBy = req.UpdateBy
+	i.Meta.UpdateAt = time.Now().Unix()
+	i.Meta.UpdateBy = req.UpdateBy
 	return mergo.MergeWithOverwrite(i.Spec, req.Spec)
 }

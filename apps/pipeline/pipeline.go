@@ -7,7 +7,7 @@ import (
 	"github.com/imdario/mergo"
 	"github.com/infraboard/mcube/http/request"
 	job "github.com/infraboard/mpaas/apps/job"
-	"github.com/rs/xid"
+	"github.com/infraboard/mpaas/common/meta"
 	"sigs.k8s.io/yaml"
 )
 
@@ -34,22 +34,21 @@ func New(req *CreatePipelineRequest) (*Pipeline, error) {
 	}
 
 	d := &Pipeline{
-		Id:       xid.New().String(),
-		CreateAt: time.Now().Unix(),
-		Spec:     req,
+		Meta: meta.NewMeta(),
+		Spec: req,
 	}
 	return d, nil
 }
 
 func (p *Pipeline) Update(req *UpdatePipelineRequest) {
-	p.UpdateAt = time.Now().UnixMicro()
-	p.UpdateBy = req.UpdateBy
+	p.Meta.UpdateAt = time.Now().Unix()
+	p.Meta.UpdateBy = req.UpdateBy
 	p.Spec = req.Spec
 }
 
 func (p *Pipeline) Patch(req *UpdatePipelineRequest) error {
-	p.UpdateAt = time.Now().UnixMicro()
-	p.UpdateBy = req.UpdateBy
+	p.Meta.UpdateAt = time.Now().Unix()
+	p.Meta.UpdateBy = req.UpdateBy
 	return mergo.MergeWithOverwrite(p.Spec, req.Spec)
 }
 

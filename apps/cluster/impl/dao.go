@@ -64,21 +64,21 @@ func (r *queryclusterRequest) FindFilter() bson.M {
 	filter := bson.M{}
 
 	if r.Domain != "" {
-		filter["data.domain"] = r.Domain
+		filter["domain"] = r.Domain
 	}
 	if r.Namespace != "" {
-		filter["data.namespace"] = r.Namespace
+		filter["namespace"] = r.Namespace
 	}
 	if r.Vendor != "" {
-		filter["data.vendor"] = r.Vendor
+		filter["vendor"] = r.Vendor
 	}
 	if r.Region != "" {
-		filter["data.region"] = r.Region
+		filter["region"] = r.Region
 	}
 
 	if r.Keywords != "" {
 		filter["$or"] = bson.A{
-			bson.M{"data.name": bson.M{"$regex": r.Keywords, "$options": "im"}},
+			bson.M{"name": bson.M{"$regex": r.Keywords, "$options": "im"}},
 		}
 	}
 	return filter

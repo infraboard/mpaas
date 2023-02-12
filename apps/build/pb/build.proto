@@ -3,6 +3,7 @@ syntax = "proto3";
 package infraboard.mpaas.build;
 option go_package = "github.com/infraboard/mpaas/apps/build";
 
+import "common/meta/meta.proto";
 
 message BuildConfigSet {
     // 总数
@@ -12,23 +13,11 @@ message BuildConfigSet {
 }
 
 message BuildConfig  {
-    // 构建配置Id
-    // @gotags: bson:"_id" json:"id"
-    string id = 1;
-    // 所属Domain
-    // @gotags: bson:"domain" json:"domain"
-    string domain = 2;
-    // 所属空间
-    // @gotags: bson:"namespace" json:"namespace"
-    string namespace = 3;
-    // 创建时间
-    // @gotags: bson:"create_at" json:"create_at"
-    int64 create_at = 4;
-    // 更新时间
-    // @gotags: bson:"update_at" json:"update_at"
-    int64 update_at = 5;
+    // 元信息
+    // @gotags: bson:",inline" json:"meta"
+    common.meta.Meta meta = 1;
     // 创建信息
-    // @gotags: bson:"spec" json:"spec"
+    // @gotags: bson:",inline" json:"spec"
     CreateBuildConfigRequest spec = 6;
 }
 

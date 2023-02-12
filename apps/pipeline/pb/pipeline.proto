@@ -3,6 +3,7 @@ syntax = "proto3";
 package infraboard.mpaas.pipeline;
 option go_package = "github.com/infraboard/mpaas/apps/pipeline";
 
+import "common/meta/meta.proto";
 import "apps/job/pb/job.proto";
 
 message PipelineSet {
@@ -16,21 +17,12 @@ message PipelineSet {
 
 // 流水线
 message Pipeline {
-    // 唯一ID
-	// @gotags: bson:"_id" json:"id"
-    string id = 1;
-	// 创建时间
-	// @gotags: bson:"create_at" json:"create_at"
-	int64 create_at = 2;
-	// 更新时间
-	// @gotags: bson:"update_at" json:"update_at"
-	int64 update_at = 3;
-    // 唯一人
-	// @gotags: bson:"update_by" json:"update_by"
-    string update_by = 4;
+    // 元信息
+    // @gotags: bson:",inline" json:"meta"
+    common.meta.Meta meta = 1;
 	// 流水线定义
-	// @gotags: bson:"spec" json:"spec"
-	CreatePipelineRequest spec = 10;
+	// @gotags: bson:",inline" json:"spec"
+	CreatePipelineRequest spec = 2;
 }
 
 message CreatePipelineRequest {

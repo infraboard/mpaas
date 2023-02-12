@@ -2,10 +2,9 @@ package gateway
 
 import (
 	context "context"
-	"time"
 
 	"github.com/infraboard/mcenter/common/validate"
-	"github.com/rs/xid"
+	"github.com/infraboard/mpaas/common/meta"
 )
 
 const (
@@ -42,12 +41,9 @@ func New(req *CreateGatewayRequest) (*Gateway, error) {
 		return nil, err
 	}
 
-	now := time.Now().Unix()
 	return &Gateway{
-		Id:       xid.New().String(),
-		CreateAt: now,
-		UpdateAt: now,
-		Spec:     req,
+		Meta: meta.NewMeta(),
+		Spec: req,
 	}, nil
 }
 
