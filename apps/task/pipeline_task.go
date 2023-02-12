@@ -209,7 +209,7 @@ func (s *StageStatus) Add(item *JobTask) {
 func (s *StageStatus) GetJobTask(id string) *JobTask {
 	for i := range s.JobTasks {
 		item := s.JobTasks[i]
-		if item.Meta.Id == id {
+		if item.Spec.Id == id {
 			return item
 		}
 	}

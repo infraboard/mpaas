@@ -69,6 +69,9 @@ message Stage {
 }
 
 message RunJobRequest {
+    // 唯一ID, 如果不传，则由系统自动生成
+	// @gotags: bson:"_id" json:"id,omitempty"
+    string id = 9;
 	// task执行的域
 	// @gotags: bson:"domain" json:"domain"
     string domain = 1;
@@ -82,8 +85,8 @@ message RunJobRequest {
 	// @gotags: bson:"stage_name" json:"stage_name"
     string stage_name = 4;
 	// job名称: name
-	// @gotags: bson:"job" json:"job" validate:"required"
-    string job = 5;
+	// @gotags: bson:"job_name" json:"job_name" validate:"required"
+    string job_name = 5;
 	// job运行时参数
 	// @gotags: bson:"params" json:"params"
 	job.VersionedRunParam params = 6;
@@ -93,9 +96,6 @@ message RunJobRequest {
 	// WebHook配置, 及时把job执行状态推送给外部, 比如各种机器人
 	// @gotags: bson:"webhooks" json:"webhooks"
 	repeated WebHook webhooks = 8;
-    // 唯一ID, 如果不传，则由系统自动生成
-	// @gotags: bson:"-" json:"id,omitempty"
-    string id = 9;
     // 任务标签
     // @gotags: bson:"labels" json:"labels"
     map<string,string> labels = 15;

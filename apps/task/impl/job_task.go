@@ -24,7 +24,7 @@ func (i *impl) RunJob(ctx context.Context, in *pipeline.RunJobRequest) (
 	ins := task.NewJobTask(in)
 
 	// 1. 查询需要执行的Job
-	req := job.NewDescribeJobRequest(in.Job)
+	req := job.NewDescribeJobRequest(in.JobName)
 	j, err := i.job.DescribeJob(ctx, req)
 	if err != nil {
 		return nil, err
@@ -33,7 +33,7 @@ func (i *impl) RunJob(ctx context.Context, in *pipeline.RunJobRequest) (
 
 	// 2. 执行Job
 	r := runner.GetRunner(j.Spec.RunnerType)
-	runReq := task.NewRunTaskRequest(ins.Meta.Id, j.Spec.RunnerSpec, in.Params)
+	runReq := task.NewRunTaskRequest(ins.Spec.Id, j.Spec.RunnerSpec, in.Params)
 	runReq.Labels = in.Labels
 	status, err := r.Run(ctx, runReq)
 	if err != nil {
@@ -44,7 +44,7 @@ func (i *impl) RunJob(ctx context.Context, in *pipeline.RunJobRequest) (
 	// 3. 保存任务
 	updateOpt := options.Update()
 	updateOpt.SetUpsert(true)
-	if _, err := i.jcol.UpdateByID(ctx, ins.Meta.Id, bson.M{"$set": ins}, updateOpt); err != nil {
+	if _, err := i.jcol.UpdateByID(ctx, ins.Spec.Id, bson.M{"$set": ins}, updateOpt); err != nil {
 		return nil, exception.NewInternalServerError("inserted a job task document error, %s", err)
 	}
 	return ins, nil
@@ -100,7 +100,7 @@ func (i *impl) UpdateJobTaskStatus(ctx context.Context, in *task.UpdateJobTaskSt
 	ins.Status.Update(in)
 
 	// 更新数据库
-	if _, err := i.jcol.UpdateByID(ctx, ins.Meta.Id, bson.M{"$set": ins}); err != nil {
+	if _, err := i.jcol.UpdateByID(ctx, ins.Spec.Id, bson.M{"$set": ins}); err != nil {
 		return nil, exception.NewInternalServerError("update task(%s) document error, %s",
 			in.Id, err)
 	}

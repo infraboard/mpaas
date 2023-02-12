@@ -5,7 +5,6 @@ option go_package = "github.com/infraboard/mpaas/apps/task";
 
 import "apps/job/pb/job.proto";
 import "apps/pipeline/pb/pipeline.proto";
-import "common/meta/meta.proto";
 
 message JobTaskSet {
 	// 总数量
@@ -19,16 +18,28 @@ message JobTaskSet {
 message JobTask {
     // 元信息
     // @gotags: bson:",inline" json:"meta"
-    common.meta.Meta meta = 1;
+    Meta meta = 1;
 	// task定义, job运行时参数
 	// @gotags: bson:",inline" json:"spec"
-	pipeline.RunJobRequest spec = 3;
+	pipeline.RunJobRequest spec = 2;
+	// 任务当前状态
+	// @gotags: bson:",inline" json:"status"
+	JobTaskStatus status = 3;
 	// 关联Job
 	// @gotags: bson:"job" json:"job"
 	job.Job job = 4;
-	// 任务当前状态
-	// @gotags: bson:"status" json:"status"
-	JobTaskStatus status = 15;
+}
+
+message Meta {
+    // 创建时间
+    // @gotags: bson:"create_at" json:"create_at"
+    int64 create_at = 1;
+    // 更新时间
+    // @gotags: bson:"update_at" json:"update_at"
+    int64 update_at = 2;
+    // 更新人
+    // @gotags: bson:"update_by" json:"update_by"
+    string update_by = 3;
 }
 
 enum STAGE {

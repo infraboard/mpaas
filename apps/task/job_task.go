@@ -7,7 +7,6 @@ import (
 
 	"github.com/infraboard/mpaas/apps/job"
 	pipeline "github.com/infraboard/mpaas/apps/pipeline"
-	"github.com/infraboard/mpaas/common/meta"
 	"github.com/rs/xid"
 )
 
@@ -37,13 +36,19 @@ func NewDefaultJobTask() *JobTask {
 	return NewJobTask(req)
 }
 
+func NewMeta() *Meta {
+	return &Meta{
+		CreateAt: time.Now().Unix(),
+	}
+}
+
 func NewJobTask(req *pipeline.RunJobRequest) *JobTask {
 	if req.Id == "" {
 		req.Id = xid.New().String()
 	}
 
 	return &JobTask{
-		Meta:   meta.NewMeta(),
+		Meta:   NewMeta(),
 		Spec:   req,
 		Job:    nil,
 		Status: NewJobTaskStatus(),
@@ -52,11 +57,11 @@ func NewJobTask(req *pipeline.RunJobRequest) *JobTask {
 
 func (p *JobTask) MarshalJSON() ([]byte, error) {
 	return json.Marshal(struct {
-		*meta.Meta
 		*pipeline.RunJobRequest
+		*Meta
 		*JobTaskStatus
 		Job *job.Job `json:"job"`
-	}{p.Meta, p.Spec, p.Status, p.Job})
+	}{p.Spec, p.Meta, p.Status, p.Job})
 }
 
 func (t *JobTask) GetStatusDetail() string {
@@ -81,7 +86,7 @@ func (t *JobTask) Update(job *job.Job, status *JobTaskStatus) {
 }
 
 func (s *JobTask) ShowTitle() string {
-	return fmt.Sprintf("任务[%s]当前状态: %s", s.Spec.Job, s.Status.Stage.String())
+	return fmt.Sprintf("任务[%s]当前状态: %s", s.Spec.JobName, s.Status.Stage.String())
 }
 
 func NewJobTaskStatus() *JobTaskStatus {

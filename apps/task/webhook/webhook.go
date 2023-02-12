@@ -29,7 +29,7 @@ func (h *WebHook) Send(ctx context.Context, hooks []*pipeline.WebHook, t *task.J
 		return err
 	}
 
-	h.log.Debugf("start send task[%s] webhook, total %d", t.Spec.Job, len(hooks))
+	h.log.Debugf("start send task[%s] webhook, total %d", t.Spec.JobName, len(hooks))
 	for i := range hooks {
 		req := newRequest(hooks[i], t)
 		req.Push()

@@ -16,7 +16,7 @@ func TestNewPipelineTask(t *testing.T) {
 	tasks := pt.JobTasks()
 	for i := range tasks.Items {
 		task := tasks.Items[i]
-		t.Log(task.Meta.Id, task.Spec.Job, task.Status.Stage)
+		t.Log(task.Spec.Id, task.Spec.JobName, task.Status.Stage)
 	}
 
 	// 即将运行的tasks
@@ -25,7 +25,7 @@ func TestNewPipelineTask(t *testing.T) {
 		for i := range nexts.Items {
 			next := nexts.Items[i]
 			next.Status.MarkedSuccess()
-			t.Log(next.Meta.Id, next.Spec.Job, next.Status.Stage)
+			t.Log(next.Spec.Id, next.Spec.JobName, next.Status.Stage)
 		}
 
 		nexts = pt.NextRun()

@@ -36,7 +36,7 @@ func TestQueryJobTask(t *testing.T) {
 }
 
 func TestDescribeJobTask(t *testing.T) {
-	req := task.NewDescribeJobTaskRequest("cfitji6a0brkep9j5530")
+	req := task.NewDescribeJobTaskRequest("cfk6gjds99bnlm5i5r50")
 	ins, err := impl.DescribeJobTask(ctx, req)
 	if err != nil {
 		t.Fatal(err)

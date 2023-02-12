@@ -203,7 +203,7 @@ func (i *impl) DeletePipelineTask(ctx context.Context, in *task.DeletePipelineTa
 			continue
 		}
 
-		_, err := i.DeleteJobTask(ctx, task.NewDeleteJobTaskRequest(t.Meta.Id))
+		_, err := i.DeleteJobTask(ctx, task.NewDeleteJobTaskRequest(t.Spec.Id))
 		if err != nil {
 			if !exception.IsNotFoundError(err) {
 				return nil, err
