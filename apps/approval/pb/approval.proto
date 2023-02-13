@@ -4,7 +4,6 @@ package infraboard.mpaas.approval;
 option go_package = "github.com/infraboard/mpaas/apps/approval";
 
 import "common/meta/meta.proto";
-import "apps/approval/pb/deploy.proto";
 
 message ApprovalSet {
     // 总数
@@ -48,9 +47,28 @@ message CreateApprovalRequest {
     // 审核通过后, 是否自动执行发布
     // @gotags: bson:"auto_publish" json:"auto_publish"
     bool auto_publish = 6;
-    // 部署清单
+    // 部署流水线
     // @gotags: bson:"deploy_list" json:"deploy_list"
-    DeployList deploy_list = 7;
+    string deploy_pipeline = 7;
+}
+
+enum STAGE {
+    // 草稿
+	DRAFT = 0;  
+	// 待审核
+	PENDDING = 1;
+	// 审核通过
+	PASSED = 2;
+    // 已过期
+    EXPIRED = 3;
+	// 审核拒绝
+	DENY = 4;
+	// 发布成功
+	SUCCEEDED = 11;
+	// 发布失败
+	FAILED = 12;
+	// 发布关闭, 发布成功后,验证没问题, 发布结束
+	CLOSED = 13;
 }
 
 message Status {

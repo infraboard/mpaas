@@ -47,6 +47,10 @@ func (req *CreateJobRequest) Validate() error {
 	return validate.Validate(req)
 }
 
+func (req *CreateJobRequest) AddVersionParams(item *VersionedRunParam) {
+	req.RunParams = append(req.RunParams, item)
+}
+
 func NewQueryJobRequest() *QueryJobRequest {
 	return &QueryJobRequest{
 		Page:  request.NewDefaultPageRequest(),

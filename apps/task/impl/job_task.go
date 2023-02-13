@@ -21,6 +21,17 @@ import (
 
 func (i *impl) RunJob(ctx context.Context, in *pipeline.RunJobRequest) (
 	*task.JobTask, error) {
+	if in.Id != "" {
+		// 如果任务重新运行, 需要等待之前的任务结束后才能执行
+		isActive, err := i.CheckJotTaskIsActive(ctx, in.Id)
+		if err != nil {
+			return nil, err
+		}
+		if isActive {
+			return nil, exception.NewConflict("任务: %s 当前处于运行中, 需要等待运行结束后才能执行", in.Id)
+		}
+	}
+
 	ins := task.NewJobTask(in)
 
 	// 1. 查询需要执行的Job
@@ -48,6 +59,17 @@ func (i *impl) RunJob(ctx context.Context, in *pipeline.RunJobRequest) (
 		return nil, exception.NewInternalServerError("inserted a job task document error, %s", err)
 	}
 	return ins, nil
+}
+
+// 判断任务是否还处于运行中
+func (i *impl) CheckJotTaskIsActive(ctx context.Context, jotTaskId string) (bool, error) {
+	ins, err := i.DescribeJobTask(ctx, task.NewDescribeJobTaskRequest(jotTaskId))
+	if err != nil && !exception.IsNotFoundError(err) {
+		return false, err
+	}
+
+	return ins.Status.Stage.Equal(task.STAGE_ACTIVE), nil
+
 }
 
 func (i *impl) JobTaskBatchSave(ctx context.Context, in *task.JobTaskSet) error {

@@ -20,7 +20,7 @@ func TestCreateBuildJob(t *testing.T) {
 	req := job.NewCreateJobRequest()
 	req.Name = "docker_build"
 	req.CreateBy = "test"
-	req.RunnerSpec = tools.MustReadContentFile("test/build.yaml")
+	req.RunnerSpec = tools.MustReadContentFile("test/build.yml")
 	ins, err := impl.CreateJob(ctx, req)
 	if err != nil {
 		t.Fatal(err)
@@ -30,9 +30,18 @@ func TestCreateBuildJob(t *testing.T) {
 
 func TestCreateDeployJob(t *testing.T) {
 	req := job.NewCreateJobRequest()
-	req.Name = "docker_build"
+	req.Name = "docker_deploy"
 	req.CreateBy = "test"
-	req.RunnerSpec = tools.MustReadContentFile("test/deploy.yaml")
+	req.RunnerSpec = tools.MustReadContentFile("test/deployment.yml")
+	v1 := job.NewVersionedRunParam("v1")
+	v1.Add(&job.RunParam{
+		Required: true,
+		Name:     "cluster_id",
+		Desc:     "job运行时的k8s集群",
+	})
+
+	req.AddVersionParams(v1)
+
 	ins, err := impl.CreateJob(ctx, req)
 	if err != nil {
 		t.Fatal(err)
