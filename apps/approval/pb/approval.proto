@@ -4,6 +4,16 @@ package infraboard.mpaas.approval;
 option go_package = "github.com/infraboard/mpaas/apps/approval";
 
 import "common/meta/meta.proto";
+import "apps/approval/pb/deploy.proto";
+
+message ApprovalSet {
+    // 总数
+    // @gotags: bson:"total" json:"total"
+    int64 total = 1;
+    // 列表
+    // @gotags: bson:"items" json:"items"
+    repeated Approval items = 2;
+}
 
 // 发布申请单
 message Approval  {
@@ -41,44 +51,6 @@ message CreateApprovalRequest {
     // 部署清单
     // @gotags: bson:"deploy_list" json:"deploy_list"
     DeployList deploy_list = 7;
-}
-
-// 部署清单
-message DeployList {
-    // 部署数量
-    // @gotags: bson:"total" json:"total"
-    int64 total = 1;
-    // 部署清单
-    // @gotags: bson:"items" json:"items"
-    repeated DeployItem items = 2;
-}
-
-message DeployItem {
-    // 部署配置Id
-    // @gotags: bson:"deploy_list" json:"deploy_list"
-    string deploy_id = 1;
-    // 部署的版本, 容器就填镜像版本, 包就填包的版本
-    // @gotags: bson:"version" json:"version"
-    string version = 2;
-}
-
-enum STAGE {
-    // 草稿
-	DRAFT = 0;  
-	// 待审核
-	PENDDING = 1;
-	// 审核通过
-	PASSED = 2;
-    // 已过期
-    EXPIRED = 3;
-	// 审核拒绝
-	DENY = 4;
-	// 发布成功
-	SUCCEEDED = 11;
-	// 发布失败
-	FAILED = 12;
-	// 发布关闭, 发布成功后,验证没问题, 发布结束
-	CLOSED = 13;
 }
 
 message Status {

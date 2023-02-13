@@ -1,0 +1,16 @@
+syntax = "proto3";
+
+package infraboard.mpaas.approval;
+option go_package = "github.com/infraboard/mpaas/apps/approval";
+
+import "apps/approval/pb/approval.proto";
+
+// RPC 服务构建配置
+service ApprovalRPC {
+	rpc CreateApproval(CreateApprovalRequest) returns(Approval);
+	rpc QueryApproval(QueryApprovalRequest) returns(ApprovalSet);
+}
+
+message QueryApprovalRequest {
+
+}

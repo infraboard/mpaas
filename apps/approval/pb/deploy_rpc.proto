@@ -1,0 +1,25 @@
+syntax = "proto3";
+
+package infraboard.mpaas.approval;
+option go_package = "github.com/infraboard/mpaas/apps/approval";
+
+import "apps/approval/pb/deploy.proto";
+
+// RPC 服务构建配置
+service DeployRPC {
+    // 执行部署
+    rpc RunDeploy(RunDeployRequest) returns(DeployItem);
+
+    // 查询部署记录
+    rpc QueryDeploy(QueryDeployRequest) returns(DeployGroup);
+    // 更新部署状态
+    rpc UpdateDeployStatus(UpdateDeployStatusRequest) returns(DeployItem);
+}
+
+message UpdateDeployStatusRequest {
+
+}
+
+message QueryDeployRequest {
+
+}
