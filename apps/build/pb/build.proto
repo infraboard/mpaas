@@ -68,20 +68,29 @@ enum TARGET_TYPE {
 
 // 容器镜像构建配置
 message ImageBuildConfig {
+    // 配置用于运行构建的流水线
+    // @gotags: bson:"pipeline_id" json:"pipeline_id"
+    string pipeline_id = 1;
     // dockerfile所在路径, 默认当前目录下 Dockerfile
     // @gotags: bson:"docker_file" json:"docker_file"
-    string docker_file = 1;
+    string docker_file = 2;
     // 构建时注入的环境变量
     // @gotags: bson:"build_env_vars" json:"build_env_vars"
-    map<string,string> build_env_vars = 2;
+    map<string,string> build_env_vars = 3;
+
     // 其他信息
     // @gotags: bson:"extra" json:"extra"
-    map<string,string> extra = 9;
+    map<string,string> extra = 15;
 }
 
 // 包构建配置
 message PkgBuildConfig {
+    // 配置用于运行构建的流水线
+    // @gotags: bson:"pipeline_id" json:"pipeline_id"
+    string pipeline_id = 1;
+
     // 其他信息
     // @gotags: bson:"extra" json:"extra"
     map<string,string> extra = 9;
+
 }

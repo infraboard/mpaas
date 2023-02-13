@@ -69,7 +69,7 @@ message CreateDeployConfigRequest {
     // 部署环境
     // @gotags: bson:"environment" json:"environment" validate:"required"
     string environment = 2;
-    // 集群管理凭证
+    // 部署管理凭证
     // @gotags: json:"credential_id"
     string credential_id = 3;
     // 部署资源提供方
@@ -93,7 +93,10 @@ message CreateDeployConfigRequest {
     // 部署描述信息
     // @gotags: bson:"describe" json:"describe"
     string describe = 10;
+    // 是否需要发布申请, 需要发布申请的部署 不允许执行自动部署
+    // @gotags: bson:"is_approval" json:"is_approval"
+    bool is_approval = 11;
     // 部署标签
     // @gotags: bson:"labels" json:"labels"
-    map<string,string> labels = 11;
+    map<string,string> labels = 15;
 }
