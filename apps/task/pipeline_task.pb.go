@@ -93,8 +93,8 @@ type PipelineTask struct {
 	// @gotags: bson:"pipeline" json:"pipeline"
 	Pipeline *pipeline.Pipeline `protobuf:"bytes,3,opt,name=pipeline,proto3" json:"pipeline" bson:"pipeline"`
 	// 任务当前状态
-	// @gotags: bson:",inline" json:"status"
-	Status *PipelineTaskStatus `protobuf:"bytes,4,opt,name=status,proto3" json:"status" bson:",inline"`
+	// @gotags: bson:"status" json:"status"
+	Status *PipelineTaskStatus `protobuf:"bytes,4,opt,name=status,proto3" json:"status" bson:"status"`
 }
 
 func (x *PipelineTask) Reset() {

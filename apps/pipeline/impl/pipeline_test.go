@@ -1,6 +1,7 @@
 package impl_test
 
 import (
+	"os"
 	"testing"
 
 	"github.com/infraboard/mpaas/apps/job"
@@ -15,7 +16,7 @@ func TestCreatePipeline(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	t.Log(ins)
+	t.Log(tools.MustToJson(ins))
 }
 
 func TestQueryPipeline(t *testing.T) {
@@ -28,7 +29,7 @@ func TestQueryPipeline(t *testing.T) {
 }
 
 func TestDescribePipeline(t *testing.T) {
-	req := pipeline.NewDescribePipelineRequest("cfkenp5s99bvhd6hgatg")
+	req := pipeline.NewDescribePipelineRequest(os.Getenv("PIPELINE_ID"))
 	ins, err := impl.DescribePipeline(ctx, req)
 	if err != nil {
 		t.Fatal(err)
@@ -37,7 +38,7 @@ func TestDescribePipeline(t *testing.T) {
 }
 
 func TestUpdatePipeline(t *testing.T) {
-	req := pipeline.NewPutPipelineRequest("cfiucuea0brqa1kj3go0")
+	req := pipeline.NewPutPipelineRequest(os.Getenv("PIPELINE_ID"))
 	tools.MustReadYamlFile("test/create.yml", req.Spec)
 	ins, err := impl.UpdatePipeline(ctx, req)
 	if err != nil {
@@ -47,7 +48,7 @@ func TestUpdatePipeline(t *testing.T) {
 }
 
 func TestDeletePipeline(t *testing.T) {
-	req := pipeline.NewDeletePipelineRequest("cfkei15s99bv5ckr4m00")
+	req := pipeline.NewDeletePipelineRequest(os.Getenv("PIPELINE_ID"))
 	ins, err := impl.DeletePipeline(ctx, req)
 	if err != nil {
 		t.Fatal(err)

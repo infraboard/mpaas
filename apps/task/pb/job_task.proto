@@ -23,7 +23,7 @@ message JobTask {
 	// @gotags: bson:",inline" json:"spec"
 	pipeline.RunJobRequest spec = 2;
 	// 任务当前状态
-	// @gotags: bson:",inline" json:"status"
+	// @gotags: bson:"status" json:"status"
 	JobTaskStatus status = 3;
 	// 关联Job
 	// @gotags: bson:"job" json:"job"

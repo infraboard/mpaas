@@ -1,6 +1,7 @@
 package impl_test
 
 import (
+	"os"
 	"testing"
 
 	"github.com/infraboard/mpaas/apps/job"
@@ -27,7 +28,7 @@ func TestRunJob(t *testing.T) {
 
 func TestQueryJobTask(t *testing.T) {
 	req := task.NewQueryTaskRequest()
-	req.PipelineTaskId = "cfkeq7ds99bvnft65p20"
+	req.PipelineTaskId = os.Getenv("PIPELINE_TASK_ID")
 	set, err := impl.QueryJobTask(ctx, req)
 	if err != nil {
 		t.Fatal(err)
@@ -37,7 +38,7 @@ func TestQueryJobTask(t *testing.T) {
 }
 
 func TestDescribeJobTask(t *testing.T) {
-	req := task.NewDescribeJobTaskRequest("cfk6mdls99bopbk780ig")
+	req := task.NewDescribeJobTaskRequest(os.Getenv("JOB_TASK_ID"))
 	ins, err := impl.DescribeJobTask(ctx, req)
 	if err != nil {
 		t.Fatal(err)
@@ -46,7 +47,7 @@ func TestDescribeJobTask(t *testing.T) {
 }
 
 func TestUpdateJobTaskStatus(t *testing.T) {
-	req := task.NewUpdateJobTaskStatusRequest("cfkeq7ds99bvnft65p30")
+	req := task.NewUpdateJobTaskStatusRequest(os.Getenv("JOB_TASK_ID"))
 	req.Stage = task.STAGE_SUCCEEDED
 	req.Message = "执行成功"
 	req.Detail = tools.MustReadContentFile("test/k8s_job.yml")
@@ -58,7 +59,7 @@ func TestUpdateJobTaskStatus(t *testing.T) {
 }
 
 func TestDeleteJobTask(t *testing.T) {
-	req := task.NewDeleteJobTaskRequest("cfk6mdls99bopbk780ig")
+	req := task.NewDeleteJobTaskRequest(os.Getenv("JOB_TASK_ID"))
 	set, err := impl.DeleteJobTask(ctx, req)
 	if err != nil {
 		t.Fatal(err)

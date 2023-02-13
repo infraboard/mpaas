@@ -157,8 +157,8 @@ type JobTask struct {
 	// @gotags: bson:",inline" json:"spec"
 	Spec *pipeline.RunJobRequest `protobuf:"bytes,2,opt,name=spec,proto3" json:"spec" bson:",inline"`
 	// 任务当前状态
-	// @gotags: bson:",inline" json:"status"
-	Status *JobTaskStatus `protobuf:"bytes,3,opt,name=status,proto3" json:"status" bson:",inline"`
+	// @gotags: bson:"status" json:"status"
+	Status *JobTaskStatus `protobuf:"bytes,3,opt,name=status,proto3" json:"status" bson:"status"`
 	// 关联Job
 	// @gotags: bson:"job" json:"job"
 	Job *job.Job `protobuf:"bytes,4,opt,name=job,proto3" json:"job" bson:"job"`
