@@ -62,6 +62,8 @@ func (r *JobReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.R
 		return ctrl.Result{}, client.IgnoreNotFound(err)
 	}
 
+	// 2.
+
 	return ctrl.Result{}, nil
 }
 
