@@ -172,6 +172,15 @@ func (p *PipelineTask) MarkedCanceled() {
 	p.Status.EndAt = time.Now().Unix()
 }
 
+// Pipeline执行取消
+func (p *PipelineTask) IsComplete() bool {
+	if p.Status != nil && p.Status.Stage >= STAGE_CANCELED {
+		return true
+	}
+
+	return false
+}
+
 func NewPipelineTaskStatus() *PipelineTaskStatus {
 	return &PipelineTaskStatus{
 		StageStatus: []*StageStatus{},

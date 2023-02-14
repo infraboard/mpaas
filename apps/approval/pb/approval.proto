@@ -71,7 +71,10 @@ enum STAGE {
 	// 审核通过
 	PASSED = 4;
 	// 发布中
-	PUBLISHING = 10;
+	PUBLISHING = 5;
+
+	// 发布取消
+	CANCELED = 10;
 	// 发布成功
 	SUCCEEDED = 11;
 	// 发布失败
@@ -93,13 +96,19 @@ message Status {
     // 开始发布的时间
     // @gotags: bson:"publish_at" json:"publish_at"
     int64 publish_at = 4;
+    // 开始发布的时间
+    // @gotags: bson:"cancel_at" json:"cancel_at"
+    int64 cancel_at = 5;
+    // 取消原因
+    // @gotags: bson:"cancel_comment" json:"cancel_comment"
+    int64 cancel_comment = 6;
     // 发布结束的时间
     // @gotags: bson:"end_at" json:"end_at"
-    int64 end_at = 5;
+    int64 end_at = 7;
     // 发布关闭的时间
     // @gotags: bson:"close_at" json:"close_at"
-    int64 close_at = 6;
+    int64 close_at = 8;
     // 关闭备注
     // @gotags: bson:"close_comment" json:"close_comment"
-    string close_comment = 7;
+    string close_comment = 9;
 }

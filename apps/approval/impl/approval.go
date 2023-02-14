@@ -22,10 +22,12 @@ func (i *impl) CreateApproval(ctx context.Context, in *approval.CreateApprovalRe
 
 	// 补充Pipeline创建
 	if in.DeployPipelineSpec != nil {
+		in.DeployPipelineSpec.AddLabel(approval.APPROVAL_LABEL_KEY, ins.Meta.Id)
 		p, err := i.pipeline.CreatePipeline(ctx, in.DeployPipelineSpec)
 		if err != nil {
 			return nil, err
 		}
+
 		ins.Spec.DeployPipelineId = p.Meta.Id
 	}
 
@@ -152,7 +154,7 @@ func (i *impl) UpdateApprovalStatus(ctx context.Context, in *approval.UpdateAppr
 		}
 	}
 
-	// 2. 保存更新
+	// 3. 保存更新
 	ins.Status.Update(in.Status.Stage)
 	_, err = i.col.UpdateOne(ctx, bson.M{"_id": ins.Meta.Id}, bson.M{"$set": bson.M{"status": in.Status}})
 	if err != nil {

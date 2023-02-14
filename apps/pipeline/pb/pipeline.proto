@@ -44,6 +44,9 @@ message CreatePipelineRequest {
 	// 是否是模版, 用于快速继承模版参数进行修改, 模版不能用于执行
 	// @gotags: bson:"is_template" json:"is_template"
 	bool is_template = 6;
+	// 运行时 全局参数, 会传递给每个stage的每个Task
+	// @gotags: bson:"with" json:"with"
+	repeated job.RunParam with = 7;
 	// 具体编排阶段
 	// @gotags: bson:"stages" json:"stages"
 	repeated Stage stages = 12;

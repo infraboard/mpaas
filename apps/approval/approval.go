@@ -45,6 +45,8 @@ func (s *Status) Update(stage STAGE) {
 		s.AuditAt = time.Now().Unix()
 	case STAGE_PUBLISHING:
 		s.PublishAt = time.Now().Unix()
+	case STAGE_CANCELED:
+		s.CancelAt = time.Now().Unix()
 	case STAGE_SUCCEEDED, STAGE_FAILED:
 		s.EndAt = time.Now().Unix()
 	case STAGE_CLOSED:

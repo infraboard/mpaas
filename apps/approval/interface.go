@@ -35,6 +35,14 @@ func (req *EditApprovalRequest) Validate() error {
 	return validate.Validate(req)
 }
 
+func NewUpdateApprovalStatusRequest(approvalId string) *UpdateApprovalStatusRequest {
+	status := NewStatus()
+	return &UpdateApprovalStatusRequest{
+		Id:     approvalId,
+		Status: status,
+	}
+}
+
 func (req *UpdateApprovalStatusRequest) Validate() error {
 	return validate.Validate(req)
 }

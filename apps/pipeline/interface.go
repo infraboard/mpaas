@@ -33,6 +33,10 @@ func (req *CreatePipelineRequest) Validate() error {
 	return validate.Validate(req)
 }
 
+func (req *CreatePipelineRequest) GetLabelValue(key string) string {
+	return req.Labels[key]
+}
+
 func NewPutPipelineRequest(id string) *UpdatePipelineRequest {
 	return &UpdatePipelineRequest{
 		Id:         id,
@@ -49,6 +53,10 @@ func NewPatchPipelineRequest(id string) *UpdatePipelineRequest {
 		UpdateAt:   time.Now().Unix(),
 		Spec:       NewCreatePipelineRequest(),
 	}
+}
+
+func (req *CreatePipelineRequest) AddLabel(key, value string) {
+	req.Labels[key] = value
 }
 
 func NewDeletePipelineRequest(id string) *DeletePipelineRequest {

@@ -8,6 +8,7 @@ import (
 	"github.com/infraboard/mcube/logger/zap"
 	"google.golang.org/grpc"
 
+	"github.com/infraboard/mpaas/apps/approval"
 	"github.com/infraboard/mpaas/apps/cluster"
 	"github.com/infraboard/mpaas/apps/job"
 	"github.com/infraboard/mpaas/apps/pipeline"
@@ -34,6 +35,7 @@ type impl struct {
 	job      job.Service
 	pipeline pipeline.Service
 	cluster  cluster.Service
+	approval approval.Service
 }
 
 func (i *impl) Config() error {
@@ -47,6 +49,7 @@ func (i *impl) Config() error {
 	i.job = app.GetInternalApp(job.AppName).(job.Service)
 	i.pipeline = app.GetInternalApp(pipeline.AppName).(pipeline.Service)
 	i.cluster = app.GetInternalApp(cluster.AppName).(cluster.Service)
+	i.approval = app.GetInternalApp(approval.AppName).(approval.Service)
 	if err := runner.Init(); err != nil {
 		return err
 	}

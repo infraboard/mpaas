@@ -6,6 +6,7 @@ import (
 	"time"
 
 	"github.com/infraboard/mcube/exception"
+	"github.com/infraboard/mpaas/apps/approval"
 	"github.com/infraboard/mpaas/apps/pipeline"
 	"github.com/infraboard/mpaas/apps/task"
 	"go.mongodb.org/mongo-driver/bson"
@@ -116,12 +117,35 @@ func (i *impl) PipelineTaskStatusChanged(ctx context.Context, in *task.JobTask) 
 
 // 更新Pipeline状态
 func (i *impl) updatePipelineStatus(ctx context.Context, in *task.PipelineTask) (*task.PipelineTask, error) {
+	// pipeline 状态更新回调
+	i.updateCallback(ctx, in)
+
 	in.Meta.UpdateAt = time.Now().Unix()
 	if _, err := i.pcol.UpdateByID(ctx, in.Meta.Id, bson.M{"$set": bson.M{"status": in.Status}}); err != nil {
 		return nil, exception.NewInternalServerError("update task(%s) document error, %s",
 			in.Meta.Id, err)
 	}
 	return in, nil
+}
+
+func (i *impl) updateCallback(ctx context.Context, in *task.PipelineTask) {
+	// pipeline task执行结束, 更新发布状态
+	approvalId := in.Pipeline.Spec.GetLabelValue(approval.APPROVAL_LABEL_KEY)
+	if approvalId != "" && in.IsComplete() {
+		req := approval.NewUpdateApprovalStatusRequest(approvalId)
+		switch in.Status.Stage {
+		case task.STAGE_FAILED:
+			req.Status.Update(approval.STAGE_FAILED)
+		case task.STAGE_SUCCEEDED:
+			req.Status.Update(approval.STAGE_SUCCEEDED)
+		case task.STAGE_CANCELED:
+			req.Status.Update(approval.STAGE_CANCELED)
+		}
+		_, err := i.approval.UpdateApprovalStatus(ctx, req)
+		if err != nil {
+			i.log.Error(err)
+		}
+	}
 }
 
 // 查询Pipeline任务
