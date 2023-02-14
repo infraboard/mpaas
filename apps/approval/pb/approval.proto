@@ -70,24 +70,26 @@ enum STAGE {
 	DENY = 3;
 	// 审核通过
 	PASSED = 4;
+	// 发布中
+	PUBLISHING = 10;
 	// 发布成功
 	SUCCEEDED = 11;
 	// 发布失败
 	FAILED = 12;
 	// 发布关闭, 发布成功后,验证没问题, 发布结束
-	CLOSED = 13;
+	CLOSED = 15;
 }
 
 message Status {
     // 当前状态
     // @gotags: bson:"stage" json:"stage"
     STAGE stage = 1;
-    // 审核通过的时间
-    // @gotags: bson:"pass_at" json:"pass_at"
-    int64 pass_at = 2;
-    // 审核通过的意见
-    // @gotags: bson:"comment" json:"comment"
-    string comment = 3;
+    // 审核时间
+    // @gotags: bson:"audit_at" json:"audit_at"
+    int64 audit_at = 2;
+    // 审核意见
+    // @gotags: bson:"audit_comment" json:"audit_comment"
+    string audit_comment = 3;
     // 开始发布的时间
     // @gotags: bson:"publish_at" json:"publish_at"
     int64 publish_at = 4;
@@ -97,4 +99,7 @@ message Status {
     // 发布关闭的时间
     // @gotags: bson:"close_at" json:"close_at"
     int64 close_at = 6;
+    // 关闭备注
+    // @gotags: bson:"close_comment" json:"close_comment"
+    string close_comment = 7;
 }

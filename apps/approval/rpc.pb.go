@@ -136,8 +136,8 @@ type EditApprovalRequest struct {
 	unknownFields protoimpl.UnknownFields
 
 	// 对象Id
-	// @gotags: json:"id"
-	Id string `protobuf:"bytes,1,opt,name=id,proto3" json:"id"`
+	// @gotags: json:"id" validate:"required"
+	Id string `protobuf:"bytes,1,opt,name=id,proto3" json:"id" validate:"required"`
 	// 更新模式
 	// @gotags: json:"update_mode"
 	UpdateMode request1.UpdateMode `protobuf:"varint,2,opt,name=update_mode,json=updateMode,proto3,enum=infraboard.mcube.request.UpdateMode" json:"update_mode"`
@@ -205,8 +205,8 @@ type UpdateApprovalStatusRequest struct {
 	unknownFields protoimpl.UnknownFields
 
 	// 对象Id
-	// @gotags: json:"id"
-	Id string `protobuf:"bytes,1,opt,name=id,proto3" json:"id"`
+	// @gotags: json:"id" validate:"required"
+	Id string `protobuf:"bytes,1,opt,name=id,proto3" json:"id" validate:"required"`
 	// 发布单当前状态
 	// @gotags: json:"status"
 	Status *Status `protobuf:"bytes,2,opt,name=status,proto3" json:"status"`

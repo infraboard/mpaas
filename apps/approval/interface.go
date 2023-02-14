@@ -30,3 +30,17 @@ func NewCreateApprovalRequest() *CreateApprovalRequest {
 func (req *DescribeApprovalRequest) Validate() error {
 	return validate.Validate(req)
 }
+
+func (req *EditApprovalRequest) Validate() error {
+	return validate.Validate(req)
+}
+
+func (req *UpdateApprovalStatusRequest) Validate() error {
+	return validate.Validate(req)
+}
+
+func NewDescribeApprovalRequest(id string) *DescribeApprovalRequest {
+	return &DescribeApprovalRequest{
+		Id: id,
+	}
+}
