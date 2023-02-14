@@ -4,6 +4,7 @@ package infraboard.mpaas.approval;
 option go_package = "github.com/infraboard/mpaas/apps/approval";
 
 import "common/meta/meta.proto";
+import "apps/pipeline/pb/pipeline.proto";
 
 message ApprovalSet {
     // 总数
@@ -22,6 +23,9 @@ message Approval  {
     // 创建信息
     // @gotags: bson:",inline" json:"spec"
     CreateApprovalRequest spec = 2;
+    // 部署流水线配置
+    // @gotags: bson:"-" json:"deploy_pipeline"
+    pipeline.Pipeline deploy_pipeline = 7;
     // 发布单当前状态
     // @gotags: bson:"status" json:"status"
     Status status = 3;
@@ -47,9 +51,12 @@ message CreateApprovalRequest {
     // 审核通过后, 是否自动执行发布
     // @gotags: bson:"auto_publish" json:"auto_publish"
     bool auto_publish = 6;
-    // 部署流水线
-    // @gotags: bson:"deploy_list" json:"deploy_list"
-    string deploy_pipeline = 7;
+    // 部署流水线配置
+    // @gotags: bson:"-" json:"deploy_pipeline_spec"
+    pipeline.CreatePipelineRequest deploy_pipeline_spec = 7;
+   // 部署流水线配置Id
+    // @gotags: bson:"deploy_pipeline_id" json:"deploy_pipeline_id"
+    string deploy_pipeline_id = 8;
 }
 
 enum STAGE {
