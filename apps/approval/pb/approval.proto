@@ -43,10 +43,10 @@ message CreateApprovalRequest {
     // @gotags: bson:"auditors" json:"auditors"
     repeated string auditors = 3;
     // 发布号
-    // @gotags: bson:"version" json:"version"
+    // @gotags: bson:"version" json:"version" validate:"required"
     string version = 4;
     // 发布说明
-    // @gotags: bson:"describe" json:"describe"
+    // @gotags: bson:"describe" json:"describe" validate:"required"
     string describe = 5;
     // 审核通过后, 是否自动执行发布
     // @gotags: bson:"auto_publish" json:"auto_publish"
@@ -64,12 +64,12 @@ enum STAGE {
 	DRAFT = 0;  
 	// 待审核
 	PENDDING = 1;
-	// 审核通过
-	PASSED = 2;
-    // 已过期
-    EXPIRED = 3;
+    // 已过期, 如果一直没审核, 多久后会过期
+    EXPIRED = 2;
 	// 审核拒绝
-	DENY = 4;
+	DENY = 3;
+	// 审核通过
+	PASSED = 4;
 	// 发布成功
 	SUCCEEDED = 11;
 	// 发布失败

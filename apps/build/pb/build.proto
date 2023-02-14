@@ -88,7 +88,12 @@ message PkgBuildConfig {
     // 配置用于运行构建的流水线
     // @gotags: bson:"pipeline_id" json:"pipeline_id"
     string pipeline_id = 1;
-
+    // 这里推荐使用容器来执行
+    // @gotags: bson:"docker_file" json:"docker_file"
+    string docker_file = 2;
+    // 构建产物存放的目录, 里面包含 pkg 和 部署脚本
+    // @gotags: bson:"dist_path" json:"dist_path"
+    string dist_path = 3;
     // 其他信息
     // @gotags: bson:"extra" json:"extra"
     map<string,string> extra = 9;

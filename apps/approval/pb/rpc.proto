@@ -25,11 +25,14 @@ message QueryApprovalRequest {
     // 分页请求
     // @gotags: json:"page"
     mcube.page.PageRequest page = 1;
+    // Id列表
+    // @gotags: json:"ids"
+    repeated string ids = 2;
 }
 
 message DescribeApprovalRequest {
     // 对象Id
-    // @gotags: bson:"_id" json:"id"
+    // @gotags: json:"id" validate:"required"
     string id = 1;
 }
 

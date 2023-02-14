@@ -15,3 +15,12 @@ func TestQueryApproval(t *testing.T) {
 	}
 	t.Log(tools.MustToJson(set))
 }
+
+func TestCreateApproval(t *testing.T) {
+	req := approval.NewCreateApprovalRequest()
+	set, err := impl.CreateApproval(ctx, req)
+	if err != nil {
+		t.Fatal(err)
+	}
+	t.Log(tools.MustToJson(set))
+}
