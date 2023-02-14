@@ -9,6 +9,7 @@ import (
 	"google.golang.org/grpc"
 
 	"github.com/infraboard/mpaas/apps/approval"
+	"github.com/infraboard/mpaas/apps/pipeline"
 	"github.com/infraboard/mpaas/conf"
 )
 
@@ -21,6 +22,8 @@ type impl struct {
 	col *mongo.Collection
 	log logger.Logger
 	approval.UnimplementedRPCServer
+
+	pipeline pipeline.Service
 }
 
 func (s *impl) Config() error {
@@ -31,6 +34,7 @@ func (s *impl) Config() error {
 
 	s.col = db.Collection(s.Name())
 	s.log = zap.L().Named(s.Name())
+	s.pipeline = app.GetInternalApp(pipeline.AppName).(pipeline.Service)
 	return nil
 }
 

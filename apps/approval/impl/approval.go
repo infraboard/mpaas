@@ -20,6 +20,15 @@ func (i *impl) CreateApproval(ctx context.Context, in *approval.CreateApprovalRe
 		return nil, exception.NewBadRequest(err.Error())
 	}
 
+	// 补充Pipeline创建
+	if in.DeployPipelineSpec != nil {
+		p, err := i.pipeline.CreatePipeline(ctx, in.DeployPipelineSpec)
+		if err != nil {
+			return nil, err
+		}
+		ins.Spec.DeployPipelineId = p.Meta.Id
+	}
+
 	if _, err := i.col.InsertOne(ctx, ins); err != nil {
 		return nil, exception.NewInternalServerError("inserted a approval document error, %s", err)
 	}
