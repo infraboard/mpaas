@@ -38,6 +38,9 @@ message QueryPipelineTaskRequest {
     // 任务Id列表
     // @gotags: json:"ids"
     repeated string ids = 2;
+    // 任务所属的pipeline id
+    // @gotags: json:"pipeline_id"
+    string pipeline_id = 3;
 }
 
 message DescribePipelineTaskRequest {

@@ -57,6 +57,14 @@ func (i *Approval) MarshalJSON() ([]byte, error) {
 	}{i.Meta, i.Spec, i.Status, i.DeployPipeline})
 }
 
+func (s *Status) IsAllowPublish() bool {
+	if s.Stage > STAGE_PASSED && s.Stage < STAGE_CLOSED {
+		return true
+	}
+
+	return false
+}
+
 func (s *Status) Update(stage STAGE) {
 	s.Stage = stage
 	switch stage {

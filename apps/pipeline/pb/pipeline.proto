@@ -41,12 +41,18 @@ message CreatePipelineRequest {
 	// 描述
 	// @gotags: bson:"description" json:"description"
 	string description = 5;
+	// 关联的审核单
+	// @gotags: bson:"approval_id" json:"approval_id"
+	string approval_id = 6;
+	// 允不允许并行允许, 默认为false, 当该不允许 多个Pipeline Task同时执行
+	// @gotags: bson:"is_parallel" json:"is_parallel"
+	bool is_parallel = 7;
 	// 是否是模版, 用于快速继承模版参数进行修改, 模版不能用于执行
 	// @gotags: bson:"is_template" json:"is_template"
-	bool is_template = 6;
+	bool is_template = 8;
 	// 运行时 全局参数, 会传递给每个stage的每个Task
 	// @gotags: bson:"with" json:"with"
-	repeated job.RunParam with = 7;
+	repeated job.RunParam with = 9;
 	// 具体编排阶段
 	// @gotags: bson:"stages" json:"stages"
 	repeated Stage stages = 12;

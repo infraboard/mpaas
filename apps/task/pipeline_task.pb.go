@@ -89,7 +89,7 @@ type PipelineTask struct {
 	// 元信息
 	// @gotags: bson:",inline" json:"meta"
 	Meta *meta.Meta `protobuf:"bytes,1,opt,name=meta,proto3" json:"meta" bson:",inline"`
-	// 关联Job
+	// 关联Job, 如果是任务, pipeline后面可能会修改, 因此需要保存运行时的pipeline定义
 	// @gotags: bson:"pipeline" json:"pipeline"
 	Pipeline *pipeline.Pipeline `protobuf:"bytes,3,opt,name=pipeline,proto3" json:"pipeline" bson:"pipeline"`
 	// 任务当前状态

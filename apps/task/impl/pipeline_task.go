@@ -21,9 +21,14 @@ func (i *impl) RunPipeline(ctx context.Context, in *task.RunPipelineRequest) (
 	if err != nil {
 		return nil, err
 	}
-	ins := task.NewPipelineTask(p)
+
+	// 2. 检查审核状态
+	if err := i.CheckPipelineAllowRun(ctx, p); err != nil {
+		return nil, err
+	}
 
 	// 从pipeline 取出需要执行的任务
+	ins := task.NewPipelineTask(p)
 	t := ins.GetFirstJobTask()
 	if t == nil {
 		return nil, fmt.Errorf("not job task to run")
@@ -49,6 +54,42 @@ func (i *impl) RunPipeline(ctx context.Context, in *task.RunPipelineRequest) (
 	}
 
 	return ins, nil
+}
+
+func (i *impl) CheckPipelineAllowRun(ctx context.Context, ins *pipeline.Pipeline) error {
+	// 1. 检查审核状态
+	if ins.Spec.ApprovalId != "" {
+		a, err := i.approval.DescribeApproval(
+			ctx, approval.NewDescribeApprovalRequest(ins.Spec.ApprovalId),
+		)
+		if err != nil {
+			return err
+		}
+
+		if !a.Status.IsAllowPublish() {
+			return fmt.Errorf("当前状态: %s 不允许发布", a.Status.Stage)
+		}
+	}
+
+	// 2. 检查当前pipeline是否已经处于允许中
+	if !ins.Spec.IsParallel {
+		// 查询当前pipeline最新的任务状态
+		req := task.NewQueryPipelineTaskRequest()
+		req.PipelineId = ins.Meta.Id
+		req.Page.PageSize = 1
+		set, err := i.QueryPipelineTask(ctx, req)
+		if err != nil {
+			return err
+		}
+		if set.Len() == 0 {
+			return nil
+		}
+		if set.Items[0].IsActive() {
+			return fmt.Errorf("流水线当前处于运行中, 运行完成后才能运行")
+		}
+	}
+
+	return nil
 }
 
 // Pipeline中任务有变化时,
@@ -130,7 +171,7 @@ func (i *impl) updatePipelineStatus(ctx context.Context, in *task.PipelineTask) 
 
 func (i *impl) updateCallback(ctx context.Context, in *task.PipelineTask) {
 	// pipeline task执行结束, 更新发布状态
-	approvalId := in.Pipeline.Spec.GetLabelValue(approval.APPROVAL_LABEL_KEY)
+	approvalId := in.Pipeline.Spec.ApprovalId
 	if approvalId != "" && in.IsComplete() {
 		req := approval.NewUpdateApprovalStatusRequest(approvalId)
 		switch in.Status.Stage {

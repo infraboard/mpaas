@@ -19,6 +19,10 @@ func (s *PipelineTaskSet) Add(item *PipelineTask) {
 	s.Items = append(s.Items, item)
 }
 
+func (s *PipelineTaskSet) Len() int {
+	return len(s.Items)
+}
+
 func NewPipelineTask(p *pipeline.Pipeline) *PipelineTask {
 	pt := NewDefaultPipelineTask()
 	pt.Pipeline = p
@@ -45,6 +49,14 @@ func (p *PipelineTask) MarshalJSON() ([]byte, error) {
 		*PipelineTaskStatus
 		Pipeline *pipeline.Pipeline `json:"pipeline"`
 	}{p.Meta, p.Status, p.Pipeline})
+}
+
+func (p *PipelineTask) IsActive() bool {
+	if p.Status != nil && p.Status.Stage.Equal(STAGE_ACTIVE) {
+		return true
+	}
+
+	return false
 }
 
 func (p *PipelineTask) MarkedRunning() {

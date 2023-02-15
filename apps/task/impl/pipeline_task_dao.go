@@ -42,6 +42,10 @@ func (r *queryPipelineTaskRequest) FindFilter() bson.M {
 		filter["_id"] = bson.M{"$in": r.Ids}
 	}
 
+	if r.PipelineId != "" {
+		filter["pipeline._id"] = r.PipelineId
+	}
+
 	return filter
 }
 

@@ -22,7 +22,7 @@ func (i *impl) CreateApproval(ctx context.Context, in *approval.CreateApprovalRe
 
 	// 补充Pipeline创建
 	if ins.Spec.DeployPipelineId == "" {
-		in.DeployPipelineSpec.AddLabel(approval.APPROVAL_LABEL_KEY, ins.Meta.Id)
+		in.DeployPipelineSpec.ApprovalId = ins.Meta.Id
 		p, err := i.pipeline.CreatePipeline(ctx, in.DeployPipelineSpec)
 		if err != nil {
 			return nil, err
