@@ -34,7 +34,7 @@ message Approval  {
 // 创建发布申请
 message CreateApprovalRequest {
     // 是否是模版
-    // @gotags: bson:",inline" json:"meta"
+    // @gotags: bson:"is_template" json:"is_template"
     bool is_template = 1;
     // 申请人列表, 申请通过后, 由申请人执行发布
     // @gotags: bson:"proposers" json:"proposers"
@@ -52,7 +52,7 @@ message CreateApprovalRequest {
     // @gotags: bson:"auto_publish" json:"auto_publish"
     bool auto_publish = 6;
     // 部署流水线配置
-    // @gotags: bson:"-" json:"deploy_pipeline_spec"
+    // @gotags: bson:"-" json:"deploy_pipeline_spec,omitempty"
     pipeline.CreatePipelineRequest deploy_pipeline_spec = 7;
    // 部署流水线配置Id
     // @gotags: bson:"deploy_pipeline_id" json:"deploy_pipeline_id"

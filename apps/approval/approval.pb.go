@@ -248,8 +248,8 @@ type CreateApprovalRequest struct {
 	unknownFields protoimpl.UnknownFields
 
 	// 是否是模版
-	// @gotags: bson:",inline" json:"meta"
-	IsTemplate bool `protobuf:"varint,1,opt,name=is_template,json=isTemplate,proto3" json:"meta" bson:",inline"`
+	// @gotags: bson:"is_template" json:"is_template"
+	IsTemplate bool `protobuf:"varint,1,opt,name=is_template,json=isTemplate,proto3" json:"is_template" bson:"is_template"`
 	// 申请人列表, 申请通过后, 由申请人执行发布
 	// @gotags: bson:"proposers" json:"proposers"
 	Proposers []string `protobuf:"bytes,2,rep,name=proposers,proto3" json:"proposers" bson:"proposers"`
@@ -266,8 +266,8 @@ type CreateApprovalRequest struct {
 	// @gotags: bson:"auto_publish" json:"auto_publish"
 	AutoPublish bool `protobuf:"varint,6,opt,name=auto_publish,json=autoPublish,proto3" json:"auto_publish" bson:"auto_publish"`
 	// 部署流水线配置
-	// @gotags: bson:"-" json:"deploy_pipeline_spec"
-	DeployPipelineSpec *pipeline.CreatePipelineRequest `protobuf:"bytes,7,opt,name=deploy_pipeline_spec,json=deployPipelineSpec,proto3" json:"deploy_pipeline_spec" bson:"-"`
+	// @gotags: bson:"-" json:"deploy_pipeline_spec,omitempty"
+	DeployPipelineSpec *pipeline.CreatePipelineRequest `protobuf:"bytes,7,opt,name=deploy_pipeline_spec,json=deployPipelineSpec,proto3" json:"deploy_pipeline_spec,omitempty" bson:"-"`
 	// 部署流水线配置Id
 	// @gotags: bson:"deploy_pipeline_id" json:"deploy_pipeline_id"
 	DeployPipelineId string `protobuf:"bytes,8,opt,name=deploy_pipeline_id,json=deployPipelineId,proto3" json:"deploy_pipeline_id" bson:"deploy_pipeline_id"`

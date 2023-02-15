@@ -1,8 +1,10 @@
 package approval
 
 import (
+	"encoding/json"
 	"time"
 
+	pipeline "github.com/infraboard/mpaas/apps/pipeline"
 	"github.com/infraboard/mpaas/common/meta"
 )
 
@@ -15,6 +17,14 @@ func New(req *CreateApprovalRequest) (*Approval, error) {
 		Spec:   req,
 		Status: NewStatus(),
 	}, nil
+}
+
+func (req *CreateApprovalRequest) AddProposer(userIds ...string) {
+	req.Proposers = append(req.Proposers, userIds...)
+}
+
+func (req *CreateApprovalRequest) AddAuditor(userIds ...string) {
+	req.Auditors = append(req.Auditors, userIds...)
 }
 
 func NewStatus() *Status {
@@ -36,6 +46,15 @@ func NewDefaultApproval() *Approval {
 		Meta: meta.NewMeta(),
 		Spec: &CreateApprovalRequest{},
 	}
+}
+
+func (i *Approval) MarshalJSON() ([]byte, error) {
+	return json.Marshal(struct {
+		*meta.Meta
+		*CreateApprovalRequest
+		*Status
+		DeployPipeline *pipeline.Pipeline
+	}{i.Meta, i.Spec, i.Status, i.DeployPipeline})
 }
 
 func (s *Status) Update(stage STAGE) {
