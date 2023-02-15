@@ -32,7 +32,7 @@ func (i *impl) QueryBuildConfig(ctx context.Context, in *build.QueryBuildConfigR
 	set := build.NewBuildConfigSet()
 	// 循环
 	for resp.Next(ctx) {
-		ins := build.NewDefaultDeploy()
+		ins := build.NewDefaultBuildConfig()
 		if err := resp.Decode(ins); err != nil {
 			return nil, exception.NewInternalServerError("decode build error, error is %s", err)
 		}

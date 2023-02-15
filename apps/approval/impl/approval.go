@@ -8,6 +8,7 @@ import (
 	"github.com/infraboard/mcube/exception"
 	"github.com/infraboard/mcube/pb/request"
 	"github.com/infraboard/mpaas/apps/approval"
+	"github.com/infraboard/mpaas/apps/task"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
 )
@@ -147,11 +148,16 @@ func (i *impl) UpdateApprovalStatus(ctx context.Context, in *approval.UpdateAppr
 		return nil, err
 	}
 
-	// 1. 只有处于草稿状态的申请才允许编辑
+	// 1. 关闭后的发布申请 不能修改状态
 	if !ins.Status.Stage.Equal(approval.STAGE_CLOSED) {
 		if err != nil {
 			return nil, exception.NewBadRequest("发布申请已关闭, 禁止更新状态")
 		}
+	}
+
+	// 2. 修改的状态不能回退, 比如你不能把发布中的状态 修改为审核中
+	if in.Status.Stage <= ins.Status.Stage {
+		return nil, exception.NewBadRequest("不能回退状态或者保持不变")
 	}
 
 	// 3. 保存更新
@@ -159,6 +165,15 @@ func (i *impl) UpdateApprovalStatus(ctx context.Context, in *approval.UpdateAppr
 	_, err = i.col.UpdateOne(ctx, bson.M{"_id": ins.Meta.Id}, bson.M{"$set": bson.M{"status": in.Status}})
 	if err != nil {
 		return nil, exception.NewInternalServerError("update approval(%s) error, %s", ins.Meta.Id, err)
+	}
+
+	// 4. 如果允许自动执行, 则审核通过后执行
+	if ins.Spec.AutoPublish && ins.Status.Stage.Equal(approval.STAGE_PASSED) {
+		pt, err := i.task.RunPipeline(ctx, task.NewRunPipelineRequest(ins.Spec.DeployPipelineId))
+		if err != nil {
+			return nil, err
+		}
+		i.log.Debugf("auto publish pipeline task: %s", pt.Meta.Id)
 	}
 	return ins, nil
 }

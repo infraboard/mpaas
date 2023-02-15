@@ -46,6 +46,12 @@ message QueryBuildConfigRequest {
     // 所属服务
     // @gotags: json:"service_ids"
     repeated string service_ids = 4;
+    // 事件名称
+    // @gotags: json:"event"
+    string event = 5;
+	// 分支名称
+	// @gotags: json:"branche"
+	string branche = 6;
 }
 
 message UpdateBuildConfigRequest {

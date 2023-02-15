@@ -30,9 +30,9 @@ func (s *BuildConfigSet) Add(item *BuildConfig) {
 	s.Items = append(s.Items, item)
 }
 
-func NewDefaultDeploy() *BuildConfig {
+func NewDefaultBuildConfig() *BuildConfig {
 	return &BuildConfig{
-		Spec: NewCreateDeployConfigRequest(),
+		Spec: NewCreateBuildConfigRequest(),
 	}
 }
 
@@ -43,6 +43,31 @@ func (b *BuildConfig) MarshalJSON() ([]byte, error) {
 	}{b.Meta, b.Spec})
 }
 
-func NewCreateDeployConfigRequest() *CreateBuildConfigRequest {
-	return &CreateBuildConfigRequest{}
+func NewCreateBuildConfigRequest() *CreateBuildConfigRequest {
+	return &CreateBuildConfigRequest{
+		Condition:  NewTrigger(),
+		ImageBuild: NewImageBuild(),
+		PkgBuild:   NewPkgBuildConfig(),
+		Labels:     make(map[string]string),
+	}
+}
+
+func NewTrigger() *Trigger {
+	return &Trigger{
+		Events:   []string{},
+		Branches: []string{},
+	}
+}
+
+func NewImageBuild() *ImageBuildConfig {
+	return &ImageBuildConfig{
+		BuildEnvVars: make(map[string]string),
+		Extra:        make(map[string]string),
+	}
+}
+
+func NewPkgBuildConfig() *PkgBuildConfig {
+	return &PkgBuildConfig{
+		Extra: make(map[string]string),
+	}
 }

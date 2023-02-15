@@ -16,13 +16,13 @@ import (
 // 执行Pipeline
 func (i *impl) RunPipeline(ctx context.Context, in *task.RunPipelineRequest) (
 	*task.PipelineTask, error) {
-	// 1. 查询需要执行的Pipeline
+	// 1.查询需要执行的Pipeline
 	p, err := i.pipeline.DescribePipeline(ctx, pipeline.NewDescribePipelineRequest(in.Id))
 	if err != nil {
 		return nil, err
 	}
 
-	// 2. 检查审核状态
+	// 2.检查Pipeline状态
 	if err := i.CheckPipelineAllowRun(ctx, p); err != nil {
 		return nil, err
 	}
@@ -71,7 +71,7 @@ func (i *impl) CheckPipelineAllowRun(ctx context.Context, ins *pipeline.Pipeline
 		}
 	}
 
-	// 2. 检查当前pipeline是否已经处于允许中
+	// 2. 检查当前pipeline是否已经处于运行中
 	if !ins.Spec.IsParallel {
 		// 查询当前pipeline最新的任务状态
 		req := task.NewQueryPipelineTaskRequest()
@@ -81,6 +81,7 @@ func (i *impl) CheckPipelineAllowRun(ctx context.Context, ins *pipeline.Pipeline
 		if err != nil {
 			return err
 		}
+		// 没有最近的任务
 		if set.Len() == 0 {
 			return nil
 		}

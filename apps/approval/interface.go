@@ -60,10 +60,9 @@ func (req *EditApprovalRequest) Validate() error {
 }
 
 func NewUpdateApprovalStatusRequest(approvalId string) *UpdateApprovalStatusRequest {
-	status := NewStatus()
 	return &UpdateApprovalStatusRequest{
 		Id:     approvalId,
-		Status: status,
+		Status: NewStatus(),
 	}
 }
 

@@ -10,6 +10,7 @@ import (
 
 	"github.com/infraboard/mpaas/apps/approval"
 	"github.com/infraboard/mpaas/apps/pipeline"
+	"github.com/infraboard/mpaas/apps/task"
 	"github.com/infraboard/mpaas/conf"
 )
 
@@ -24,6 +25,7 @@ type impl struct {
 	approval.UnimplementedRPCServer
 
 	pipeline pipeline.Service
+	task     task.PipelineService
 }
 
 func (s *impl) Config() error {
@@ -35,6 +37,7 @@ func (s *impl) Config() error {
 	s.col = db.Collection(s.Name())
 	s.log = zap.L().Named(s.Name())
 	s.pipeline = app.GetInternalApp(pipeline.AppName).(pipeline.Service)
+	s.task = app.GetInternalApp(task.AppName).(task.Service)
 	return nil
 }
 

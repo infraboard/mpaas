@@ -4,13 +4,23 @@ import (
 	"testing"
 
 	"github.com/infraboard/mpaas/apps/build"
+	"github.com/infraboard/mpaas/test/tools"
 )
 
-func TestQueryDeploy(t *testing.T) {
+func TestQueryBuildConfig(t *testing.T) {
 	req := build.NewQueryBuildConfigRequest()
-	ds, err := impl.QueryBuildConfig(ctx, req)
+	set, err := impl.QueryBuildConfig(ctx, req)
 	if err != nil {
 		t.Fatal(err)
 	}
-	t.Log(ds)
+	t.Log(tools.MustToJson(set))
+}
+
+func TestCreateBuildConfig(t *testing.T) {
+	req := build.NewCreateBuildConfigRequest()
+	ins, err := impl.CreateBuildConfig(ctx, req)
+	if err != nil {
+		t.Fatal(err)
+	}
+	t.Log(tools.MustToJson(ins))
 }
