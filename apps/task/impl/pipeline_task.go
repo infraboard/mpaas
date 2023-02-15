@@ -85,6 +85,7 @@ func (i *impl) CheckPipelineAllowRun(ctx context.Context, ins *pipeline.Pipeline
 		if set.Len() == 0 {
 			return nil
 		}
+
 		if set.Items[0].IsActive() {
 			return fmt.Errorf("流水线当前处于运行中, 运行完成后才能运行")
 		}
