@@ -20,6 +20,10 @@ func (i *impl) CreateBuildConfig(ctx context.Context, in *build.CreateBuildConfi
 		return nil, exception.NewBadRequest(err.Error())
 	}
 
+	if err := i.CheckBuildConfig(ctx, ins); err != nil {
+		return nil, exception.NewBadRequest(err.Error())
+	}
+
 	if _, err := i.col.InsertOne(ctx, ins); err != nil {
 		return nil, exception.NewInternalServerError("inserted a build document error, %s", err)
 	}
@@ -28,10 +32,11 @@ func (i *impl) CreateBuildConfig(ctx context.Context, in *build.CreateBuildConfi
 
 func (i *impl) CheckBuildConfig(ctx context.Context, ins *build.BuildConfig) error {
 	// 检查service id是否存在
-	_, err := i.mcenter.Service().DescribeService(ctx, service.NewDescribeServiceRequest(ins.Spec.ServiceId))
+	svc, err := i.mcenter.Service().DescribeService(ctx, service.NewDescribeServiceRequest(ins.Spec.ServiceId))
 	if err != nil {
 		return err
 	}
+	i.log.Debugf("found service: %s", svc.Spec.Name)
 	return nil
 }
 
@@ -110,7 +115,7 @@ func (i *impl) UpdateBuildConfig(ctx context.Context, in *build.UpdateBuildConfi
 		return nil, exception.NewInternalServerError("update build config(%s) error, %s", ins.Meta.Id, err)
 	}
 
-	return nil, nil
+	return ins, nil
 }
 
 func (i *impl) DeleteBuildConfig(ctx context.Context, in *build.DeleteBuildConfigRequest) (

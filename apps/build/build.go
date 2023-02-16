@@ -71,3 +71,11 @@ func NewPkgBuildConfig() *PkgBuildConfig {
 		Extra: make(map[string]string),
 	}
 }
+
+func (t *Trigger) AddEvent(event string) {
+	t.Events = append(t.Events, event)
+}
+
+func (t *Trigger) AddBranche(branche string) {
+	t.Branches = append(t.Branches, branche)
+}

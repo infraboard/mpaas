@@ -2,7 +2,8 @@ package build
 
 import (
 	"github.com/infraboard/mcenter/common/validate"
-	request "github.com/infraboard/mcube/http/request"
+	"github.com/infraboard/mcube/http/request"
+	pb_request "github.com/infraboard/mcube/pb/request"
 )
 
 const (
@@ -36,5 +37,21 @@ func (req *DescribeBuildConfigRequst) Validate() error {
 func NewDeleteBuildConfigRequest(id string) *DeleteBuildConfigRequest {
 	return &DeleteBuildConfigRequest{
 		Id: id,
+	}
+}
+
+func NewPutDeployRequest(id string) *UpdateBuildConfigRequest {
+	return &UpdateBuildConfigRequest{
+		Id:         id,
+		UpdateMode: pb_request.UpdateMode_PUT,
+		Spec:       NewCreateBuildConfigRequest(),
+	}
+}
+
+func NewPatchDeployRequest(id string) *UpdateBuildConfigRequest {
+	return &UpdateBuildConfigRequest{
+		Id:         id,
+		UpdateMode: pb_request.UpdateMode_PATCH,
+		Spec:       NewCreateBuildConfigRequest(),
 	}
 }
