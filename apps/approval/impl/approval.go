@@ -2,9 +2,11 @@ package impl
 
 import (
 	"context"
+	"fmt"
 	"time"
 
 	"github.com/imdario/mergo"
+	"github.com/infraboard/mcenter/apps/user"
 	"github.com/infraboard/mcube/exception"
 	"github.com/infraboard/mcube/pb/request"
 	"github.com/infraboard/mpaas/apps/approval"
@@ -18,6 +20,11 @@ func (i *impl) CreateApproval(ctx context.Context, in *approval.CreateApprovalRe
 	*approval.Approval, error) {
 	ins, err := approval.New(in)
 	if err != nil {
+		return nil, exception.NewBadRequest(err.Error())
+	}
+
+	// 检查user的有效性
+	if err := i.CheckApprovalUser(ctx, ins); err != nil {
 		return nil, exception.NewBadRequest(err.Error())
 	}
 
@@ -36,6 +43,21 @@ func (i *impl) CreateApproval(ctx context.Context, in *approval.CreateApprovalRe
 		return nil, exception.NewInternalServerError("inserted a approval document error, %s", err)
 	}
 	return nil, nil
+}
+
+func (i *impl) CheckApprovalUser(ctx context.Context, ins *approval.Approval) error {
+	req := user.NewQueryUserRequest()
+	req.UserIds = ins.Spec.UserIds()
+	set, err := i.mcenter.User().QueryUser(ctx, req)
+	if err != nil {
+		return err
+	}
+	for _, uid := range req.UserIds {
+		if !set.HasUser(uid) {
+			return fmt.Errorf("uid %s not found", uid)
+		}
+	}
+	return nil
 }
 
 // 查询发布申请列表
@@ -160,14 +182,19 @@ func (i *impl) UpdateApprovalStatus(ctx context.Context, in *approval.UpdateAppr
 		return nil, exception.NewBadRequest("不能回退状态或者保持不变")
 	}
 
-	// 3. 保存更新
+	// 3. 只有审核人能修改审核状态
+	if in.Status.Stage.Equal(approval.STAGE_PENDDING) && !ins.Spec.IsAuditor(in.UpdateBy) {
+		return nil, exception.NewBadRequest("只有审核人员: %s 能审核", ins.Spec.Auditors)
+	}
+
+	// 4. 保存更新
 	ins.Status.Update(in.Status.Stage)
 	_, err = i.col.UpdateOne(ctx, bson.M{"_id": ins.Meta.Id}, bson.M{"$set": bson.M{"status": in.Status}})
 	if err != nil {
 		return nil, exception.NewInternalServerError("update approval(%s) error, %s", ins.Meta.Id, err)
 	}
 
-	// 4. 如果允许自动执行, 则审核通过后执行
+	// 5. 如果允许自动执行, 则审核通过后执行
 	if ins.Spec.AutoPublish && ins.Status.Stage.Equal(approval.STAGE_PASSED) {
 		pt, err := i.task.RunPipeline(ctx, task.NewRunPipelineRequest(ins.Spec.DeployPipelineId))
 		if err != nil {

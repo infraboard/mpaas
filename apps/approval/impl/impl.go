@@ -3,6 +3,7 @@ package impl
 import (
 	"go.mongodb.org/mongo-driver/mongo"
 
+	"github.com/infraboard/mcenter/client/rpc"
 	"github.com/infraboard/mcube/app"
 	"github.com/infraboard/mcube/logger"
 	"github.com/infraboard/mcube/logger/zap"
@@ -26,6 +27,7 @@ type impl struct {
 
 	pipeline pipeline.Service
 	task     task.PipelineService
+	mcenter  *rpc.ClientSet
 }
 
 func (s *impl) Config() error {
@@ -38,6 +40,7 @@ func (s *impl) Config() error {
 	s.log = zap.L().Named(s.Name())
 	s.pipeline = app.GetInternalApp(pipeline.AppName).(pipeline.Service)
 	s.task = app.GetInternalApp(task.AppName).(task.Service)
+	s.mcenter = rpc.C()
 	return nil
 }
 

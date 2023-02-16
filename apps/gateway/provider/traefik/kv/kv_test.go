@@ -3,7 +3,7 @@ package kv_test
 import (
 	"testing"
 
-	"github.com/infraboard/mcenter/apps/gateway/provider/traefik/kv"
+	"github.com/infraboard/mpaas/apps/gateway/provider/traefik/kv"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )

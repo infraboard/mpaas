@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"testing"
 
-	"github.com/infraboard/mcenter/apps/gateway/provider/traefik/kv"
+	"github.com/infraboard/mpaas/apps/gateway/provider/traefik/kv"
 	"github.com/kvtools/valkeyrie/store"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"

@@ -27,6 +27,20 @@ func (req *CreateApprovalRequest) AddAuditor(userIds ...string) {
 	req.Auditors = append(req.Auditors, userIds...)
 }
 
+func (req *CreateApprovalRequest) UserIds() (uids []string) {
+	uids = append(uids, req.Auditors...)
+	uids = append(uids, req.Proposers...)
+	return
+}
+func (req *CreateApprovalRequest) IsAuditor(uid string) bool {
+	for _, v := range req.Auditors {
+		if v == uid {
+			return true
+		}
+	}
+	return false
+}
+
 func NewStatus() *Status {
 	return &Status{}
 }

@@ -4,8 +4,8 @@ import (
 	"context"
 	"testing"
 
-	"github.com/infraboard/mcenter/apps/gateway"
-	"github.com/infraboard/mcenter/apps/gateway/provider/traefik"
+	"github.com/infraboard/mpaas/apps/gateway"
+	"github.com/infraboard/mpaas/apps/gateway/provider/traefik"
 )
 
 func TestEtcdOperator(t *testing.T) {

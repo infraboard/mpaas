@@ -52,7 +52,10 @@ message UpdateApprovalStatusRequest {
     // 对象Id
     // @gotags: json:"id" validate:"required"
     string id = 1;
+    // 修改人
+    // @gotags: json:"update_by" validate:"required"
+    string update_by = 2;
     // 发布单当前状态
     // @gotags: json:"status"
-    Status status = 2;
+    Status status = 3;
 }
