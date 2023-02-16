@@ -129,6 +129,8 @@ github.com/infraboard/mcenter v0.0.8-0.20221217020658-11dc700054ee h1:XodQOYtA9Y
 github.com/infraboard/mcenter v0.0.8-0.20221217020658-11dc700054ee/go.mod h1:njvOZk1UZxYuM4+cerVbToIAKXAp4WLd6cQaXtUC5jg=
 github.com/infraboard/mcenter v0.0.8-0.20230216024511-2625f90d5846 h1:+F05iIMXdESvPYqsQ6uSZsE9yGFjMmqZhgusnhz7z08=
 github.com/infraboard/mcenter v0.0.8-0.20230216024511-2625f90d5846/go.mod h1:FsPtW6t2GbkW7OH2cV/qgQyYQtTCq2HphvHAET3V7so=
+github.com/infraboard/mcenter v0.0.8-0.20230216073911-c384cb3699f4 h1:kTmD1eKscPED/Bh7bCd5SolZkgbPSvve8oiQI2/hOtM=
+github.com/infraboard/mcenter v0.0.8-0.20230216073911-c384cb3699f4/go.mod h1:FsPtW6t2GbkW7OH2cV/qgQyYQtTCq2HphvHAET3V7so=
 github.com/infraboard/mcube v1.9.7 h1:G7a1fLINhGX9pymlrVb8K/4Jmct9a/+RNT4qPXuAdaA=
 github.com/infraboard/mcube v1.9.7/go.mod h1:OS2AES2vybyoqRqZCRjkwXntXkNgg0CyL5PWrCS/iVw=
 github.com/josharian/intern v1.0.0 h1:vlS4z54oSdjm0bgjRigI+G1HpF+tI+9rE5LLzOg8HmY=

@@ -5,6 +5,7 @@ import (
 	"time"
 
 	"github.com/imdario/mergo"
+	"github.com/infraboard/mcenter/apps/service"
 	"github.com/infraboard/mcube/exception"
 	"github.com/infraboard/mcube/pb/request"
 	"github.com/infraboard/mpaas/apps/build"
@@ -23,6 +24,15 @@ func (i *impl) CreateBuildConfig(ctx context.Context, in *build.CreateBuildConfi
 		return nil, exception.NewInternalServerError("inserted a build document error, %s", err)
 	}
 	return ins, nil
+}
+
+func (i *impl) CheckBuildConfig(ctx context.Context, ins *build.BuildConfig) error {
+	// 检查service id是否存在
+	_, err := i.mcenter.Service().DescribeService(ctx, service.NewDescribeServiceRequest(ins.Spec.ServiceId))
+	if err != nil {
+		return err
+	}
+	return nil
 }
 
 func (i *impl) QueryBuildConfig(ctx context.Context, in *build.QueryBuildConfigRequest) (
