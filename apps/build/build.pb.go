@@ -192,14 +192,14 @@ type CreateBuildConfigRequest struct {
 	unknownFields protoimpl.UnknownFields
 
 	// 那个服务的构建
-	// @gotags: bson:"service_id" json:"service_id"
-	ServiceId string `protobuf:"bytes,1,opt,name=service_id,json=serviceId,proto3" json:"service_id" bson:"service_id"`
+	// @gotags: bson:"service_id" json:"service_id" validate:"required"
+	ServiceId string `protobuf:"bytes,1,opt,name=service_id,json=serviceId,proto3" json:"service_id" bson:"service_id" validate:"required"`
 	// 触发条件
 	// @gotags: bson:"condition" json:"condition"
 	Condition *Trigger `protobuf:"bytes,2,opt,name=condition,proto3" json:"condition" bson:"condition"`
 	// 构建的名称
-	// @gotags: bson:"name" json:"name"
-	Name string `protobuf:"bytes,3,opt,name=name,proto3" json:"name" bson:"name"`
+	// @gotags: bson:"name" json:"name" validate:"required"
+	Name string `protobuf:"bytes,3,opt,name=name,proto3" json:"name" bson:"name" validate:"required"`
 	// 构建描述信息
 	// @gotags: bson:"describe" json:"describe"
 	Describe string `protobuf:"bytes,4,opt,name=describe,proto3" json:"describe" bson:"describe"`

@@ -23,13 +23,13 @@ message BuildConfig  {
 
 message CreateBuildConfigRequest {
     // 那个服务的构建
-    // @gotags: bson:"service_id" json:"service_id"
+    // @gotags: bson:"service_id" json:"service_id" validate:"required"
     string service_id = 1;
 	// 触发条件
 	// @gotags: bson:"condition" json:"condition"
 	Trigger condition = 2;
     // 构建的名称
-    // @gotags: bson:"name" json:"name"
+    // @gotags: bson:"name" json:"name" validate:"required"
     string name = 3;
     // 构建描述信息
     // @gotags: bson:"describe" json:"describe"

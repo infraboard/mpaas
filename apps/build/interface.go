@@ -22,3 +22,19 @@ func NewQueryBuildConfigRequest() *QueryBuildConfigRequest {
 		Page: request.NewDefaultPageRequest(),
 	}
 }
+
+func NewDescribeBuildConfigRequst(id string) *DescribeBuildConfigRequst {
+	return &DescribeBuildConfigRequst{
+		Id: id,
+	}
+}
+
+func (req *DescribeBuildConfigRequst) Validate() error {
+	return validate.Validate(req)
+}
+
+func NewDeleteBuildConfigRequest(id string) *DeleteBuildConfigRequest {
+	return &DeleteBuildConfigRequest{
+		Id: id,
+	}
+}

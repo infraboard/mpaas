@@ -24,7 +24,9 @@ const _ = grpc.SupportPackageIsVersion7
 type RPCClient interface {
 	CreateBuildConfig(ctx context.Context, in *CreateBuildConfigRequest, opts ...grpc.CallOption) (*BuildConfig, error)
 	QueryBuildConfig(ctx context.Context, in *QueryBuildConfigRequest, opts ...grpc.CallOption) (*BuildConfigSet, error)
+	DescribeBuildConfig(ctx context.Context, in *DescribeBuildConfigRequst, opts ...grpc.CallOption) (*BuildConfig, error)
 	UpdateBuildConfig(ctx context.Context, in *UpdateBuildConfigRequest, opts ...grpc.CallOption) (*BuildConfig, error)
+	DeleteBuildConfig(ctx context.Context, in *DeleteBuildConfigRequest, opts ...grpc.CallOption) (*BuildConfig, error)
 }
 
 type rPCClient struct {
@@ -53,9 +55,27 @@ func (c *rPCClient) QueryBuildConfig(ctx context.Context, in *QueryBuildConfigRe
 	return out, nil
 }
 
+func (c *rPCClient) DescribeBuildConfig(ctx context.Context, in *DescribeBuildConfigRequst, opts ...grpc.CallOption) (*BuildConfig, error) {
+	out := new(BuildConfig)
+	err := c.cc.Invoke(ctx, "/infraboard.mpaas.build.RPC/DescribeBuildConfig", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *rPCClient) UpdateBuildConfig(ctx context.Context, in *UpdateBuildConfigRequest, opts ...grpc.CallOption) (*BuildConfig, error) {
 	out := new(BuildConfig)
 	err := c.cc.Invoke(ctx, "/infraboard.mpaas.build.RPC/UpdateBuildConfig", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *rPCClient) DeleteBuildConfig(ctx context.Context, in *DeleteBuildConfigRequest, opts ...grpc.CallOption) (*BuildConfig, error) {
+	out := new(BuildConfig)
+	err := c.cc.Invoke(ctx, "/infraboard.mpaas.build.RPC/DeleteBuildConfig", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -68,7 +88,9 @@ func (c *rPCClient) UpdateBuildConfig(ctx context.Context, in *UpdateBuildConfig
 type RPCServer interface {
 	CreateBuildConfig(context.Context, *CreateBuildConfigRequest) (*BuildConfig, error)
 	QueryBuildConfig(context.Context, *QueryBuildConfigRequest) (*BuildConfigSet, error)
+	DescribeBuildConfig(context.Context, *DescribeBuildConfigRequst) (*BuildConfig, error)
 	UpdateBuildConfig(context.Context, *UpdateBuildConfigRequest) (*BuildConfig, error)
+	DeleteBuildConfig(context.Context, *DeleteBuildConfigRequest) (*BuildConfig, error)
 	mustEmbedUnimplementedRPCServer()
 }
 
@@ -82,8 +104,14 @@ func (UnimplementedRPCServer) CreateBuildConfig(context.Context, *CreateBuildCon
 func (UnimplementedRPCServer) QueryBuildConfig(context.Context, *QueryBuildConfigRequest) (*BuildConfigSet, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method QueryBuildConfig not implemented")
 }
+func (UnimplementedRPCServer) DescribeBuildConfig(context.Context, *DescribeBuildConfigRequst) (*BuildConfig, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DescribeBuildConfig not implemented")
+}
 func (UnimplementedRPCServer) UpdateBuildConfig(context.Context, *UpdateBuildConfigRequest) (*BuildConfig, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method UpdateBuildConfig not implemented")
+}
+func (UnimplementedRPCServer) DeleteBuildConfig(context.Context, *DeleteBuildConfigRequest) (*BuildConfig, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DeleteBuildConfig not implemented")
 }
 func (UnimplementedRPCServer) mustEmbedUnimplementedRPCServer() {}
 
@@ -134,6 +162,24 @@ func _RPC_QueryBuildConfig_Handler(srv interface{}, ctx context.Context, dec fun
 	return interceptor(ctx, in, info, handler)
 }
 
+func _RPC_DescribeBuildConfig_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(DescribeBuildConfigRequst)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(RPCServer).DescribeBuildConfig(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/infraboard.mpaas.build.RPC/DescribeBuildConfig",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(RPCServer).DescribeBuildConfig(ctx, req.(*DescribeBuildConfigRequst))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _RPC_UpdateBuildConfig_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(UpdateBuildConfigRequest)
 	if err := dec(in); err != nil {
@@ -148,6 +194,24 @@ func _RPC_UpdateBuildConfig_Handler(srv interface{}, ctx context.Context, dec fu
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(RPCServer).UpdateBuildConfig(ctx, req.(*UpdateBuildConfigRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _RPC_DeleteBuildConfig_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(DeleteBuildConfigRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(RPCServer).DeleteBuildConfig(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/infraboard.mpaas.build.RPC/DeleteBuildConfig",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(RPCServer).DeleteBuildConfig(ctx, req.(*DeleteBuildConfigRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -168,8 +232,16 @@ var RPC_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _RPC_QueryBuildConfig_Handler,
 		},
 		{
+			MethodName: "DescribeBuildConfig",
+			Handler:    _RPC_DescribeBuildConfig_Handler,
+		},
+		{
 			MethodName: "UpdateBuildConfig",
 			Handler:    _RPC_UpdateBuildConfig_Handler,
+		},
+		{
+			MethodName: "DeleteBuildConfig",
+			Handler:    _RPC_DeleteBuildConfig_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

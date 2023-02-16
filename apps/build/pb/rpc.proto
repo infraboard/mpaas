@@ -11,7 +11,9 @@ import "github.com/infraboard/mcube/pb/request/request.proto";
 service RPC {
 	rpc CreateBuildConfig(CreateBuildConfigRequest) returns(BuildConfig);
 	rpc QueryBuildConfig(QueryBuildConfigRequest) returns(BuildConfigSet);
+    rpc DescribeBuildConfig(DescribeBuildConfigRequst) returns(BuildConfig);
     rpc UpdateBuildConfig(UpdateBuildConfigRequest) returns(BuildConfig);
+    rpc DeleteBuildConfig(DeleteBuildConfigRequest) returns(BuildConfig);
 }
 
 message RunBuildRequest {
@@ -58,7 +60,7 @@ message UpdateBuildConfigRequest {
     // 更新模式
     // @gotags: json:"update_mode"
     infraboard.mcube.request.UpdateMode update_mode = 1;
-    // 部署Id
+    // 构建配置Id
     // @gotags: json:"id"
     string id = 2;
     // 更新人
@@ -67,4 +69,16 @@ message UpdateBuildConfigRequest {
     // 创建信息
     // @gotags: json:"spec"
     CreateBuildConfigRequest spec = 4;
+}
+
+message DeleteBuildConfigRequest {
+    // 构建配置Id
+    // @gotags: json:"id"
+    string id = 1;
+}
+
+message DescribeBuildConfigRequst {
+    // 构建配置Id
+    // @gotags: json:"id" validate:"required"
+    string id = 1; 
 }
