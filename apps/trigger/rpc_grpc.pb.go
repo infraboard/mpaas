@@ -23,7 +23,7 @@ const _ = grpc.SupportPackageIsVersion7
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type RPCClient interface {
 	// 处理Gitlab的事件
-	HandleGitlabEvent(ctx context.Context, in *GitlabWebHookEvent, opts ...grpc.CallOption) (*GitlabWebHookEvent, error)
+	HandleServiceEvent(ctx context.Context, in *ServiceEvent, opts ...grpc.CallOption) (*ServiceEvent, error)
 }
 
 type rPCClient struct {
@@ -34,9 +34,9 @@ func NewRPCClient(cc grpc.ClientConnInterface) RPCClient {
 	return &rPCClient{cc}
 }
 
-func (c *rPCClient) HandleGitlabEvent(ctx context.Context, in *GitlabWebHookEvent, opts ...grpc.CallOption) (*GitlabWebHookEvent, error) {
-	out := new(GitlabWebHookEvent)
-	err := c.cc.Invoke(ctx, "/infraboard.mpaas.trigger.RPC/HandleGitlabEvent", in, out, opts...)
+func (c *rPCClient) HandleServiceEvent(ctx context.Context, in *ServiceEvent, opts ...grpc.CallOption) (*ServiceEvent, error) {
+	out := new(ServiceEvent)
+	err := c.cc.Invoke(ctx, "/infraboard.mpaas.trigger.RPC/HandleServiceEvent", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -48,7 +48,7 @@ func (c *rPCClient) HandleGitlabEvent(ctx context.Context, in *GitlabWebHookEven
 // for forward compatibility
 type RPCServer interface {
 	// 处理Gitlab的事件
-	HandleGitlabEvent(context.Context, *GitlabWebHookEvent) (*GitlabWebHookEvent, error)
+	HandleServiceEvent(context.Context, *ServiceEvent) (*ServiceEvent, error)
 	mustEmbedUnimplementedRPCServer()
 }
 
@@ -56,8 +56,8 @@ type RPCServer interface {
 type UnimplementedRPCServer struct {
 }
 
-func (UnimplementedRPCServer) HandleGitlabEvent(context.Context, *GitlabWebHookEvent) (*GitlabWebHookEvent, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method HandleGitlabEvent not implemented")
+func (UnimplementedRPCServer) HandleServiceEvent(context.Context, *ServiceEvent) (*ServiceEvent, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method HandleServiceEvent not implemented")
 }
 func (UnimplementedRPCServer) mustEmbedUnimplementedRPCServer() {}
 
@@ -72,20 +72,20 @@ func RegisterRPCServer(s grpc.ServiceRegistrar, srv RPCServer) {
 	s.RegisterService(&RPC_ServiceDesc, srv)
 }
 
-func _RPC_HandleGitlabEvent_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(GitlabWebHookEvent)
+func _RPC_HandleServiceEvent_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ServiceEvent)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(RPCServer).HandleGitlabEvent(ctx, in)
+		return srv.(RPCServer).HandleServiceEvent(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/infraboard.mpaas.trigger.RPC/HandleGitlabEvent",
+		FullMethod: "/infraboard.mpaas.trigger.RPC/HandleServiceEvent",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(RPCServer).HandleGitlabEvent(ctx, req.(*GitlabWebHookEvent))
+		return srv.(RPCServer).HandleServiceEvent(ctx, req.(*ServiceEvent))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -98,8 +98,8 @@ var RPC_ServiceDesc = grpc.ServiceDesc{
 	HandlerType: (*RPCServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
-			MethodName: "HandleGitlabEvent",
-			Handler:    _RPC_HandleGitlabEvent_Handler,
+			MethodName: "HandleServiceEvent",
+			Handler:    _RPC_HandleServiceEvent_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

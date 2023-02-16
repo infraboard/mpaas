@@ -10,6 +10,8 @@ import (
 
 func TestQueryBuildConfig(t *testing.T) {
 	req := build.NewQueryBuildConfigRequest()
+	req.AddService(os.Getenv("SERVICE_ID"))
+	req.Event = "push"
 	set, err := impl.QueryBuildConfig(ctx, req)
 	if err != nil {
 		t.Fatal(err)
@@ -28,7 +30,7 @@ func TestDescribeBuildConfig(t *testing.T) {
 
 func TestUpdateBuildConfig(t *testing.T) {
 	req := build.NewPatchDeployRequest(os.Getenv("BUILD_CONFIG_ID"))
-	req.Spec.Condition.AddEvent("put")
+	req.Spec.Condition.AddEvent("push")
 	req.Spec.Condition.AddBranche("master")
 	ins, err := impl.UpdateBuildConfig(ctx, req)
 	if err != nil {

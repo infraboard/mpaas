@@ -9,6 +9,7 @@ import (
 	"google.golang.org/grpc"
 
 	"github.com/infraboard/mpaas/apps/build"
+	"github.com/infraboard/mpaas/apps/task"
 	"github.com/infraboard/mpaas/apps/trigger"
 	"github.com/infraboard/mpaas/conf"
 )
@@ -23,8 +24,10 @@ type impl struct {
 	log logger.Logger
 	trigger.UnimplementedRPCServer
 
-	// 依赖构建配置
+	// 构建配置
 	build build.Service
+	// 执行流水线
+	task task.PipelineService
 }
 
 func (i *impl) Config() error {
@@ -35,6 +38,7 @@ func (i *impl) Config() error {
 	i.col = db.Collection(i.Name())
 	i.log = zap.L().Named(i.Name())
 	i.build = app.GetInternalApp(build.AppName).(build.Service)
+	i.task = app.GetInternalApp(task.AppName).(task.Service)
 	return nil
 }
 

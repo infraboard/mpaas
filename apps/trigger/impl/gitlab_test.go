@@ -1,6 +1,7 @@
 package impl_test
 
 import (
+	"os"
 	"testing"
 
 	"github.com/infraboard/mpaas/apps/trigger"
@@ -8,14 +9,14 @@ import (
 )
 
 func TestHandleEvent(t *testing.T) {
-	req := trigger.NewDefaultWebHookEvent()
-	err := tools.ReadJsonFile("test/webhook.json", req)
+	event := trigger.NewGitlabWebHookEvent()
+	err := tools.ReadJsonFile("test/webhook.json", event)
 	if err != nil {
 		t.Fatal(err)
 	}
-	t.Log(req)
 
-	ps, err := impl.HandleGitlabEvent(ctx, req)
+	req := trigger.NewServiceGitlabEvent(os.Getenv("SERVICE_ID"), event)
+	ps, err := impl.HandleServiceEvent(ctx, req)
 	if err != nil {
 		t.Fatal(err)
 	}

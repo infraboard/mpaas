@@ -7,5 +7,22 @@ import "apps/trigger/pb/gitlab.proto";
 
 service RPC {
     // 处理Gitlab的事件
-    rpc HandleGitlabEvent(GitlabWebHookEvent) returns(GitlabWebHookEvent);
+    rpc HandleServiceEvent(ServiceEvent) returns(ServiceEvent);
+}
+
+message ServiceEvent {
+    // 服务Id
+    // @gotags: json:"service_id" validate:"required"
+    string service_id = 1;
+    // 应用ID
+    // @gotags: json:"provider"
+    EVENT_PROVIDER provider = 2;
+    // gitlab webhook事件
+    // @gotags: json:"gitlab_event" validate:"-"
+    GitlabWebHookEvent gitlab_event = 3;
+}
+
+enum EVENT_PROVIDER {
+    // 来自gitlab的事件
+    GITLAB = 0;
 }

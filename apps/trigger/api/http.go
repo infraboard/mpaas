@@ -16,11 +16,11 @@ var (
 
 type handler struct {
 	log logger.Logger
-	scm trigger.Service
+	svc trigger.Service
 }
 
 func (h *handler) Config() error {
-	h.scm = app.GetInternalApp(trigger.AppName).(trigger.Service)
+	h.svc = app.GetInternalApp(trigger.AppName).(trigger.Service)
 	h.log = zap.L().Named(trigger.AppName)
 	return nil
 }

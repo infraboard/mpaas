@@ -18,10 +18,24 @@ func (req *CreateBuildConfigRequest) Validate() error {
 	return validate.Validate(req)
 }
 
+func (req *CreateBuildConfigRequest) PipielineId() string {
+	switch req.TargetType {
+	case TARGET_TYPE_IMAGE:
+		return req.ImageBuild.PipelineId
+	case TARGET_TYPE_PKG:
+		return req.PkgBuild.PipelineId
+	}
+	return ""
+}
+
 func NewQueryBuildConfigRequest() *QueryBuildConfigRequest {
 	return &QueryBuildConfigRequest{
 		Page: request.NewDefaultPageRequest(),
 	}
+}
+
+func (req *QueryBuildConfigRequest) AddService(serviceId string) {
+	req.ServiceIds = append(req.ServiceIds, serviceId)
 }
 
 func NewDescribeBuildConfigRequst(id string) *DescribeBuildConfigRequst {
