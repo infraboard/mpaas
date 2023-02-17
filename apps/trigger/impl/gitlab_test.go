@@ -15,7 +15,7 @@ func TestHandleEvent(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	req := trigger.NewServiceGitlabEvent(os.Getenv("SERVICE_ID"), event)
+	req := trigger.NewGitlabEvent(os.Getenv("SERVICE_ID"), event)
 	ps, err := impl.HandleServiceEvent(ctx, req)
 	if err != nil {
 		t.Fatal(err)

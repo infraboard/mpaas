@@ -57,6 +57,9 @@ message CreateApprovalRequest {
    // 部署流水线配置Id
     // @gotags: bson:"deploy_pipeline_id" json:"deploy_pipeline_id"
     string deploy_pipeline_id = 8;
+	// 申请单标签
+	// @gotags: bson:"labels" json:"labels"
+	map<string, string> labels = 15;
 }
 
 enum STAGE {

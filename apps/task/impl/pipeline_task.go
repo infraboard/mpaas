@@ -16,13 +16,18 @@ import (
 // 执行Pipeline
 func (i *impl) RunPipeline(ctx context.Context, in *task.RunPipelineRequest) (
 	*task.PipelineTask, error) {
-	// 1.查询需要执行的Pipeline
+	// 检查请求
+	if err := in.Validate(); err != nil {
+		return nil, exception.NewBadRequest(err.Error())
+	}
+
+	// 查询需要执行的Pipeline
 	p, err := i.pipeline.DescribePipeline(ctx, pipeline.NewDescribePipelineRequest(in.Id))
 	if err != nil {
 		return nil, err
 	}
 
-	// 2.检查Pipeline状态
+	// 检查Pipeline状态
 	if err := i.CheckPipelineAllowRun(ctx, p); err != nil {
 		return nil, err
 	}

@@ -3,6 +3,7 @@ package task
 import (
 	"fmt"
 
+	"github.com/infraboard/mcenter/common/validate"
 	"github.com/infraboard/mcube/http/request"
 	job "github.com/infraboard/mpaas/apps/job"
 )
@@ -41,8 +42,13 @@ type PipelineService interface {
 
 func NewRunPipelineRequest(id string) *RunPipelineRequest {
 	return &RunPipelineRequest{
-		Id: id,
+		Id:     id,
+		Labels: make(map[string]string),
 	}
+}
+
+func (req *RunPipelineRequest) Validate() error {
+	return validate.Validate(req)
 }
 
 func NewDescribeJobTaskRequest(id string) *DescribeJobTaskRequest {

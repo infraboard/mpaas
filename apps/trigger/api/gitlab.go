@@ -22,7 +22,7 @@ func (h *handler) HandleGitlabEvent(r *restful.Request, w *restful.Response) {
 			response.Failed(w, err)
 		}
 
-		req := trigger.NewServiceGitlabEvent(serviceId, event)
+		req := trigger.NewGitlabEvent(serviceId, event)
 		h.log.Debugf("application %s accept event: %s", serviceId, event)
 
 		ins, err := h.svc.HandleServiceEvent(r.Request.Context(), req)

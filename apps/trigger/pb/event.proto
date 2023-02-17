@@ -1,0 +1,23 @@
+syntax = "proto3";
+
+package infraboard.mpaas.trigger;
+option go_package = "github.com/infraboard/mpaas/apps/trigger";
+
+import "apps/trigger/pb/gitlab.proto";
+
+message Event {
+    // 服务Id
+    // @gotags: json:"service_id" validate:"required"
+    string service_id = 1;
+    // 应用ID
+    // @gotags: json:"provider"
+    EVENT_PROVIDER provider = 2;
+    // gitlab webhook事件
+    // @gotags: json:"gitlab_event" validate:"-"
+    GitlabWebHookEvent gitlab_event = 3;
+}
+
+enum EVENT_PROVIDER {
+    // 来自gitlab的事件
+    GITLAB = 0;
+}

@@ -10,8 +10,8 @@ import (
 )
 
 // 应用事件处理
-func (i *impl) HandleServiceEvent(ctx context.Context, in *trigger.ServiceEvent) (
-	*trigger.ServiceEvent, error) {
+func (i *impl) HandleServiceEvent(ctx context.Context, in *trigger.Event) (
+	*trigger.Event, error) {
 	if err := in.Validate(); err != nil {
 		return nil, exception.NewBadRequest(err.Error())
 	}
@@ -42,7 +42,9 @@ func (i *impl) HandleServiceEvent(ctx context.Context, in *trigger.ServiceEvent)
 				continue
 			}
 
-			i.task.RunPipeline(ctx, task.NewRunPipelineRequest(pipelineId))
+			runReq := task.NewRunPipelineRequest(pipelineId)
+			runReq.Event = in
+			i.task.RunPipeline(ctx, runReq)
 		}
 	}
 

@@ -27,8 +27,8 @@ func (e *GitlabWebHookEvent) GetBranche() string {
 	return path.Base(e.GetRef())
 }
 
-func NewServiceGitlabEvent(serviceId string, event *GitlabWebHookEvent) *ServiceEvent {
-	return &ServiceEvent{
+func NewGitlabEvent(serviceId string, event *GitlabWebHookEvent) *Event {
+	return &Event{
 		ServiceId:   serviceId,
 		Provider:    EVENT_PROVIDER_GITLAB,
 		GitlabEvent: event,
