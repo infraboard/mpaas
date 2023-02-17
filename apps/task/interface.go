@@ -81,3 +81,9 @@ func NewDeletePipelineTaskRequest(id string) *DeletePipelineTaskRequest {
 		Id: id,
 	}
 }
+
+func NewDescribePipelineTaskRequest(id string) *DescribePipelineTaskRequest {
+	return &DescribePipelineTaskRequest{
+		Id: id,
+	}
+}

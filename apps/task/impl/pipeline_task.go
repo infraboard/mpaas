@@ -164,9 +164,9 @@ func (i *impl) updatePipelineStatus(ctx context.Context, in *task.PipelineTask) 
 	i.updateCallback(ctx, in)
 
 	in.Meta.UpdateAt = time.Now().Unix()
-	if _, err := i.pcol.UpdateByID(ctx, in.Meta.Id, bson.M{"$set": bson.M{"status": in.Status}}); err != nil {
+	if _, err := i.pcol.UpdateByID(ctx, in.Params.Id, bson.M{"$set": bson.M{"status": in.Status}}); err != nil {
 		return nil, exception.NewInternalServerError("update task(%s) document error, %s",
-			in.Meta.Id, err)
+			in.Params.Id, err)
 	}
 	return in, nil
 }

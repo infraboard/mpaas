@@ -3,7 +3,6 @@ syntax = "proto3";
 package infraboard.mpaas.task;
 option go_package = "github.com/infraboard/mpaas/apps/task";
 
-import "common/meta/meta.proto";
 import "apps/task/pb/job_task.proto";
 import "apps/pipeline/pb/pipeline.proto";
 
@@ -19,13 +18,28 @@ message PipelineTaskSet {
 message PipelineTask {
     // 元信息
     // @gotags: bson:",inline" json:"meta"
-    common.meta.Meta meta = 1;
+    Meta meta = 1;
+    // 运作时参数
+    // @gotags: bson:",inline" json:"params"
+    RunPipelineRequest params = 2;
 	// 关联Job, 如果是任务, pipeline后面可能会修改, 因此需要保存运行时的pipeline定义
 	// @gotags: bson:"pipeline" json:"pipeline"
 	pipeline.Pipeline pipeline = 3;
 	// 任务当前状态
 	// @gotags: bson:"status" json:"status"
 	PipelineTaskStatus status = 4;
+}
+
+message RunPipelineRequest {
+    // pipeline id
+	// @gotags: json:"id"
+    string id = 1;
+	// 允许于Domain
+	// @gotags: bson:"domain" json:"domain"
+	string domain = 2;
+	// 允许于Namespace
+	// @gotags: bson:"namespace" json:"namespace"
+	string namespace = 3;
 }
 
 message PipelineTaskStatus {

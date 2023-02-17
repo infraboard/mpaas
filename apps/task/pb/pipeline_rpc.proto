@@ -25,12 +25,6 @@ message DeletePipelineTaskRequest {
     string id = 1;
 }
 
-message RunPipelineRequest {
-    // pipeline id
-	// @gotags: json:"id"
-    string id = 1;
-}
-
 message QueryPipelineTaskRequest {
     // 分页请求
     // @gotags: json:"page"
