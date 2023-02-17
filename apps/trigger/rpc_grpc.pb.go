@@ -23,7 +23,7 @@ const _ = grpc.SupportPackageIsVersion7
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type RPCClient interface {
 	// 处理Gitlab的事件
-	HandleServiceEvent(ctx context.Context, in *Event, opts ...grpc.CallOption) (*Event, error)
+	HandleEvent(ctx context.Context, in *Event, opts ...grpc.CallOption) (*Record, error)
 }
 
 type rPCClient struct {
@@ -34,9 +34,9 @@ func NewRPCClient(cc grpc.ClientConnInterface) RPCClient {
 	return &rPCClient{cc}
 }
 
-func (c *rPCClient) HandleServiceEvent(ctx context.Context, in *Event, opts ...grpc.CallOption) (*Event, error) {
-	out := new(Event)
-	err := c.cc.Invoke(ctx, "/infraboard.mpaas.trigger.RPC/HandleServiceEvent", in, out, opts...)
+func (c *rPCClient) HandleEvent(ctx context.Context, in *Event, opts ...grpc.CallOption) (*Record, error) {
+	out := new(Record)
+	err := c.cc.Invoke(ctx, "/infraboard.mpaas.trigger.RPC/HandleEvent", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -48,7 +48,7 @@ func (c *rPCClient) HandleServiceEvent(ctx context.Context, in *Event, opts ...g
 // for forward compatibility
 type RPCServer interface {
 	// 处理Gitlab的事件
-	HandleServiceEvent(context.Context, *Event) (*Event, error)
+	HandleEvent(context.Context, *Event) (*Record, error)
 	mustEmbedUnimplementedRPCServer()
 }
 
@@ -56,8 +56,8 @@ type RPCServer interface {
 type UnimplementedRPCServer struct {
 }
 
-func (UnimplementedRPCServer) HandleServiceEvent(context.Context, *Event) (*Event, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method HandleServiceEvent not implemented")
+func (UnimplementedRPCServer) HandleEvent(context.Context, *Event) (*Record, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method HandleEvent not implemented")
 }
 func (UnimplementedRPCServer) mustEmbedUnimplementedRPCServer() {}
 
@@ -72,20 +72,20 @@ func RegisterRPCServer(s grpc.ServiceRegistrar, srv RPCServer) {
 	s.RegisterService(&RPC_ServiceDesc, srv)
 }
 
-func _RPC_HandleServiceEvent_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _RPC_HandleEvent_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(Event)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(RPCServer).HandleServiceEvent(ctx, in)
+		return srv.(RPCServer).HandleEvent(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/infraboard.mpaas.trigger.RPC/HandleServiceEvent",
+		FullMethod: "/infraboard.mpaas.trigger.RPC/HandleEvent",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(RPCServer).HandleServiceEvent(ctx, req.(*Event))
+		return srv.(RPCServer).HandleEvent(ctx, req.(*Event))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -98,8 +98,8 @@ var RPC_ServiceDesc = grpc.ServiceDesc{
 	HandlerType: (*RPCServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
-			MethodName: "HandleServiceEvent",
-			Handler:    _RPC_HandleServiceEvent_Handler,
+			MethodName: "HandleEvent",
+			Handler:    _RPC_HandleEvent_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

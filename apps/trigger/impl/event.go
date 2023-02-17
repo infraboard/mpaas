@@ -10,11 +10,13 @@ import (
 )
 
 // 应用事件处理
-func (i *impl) HandleServiceEvent(ctx context.Context, in *trigger.Event) (
-	*trigger.Event, error) {
+func (i *impl) HandleEvent(ctx context.Context, in *trigger.Event) (
+	*trigger.Record, error) {
 	if err := in.Validate(); err != nil {
 		return nil, exception.NewBadRequest(err.Error())
 	}
+
+	ins := trigger.NewRecord(in)
 
 	switch in.Provider {
 	case trigger.EVENT_PROVIDER_GITLAB:
@@ -42,11 +44,9 @@ func (i *impl) HandleServiceEvent(ctx context.Context, in *trigger.Event) (
 				continue
 			}
 
-			runReq := task.NewRunPipelineRequest(pipelineId)
-			runReq.Event = in
-			i.task.RunPipeline(ctx, runReq)
+			i.task.RunPipeline(ctx, task.NewRunPipelineRequest(pipelineId))
 		}
 	}
 
-	return in, nil
+	return ins, nil
 }

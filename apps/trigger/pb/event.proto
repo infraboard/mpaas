@@ -4,6 +4,28 @@ package infraboard.mpaas.trigger;
 option go_package = "github.com/infraboard/mpaas/apps/trigger";
 
 import "apps/trigger/pb/gitlab.proto";
+import "apps/build/pb/build.proto";
+import "common/meta/meta.proto";
+
+
+// 事件记录
+message Record {
+    // 元信息
+    // @gotags: bson:",inline" json:"meta"
+    common.meta.Meta meta = 1;
+	// event相关定义
+	// @gotags: bson:",inline" json:"event"
+	Event event = 2;
+	// 构建状态
+	// @gotags: bson:"build_status" json:"build_status"
+    repeated BuildStatus build_status = 3;
+}
+
+message BuildStatus {
+    // 构建信息
+    // @gotags: bson:",inline" json:"meta"
+    build.BuildConfig build_config = 1;
+}
 
 message Event {
     // 服务Id

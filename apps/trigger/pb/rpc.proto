@@ -7,5 +7,5 @@ import "apps/trigger/pb/event.proto";
 
 service RPC {
     // 处理Gitlab的事件
-    rpc HandleServiceEvent(Event) returns(Event);
+    rpc HandleEvent(Event) returns(Record);
 }

@@ -4,7 +4,6 @@ package infraboard.mpaas.task;
 option go_package = "github.com/infraboard/mpaas/apps/task";
 
 import "apps/task/pb/job_task.proto";
-import "apps/trigger/pb/event.proto";
 import "apps/pipeline/pb/pipeline.proto";
 
 message PipelineTaskSet {
@@ -44,9 +43,6 @@ message RunPipelineRequest {
 	// 执行人
 	// @gotags: bson:"run_by" json:"run_by" validate:"required"
 	string run_by = 4;
-	// 触发执行的事件信息
-	// @gotags: bson:"event" json:"event"
-	trigger.Event event = 5;
 	// 任务标签
 	// @gotags: bson:"labels" json:"labels"
 	map<string, string> labels = 15;
