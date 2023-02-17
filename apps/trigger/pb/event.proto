@@ -22,9 +22,15 @@ message Record {
 }
 
 message BuildStatus {
-    // 构建信息
-    // @gotags: bson:",inline" json:"meta"
+    // 构建信息, 由于可能修改, 因此需要保存整个对象
+    // @gotags: bson:"build_config" json:"build_config"
     build.BuildConfig build_config = 1;
+    // 构建信息
+    // @gotags: bson:"pipline_task_id" json:"pipline_task_id"
+    string pipline_task_id = 2;
+    // 如果流水线运行报错的报错信息
+    // @gotags: bson:"error_message" json:"error_message"
+    string error_message = 3;
 }
 
 message Event {
