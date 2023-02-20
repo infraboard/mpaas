@@ -20,3 +20,7 @@ func NewRecord(e *Event) *Record {
 		BuildStatus: []*BuildStatus{},
 	}
 }
+
+func (e *Record) AddBuildStatus(bs *BuildStatus) {
+	e.BuildStatus = append(e.BuildStatus, bs)
+}

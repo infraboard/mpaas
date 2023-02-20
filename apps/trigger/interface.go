@@ -3,6 +3,8 @@ package trigger
 import (
 	"fmt"
 	"path"
+
+	"github.com/infraboard/mpaas/apps/build"
 )
 
 const (
@@ -32,5 +34,11 @@ func NewGitlabEvent(serviceId string, event *GitlabWebHookEvent) *Event {
 		ServiceId:   serviceId,
 		Provider:    EVENT_PROVIDER_GITLAB,
 		GitlabEvent: event,
+	}
+}
+
+func NewBuildStatus(bc *build.BuildConfig) *BuildStatus {
+	return &BuildStatus{
+		BuildConfig: bc,
 	}
 }
