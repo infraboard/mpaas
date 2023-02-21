@@ -107,8 +107,73 @@ Flags:
 Use "executor [command] --help" for more information about a command.
 ```
 
+手动挂载并执行构建:
+```sh
+# 挂在项目到workspace目录下, 注意指定工作目录:/workspace
+docker run -it -v ${PWD}/mpaas:/workspace -w /workspace --entrypoint=/busybox/sh docker.io/anjia0532/kaniko-project.executor:v1.9.1-debug
+# 执行构建
+/kaniko/executor --no-push
+```
+
 ### 基于k8s操作
 
+[使用git工具镜像下载依赖](https://hub.docker.com/r/bitnami/git)
+```sh
+docker pull bitnami/git
+```
+
+测试下能否正常使用
+```sh
+# 挂载secret
+docker run -it -v ${HOME}/.ssh/:/root/.ssh/ -w /workspace bitnami/git
+# 测试下载
+git clone git@github.com:infraboard/mpaas.git  --single-branch --branch=master
+```
+
+共享配置Job共享Workdir
+```yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: init-demo
+  name: init-demo
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: init-demo
+  template:
+    metadata:
+      labels:
+        app: init-demo
+    spec:
+      initContainers:
+      - name: init-container
+        image: busybox
+        imagePullPolicy: IfNotPresent
+        command: ["sh"]
+        args:
+          [
+            "-c",
+            "echo 'init container test' >/work_dir/index.html",
+          ]
+        volumeMounts:
+        - name: workdir
+          mountPath: "/work_dir"
+      containers:
+      - image: nginx
+        imagePullPolicy: IfNotPresent
+        name: web
+        ports:
+        - containerPort: 80
+        volumeMounts:
+        - name: workdir
+          mountPath: /usr/share/nginx/html
+      volumes:
+      - name: workdir
+        emptyDir: {}
+```
 
 ## 镜像部署
 
