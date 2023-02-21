@@ -83,7 +83,7 @@ func (i *impl) DescribeJob(ctx context.Context, in *job.DescribeJobRequest) (
 
 func (i *impl) UpdateJob(ctx context.Context, in *job.UpdateJobRequest) (
 	*job.Job, error) {
-	ins, err := i.DescribeJob(ctx, job.NewDescribeJobRequest(in.Id))
+	ins, err := i.DescribeJob(ctx, job.NewDescribeJobRequest("#"+in.Id))
 	if err != nil {
 		return nil, err
 	}

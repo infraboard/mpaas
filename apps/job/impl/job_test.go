@@ -1,6 +1,7 @@
 package impl_test
 
 import (
+	"os"
 	"testing"
 
 	"github.com/infraboard/mpaas/apps/job"
@@ -50,8 +51,8 @@ func TestCreateDeployJob(t *testing.T) {
 }
 
 func TestUpdateJob(t *testing.T) {
-	req := job.NewPatchJobRequest("cffgnols99bpvbu67og0")
-	req.Spec.Name = "docker_build"
+	req := job.NewPatchJobRequest(os.Getenv("JOB_ID"))
+	req.Spec.RunnerSpec = tools.MustReadContentFile("test/build.yml")
 	ins, err := impl.UpdateJob(ctx, req)
 	if err != nil {
 		t.Fatal(err)

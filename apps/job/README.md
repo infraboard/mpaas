@@ -133,6 +133,11 @@ git clone git@github.com:infraboard/mpaas.git  --single-branch --branch=master
 共享配置Job共享Workdir: 
 [](./impl/test/build.yml)
 
+创建一个secret
+```
+kubectl create secret generic rsa-secret --from-file=id_rsa=${HOME}/.ssh/id_rsa --from-file=id_rsa.pub=${HOME}/.ssh/id_rsa.pub
+```
+
 ## 镜像部署
 
 拉取工具镜像

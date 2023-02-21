@@ -41,7 +41,7 @@ spec: # 详情描述
       containers:
         - image: docker.io/anjia0532/kaniko-project.executor:v1.9.1-debug
           imagePullPolicy: IfNotPresent
-          name: build_and_push
+          name: build-and-push
           command: ["/kaniko/executor"]
           args:
             [
