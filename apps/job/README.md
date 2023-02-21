@@ -130,50 +130,8 @@ docker run -it -v ${HOME}/.ssh/:/root/.ssh/ -w /workspace bitnami/git
 git clone git@github.com:infraboard/mpaas.git  --single-branch --branch=master
 ```
 
-共享配置Job共享Workdir
-```yaml
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  labels:
-    app: init-demo
-  name: init-demo
-spec:
-  replicas: 1
-  selector:
-    matchLabels:
-      app: init-demo
-  template:
-    metadata:
-      labels:
-        app: init-demo
-    spec:
-      initContainers:
-      - name: init-container
-        image: busybox
-        imagePullPolicy: IfNotPresent
-        command: ["sh"]
-        args:
-          [
-            "-c",
-            "echo 'init container test' >/work_dir/index.html",
-          ]
-        volumeMounts:
-        - name: workdir
-          mountPath: "/work_dir"
-      containers:
-      - image: nginx
-        imagePullPolicy: IfNotPresent
-        name: web
-        ports:
-        - containerPort: 80
-        volumeMounts:
-        - name: workdir
-          mountPath: /usr/share/nginx/html
-      volumes:
-      - name: workdir
-        emptyDir: {}
-```
+共享配置Job共享Workdir: 
+[](./impl/test/build.yml)
 
 ## 镜像部署
 

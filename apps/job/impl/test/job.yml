@@ -1,0 +1,28 @@
+apiVersion: batch/v1 # 版本号
+kind: Job # 类型       
+metadata: # 元数据
+  name: test-job # job 名称 
+  namespace: default # 所属命名空间 
+  labels: #标签
+    app: app01
+spec: # 详情描述
+  completions: 1 # 指定 job 需要成功运行 Pods 的次数。默认值: 1
+  parallelism: 1 # 指定 job 在任一时刻应该并发运行 Pods 的数量。默认值: 1，如果上面的 completions 为 6 ，这个参数为 3 ，表示有 6 个 pod，允许有 3 个 pod 并发运行
+  activeDeadlineSeconds: 30 # 指定 job 可运行的时间期限，超过时间还未结束，系统将会尝试进行终止。
+  backoffLimit: 6 # 指定 job 失败后进行重试的次数。默认是 6
+  # manualSelector: true # 是否可以使用 selector 选择器选择 pod，默认是 false
+  # selector: # 选择器，通过它指定该控制器管理哪些 pod
+  #   matchLabels:      # Labels 匹配规则
+  #     app: counter-pod
+    # matchExpressions: # Expressions 匹配规则
+    #   - {key: app, operator: In, values: [counter-pod]}
+  template: # 模板，当副本数量不足时，会根据下面的模板创建 pod 副本
+    metadata:
+      labels:
+        app: counter-pod
+    spec:
+      restartPolicy: Never # 重启策略只能设置为 Never 或者 OnFailure
+      containers:
+      - name: counter
+        image: busybox:1.30
+        command: ["bin/sh","-c","for i in 9 8 7 6 5 4 3 2 1; do echo $i;sleep 2;done"]
