@@ -112,7 +112,7 @@ Use "executor [command] --help" for more information about a command.
 # 挂在项目到workspace目录下, 注意指定工作目录:/workspace
 docker run -it -v ${PWD}/mpaas:/workspace -w /workspace --entrypoint=/busybox/sh docker.io/anjia0532/kaniko-project.executor:v1.9.1-debug
 # 执行构建
-/kaniko/executor --no-push
+/kaniko/executor --no-push -v trace
 ```
 
 ### 基于k8s操作
