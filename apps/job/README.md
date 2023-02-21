@@ -9,8 +9,6 @@
 + 镜像部署: [kubectl 工具镜像](https://hub.docker.com/r/bitnami/kubectl)
 + 虚拟机部署: [在 Docker 容器中配置 Ansible](https://learn.microsoft.com/zh-cn/azure/developer/ansible/configure-in-docker-container?tabs=azure-cli)
 
-
-
 ## 镜像构建
 
 原生地址:
