@@ -125,18 +125,20 @@ docker pull bitnami/git
 测试下能否正常使用
 ```sh
 # 挂载secret
-docker run -it -v ${HOME}/.ssh/:/root/.ssh/ -w /workspace bitnami/git
-# 测试下载
-git clone git@github.com:infraboard/mpaas.git  --single-branch --branch=master
+docker run -it -v ${HOME}/.ssh/:/workspace -w /workspace bitnami/git
+# 测试下载, 关于更多git参数说明请参考看: https://git-scm.com/docs/git-config
+git clone git@github.com:infraboard/mpaas.git  --single-branch --branch=master --config core.sshCommand="ssh -i ./id_rsa.pub"
 ```
 
 共享配置Job共享Workdir: 
 [](./impl/test/build.yml)
 
-创建一个secret
+创建一个secret, 可以参考: [use-case-pod-with-ssh-keys](https://kubernetes.io/zh-cn/docs/concepts/configuration/secret/#use-case-pod-with-ssh-keys)
 ```
-kubectl create secret generic rsa-secret --from-file=id_rsa=${HOME}/.ssh/id_rsa --from-file=id_rsa.pub=${HOME}/.ssh/id_rsa.pub
+kubectl create secret generic git-ssh-key --from-file=id_rsa=${HOME}/.ssh/id_rsa
 ```
+
+
 
 ## 镜像部署
 

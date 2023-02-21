@@ -8,8 +8,8 @@ metadata: # 元数据
 spec: # 详情描述
   completions: 1 # 指定 job 需要成功运行 Pods 的次数。默认值: 1
   parallelism: 1 # 指定 job 在任一时刻应该并发运行 Pods 的数量。默认值: 1，如果上面的 completions 为 6 ，这个参数为 3 ，表示有 6 个 pod，允许有 3 个 pod 并发运行
-  activeDeadlineSeconds: 30 # 指定 job 可运行的时间期限，超过时间还未结束，系统将会尝试进行终止。
-  backoffLimit: 6 # 指定 job 失败后进行重试的次数。默认是 6
+  activeDeadlineSeconds: 1800 # 指定 job 可运行的时间期限，超过时间还未结束，系统将会尝试进行终止。
+  backoffLimit: 3 # 指定 job 失败后进行重试的次数。默认是 6
   # manualSelector: true # 是否可以使用 selector 选择器选择 pod，默认是 false
   # selector: # 选择器，通过它指定该控制器管理哪些 pod
   #   matchLabels:      # Labels 匹配规则
@@ -25,27 +25,38 @@ spec: # 详情描述
       initContainers:
         - name: download
           image: bitnami/git
-          workingDir: /workspace
+          workingDir: /
           imagePullPolicy: IfNotPresent
           command: ["git"]
           args:
             [
               "clone",
               "git@github.com:infraboard/mpaas.git",
+              "workspace",
               "--branch=master",
               "--single-branch",
             ]
+          env:
+            - name: GIT_SSH_COMMAND
+              value: ssh -i /etc/secret-volume/id_rsa -o StrictHostKeyChecking=no
           volumeMounts:
             - name: workspace
               mountPath: /workspace
+            - name: secret-volume
+              readOnly: true
+              mountPath: "/etc/secret-volume"
       containers:
         - image: docker.io/anjia0532/kaniko-project.executor:v1.9.1-debug
+          workingDir: /workspace
           imagePullPolicy: IfNotPresent
           name: build-and-push
           command: ["/kaniko/executor"]
           args:
             [
               "--no-push",
+              "-v",
+              "debug",
+              "--registry-mirror=v5d7kh0f.mirror.aliyuncs.com",
             ]
           volumeMounts:
             - name: workspace
@@ -53,3 +64,7 @@ spec: # 详情描述
       volumes:
         - name: workspace
           emptyDir: {}
+        - name: secret-volume
+          secret:
+            secretName: git-ssh-key
+            defaultMode: 0600
