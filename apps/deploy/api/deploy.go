@@ -11,7 +11,7 @@ import (
 
 func (h *handler) Registry(ws *restful.WebService) {
 	tags := []string{"部署配置管理"}
-	ws.Route(ws.POST("/").To(h.CreateDeploy).
+	ws.Route(ws.POST("/").To(h.CreateDeployConfig).
 		Doc("部署配置").
 		Metadata(restfulspec.KeyOpenAPITags, tags).
 		Metadata(label.Resource, h.Name()).
@@ -21,7 +21,7 @@ func (h *handler) Registry(ws *restful.WebService) {
 		Reads(deploy.CreateDeployConfigRequest{}).
 		Writes(deploy.DeployConfig{}))
 
-	ws.Route(ws.GET("/").To(h.QueryDeploy).
+	ws.Route(ws.GET("/").To(h.QueryDeployConfig).
 		Doc("查询部署配置列表").
 		Metadata(restfulspec.KeyOpenAPITags, tags).
 		Metadata(label.Resource, h.Name()).
@@ -32,7 +32,7 @@ func (h *handler) Registry(ws *restful.WebService) {
 		Writes(deploy.DeployConfigSet{}).
 		Returns(200, "OK", deploy.DeployConfigSet{}))
 
-	ws.Route(ws.GET("/{id}").To(h.DescribeDeploy).
+	ws.Route(ws.GET("/{id}").To(h.DescribeDeployConfig).
 		Doc("部署配置详情").
 		Param(ws.PathParameter("id", "identifier of the deploy").DataType("string")).
 		Metadata(restfulspec.KeyOpenAPITags, tags).
@@ -44,7 +44,7 @@ func (h *handler) Registry(ws *restful.WebService) {
 		Returns(200, "OK", deploy.DeployConfig{}).
 		Returns(404, "Not Found", nil))
 
-	ws.Route(ws.PUT("/{id}").To(h.PutDeploy).
+	ws.Route(ws.PUT("/{id}").To(h.PutDeployConfig).
 		Doc("修改部署配置").
 		Param(ws.PathParameter("id", "identifier of the deploy").DataType("string")).
 		Metadata(restfulspec.KeyOpenAPITags, tags).
@@ -56,7 +56,7 @@ func (h *handler) Registry(ws *restful.WebService) {
 		Returns(200, "OK", deploy.DeployConfig{}).
 		Returns(404, "Not Found", nil))
 
-	ws.Route(ws.PATCH("/{id}").To(h.PatchDeploy).
+	ws.Route(ws.PATCH("/{id}").To(h.PatchDeployConfig).
 		Doc("修改部署配置").
 		Param(ws.PathParameter("id", "identifier of the deploy").DataType("string")).
 		Metadata(restfulspec.KeyOpenAPITags, tags).
@@ -68,7 +68,7 @@ func (h *handler) Registry(ws *restful.WebService) {
 		Returns(200, "OK", deploy.DeployConfig{}).
 		Returns(404, "Not Found", nil))
 
-	ws.Route(ws.DELETE("/{id}").To(h.DeleteDeploy).
+	ws.Route(ws.DELETE("/{id}").To(h.DeleteDeployConfig).
 		Doc("删除部署配置").
 		Param(ws.PathParameter("id", "identifier of the deploy").DataType("string")).
 		Metadata(restfulspec.KeyOpenAPITags, tags).
@@ -79,7 +79,7 @@ func (h *handler) Registry(ws *restful.WebService) {
 		Metadata(label.Permission, label.Enable))
 }
 
-func (h *handler) CreateDeploy(r *restful.Request, w *restful.Response) {
+func (h *handler) CreateDeployConfig(r *restful.Request, w *restful.Response) {
 	req := deploy.NewCreateDeployConfigRequest()
 
 	if err := r.ReadEntity(req); err != nil {
@@ -96,7 +96,7 @@ func (h *handler) CreateDeploy(r *restful.Request, w *restful.Response) {
 	response.Success(w, ins)
 }
 
-func (h *handler) QueryDeploy(r *restful.Request, w *restful.Response) {
+func (h *handler) QueryDeployConfig(r *restful.Request, w *restful.Response) {
 	req := deploy.NewQueryDeployConfigRequestFromHttp(r.Request)
 
 	set, err := h.service.QueryDeployConfig(r.Request.Context(), req)
@@ -107,7 +107,7 @@ func (h *handler) QueryDeploy(r *restful.Request, w *restful.Response) {
 	response.Success(w, set)
 }
 
-func (h *handler) DescribeDeploy(r *restful.Request, w *restful.Response) {
+func (h *handler) DescribeDeployConfig(r *restful.Request, w *restful.Response) {
 	req := deploy.NewDescribeDeployConfigRequest(r.PathParameter("id"))
 
 	ins, err := h.service.DescribeDeployConfig(r.Request.Context(), req)
@@ -118,7 +118,25 @@ func (h *handler) DescribeDeploy(r *restful.Request, w *restful.Response) {
 	response.Success(w, ins)
 }
 
-func (h *handler) PutDeploy(r *restful.Request, w *restful.Response) {
+func (h *handler) DownloadDeployConfig(r *restful.Request, w *restful.Response) {
+	req := deploy.NewDescribeDeployConfigRequest(r.PathParameter("id"))
+
+	ins, err := h.service.DescribeDeployConfig(r.Request.Context(), req)
+	if err != nil {
+		response.Failed(w, err)
+		return
+	}
+
+	// 校验Download Token
+
+	switch ins.Spec.Type {
+	case deploy.TYPE_HOST:
+	case deploy.TYPE_KUBERNETES:
+		w.Write([]byte(ins.Spec.K8STypeConfig.WorkloadConfig))
+	}
+}
+
+func (h *handler) PutDeployConfig(r *restful.Request, w *restful.Response) {
 	tk := r.Attribute(token.TOKEN_ATTRIBUTE_NAME).(*token.Token)
 
 	req := deploy.NewPutDeployRequest(r.PathParameter("id"))
@@ -136,7 +154,7 @@ func (h *handler) PutDeploy(r *restful.Request, w *restful.Response) {
 	response.Success(w, set)
 }
 
-func (h *handler) PatchDeploy(r *restful.Request, w *restful.Response) {
+func (h *handler) PatchDeployConfig(r *restful.Request, w *restful.Response) {
 	tk := r.Attribute(token.TOKEN_ATTRIBUTE_NAME).(*token.Token)
 
 	req := deploy.NewPatchDeployRequest(r.PathParameter("id"))
@@ -155,7 +173,7 @@ func (h *handler) PatchDeploy(r *restful.Request, w *restful.Response) {
 	response.Success(w, set)
 }
 
-func (h *handler) DeleteDeploy(r *restful.Request, w *restful.Response) {
+func (h *handler) DeleteDeployConfig(r *restful.Request, w *restful.Response) {
 	req := deploy.NewDeleteDeployConfigRequest(r.PathParameter("id"))
 	set, err := h.service.DeleteDeployConfig(r.Request.Context(), req)
 	if err != nil {

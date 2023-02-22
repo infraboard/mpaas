@@ -12,6 +12,11 @@ service RPC {
     rpc UpdateDeployConfig(UpdateDeployConfigRequest) returns(DeployConfig);
     rpc QueryDeployConfig(QueryDeployConfigRequest) returns(DeployConfigSet);
     rpc DescribeDeployConfig(DescribeDeployConfigRequest) returns(DeployConfig);
+    rpc UpdateDeployConfigStatus(UpdateDeployConfigStatusRequest) returns(DeployConfig);
+}
+
+message UpdateDeployConfigStatusRequest {
+    
 }
 
 message QueryDeployConfigRequest {

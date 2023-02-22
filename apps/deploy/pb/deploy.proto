@@ -25,7 +25,7 @@ message DeployConfig  {
 }
 
 message Status {
-    // 一次性下载token, 内部使用, 没下载一次就会变化
+    // 一次性下载token, 内部使用, 每下载一次就会变化
     // @gotags: bson:"download_token" json:"-"
     string download_token = 1;
     // 下载时间
