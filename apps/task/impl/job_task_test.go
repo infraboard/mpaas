@@ -15,7 +15,7 @@ func TestRunJob(t *testing.T) {
 	version := job.NewVersionedRunParam("v1")
 	version.Params = job.NewRunParamWithKVPaire(
 		"cluster_id", "k8s-test",
-		"DB_PASS", "test",
+		"GIT_ADDRESS", "git@github.com:infraboard/mpaas.git",
 	)
 	req.Params = version
 

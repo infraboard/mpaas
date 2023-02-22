@@ -22,6 +22,20 @@ func TestCreateBuildJob(t *testing.T) {
 	req.Name = "docker_build"
 	req.CreateBy = "test"
 	req.RunnerSpec = tools.MustReadContentFile("test/build.yml")
+	v1 := job.NewVersionedRunParam("v1")
+	v1.Add(&job.RunParam{
+		Required: true,
+		Name:     "cluster_id",
+		Desc:     "job运行时的k8s集群",
+	})
+	v1.Add(&job.RunParam{
+		Required: true,
+		Name:     "GIT_ADDRESS",
+		Desc:     "应用git代码仓库地址",
+	})
+
+	req.AddVersionParams(v1)
+
 	ins, err := impl.CreateJob(ctx, req)
 	if err != nil {
 		t.Fatal(err)

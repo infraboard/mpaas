@@ -27,14 +27,11 @@ spec: # 详情描述
           image: bitnami/git
           workingDir: /
           imagePullPolicy: IfNotPresent
-          command: ["git"]
+          command: ["sh"]
           args:
             [
-              "clone",
-              "git@github.com:infraboard/mpaas.git",
-              "workspace",
-              "--branch=master",
-              "--single-branch",
+              "-c",
+              "git clone ${GIT_ADDRESS} workspace --branch=master --single-branch",
             ]
           env:
             - name: GIT_SSH_COMMAND
@@ -50,14 +47,8 @@ spec: # 详情描述
           workingDir: /workspace
           imagePullPolicy: IfNotPresent
           name: build-and-push
-          command: ["/kaniko/executor"]
-          args:
-            [
-              "--no-push",
-              "-v",
-              "debug",
-              "--registry-mirror=v5d7kh0f.mirror.aliyuncs.com",
-            ]
+          command: ["sh"]
+          args: ["-c", "/kaniko/executor --no-push"]
           volumeMounts:
             - name: workspace
               mountPath: /workspace
