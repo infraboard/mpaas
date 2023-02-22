@@ -178,3 +178,9 @@ docker pull bitnami/kubectl
 ```sh
 docker run -it  -v ~/.kube/config:/.kube/config bitnami/kubectl get ns
 ```
+
+
+部署配置下载工具: [curl](https://hub.docker.com/r/curlimages/curl)
+```
+docker pull curlimages/curl
+```
