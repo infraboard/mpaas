@@ -48,10 +48,16 @@ spec: # 详情描述
           imagePullPolicy: IfNotPresent
           name: build-and-push
           command: ["sh"]
-          args: ["-c", "/kaniko/executor --no-push"]
+          args:
+            [
+              "-c",
+              "/kaniko/executor --destination=${IMAGE_REPOSITORY}:${IMAGE_VERSION}",
+            ]
           volumeMounts:
             - name: workspace
               mountPath: /workspace
+            - name: kaniko-secret
+              mountPath: /kaniko/.docker
       volumes:
         - name: workspace
           emptyDir: {}
@@ -59,3 +65,6 @@ spec: # 详情描述
           secret:
             secretName: git-ssh-key
             defaultMode: 0600
+        - name: kaniko-secret
+          secret:
+            secretName: kaniko-secret

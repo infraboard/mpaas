@@ -25,4 +25,5 @@ etc/mpaas.env
 etc/ssl
 unit_test.env
 kube_config.yml
+config.json
 mpaas

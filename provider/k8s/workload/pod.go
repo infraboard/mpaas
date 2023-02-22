@@ -24,7 +24,14 @@ func (c *Workload) DeletePod(ctx context.Context, req *meta.DeleteRequest) error
 }
 
 func InjectPodEnvVars(pod *v1.PodSpec, envs []v1.EnvVar) {
-	// 给容器注入环境变量
+	// 给Init容器注入环境变量
+	for i, c := range pod.InitContainers {
+		InjectContainerEnvVars(&c, envs)
+		// 替换掉原来的container的值
+		pod.InitContainers[i] = c
+	}
+
+	// 给用户容器注入环境变量
 	for i, c := range pod.Containers {
 		InjectContainerEnvVars(&c, envs)
 		// 替换掉原来的container的值

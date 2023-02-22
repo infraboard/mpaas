@@ -130,13 +130,40 @@ docker run -it -v ${HOME}/.ssh/:/workspace -w /workspace bitnami/git
 git clone git@github.com:infraboard/mpaas.git  --single-branch --branch=master --config core.sshCommand="ssh -i ./id_rsa.pub"
 ```
 
-共享配置Job共享Workdir: 
-[](./impl/test/build.yml)
-
-创建一个secret, 可以参考: [use-case-pod-with-ssh-keys](https://kubernetes.io/zh-cn/docs/concepts/configuration/secret/#use-case-pod-with-ssh-keys)
+创建代码拉取的secret, 可以参考: [use-case-pod-with-ssh-keys](https://kubernetes.io/zh-cn/docs/concepts/configuration/secret/#use-case-pod-with-ssh-keys)
 ```
 kubectl create secret generic git-ssh-key --from-file=id_rsa=${HOME}/.ssh/id_rsa
 ```
+
+创建镜像推送的secret, [Pushing to Docker Hub](https://github.com/GoogleContainerTools/kaniko#pushing-to-docker-hub) 推送至指定远端镜像仓库须要credential的支持，因此须要将credential以secret的方式挂载到/kaniko/.docker/这个目录下，文件名称为config.json，内容以下:
+[](./impl/test/kaniko_config_example.json)
+
+YWRtaW46SGFyYm9yMTIzNDUK是通过registry用户名与密码以下命令获取
+```sh
+$ echo -n admin:Harbor12345 | base64
+YWRtaW46SGFyYm9yMTIzNDUK
+```
+
+手动挂载并测试能否推送:
+```sh
+# 挂在项目到workspace目录下, 注意指定工作目录:/workspace
+docker run -it -v ${HOME}/Workspace/mpaas:/workspace -v ${HOME}/Workspace/mpaas/apps/job/impl/test/kaniko_config.json:/kaniko/.docker/config.json -w /workspace --entrypoint=/busybox/sh docker.io/anjia0532/kaniko-project.executor:v1.9.1-debug
+# 执行构建
+/kaniko/executor -v trace --destination=registry.cn-hangzhou.aliyuncs.com/inforboard/mpaas:v0.0.0
+```
+
+最后创建secret
+```sh
+$ kubectl create secret generic kaniko-secret --from-file=apps/job/impl/test/config.json
+secret/kaniko-secret created
+
+$ kubectl  get secret kaniko-secret
+NAME            TYPE     DATA   AGE
+kaniko-secret   Opaque   1      23s
+```
+
+共享配置Job共享Workdir: 
+[](./impl/test/build.yml)
 
 
 
