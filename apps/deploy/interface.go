@@ -52,7 +52,20 @@ func NewQueryDeployConfigRequest() *QueryDeployConfigRequest {
 }
 
 func NewCreateDeployConfigRequest() *CreateDeployConfigRequest {
-	return &CreateDeployConfigRequest{}
+	return &CreateDeployConfigRequest{
+		AuthEnabled:    false,
+		Labels:         make(map[string]string),
+		K8STypeConfig:  NewK8STypeConfig(),
+		HostTypeConfig: NewHostTypeConfig(),
+	}
+}
+
+func NewK8STypeConfig() *K8STypeConfig {
+	return &K8STypeConfig{}
+}
+
+func NewHostTypeConfig() *HostTypeConfig {
+	return &HostTypeConfig{}
 }
 
 // Validate 校验请求是否合法

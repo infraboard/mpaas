@@ -169,6 +169,8 @@ kaniko-secret   Opaque   1      23s
 
 ## 镜像部署
 
+[k8s 应用部署相关文档](https://kubernetes.io/docs/concepts/workloads/controllers/)
+
 拉取工具镜像
 ```
 docker pull bitnami/kubectl
@@ -179,8 +181,9 @@ docker pull bitnami/kubectl
 docker run -it  -v ~/.kube/config:/.kube/config bitnami/kubectl get ns
 ```
 
+k8s支持远程访问部署配置, 比如:
+```
+kubectl apply -f https://k8s.io/examples/controllers/nginx-deployment.yaml
+```
 
-部署配置下载工具: [curl](https://hub.docker.com/r/curlimages/curl)
-```
-docker pull curlimages/curl
-```
+

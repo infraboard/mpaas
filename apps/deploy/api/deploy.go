@@ -121,13 +121,21 @@ func (h *handler) DescribeDeployConfig(r *restful.Request, w *restful.Response) 
 func (h *handler) DownloadDeployConfig(r *restful.Request, w *restful.Response) {
 	req := deploy.NewDescribeDeployConfigRequest(r.PathParameter("id"))
 
+	// 查询部署配置
 	ins, err := h.service.DescribeDeployConfig(r.Request.Context(), req)
 	if err != nil {
 		response.Failed(w, err)
 		return
 	}
 
-	// 校验Download Token
+	// 校验集群访问Token
+	if ins.Spec.AuthEnabled {
+		err = ins.ValidateToken(r.QueryParameter(deploy.DEPLOY_CONFIG_ACCESS_TOKEN_HEADER))
+		if err != nil {
+			response.Failed(w, err)
+			return
+		}
+	}
 
 	switch ins.Spec.Type {
 	case deploy.TYPE_HOST:

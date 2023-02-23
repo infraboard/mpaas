@@ -25,15 +25,18 @@ message DeployConfig  {
 }
 
 message Status {
-    // 一次性下载token, 内部使用, 每下载一次就会变化
-    // @gotags: bson:"download_token" json:"-"
-    string download_token = 1;
-    // 下载时间
-    // @gotags: bson:"download_at" json:"download_at"
-    int64 download_at = 2;
-    // 下载次数
-    // @gotags: bson:"download_count" json:"download_count"
-    int64 download_count = 3;
+    // 部署Token 用于访问集群配置
+    // @gotags: json:"token"
+    string token = 1;
+    // token上传刷新时间
+    // @gotags: bson:"token_refresh_at" json:"token_refresh_at"
+    int64 token_refresh_at = 2;
+    // token最近一次访问时间
+    // @gotags: bson:"access_at" json:"access_at"
+    int64 access_at = 3;
+    // 访问次数
+    // @gotags: bson:"access_count" json:"access_count"
+    int64 access_count = 4;
 }
 
 enum TYPE {
@@ -84,18 +87,18 @@ message CreateDeployConfigRequest {
     // 部署环境
     // @gotags: bson:"environment" json:"environment" validate:"required"
     string environment = 2;
-    // 部署管理凭证
-    // @gotags: json:"credential_id"
-    string credential_id = 3;
     // 部署资源提供方
     // @gotags: bson:"provider" json:"provider" validate:"required"
-    string provider = 4;
+    string provider = 3;
     // 部署地域
     // @gotags: bson:"region" json:"region" validate:"required"
-    string region = 5;
+    string region = 4;
     // 部署方式
     // @gotags: bson:"type" json:"type"
-    TYPE type = 6;
+    TYPE type = 5;
+    // 集群的配置是否需要认证才能访问, 开启后会生成一个Token
+    // @gotags: bson:"auth_enabled" json:"auth_enabled"
+    bool auth_enabled = 6;
     // k8s模式下的部署配置
     // @gotags: json:"k8s_type_config" bson:"k8s_type_config"
     K8sTypeConfig k8s_type_config = 7;

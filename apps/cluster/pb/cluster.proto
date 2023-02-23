@@ -69,8 +69,8 @@ message CreateClusterRequest {
     // @gotags: json:"create_by" form:"create_by" bson:"create_by"
     string create_by = 3;
     // 集群提供商
-    // @gotags: json:"vendor" bson:"vendor" form:"vendor" validate:"required"
-    string vendor = 4;
+    // @gotags: json:"provider" bson:"provider" form:"provider" validate:"required"
+    string provider = 4;
     // 集群所处地域
     // @gotags: json:"region" bson:"region" form:"region" validate:"required"
     string region = 5;
