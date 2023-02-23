@@ -14,3 +14,13 @@ func TestListSecret(t *testing.T) {
 	}
 	t.Log(v)
 }
+
+func TestGetSecret(t *testing.T) {
+	req := meta.NewGetRequest("git-ssh-key111111")
+	v, err := impl.GetSecret(ctx, req)
+
+	if err != nil {
+		t.Log(err)
+	}
+	t.Log(v.Name)
+}

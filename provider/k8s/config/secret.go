@@ -17,6 +17,7 @@ func (c *Config) ListSecret(ctx context.Context, req *meta.ListRequest) (*v1.Sec
 }
 
 func (c *Config) GetSecret(ctx context.Context, req *meta.GetRequest) (*v1.Secret, error) {
+
 	return c.corev1.Secrets(req.Namespace).Get(ctx, req.Name, req.Opts)
 }
 

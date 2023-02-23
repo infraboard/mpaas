@@ -21,6 +21,7 @@ func (r *K8sRunner) Run(ctx context.Context, in *task.RunTaskRequest) (*task.Job
 	if err != nil {
 		return nil, err
 	}
+	r.k8sClient = k8sClient
 
 	obj := new(v1.Job)
 	if err := yaml.Unmarshal([]byte(in.JobSpec), obj); err != nil {
@@ -29,6 +30,8 @@ func (r *K8sRunner) Run(ctx context.Context, in *task.RunTaskRequest) (*task.Job
 
 	// 修改任务名称
 	obj.Name = in.Name
+	obj.Namespace = runnerParams.Namespace
+
 	// Job注入标签
 	workload.InjectJobLabels(obj, in.Labels)
 	// 给容器注入环境变量

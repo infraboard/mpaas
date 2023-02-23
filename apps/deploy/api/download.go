@@ -60,7 +60,7 @@ func (h *downloadHandler) DownloadDeployConfig(r *restful.Request, w *restful.Re
 
 	// 校验集群访问Token
 	if ins.Spec.AuthEnabled {
-		err = ins.ValidateToken(r.QueryParameter(deploy.DEPLOY_CONFIG_ACCESS_TOKEN_HEADER))
+		err = ins.ValidateToken(r.QueryParameter("token"))
 		if err != nil {
 			response.Failed(w, err)
 			return

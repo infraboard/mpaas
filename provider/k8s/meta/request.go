@@ -45,6 +45,11 @@ type GetRequest struct {
 	Opts      metav1.GetOptions
 }
 
+func (r *GetRequest) WithNamespace(namespace string) *GetRequest {
+	r.Namespace = namespace
+	return r
+}
+
 func NewDeleteRequest(name string) *DeleteRequest {
 	req := &DeleteRequest{
 		Namespace: DEFAULT_NAMESPACE,

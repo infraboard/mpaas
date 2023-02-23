@@ -14,6 +14,7 @@ import (
 	"github.com/infraboard/mcube/http/request"
 	pb_request "github.com/infraboard/mcube/pb/request"
 	"github.com/rs/xid"
+	v1 "k8s.io/api/core/v1"
 
 	"github.com/infraboard/mpaas/conf"
 	"github.com/infraboard/mpaas/provider/k8s"
@@ -185,6 +186,13 @@ func (i *Cluster) Desense() {
 
 func (i *Cluster) Client() (*k8s.Client, error) {
 	return k8s.NewClient(i.Spec.KubeConfig)
+}
+
+func (i *Cluster) KubeConfSecret() *v1.Secret {
+	secret := new(v1.Secret)
+	secret.Name = fmt.Sprintf("cluster-%s", i.Meta.Id)
+	secret.StringData["config"] = i.Spec.KubeConfig
+	return secret
 }
 
 func NewDescribeClusterRequest(id string) *DescribeClusterRequest {
