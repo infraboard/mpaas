@@ -5,6 +5,7 @@ import (
 
 	"github.com/infraboard/mpaas/apps/job"
 	"github.com/infraboard/mpaas/apps/task"
+	"github.com/infraboard/mpaas/test/conf"
 	"github.com/infraboard/mpaas/test/tools"
 )
 
@@ -13,14 +14,16 @@ func TestRun(t *testing.T) {
 	params := job.NewVersionedRunParam("v0.1")
 	params.Add(
 		&job.RunParam{
-			Name:     "cluster_id",
-			Required: true,
-			Value:    "k8s-test",
+			Name:  "cluster_id",
+			Value: "k8s-test",
 		},
 		&job.RunParam{
-			Name:     "DB_PASS",
-			Required: true,
-			Value:    "test",
+			Name:  "namespace",
+			Value: "default",
+		},
+		&job.RunParam{
+			Name:  job.SYSTEM_VARIABLE_DEPLOY_CONFIG_ID,
+			Value: conf.C.BUILD_CONFIG_ID,
 		},
 	)
 

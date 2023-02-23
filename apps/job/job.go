@@ -102,7 +102,7 @@ func (r *VersionedRunParam) K8SJobRunnerParams() *K8SJobRunnerParams {
 		field := pt.Field(i)
 		if field.IsExported() {
 			tagValue := field.Tag.Get("param")
-			v.Field(i).SetString(tagValue)
+			v.Field(i).SetString(r.GetParamValue(tagValue))
 		}
 	}
 
