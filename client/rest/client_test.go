@@ -17,7 +17,7 @@ var (
 
 func TestCreateCluster(t *testing.T) {
 	req := cluster.NewCreateClusterRequest()
-	req.Vendor = "腾讯云"
+	req.Provider = "腾讯云"
 	req.Region = "上海"
 	req.Name = "生产环境(新)"
 

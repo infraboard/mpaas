@@ -79,7 +79,6 @@ func (s *HTTPService) PathPrefix() string {
 func (s *HTTPService) Start() error {
 	// 装置子服务路由
 	app.LoadRESTfulApp(s.PathPrefix(), s.r)
-
 	// API Doc
 	config := restfulspec.Config{
 		WebServices:                   restful.RegisteredWebServices(), // you control what services are visible

@@ -186,4 +186,9 @@ k8s支持远程访问部署配置, 比如:
 kubectl apply -f https://k8s.io/examples/controllers/nginx-deployment.yaml
 ```
 
+开发一个接口:
+```
+kubectl apply -f http://localhost:8080/mpaas/api/v1/export/deploy_configs/cfrcv8ea0brnte3v3jc0
+```
+
 
