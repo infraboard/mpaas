@@ -40,19 +40,20 @@ func TestCreateDeployJob(t *testing.T) {
 		Required: true,
 		Name:     "cluster_id",
 		Desc:     "job运行时的k8s集群",
-		Value:    "test-k8s",
+		Value:    "k8s-test",
 	})
 	v1.Add(&job.RunParam{
 		Required: true,
 		Name:     "namespace",
-		Desc:     "job运行时的k8s集群",
+		Desc:     "job运行时的namespace",
 		Value:    "default",
 	})
 
+	// 部署运行时变量
 	v1.Add(&job.RunParam{
 		Required: true,
 		Name:     job.SYSTEM_VARIABLE_DEPLOY_CONFIG_ID,
-		Desc:     "部署配置id",
+		Desc:     "部署配置id, 部署时由系统传人",
 	})
 
 	req.AddVersionParams(v1)
@@ -72,12 +73,12 @@ func TestUpdateJob(t *testing.T) {
 		Required: true,
 		Name:     "cluster_id",
 		Desc:     "job运行时的k8s集群",
-		Value:    "test-k8s",
+		Value:    "k8s-test",
 	})
 	v1.Add(&job.RunParam{
 		Required: true,
 		Name:     "namespace",
-		Desc:     "job运行时的k8s集群",
+		Desc:     "job运行时的namespace",
 		Value:    "default",
 	})
 

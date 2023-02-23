@@ -11,7 +11,11 @@ func TestK8SJobRunnerParams(t *testing.T) {
 	param.Add(&job.RunParam{
 		Name:     "cluster_id",
 		Required: true,
-		Value:    "k8s-cluster-01",
+		Value:    "k8s-test",
+	}, &job.RunParam{
+		Name:     "namespace",
+		Required: true,
+		Value:    "default",
 	})
 	t.Log(param.K8SJobRunnerParams())
 }

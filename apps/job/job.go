@@ -61,6 +61,17 @@ func (i *Job) MarshalJSON() ([]byte, error) {
 	}{i.Meta, i.Spec})
 }
 
+func (i *Job) GetVersionedRunParam(version string) *VersionedRunParam {
+	for m := range i.Spec.RunParams {
+		v := i.Spec.RunParams[m]
+		if v.Version == version {
+			return v
+		}
+	}
+
+	return nil
+}
+
 func NewVersionedRunParam(version string) *VersionedRunParam {
 	return &VersionedRunParam{
 		Version: version,
@@ -83,9 +94,16 @@ func (r *VersionedRunParam) K8SJobRunnerParams() *K8SJobRunnerParams {
 	// 因此这里直接采用K8SJobRunnerParams{}获取类型
 	pt := reflect.TypeOf(K8SJobRunnerParams{})
 
-	if field, ok := pt.FieldByName("ClusterId"); ok {
-		tagValue := field.Tag.Get("param")
-		params.ClusterId = r.GetParamValue(tagValue)
+	// go语言所有函数传的都是值，所以要想修改原来的值就需要传指
+	// 通过Elem()返回指针指向的对象
+	v := reflect.ValueOf(params).Elem()
+
+	for i := 0; i < pt.NumField(); i++ {
+		field := pt.Field(i)
+		if field.IsExported() {
+			tagValue := field.Tag.Get("param")
+			v.Field(i).SetString(tagValue)
+		}
 	}
 
 	return params
@@ -120,6 +138,24 @@ func (r *VersionedRunParam) GetParamValue(key string) string {
 		}
 	}
 	return ""
+}
+
+// 设置参数的值
+func (r *VersionedRunParam) SetParamValue(key, value string) {
+	for i := range r.Params {
+		item := r.Params[i]
+		if item.Name == key {
+			item.Value = value
+			return
+		}
+	}
+}
+
+func (r *VersionedRunParam) Merge(target *VersionedRunParam) {
+	for i := range r.Params {
+		param := r.Params[i]
+		r.SetParamValue(param.Name, param.Value)
+	}
 }
 
 func NewK8SJobRunnerParams() *K8SJobRunnerParams {

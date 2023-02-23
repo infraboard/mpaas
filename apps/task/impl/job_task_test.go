@@ -10,14 +10,28 @@ import (
 	"github.com/infraboard/mpaas/test/tools"
 )
 
-func TestRunJob(t *testing.T) {
+func TestRunBuildJob(t *testing.T) {
 	req := pipeline.NewRunJobRequest("docker_build@default.default")
 	version := job.NewVersionedRunParam("v1")
 	version.Params = job.NewRunParamWithKVPaire(
-		"cluster_id", "k8s-test",
 		"GIT_ADDRESS", "git@github.com:infraboard/mpaas.git",
 		"IMAGE_REPOSITORY", "registry.cn-hangzhou.aliyuncs.com/inforboard/mpaas",
 		"IMAGE_VERSION", "v0.0.1",
+	)
+	req.Params = version
+
+	ins, err := impl.RunJob(ctx, req)
+	if err != nil {
+		t.Fatal(err)
+	}
+	t.Log(tools.MustToJson(ins))
+}
+
+func TestRunDeployJob(t *testing.T) {
+	req := pipeline.NewRunJobRequest("docker_deploy@default.default")
+	version := job.NewVersionedRunParam("v1")
+	version.Params = job.NewRunParamWithKVPaire(
+		job.SYSTEM_VARIABLE_DEPLOY_CONFIG_ID, os.Getenv("DEPLOY_JOB_ID"),
 	)
 	req.Params = version
 

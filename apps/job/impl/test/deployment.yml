@@ -29,5 +29,5 @@ spec:
             [
               "sh",
               "-c",
-              "kubectl apply -f ${DEPLOY_CONFIG}",
+              "echo ${SYSTEM_VARIABLE_DEPLOY_WORKLOAD} > workload.yml && kubectl apply -f workload.yml",
             ]
