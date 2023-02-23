@@ -37,6 +37,9 @@ func (r *K8sRunner) Run(ctx context.Context, in *task.RunTaskRequest) (*task.Job
 	// 给容器注入环境变量
 	workload.InjectPodEnvVars(&obj.Spec.Template.Spec, in.Params.EnvVars())
 
+	// 处理系统变量
+	r.HanleSystemVariable(ctx, in.Params, obj)
+
 	status := task.NewJobTaskStatus()
 	status.MarkedRunning()
 

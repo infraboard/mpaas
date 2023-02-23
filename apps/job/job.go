@@ -91,6 +91,10 @@ func (r *VersionedRunParam) K8SJobRunnerParams() *K8SJobRunnerParams {
 	return params
 }
 
+func (r *VersionedRunParam) GetDeployConfigId() string {
+	return r.GetParamValue(SYSTEM_VARIABLE_DEPLOY_CONFIG_ID)
+}
+
 // 获取需要注入容器的环境变量参数
 // 注意: 只有大写的变量才会被导出, 因为一般环境变量都是大写的或者_开头, 比如 DB_PASS, _GIT_ADDRESS
 // 小写的变量用于系统内部使用, 比如 K8SJobRunnerParams 中的cluster_id

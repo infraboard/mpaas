@@ -40,6 +40,19 @@ func TestCreateDeployJob(t *testing.T) {
 		Required: true,
 		Name:     "cluster_id",
 		Desc:     "job运行时的k8s集群",
+		Value:    "test-k8s",
+	})
+	v1.Add(&job.RunParam{
+		Required: true,
+		Name:     "namespace",
+		Desc:     "job运行时的k8s集群",
+		Value:    "default",
+	})
+
+	v1.Add(&job.RunParam{
+		Required: true,
+		Name:     job.SYSTEM_VARIABLE_DEPLOY_CONFIG_ID,
+		Desc:     "部署配置id",
 	})
 
 	req.AddVersionParams(v1)
@@ -59,7 +72,15 @@ func TestUpdateJob(t *testing.T) {
 		Required: true,
 		Name:     "cluster_id",
 		Desc:     "job运行时的k8s集群",
+		Value:    "test-k8s",
 	})
+	v1.Add(&job.RunParam{
+		Required: true,
+		Name:     "namespace",
+		Desc:     "job运行时的k8s集群",
+		Value:    "default",
+	})
+
 	// 代码仓库地址, 比如 git@github.com:infraboard/mpaas.git
 	v1.Add(&job.RunParam{
 		Required: true,

@@ -5,6 +5,7 @@ import (
 
 	"github.com/infraboard/mpaas/apps/cluster"
 	"github.com/infraboard/mpaas/apps/deploy"
+	"github.com/infraboard/mpaas/apps/job"
 	"github.com/infraboard/mpaas/provider/k8s/meta"
 	"github.com/infraboard/mpaas/provider/k8s/workload"
 	v1 "k8s.io/api/batch/v1"
@@ -13,18 +14,18 @@ import (
 
 // 更加注解注入信息
 
-func (r *K8sRunner) HanleAnnotation(ctx context.Context, job *v1.Job) {
-	r.handleDeployConfig(ctx, job)
+func (r *K8sRunner) HanleSystemVariable(ctx context.Context, in *job.VersionedRunParam, job *v1.Job) {
+	r.handleDeployConfig(ctx, in.GetDeployConfigId(), job)
 }
 
 // 查询部署配置, 注入相关变量
-func (r *K8sRunner) handleDeployConfig(ctx context.Context, job *v1.Job) error {
-	v, ok := job.Annotations[deploy.DEPLOY_CONFIG_ANNOTATION_KEY]
-	if !ok {
+func (r *K8sRunner) handleDeployConfig(ctx context.Context, deployConfigId string, job *v1.Job) error {
+	if deployConfigId == "" {
 		return nil
 	}
+
 	// 查询部署配置
-	dc, err := r.deploy.DescribeDeployConfig(ctx, deploy.NewDescribeDeployConfigRequest(v))
+	dc, err := r.deploy.DescribeDeployConfig(ctx, deploy.NewDescribeDeployConfigRequest(deployConfigId))
 	if err != nil {
 		return err
 	}
