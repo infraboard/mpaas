@@ -51,7 +51,7 @@ func (r *K8sRunner) handleDeployConfig(ctx context.Context, deployConfigId strin
 		}
 		workload.InjectPodSecretVolume(&job.Spec.Template.Spec, secret)
 		// 给容器注入环境变量
-		workload.InjectPodEnvVars(&job.Spec.Template.Spec, in.Params.EnvVars())
+		workload.InjectPodEnvVars(&job.Spec.Template.Spec, dc.Spec.K8STypeConfig.AsEnv())
 	case deploy.TYPE_HOST:
 		// 主机部署需要注入的信息
 	}
