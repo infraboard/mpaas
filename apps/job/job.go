@@ -3,7 +3,6 @@ package job
 import (
 	"encoding/json"
 	"reflect"
-	"strings"
 	"time"
 	"unicode"
 
@@ -114,12 +113,12 @@ func (r *VersionedRunParam) GetDeployConfigId() string {
 }
 
 // 获取需要注入容器的环境变量参数
-// 注意: 只有大写的变量才会被导出, 因为一般环境变量都是大写的或者_开头, 比如 DB_PASS, _GIT_ADDRESS
+// 注意: 只有大写的变量才会被导出, 因为一般环境变量都是大写的比如 DB_PASS
 // 小写的变量用于系统内部使用, 比如 K8SJobRunnerParams 中的cluster_id
 func (r *VersionedRunParam) EnvVars() (envs []corev1.EnvVar) {
 	for i := range r.Params {
 		item := r.Params[i]
-		if item.Name != "" && (unicode.IsUpper(rune(item.Name[0])) || strings.HasPrefix(item.Name, "_")) {
+		if item.Name != "" && (unicode.IsUpper(rune(item.Name[0]))) {
 			envs = append(envs, corev1.EnvVar{
 				Name:  item.Name,
 				Value: item.Value,
@@ -152,9 +151,9 @@ func (r *VersionedRunParam) SetParamValue(key, value string) {
 }
 
 func (r *VersionedRunParam) Merge(target *VersionedRunParam) {
-	for i := range r.Params {
-		param := r.Params[i]
-		r.SetParamValue(param.Name, param.Value)
+	for i := range target.Params {
+		t := target.Params[i]
+		r.SetParamValue(t.Name, t.Value)
 	}
 }
 

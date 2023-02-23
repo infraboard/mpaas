@@ -2,6 +2,7 @@ package k8s_test
 
 import (
 	"testing"
+	"unicode"
 
 	"github.com/infraboard/mpaas/apps/job"
 	"github.com/infraboard/mpaas/apps/task"
@@ -22,8 +23,12 @@ func TestRun(t *testing.T) {
 			Value: "default",
 		},
 		&job.RunParam{
+			Name:  "DB",
+			Value: "xxx",
+		},
+		&job.RunParam{
 			Name:  job.SYSTEM_VARIABLE_DEPLOY_CONFIG_ID,
-			Value: conf.C.BUILD_CONFIG_ID,
+			Value: conf.C.DEPLOY_CONFIG_ID,
 		},
 	)
 
@@ -33,4 +38,8 @@ func TestRun(t *testing.T) {
 		t.Fatal(err)
 	}
 	t.Log(tools.MustToYaml(ins))
+}
+
+func TestXxx(t *testing.T) {
+	t.Log(unicode.IsUpper('_'))
 }

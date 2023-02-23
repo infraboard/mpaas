@@ -1,10 +1,10 @@
 package impl_test
 
 import (
-	"os"
 	"testing"
 
 	"github.com/infraboard/mpaas/apps/job"
+	"github.com/infraboard/mpaas/test/conf"
 	"github.com/infraboard/mpaas/test/tools"
 )
 
@@ -65,8 +65,19 @@ func TestCreateDeployJob(t *testing.T) {
 	t.Log(tools.MustToJson(ins))
 }
 
-func TestUpdateJob(t *testing.T) {
-	req := job.NewPatchJobRequest(os.Getenv("JOB_ID"))
+func TestUpdateDeployJob(t *testing.T) {
+	req := job.NewPatchJobRequest(conf.C.DEPLOY_JOB_ID)
+	req.Spec.RunnerSpec = tools.MustReadContentFile("test/deployment.yml")
+
+	ins, err := impl.UpdateJob(ctx, req)
+	if err != nil {
+		t.Fatal(err)
+	}
+	t.Log(tools.MustToJson(ins))
+}
+
+func TestUpdateBuildJob(t *testing.T) {
+	req := job.NewPatchJobRequest(conf.C.BUILD_JOB_ID)
 	req.Spec.RunnerSpec = tools.MustReadContentFile("test/build.yml")
 	v1 := job.NewVersionedRunParam("v1")
 	v1.Add(&job.RunParam{

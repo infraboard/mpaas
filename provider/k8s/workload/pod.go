@@ -24,15 +24,21 @@ func (c *Workload) DeletePod(ctx context.Context, req *meta.DeleteRequest) error
 }
 
 func InjectPodEnvVars(pod *v1.PodSpec, envs []v1.EnvVar) {
+	if len(envs) == 0 {
+		return
+	}
+
 	// 给Init容器注入环境变量
-	for i, c := range pod.InitContainers {
+	for i := range pod.InitContainers {
+		c := pod.InitContainers[i]
 		InjectContainerEnvVars(&c, envs)
 		// 替换掉原来的container的值
 		pod.InitContainers[i] = c
 	}
 
 	// 给用户容器注入环境变量
-	for i, c := range pod.Containers {
+	for i := range pod.Containers {
+		c := pod.Containers[i]
 		InjectContainerEnvVars(&c, envs)
 		// 替换掉原来的container的值
 		pod.Containers[i] = c
@@ -40,7 +46,7 @@ func InjectPodEnvVars(pod *v1.PodSpec, envs []v1.EnvVar) {
 }
 
 const (
-	SECRET_MOUNT_ANNOTATION_KEY = "inforboard.io/mpaas/mount_path"
+	SECRET_MOUNT_ANNOTATION_KEY = "secret.mpaas.inforboard.io/mountpath"
 )
 
 // 把secret注入到Pod中 挂载成卷使用

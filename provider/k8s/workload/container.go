@@ -111,8 +111,9 @@ func NewEnvVarSet(envs []v1.EnvVar) *EnvVarSet {
 	set := &EnvVarSet{
 		Items: []*v1.EnvVar{},
 	}
-	for _, env := range envs {
-		set.Add(&env)
+
+	for i := range envs {
+		set.Add(&envs[i])
 	}
 	return set
 }

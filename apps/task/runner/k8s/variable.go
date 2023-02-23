@@ -14,12 +14,14 @@ import (
 
 // 更加注解注入信息
 
-func (r *K8sRunner) HanleSystemVariable(ctx context.Context, in *job.VersionedRunParam, job *v1.Job) {
-	r.handleDeployConfig(ctx, in.GetDeployConfigId(), job)
+func (r *K8sRunner) HanleSystemVariable(ctx context.Context, in *job.VersionedRunParam, job *v1.Job) error {
+	return r.handleDeployConfig(ctx, in, job)
 }
 
 // 查询部署配置, 注入相关变量
-func (r *K8sRunner) handleDeployConfig(ctx context.Context, deployConfigId string, job *v1.Job) error {
+func (r *K8sRunner) handleDeployConfig(ctx context.Context, in *job.VersionedRunParam, job *v1.Job) error {
+	deployConfigId := in.GetDeployConfigId()
+
 	if deployConfigId == "" {
 		return nil
 	}
@@ -39,8 +41,8 @@ func (r *K8sRunner) handleDeployConfig(ctx context.Context, deployConfigId strin
 			return err
 		}
 		// 如果没有则创建Secret 并挂载到/.kube, 注意secret要声明挂载注解
-		secret := c.KubeConfSecret()
-		secret.Annotations[workload.SECRET_MOUNT_ANNOTATION_KEY] = "/.kube"
+		secret := c.KubeConfSecret("/.kube")
+		secret.Namespace = in.K8SJobRunnerParams().Namespace
 		checkReq := meta.NewGetRequest(secret.Name).WithNamespace(job.Namespace)
 		_, err = r.k8sClient.Config().GetSecret(ctx, checkReq)
 		if errors.IsNotFound(err) {
@@ -50,8 +52,6 @@ func (r *K8sRunner) handleDeployConfig(ctx context.Context, deployConfigId strin
 			}
 		}
 		workload.InjectPodSecretVolume(&job.Spec.Template.Spec, secret)
-		// 给容器注入环境变量
-		workload.InjectPodEnvVars(&job.Spec.Template.Spec, dc.Spec.K8STypeConfig.AsEnv())
 	case deploy.TYPE_HOST:
 		// 主机部署需要注入的信息
 	}

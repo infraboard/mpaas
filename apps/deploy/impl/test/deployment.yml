@@ -15,7 +15,11 @@ spec:
         app: nginx
     spec:
       containers:
-      - name: nginx
-        image: nginx:1.14.2
-        ports:
-        - containerPort: 80
+        - name: nginx
+          image: busybox:1.30
+          command:
+            [
+              "bin/sh",
+              "-c",
+              "for i in 9 8 7 6 5 4 3 2 1; do echo $i;sleep 2;done",
+            ]

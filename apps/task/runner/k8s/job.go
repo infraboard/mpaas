@@ -2,6 +2,7 @@ package k8s
 
 import (
 	"context"
+	"fmt"
 
 	"github.com/infraboard/mpaas/apps/cluster"
 	"github.com/infraboard/mpaas/apps/task"
@@ -28,6 +29,11 @@ func (r *K8sRunner) Run(ctx context.Context, in *task.RunTaskRequest) (*task.Job
 		return nil, err
 	}
 
+	// 处理系统变量
+	if err := r.HanleSystemVariable(ctx, in.Params, obj); err != nil {
+		return nil, err
+	}
+
 	// 修改任务名称
 	obj.Name = in.Name
 	obj.Namespace = runnerParams.Namespace
@@ -37,9 +43,6 @@ func (r *K8sRunner) Run(ctx context.Context, in *task.RunTaskRequest) (*task.Job
 	// 给容器注入环境变量
 	workload.InjectPodEnvVars(&obj.Spec.Template.Spec, in.Params.EnvVars())
 
-	// 处理系统变量
-	r.HanleSystemVariable(ctx, in.Params, obj)
-
 	status := task.NewJobTaskStatus()
 	status.MarkedRunning()
 
@@ -48,6 +51,8 @@ func (r *K8sRunner) Run(ctx context.Context, in *task.RunTaskRequest) (*task.Job
 	if err != nil {
 		return nil, err
 	}
+
+	fmt.Println(obj)
 
 	objYaml, err := yaml.Marshal(obj)
 	if err != nil {

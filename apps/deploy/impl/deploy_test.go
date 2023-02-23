@@ -20,7 +20,7 @@ func TestQueryDeploy(t *testing.T) {
 func TestCreateDeployConfig(t *testing.T) {
 	k8sConf := deploy.NewK8STypeConfig()
 	k8sConf.WorkloadConfig = tools.MustReadContentFile("test/deployment.yml")
-	k8sConf.ClusterId = "test-k8s"
+	k8sConf.ClusterId = "k8s-test"
 
 	req := deploy.NewCreateDeployConfigRequest()
 	req.K8STypeConfig = k8sConf

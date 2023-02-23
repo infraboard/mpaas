@@ -18,6 +18,7 @@ import (
 
 	"github.com/infraboard/mpaas/conf"
 	"github.com/infraboard/mpaas/provider/k8s"
+	"github.com/infraboard/mpaas/provider/k8s/workload"
 )
 
 const (
@@ -188,10 +189,15 @@ func (i *Cluster) Client() (*k8s.Client, error) {
 	return k8s.NewClient(i.Spec.KubeConfig)
 }
 
-func (i *Cluster) KubeConfSecret() *v1.Secret {
+func (i *Cluster) KubeConfSecret(mountPath string) *v1.Secret {
 	secret := new(v1.Secret)
 	secret.Name = fmt.Sprintf("cluster-%s", i.Meta.Id)
-	secret.StringData["config"] = i.Spec.KubeConfig
+	secret.StringData = map[string]string{
+		"config": i.Spec.KubeConfig,
+	}
+	secret.Annotations = map[string]string{
+		workload.SECRET_MOUNT_ANNOTATION_KEY: mountPath,
+	}
 	return secret
 }
 

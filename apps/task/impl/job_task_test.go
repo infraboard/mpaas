@@ -7,6 +7,7 @@ import (
 	"github.com/infraboard/mpaas/apps/job"
 	"github.com/infraboard/mpaas/apps/pipeline"
 	"github.com/infraboard/mpaas/apps/task"
+	"github.com/infraboard/mpaas/test/conf"
 	"github.com/infraboard/mpaas/test/tools"
 )
 
@@ -31,7 +32,7 @@ func TestRunDeployJob(t *testing.T) {
 	req := pipeline.NewRunJobRequest("docker_deploy@default.default")
 	version := job.NewVersionedRunParam("v1")
 	version.Params = job.NewRunParamWithKVPaire(
-		job.SYSTEM_VARIABLE_DEPLOY_CONFIG_ID, os.Getenv("DEPLOY_JOB_ID"),
+		job.SYSTEM_VARIABLE_DEPLOY_CONFIG_ID, conf.C.DEPLOY_CONFIG_ID,
 	)
 	req.Params = version
 
