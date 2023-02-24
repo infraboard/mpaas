@@ -13,7 +13,7 @@ func TestObjectMeta(t *testing.T) {
 	wc.WorkloadConfig = tools.MustReadContentFile("impl/test/deployment.yml")
 	wc.ClusterId = "k8s-test"
 
-	wl, err := workload.ParseWorkloadFromString(wc.WorkloadKind, wc.WorkloadConfig)
+	wl, err := workload.ParseWorkloadFromYaml(wc.WorkloadKind, wc.WorkloadConfig)
 	if err != nil {
 		t.Fatal(err)
 	}

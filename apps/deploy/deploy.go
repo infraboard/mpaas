@@ -88,5 +88,5 @@ func (d *Deployment) SystemVariable() (items []*job.RunParam, err error) {
 }
 
 func (c *K8STypeConfig) GetWorkLoad() (*workload.WorkLoad, error) {
-	return workload.ParseWorkloadFromString(c.WorkloadKind, c.WorkloadConfig)
+	return workload.ParseWorkloadFromYaml(c.WorkloadKind, c.WorkloadConfig)
 }

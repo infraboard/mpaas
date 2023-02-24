@@ -28,7 +28,7 @@ func (c *Client) Run(ctx context.Context, wl *WorkLoad) (*WorkLoad, error) {
 	return wl, nil
 }
 
-func ParseWorkloadFromString(kindStr string, workload string) (w *WorkLoad, err error) {
+func ParseWorkloadFromYaml(kindStr string, workload string) (w *WorkLoad, err error) {
 	w = NewWorkLoad()
 	if kindStr == "" {
 		return
@@ -73,6 +73,21 @@ type WorkLoad struct {
 	DaemonSet    *appsv1.DaemonSet
 	CronJob      *batchv1.CronJob
 	Job          *batchv1.Job
+}
+
+func (w *WorkLoad) SetDefaultNamespace(ns string) {
+	switch w.WorkloadKind {
+	case WORKLOAD_KIND_DEPLOYMENT:
+		w.Deployment.Namespace = ns
+	case WORKLOAD_KIND_STATEFULSET:
+		w.StatefulSet.Namespace = ns
+	case WORKLOAD_KIND_DAEMONSET:
+		w.DaemonSet.Namespace = ns
+	case WORKLOAD_KIND_CRONJOB:
+		w.CronJob.Namespace = ns
+	case WORKLOAD_KIND_JOB:
+		w.Job.Namespace = ns
+	}
 }
 
 func (w *WorkLoad) MustToYaml() string {

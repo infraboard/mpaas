@@ -10,24 +10,25 @@ import (
 	"github.com/infraboard/mcube/pb/request"
 	"github.com/infraboard/mpaas/apps/cluster"
 	"github.com/infraboard/mpaas/apps/deploy"
+	"github.com/infraboard/mpaas/common/yaml"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
 )
 
 func (i *impl) CreateDeployment(ctx context.Context, in *deploy.CreateDeploymentRequest) (
 	*deploy.Deployment, error) {
-	// 查询服务
-	svc, err := i.mcenter.Service().DescribeService(ctx, service.NewDescribeServiceRequest(in.ServiceId))
-	if err != nil {
-		return nil, err
-	}
-	in.ServiceName = svc.Spec.Name
-
 	// 补充服务相关信息
 	ins, err := deploy.New(in)
 	if err != nil {
 		return nil, exception.NewBadRequest(err.Error())
 	}
+
+	// 查询服务
+	svc, err := i.mcenter.Service().DescribeService(ctx, service.NewDescribeServiceRequest(in.ServiceId))
+	if err != nil {
+		return nil, err
+	}
+	ins.Spec.ServiceName = svc.Spec.Name
 	ins.Scope.Domain = svc.Spec.Namespace
 	ins.Scope.Namespace = svc.Spec.Namespace
 
@@ -35,10 +36,12 @@ func (i *impl) CreateDeployment(ctx context.Context, in *deploy.CreateDeployment
 	switch in.Type {
 	case deploy.TYPE_KUBERNETES:
 		wc := ins.Spec.K8STypeConfig
+		// 运行工作负载
 		wl, err := wc.GetWorkLoad()
 		if err != nil {
 			return nil, err
 		}
+		wl.SetDefaultNamespace(ins.Scope.Namespace)
 		descReq := cluster.NewDescribeClusterRequest(wc.ClusterId)
 		c, err := i.cluster.DescribeCluster(ctx, descReq)
 		if err != nil {
@@ -53,6 +56,14 @@ func (i *impl) CreateDeployment(ctx context.Context, in *deploy.CreateDeployment
 			return nil, err
 		}
 		wc.WorkloadConfig = wl.MustToYaml()
+		// 创建服务
+		if wc.Service != "" {
+			service, err := k8sClient.Network().Run(ctx, wc.Service)
+			if err != nil {
+				return nil, err
+			}
+			wc.Service = yaml.MustToYaml(service)
+		}
 	}
 
 	if _, err := i.col.InsertOne(ctx, ins); err != nil {

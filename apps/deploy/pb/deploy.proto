@@ -71,39 +71,42 @@ message HostTypeConfig {
 }
 
 message CreateDeploymentRequest {
+	// 是否是模版
+	// @gotags: bson:"is_template" json:"is_template"
+    bool is_template = 1;
     // 服务Id
-    // @gotags: bson:"service_id" json:"service_id"
-    string service_id = 1;
+    // @gotags: bson:"service_id" json:"service_id" validate:"required"
+    string service_id = 3;
     // 服务名称
     // @gotags: bson:"service_name" json:"service_name"
-    string service_name = 2;
+    string service_name = 4;
     // 部署环境
     // @gotags: bson:"environment" json:"environment" validate:"required"
-    string environment = 3;
+    string environment = 5;
     // 部署资源提供方
     // @gotags: bson:"provider" json:"provider" validate:"required"
-    string provider = 4;
+    string provider = 6;
     // 部署地域
     // @gotags: bson:"region" json:"region" validate:"required"
-    string region = 5;
+    string region = 7;
     // 部署方式
     // @gotags: bson:"type" json:"type"
-    TYPE type = 6;
+    TYPE type = 8;
     // 集群的配置是否需要认证才能访问, 开启后会生成一个Token
     // @gotags: bson:"auth_enabled" json:"auth_enabled"
-    bool auth_enabled = 7;
+    bool auth_enabled = 9;
     // k8s模式下的部署配置
     // @gotags: json:"k8s_type_config" bson:"k8s_type_config"
-    K8sTypeConfig k8s_type_config = 8;
+    K8sTypeConfig k8s_type_config = 10;
     // 主机部署相关配置
     // @gotags: json:"host_type_config" bson:"host_type_config"
-    HostTypeConfig host_type_config = 9;
+    HostTypeConfig host_type_config = 11;
     // 部署描述信息
     // @gotags: bson:"describe" json:"describe"
-    string describe = 10;
+    string describe = 12;
     // 是否需要发布申请, 需要发布申请的部署 不允许执行自动部署
     // @gotags: bson:"is_approval" json:"is_approval"
-    bool is_approval = 11;
+    bool is_approval = 13;
     // 部署标签
     // @gotags: bson:"labels" json:"labels"
     map<string,string> labels = 15;

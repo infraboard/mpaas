@@ -5,6 +5,7 @@ import (
 	"testing"
 
 	"github.com/infraboard/mpaas/apps/deploy"
+	"github.com/infraboard/mpaas/test/conf"
 	"github.com/infraboard/mpaas/test/tools"
 )
 
@@ -27,6 +28,7 @@ func TestCreateDeployment(t *testing.T) {
 	req.Provider = "腾讯云"
 	req.Region = "上海"
 	req.Environment = "生产"
+	req.ServiceId = conf.C.SERVICE_ID
 
 	ds, err := impl.CreateDeployment(ctx, req)
 	if err != nil {
