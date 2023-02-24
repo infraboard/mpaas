@@ -30,7 +30,7 @@ spec:
               "sh",
               "-c",
               # kubectl set image deployment/nginx busybox=busybox nginx=nginx:1.9.1
-              "kubectl set image {_WORKLOAD_KIND}/{_DEPLOYMENT_NAME} {{_SERVICE_NAME}}={{_SERVICE_IMAGE}}",
+              "kubectl set image {_WORKLOAD_KIND}/{_WORKLOAD_NAME} {{_SERVICE_NAME}}={{_SERVICE_IMAGE_ADDR}}:{{_SERVICE_IMAGE_VERSION}}",
             ]
           volumeMounts:
             - name: workspace

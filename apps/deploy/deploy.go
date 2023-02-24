@@ -3,7 +3,9 @@ package deploy
 import (
 	"encoding/json"
 	"fmt"
+	"strings"
 
+	"github.com/infraboard/mpaas/apps/job"
 	meta "github.com/infraboard/mpaas/common/meta"
 )
 
@@ -42,6 +44,26 @@ func (d *DeployConfig) ValidateToken(token string) error {
 func (d *DeployConfig) MarshalJSON() ([]byte, error) {
 	return json.Marshal(struct {
 		*meta.Meta
+		*meta.Scope
 		*CreateDeployConfigRequest
-	}{d.Meta, d.Spec})
+	}{d.Meta, d.Scope, d.Spec})
+}
+
+func (d *DeployConfig) SystemVariable() (items []*job.RunParam) {
+	switch d.Spec.Type {
+	case TYPE_KUBERNETES:
+		// 与k8s部署相关的系统变量
+
+		items = append(items,
+			job.NewRunParam(
+				job.SYSTEM_VARIABLE_PIPELINE_WORKLOAD_KIND,
+				strings.ToLower(d.Spec.K8STypeConfig.WorkloadKind.String()),
+			),
+			job.NewRunParam(
+				job.SYSTEM_VARIABLE_PIPELINE_SERVICE_NAME,
+				d.Spec.ServiceName,
+			),
+		)
+	}
+	return
 }
