@@ -80,31 +80,34 @@ message Stage {
 message RunJobRequest {
     // 唯一ID, 如果不传，则由系统自动生成
 	// @gotags: bson:"_id" json:"id,omitempty"
-    string id = 9;
+    string id = 1;
 	// task执行的域
 	// @gotags: bson:"domain" json:"domain"
-    string domain = 1;
+    string domain = 2;
 	// task执行的空间
 	// @gotags: bson:"namespace" json:"namespace"
-    string namespace = 2;
+    string namespace = 3;
 	// task属于那个Pipeline, 可以为空
 	// @gotags: bson:"pipeline_task" json:"pipeline_task"
-    string pipeline_task = 3;
+    string pipeline_task = 4;
 	// task属于那个stage, 可以为空
 	// @gotags: bson:"stage_name" json:"stage_name"
-    string stage_name = 4;
+    string stage_name = 5;
 	// job名称: name
 	// @gotags: bson:"job_name" json:"job_name" validate:"required"
-    string job_name = 5;
+    string job_name = 6;
 	// job运行时参数
 	// @gotags: bson:"params" json:"params"
-	job.VersionedRunParam params = 6;
+	job.VersionedRunParam params = 7;
 	// 忽略失败, 当Pipeline运行时, 不会因为执行失败而 中断Pipeline执行
 	// @gotags: bson:"ignore_failed" json:"ignore_failed"
-	bool ignore_failed = 7;
+	bool ignore_failed = 8;
+	// 试运行
+	// @gotags: bson:"dry_run" json:"dry_run"
+	bool dry_run = 9;
 	// WebHook配置, 及时把job执行状态推送给外部, 比如各种机器人
 	// @gotags: bson:"webhooks" json:"webhooks"
-	repeated WebHook webhooks = 8;
+	repeated WebHook webhooks = 10;
     // 任务标签
     // @gotags: bson:"labels" json:"labels"
     map<string,string> labels = 15;

@@ -47,6 +47,7 @@ func (i *impl) RunJob(ctx context.Context, in *pipeline.RunJobRequest) (
 	params.Merge(in.Params)
 	params.Add(ins.SystemVariable()...)
 	runReq := task.NewRunTaskRequest(ins.Spec.Id, j.Spec.RunnerSpec, params)
+	runReq.DryRun = in.DryRun
 	runReq.Labels = in.Labels
 	r := runner.GetRunner(j.Spec.RunnerType)
 	status, err := r.Run(ctx, runReq)
