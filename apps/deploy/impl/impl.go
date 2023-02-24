@@ -9,6 +9,7 @@ import (
 	"github.com/infraboard/mcube/logger/zap"
 	"google.golang.org/grpc"
 
+	"github.com/infraboard/mpaas/apps/cluster"
 	"github.com/infraboard/mpaas/apps/deploy"
 	"github.com/infraboard/mpaas/conf"
 )
@@ -24,6 +25,7 @@ type impl struct {
 	deploy.UnimplementedRPCServer
 
 	mcenter *rpc.ClientSet
+	cluster cluster.Service
 }
 
 func (i *impl) Config() error {
@@ -34,6 +36,7 @@ func (i *impl) Config() error {
 	i.col = db.Collection(i.Name())
 	i.log = zap.L().Named(i.Name())
 	i.mcenter = rpc.C()
+	i.cluster = app.GetInternalApp(cluster.AppName).(cluster.Service)
 	return nil
 }
 

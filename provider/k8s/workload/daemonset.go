@@ -5,8 +5,13 @@ import (
 
 	"github.com/infraboard/mpaas/provider/k8s/meta"
 	appsv1 "k8s.io/api/apps/v1"
+	v1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
 func (c *Client) ListDaemonSet(ctx context.Context, req *meta.ListRequest) (*appsv1.DaemonSetList, error) {
 	return c.appsv1.DaemonSets(req.Namespace).List(ctx, req.Opts)
+}
+
+func (c *Client) CreateDaemonSet(ctx context.Context, obj *appsv1.DaemonSet) (*appsv1.DaemonSet, error) {
+	return c.appsv1.DaemonSets(obj.Namespace).Create(ctx, obj, v1.CreateOptions{})
 }

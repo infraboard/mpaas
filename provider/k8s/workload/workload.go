@@ -1,10 +1,32 @@
 package workload
 
 import (
-	"gopkg.in/yaml.v2"
+	"context"
+
 	appsv1 "k8s.io/api/apps/v1"
 	batchv1 "k8s.io/api/batch/v1"
+	"sigs.k8s.io/yaml"
 )
+
+func (c *Client) Run(ctx context.Context, wl *WorkLoad) (*WorkLoad, error) {
+	var err error
+	switch wl.WorkloadKind {
+	case WORKLOAD_KIND_DEPLOYMENT:
+		wl.Deployment, err = c.CreateDeployment(ctx, wl.Deployment)
+	case WORKLOAD_KIND_STATEFULSET:
+		wl.StatefulSet, err = c.CreateStatefulSet(ctx, wl.StatefulSet)
+	case WORKLOAD_KIND_DAEMONSET:
+		wl.DaemonSet, err = c.CreateDaemonSet(ctx, wl.DaemonSet)
+	case WORKLOAD_KIND_CRONJOB:
+		wl.CronJob, err = c.CreateCronJob(ctx, wl.CronJob)
+	case WORKLOAD_KIND_JOB:
+		wl.Job, err = c.CreateJob(ctx, wl.Job)
+	}
+	if err != nil {
+		return nil, err
+	}
+	return wl, nil
+}
 
 func ParseWorkloadFromString(kindStr string, workload string) (w *WorkLoad, err error) {
 	w = NewWorkLoad()
@@ -51,6 +73,31 @@ type WorkLoad struct {
 	DaemonSet    *appsv1.DaemonSet
 	CronJob      *batchv1.CronJob
 	Job          *batchv1.Job
+}
+
+func (w *WorkLoad) MustToYaml() string {
+	var (
+		err  error
+		data []byte
+	)
+	switch w.WorkloadKind {
+	case WORKLOAD_KIND_DEPLOYMENT:
+		data, err = yaml.Marshal(w.Deployment)
+	case WORKLOAD_KIND_STATEFULSET:
+		data, err = yaml.Marshal(w.StatefulSet)
+	case WORKLOAD_KIND_DAEMONSET:
+		data, err = yaml.Marshal(w.DaemonSet)
+	case WORKLOAD_KIND_CRONJOB:
+		data, err = yaml.Marshal(w.CronJob)
+	case WORKLOAD_KIND_JOB:
+		data, err = yaml.Marshal(w.Job)
+	}
+
+	if err != nil {
+		panic(err)
+	}
+
+	return string(data)
 }
 
 type WORKLOAD_KIND int32

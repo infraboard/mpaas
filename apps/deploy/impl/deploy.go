@@ -8,6 +8,7 @@ import (
 	"github.com/infraboard/mcenter/apps/service"
 	"github.com/infraboard/mcube/exception"
 	"github.com/infraboard/mcube/pb/request"
+	"github.com/infraboard/mpaas/apps/cluster"
 	"github.com/infraboard/mpaas/apps/deploy"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
@@ -33,10 +34,25 @@ func (i *impl) CreateDeployment(ctx context.Context, in *deploy.CreateDeployment
 	// 如果服务是k8s服务则直接执行部署
 	switch in.Type {
 	case deploy.TYPE_KUBERNETES:
-		wl, err := ins.Spec.K8STypeConfig.GetWorkLoad()
+		wc := ins.Spec.K8STypeConfig
+		wl, err := wc.GetWorkLoad()
 		if err != nil {
 			return nil, err
 		}
+		descReq := cluster.NewDescribeClusterRequest(wc.ClusterId)
+		c, err := i.cluster.DescribeCluster(ctx, descReq)
+		if err != nil {
+			return nil, err
+		}
+		k8sClient, err := c.Client()
+		if err != nil {
+			return nil, err
+		}
+		wl, err = k8sClient.WorkLoad().Run(ctx, wl)
+		if err != nil {
+			return nil, err
+		}
+		wc.WorkloadConfig = wl.MustToYaml()
 	}
 
 	if _, err := i.col.InsertOne(ctx, ins); err != nil {
