@@ -5,6 +5,8 @@ func newConfig() *Config {
 }
 
 type Config struct {
+	DEPLOY_ID string `env:"DEPLOY_ID"`
+
 	BUILD_CONFIG_ID  string `env:"BUILD_CONFIG_ID"`
 	DEPLOY_CONFIG_ID string `env:"DEPLOY_CONFIG_ID"`
 	SERVICE_ID       string `env:"SERVICE_ID"`

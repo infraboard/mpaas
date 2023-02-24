@@ -2,6 +2,7 @@ package impl
 
 import (
 	"context"
+	"fmt"
 	"time"
 
 	"github.com/imdario/mergo"
@@ -11,6 +12,8 @@ import (
 	"github.com/infraboard/mpaas/apps/cluster"
 	"github.com/infraboard/mpaas/apps/deploy"
 	"github.com/infraboard/mpaas/common/yaml"
+	"github.com/infraboard/mpaas/provider/k8s"
+	"github.com/infraboard/mpaas/provider/k8s/meta"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
 )
@@ -36,21 +39,24 @@ func (i *impl) CreateDeployment(ctx context.Context, in *deploy.CreateDeployment
 	switch in.Type {
 	case deploy.TYPE_KUBERNETES:
 		wc := ins.Spec.K8STypeConfig
-		// 运行工作负载
+
 		wl, err := wc.GetWorkLoad()
 		if err != nil {
 			return nil, err
 		}
 		wl.SetDefaultNamespace(ins.Scope.Namespace)
-		descReq := cluster.NewDescribeClusterRequest(wc.ClusterId)
-		c, err := i.cluster.DescribeCluster(ctx, descReq)
+
+		// 检查主容器是否存在
+		serviceContainer := wl.GetServiceContainer(ins.Spec.ServiceName)
+		if serviceContainer == nil {
+			return nil, fmt.Errorf("部署配置必须包含一个服务名称同名的容器 作为主容器")
+		}
+		// 查询部署的k8s集群
+		k8sClient, err := i.GetDeployK8sClient(ctx, wc.ClusterId)
 		if err != nil {
 			return nil, err
 		}
-		k8sClient, err := c.Client()
-		if err != nil {
-			return nil, err
-		}
+		// 运行工作负载
 		wl, err = k8sClient.WorkLoad().Run(ctx, wl)
 		if err != nil {
 			return nil, err
@@ -161,14 +167,57 @@ func (i *impl) UpdateDeployment(ctx context.Context, in *deploy.UpdateDeployment
 func (i *impl) DeleteDeployment(ctx context.Context, in *deploy.DeleteDeploymentRequest) (
 	*deploy.Deployment, error) {
 	req := deploy.NewDescribeDeploymentRequest(in.Id)
-	d, err := i.DescribeDeployment(ctx, req)
+	ins, err := i.DescribeDeployment(ctx, req)
 	if err != nil {
 		return nil, err
 	}
 
-	_, err = i.col.DeleteOne(ctx, bson.M{"_id": in.Id})
-	if err != nil {
-		return nil, exception.NewInternalServerError("delete deploy(%s) error, %s", in.Id, err)
+	cid := ins.GetK8sClusterId()
+	if cid != "" {
+		kc := ins.Spec.K8STypeConfig
+		wl, err := kc.GetWorkLoad()
+		if err != nil {
+			return nil, err
+		}
+
+		k8sClient, err := i.GetDeployK8sClient(ctx, cid)
+		if err != nil {
+			return nil, err
+		}
+		// 删除工作负载
+		if wl != nil {
+			_, err = k8sClient.WorkLoad().Delete(ctx, wl)
+			if err != nil {
+				return nil, err
+			}
+		}
+
+		// 删除服务
+		svc, err := kc.GetServiceObj()
+		if err != nil {
+			return nil, err
+		}
+		if svc != nil {
+			delReq := meta.NewDeleteRequest(svc.Name).WithNamespace(svc.Namespace)
+			err = k8sClient.Network().DeleteService(ctx, delReq)
+			if err != nil {
+				return nil, err
+			}
+		}
 	}
-	return d, nil
+
+	_, err = i.col.DeleteOne(ctx, bson.M{"_id": ins.Meta.Id})
+	if err != nil {
+		return nil, exception.NewInternalServerError("delete deploy(%s) error, %s", ins.Meta.Id, err)
+	}
+	return ins, nil
+}
+
+func (i *impl) GetDeployK8sClient(ctx context.Context, k8sClusterId string) (*k8s.Client, error) {
+	descReq := cluster.NewDescribeClusterRequest(k8sClusterId)
+	c, err := i.cluster.DescribeCluster(ctx, descReq)
+	if err != nil {
+		return nil, err
+	}
+	return c.Client()
 }

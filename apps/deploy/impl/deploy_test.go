@@ -18,6 +18,18 @@ func TestQueryDeploy(t *testing.T) {
 	t.Log(tools.MustToYaml(ds))
 }
 
+func TestDescribeDeployment(t *testing.T) {
+	req := deploy.NewDescribeDeploymentRequest(conf.C.DEPLOY_ID)
+	ds, err := impl.DescribeDeployment(ctx, req)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	t.Log(ds.SystemVariable())
+
+	t.Log(tools.MustToYaml(ds))
+}
+
 func TestCreateDeployment(t *testing.T) {
 	k8sConf := deploy.NewK8STypeConfig()
 	k8sConf.WorkloadConfig = tools.MustReadContentFile("test/deployment.yml")
@@ -50,7 +62,7 @@ func TestUpdateDeployment(t *testing.T) {
 }
 
 func TestDeleteDeployment(t *testing.T) {
-	req := deploy.NewDeleteDeploymentRequest(os.Getenv("DEPLOY_JOB_ID"))
+	req := deploy.NewDeleteDeploymentRequest(conf.C.DEPLOY_ID)
 	ds, err := impl.DeleteDeployment(ctx, req)
 	if err != nil {
 		t.Fatal(err)

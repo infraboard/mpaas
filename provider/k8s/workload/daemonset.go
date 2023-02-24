@@ -15,3 +15,7 @@ func (c *Client) ListDaemonSet(ctx context.Context, req *meta.ListRequest) (*app
 func (c *Client) CreateDaemonSet(ctx context.Context, obj *appsv1.DaemonSet) (*appsv1.DaemonSet, error) {
 	return c.appsv1.DaemonSets(obj.Namespace).Create(ctx, obj, v1.CreateOptions{})
 }
+
+func (c *Client) DeleteDaemonSet(ctx context.Context, req *meta.DeleteRequest) error {
+	return c.appsv1.DaemonSets(req.Namespace).Delete(ctx, req.Name, req.Opts)
+}

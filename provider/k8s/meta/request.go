@@ -66,6 +66,11 @@ type DeleteRequest struct {
 	Opts      metav1.DeleteOptions
 }
 
+func (r *DeleteRequest) WithNamespace(namespace string) *DeleteRequest {
+	r.Namespace = namespace
+	return r
+}
+
 func (req *DeleteRequest) SetPropagationPolicy(dp metav1.DeletionPropagation) {
 	req.Opts.PropagationPolicy = &dp
 }

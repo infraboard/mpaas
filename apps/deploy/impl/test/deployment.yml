@@ -1,21 +1,21 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: busybox-deployment
+  name: cmdb-deployment
   labels:
-    app: busybox
+    app: cmdb
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: busybox
+      app: cmdb
   template:
     metadata:
       labels:
-        app: busybox
+        app: cmdb
     spec:
       containers:
-        - name: busybox
+        - name: cmdb
           image: busybox:1.30
           command:
             [

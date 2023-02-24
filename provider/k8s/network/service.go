@@ -29,6 +29,10 @@ func (c *Client) GetService(ctx context.Context, req *meta.GetRequest) (*v1.Serv
 	return c.corev1.Services(req.Namespace).Get(ctx, req.Name, req.Opts)
 }
 
+func (c *Client) DeleteService(ctx context.Context, req *meta.DeleteRequest) error {
+	return c.corev1.Services(req.Namespace).Delete(ctx, req.Name, req.Opts)
+}
+
 func ParseServiceFromYaml(yml string) (*v1.Service, error) {
 	obj := &v1.Service{}
 	err := yaml.Unmarshal([]byte(yml), obj)

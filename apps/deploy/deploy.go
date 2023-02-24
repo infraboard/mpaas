@@ -7,7 +7,9 @@ import (
 
 	"github.com/infraboard/mpaas/apps/job"
 	meta "github.com/infraboard/mpaas/common/meta"
+	"github.com/infraboard/mpaas/provider/k8s/network"
 	"github.com/infraboard/mpaas/provider/k8s/workload"
+	v1 "k8s.io/api/core/v1"
 )
 
 func NewDeploymentSet() *DeploymentSet {
@@ -50,6 +52,17 @@ func (d *Deployment) MarshalJSON() ([]byte, error) {
 	}{d.Meta, d.Scope, d.Spec})
 }
 
+func (d *Deployment) GetK8sClusterId() string {
+	if d.Spec == nil {
+		return ""
+	}
+	if d.Spec.K8STypeConfig == nil {
+		return ""
+	}
+	return d.Spec.K8STypeConfig.ClusterId
+}
+
+// 部署时的系统变量, 在部署任务时注入
 func (d *Deployment) SystemVariable() (items []*job.RunParam, err error) {
 	switch d.Spec.Type {
 	case TYPE_KUBERNETES:
@@ -89,4 +102,11 @@ func (d *Deployment) SystemVariable() (items []*job.RunParam, err error) {
 
 func (c *K8STypeConfig) GetWorkLoad() (*workload.WorkLoad, error) {
 	return workload.ParseWorkloadFromYaml(c.WorkloadKind, c.WorkloadConfig)
+}
+
+func (c *K8STypeConfig) GetServiceObj() (*v1.Service, error) {
+	if c.Service == "" {
+		return nil, nil
+	}
+	return network.ParseServiceFromYaml(c.Service)
 }

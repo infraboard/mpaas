@@ -2,7 +2,9 @@ package workload
 
 import (
 	"context"
+	"fmt"
 
+	"github.com/infraboard/mpaas/provider/k8s/meta"
 	appsv1 "k8s.io/api/apps/v1"
 	batchv1 "k8s.io/api/batch/v1"
 	"sigs.k8s.io/yaml"
@@ -21,6 +23,33 @@ func (c *Client) Run(ctx context.Context, wl *WorkLoad) (*WorkLoad, error) {
 		wl.CronJob, err = c.CreateCronJob(ctx, wl.CronJob)
 	case WORKLOAD_KIND_JOB:
 		wl.Job, err = c.CreateJob(ctx, wl.Job)
+	}
+	if err != nil {
+		return nil, err
+	}
+	return wl, nil
+}
+
+func (c *Client) Delete(ctx context.Context, wl *WorkLoad) (*WorkLoad, error) {
+	var err error
+
+	m := wl.GetObjectMeta()
+	if m == nil {
+		return nil, fmt.Errorf("object not found")
+	}
+	req := meta.NewDeleteRequest(m.Name).WithNamespace(m.Namespace)
+
+	switch wl.WorkloadKind {
+	case WORKLOAD_KIND_DEPLOYMENT:
+		err = c.DeleteDeployment(ctx, req)
+	case WORKLOAD_KIND_STATEFULSET:
+		err = c.DeleteStatefulSet(ctx, req)
+	case WORKLOAD_KIND_DAEMONSET:
+		err = c.DeleteDaemonSet(ctx, req)
+	case WORKLOAD_KIND_CRONJOB:
+		err = c.DeleteCronJob(ctx, req)
+	case WORKLOAD_KIND_JOB:
+		err = c.DeleteJob(ctx, req)
 	}
 	if err != nil {
 		return nil, err

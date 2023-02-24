@@ -19,3 +19,7 @@ func (c *Client) ListStatefulSet(ctx context.Context, req *meta.ListRequest) (*a
 func (c *Client) GetStatefulSet(ctx context.Context, req *meta.GetRequest) (*appsv1.StatefulSet, error) {
 	return c.appsv1.StatefulSets(req.Namespace).Get(ctx, req.Name, req.Opts)
 }
+
+func (c *Client) DeleteStatefulSet(ctx context.Context, req *meta.DeleteRequest) error {
+	return c.appsv1.StatefulSets(req.Namespace).Delete(ctx, req.Name, req.Opts)
+}

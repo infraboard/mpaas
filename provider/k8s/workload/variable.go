@@ -4,6 +4,7 @@ import (
 	"strings"
 
 	v1 "k8s.io/api/core/v1"
+	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
 func NewSystemVaraible() *SystemVaraible {
@@ -30,25 +31,45 @@ func (v *SystemVaraible) ImageDetail() (addr, version string) {
 func (w *WorkLoad) SystemVaraible(serviceName string) *SystemVaraible {
 	m := NewSystemVaraible()
 
-	var container v1.Container
+	meta := w.GetObjectMeta()
+	m.WorkloadName = meta.Name
+
+	container := w.GetServiceContainer(serviceName)
+	if container != nil {
+		m.Image = container.Image
+	}
+	return m
+}
+
+func (w *WorkLoad) GetServiceContainer(serviceName string) *v1.Container {
+	var container *v1.Container
 	switch w.WorkloadKind {
 	case WORKLOAD_KIND_DEPLOYMENT:
-		m.WorkloadName = w.Deployment.Name
 		container = GetContainerFromPodTemplate(w.Deployment.Spec.Template, serviceName)
 	case WORKLOAD_KIND_STATEFULSET:
-		m.WorkloadName = w.StatefulSet.Name
 		container = GetContainerFromPodTemplate(w.StatefulSet.Spec.Template, serviceName)
 	case WORKLOAD_KIND_DAEMONSET:
-		m.WorkloadName = w.DaemonSet.Name
 		container = GetContainerFromPodTemplate(w.DaemonSet.Spec.Template, serviceName)
 	case WORKLOAD_KIND_CRONJOB:
-		m.WorkloadName = w.CronJob.Name
 		container = GetContainerFromPodTemplate(w.CronJob.Spec.JobTemplate.Spec.Template, serviceName)
 	case WORKLOAD_KIND_JOB:
-		m.WorkloadName = w.Job.Name
 		container = GetContainerFromPodTemplate(w.Job.Spec.Template, serviceName)
 	}
-	m.Image = container.Image
+	return container
+}
 
-	return m
+func (w *WorkLoad) GetObjectMeta() *metav1.ObjectMeta {
+	switch w.WorkloadKind {
+	case WORKLOAD_KIND_DEPLOYMENT:
+		return &w.Deployment.ObjectMeta
+	case WORKLOAD_KIND_STATEFULSET:
+		return &w.StatefulSet.ObjectMeta
+	case WORKLOAD_KIND_DAEMONSET:
+		return &w.DaemonSet.ObjectMeta
+	case WORKLOAD_KIND_CRONJOB:
+		return &w.CronJob.ObjectMeta
+	case WORKLOAD_KIND_JOB:
+		return &w.Job.ObjectMeta
+	}
+	return nil
 }

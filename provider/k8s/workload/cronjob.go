@@ -10,3 +10,7 @@ import (
 func (b *Client) ListCronJob(ctx context.Context, req *meta.ListRequest) (*v1.CronJobList, error) {
 	return b.batchV1.CronJobs(req.Namespace).List(ctx, req.Opts)
 }
+
+func (b *Client) DeleteCronJob(ctx context.Context, req *meta.DeleteRequest) error {
+	return b.batchV1.CronJobs(req.Namespace).Delete(ctx, req.Name, req.Opts)
+}
