@@ -28,7 +28,7 @@ func TestServerResources(t *testing.T) {
 	for i := range rs {
 		t.Log(rs[i].GroupVersion, rs[i].APIVersion)
 		for _, r := range rs[i].APIResources {
-			t.Log(r.Name)
+			t.Log(r)
 		}
 	}
 }

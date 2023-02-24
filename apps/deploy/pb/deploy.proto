@@ -47,15 +47,15 @@ enum TYPE {
 }
 
 enum WORKLOAD_KIND {
-    // 无状态部署
-    DEPLOY = 0;
-    // 有状态部署
-    STATFUL_SET = 1;
-    // Deamon部署
-    DAEMON_SET = 2;
+    // Deployment无状态部署 
+    DEPLOYMENT = 0;
+    // StatefulSet
+    STATEFULSET = 1;
+    // DaemonSet
+    DAEMONSET = 2;
     // Job
     JOB = 3;
-    // Cronjob
+    // CronJob
     CRONJOB = 4;
 }
 

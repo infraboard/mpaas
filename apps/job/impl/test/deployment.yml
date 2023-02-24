@@ -29,8 +29,8 @@ spec:
           command: [
               "sh",
               "-c",
-              # 正常配置: kubectl apply -f http://localhost:8080/mpaas/api/v1/export/deploy_configs/${_DEPLOY_CONFIG_ID}
-              "kubectl apply -f https://raw.githubusercontent.com/infraboard/mpaas/master/apps/deploy/impl/test/deployment.yml",
+              # kubectl set image deployment/nginx busybox=busybox nginx=nginx:1.9.1
+              "kubectl set image {_WORKLOAD_KIND}/{_DEPLOYMENT_NAME} {{_SERVICE_NAME}}={{_SERVICE_IMAGE}}",
             ]
           volumeMounts:
             - name: workspace
