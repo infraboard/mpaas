@@ -5,6 +5,7 @@ import (
 	"time"
 
 	"github.com/imdario/mergo"
+	"github.com/infraboard/mcenter/apps/service"
 	"github.com/infraboard/mcube/exception"
 	"github.com/infraboard/mcube/pb/request"
 	"github.com/infraboard/mpaas/apps/deploy"
@@ -14,10 +15,20 @@ import (
 
 func (i *impl) CreateDeployConfig(ctx context.Context, in *deploy.CreateDeployConfigRequest) (
 	*deploy.DeployConfig, error) {
+	// 查询服务
+	svc, err := i.mcenter.Service().DescribeService(ctx, service.NewDescribeServiceRequest(in.ServiceId))
+	if err != nil {
+		return nil, err
+	}
+	in.ServiceName = svc.Spec.Name
+
+	// 补充服务相关信息
 	ins, err := deploy.New(in)
 	if err != nil {
 		return nil, exception.NewBadRequest(err.Error())
 	}
+	ins.Scope.Domain = svc.Spec.Namespace
+	ins.Scope.Namespace = svc.Spec.Namespace
 
 	if _, err := i.col.InsertOne(ctx, ins); err != nil {
 		return nil, exception.NewInternalServerError("inserted a deploy document error, %s", err)

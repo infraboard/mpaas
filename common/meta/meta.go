@@ -12,3 +12,7 @@ func NewMeta() *Meta {
 		CreateAt: time.Now().Unix(),
 	}
 }
+
+func NewScope() *Scope {
+	return &Scope{}
+}

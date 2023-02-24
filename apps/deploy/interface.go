@@ -28,8 +28,9 @@ func New(req *CreateDeployConfigRequest) (*DeployConfig, error) {
 	}
 
 	d := &DeployConfig{
-		Meta: meta.NewMeta(),
-		Spec: req,
+		Meta:  meta.NewMeta(),
+		Scope: meta.NewScope(),
+		Spec:  req,
 	}
 
 	return d, nil

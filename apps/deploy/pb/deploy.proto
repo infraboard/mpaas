@@ -16,12 +16,15 @@ message DeployConfig  {
     // 元信息
     // @gotags: bson:",inline" json:"meta"
     common.meta.Meta meta = 1;
+    // 范围信息
+    // @gotags: bson:",inline" json:"scope"
+    common.meta.Scope scope = 2;
     // 创建信息
     // @gotags: bson:",inline" json:"spec"
-    CreateDeployConfigRequest spec = 2;
+    CreateDeployConfigRequest spec = 3;
     // 部署配置状态
     // @gotags: bson:"status" json:"status"
-    Status status = 3;
+    Status status = 4;
 }
 
 message Status {
@@ -81,33 +84,33 @@ message HostTypeConfig {
 }
 
 message CreateDeployConfigRequest {
-    // 那个服务的部署
+    // 服务Id
     // @gotags: bson:"service_id" json:"service_id"
     string service_id = 1;
+    // 服务名称
+    // @gotags: bson:"service_name" json:"service_name"
+    string service_name = 2;
     // 部署环境
     // @gotags: bson:"environment" json:"environment" validate:"required"
-    string environment = 2;
+    string environment = 3;
     // 部署资源提供方
     // @gotags: bson:"provider" json:"provider" validate:"required"
-    string provider = 3;
+    string provider = 4;
     // 部署地域
     // @gotags: bson:"region" json:"region" validate:"required"
-    string region = 4;
+    string region = 5;
     // 部署方式
     // @gotags: bson:"type" json:"type"
-    TYPE type = 5;
+    TYPE type = 6;
     // 集群的配置是否需要认证才能访问, 开启后会生成一个Token
     // @gotags: bson:"auth_enabled" json:"auth_enabled"
-    bool auth_enabled = 6;
+    bool auth_enabled = 7;
     // k8s模式下的部署配置
     // @gotags: json:"k8s_type_config" bson:"k8s_type_config"
-    K8sTypeConfig k8s_type_config = 7;
+    K8sTypeConfig k8s_type_config = 8;
     // 主机部署相关配置
     // @gotags: json:"host_type_config" bson:"host_type_config"
-    HostTypeConfig host_type_config = 8;
-    // 部署的名称
-    // @gotags: bson:"name" json:"name"
-    string name = 9;
+    HostTypeConfig host_type_config = 9;
     // 部署描述信息
     // @gotags: bson:"describe" json:"describe"
     string describe = 10;
