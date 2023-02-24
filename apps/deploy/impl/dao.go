@@ -6,14 +6,14 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
-func newQueryRequest(r *deploy.QueryDeployConfigRequest) *queryRequest {
+func newQueryRequest(r *deploy.QueryDeploymentRequest) *queryRequest {
 	return &queryRequest{
 		r,
 	}
 }
 
 type queryRequest struct {
-	*deploy.QueryDeployConfigRequest
+	*deploy.QueryDeploymentRequest
 }
 
 func (r *queryRequest) FindOptions() *options.FindOptions {

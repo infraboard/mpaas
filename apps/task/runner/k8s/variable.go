@@ -13,19 +13,19 @@ import (
 // 更加注解注入信息
 
 func (r *K8sRunner) HanleSystemVariable(ctx context.Context, in *job.VersionedRunParam, job *v1.Job) error {
-	return r.handleDeployConfig(ctx, in, job)
+	return r.handleDeployment(ctx, in, job)
 }
 
 // 查询部署配置, 注入相关变量
-func (r *K8sRunner) handleDeployConfig(ctx context.Context, in *job.VersionedRunParam, job *v1.Job) error {
-	deployConfigId := in.GetDeployConfigId()
+func (r *K8sRunner) handleDeployment(ctx context.Context, in *job.VersionedRunParam, job *v1.Job) error {
+	DeploymentId := in.GetDeploymentId()
 
-	if deployConfigId == "" {
+	if DeploymentId == "" {
 		return nil
 	}
 
 	// 查询部署配置
-	dc, err := r.deploy.DescribeDeployConfig(ctx, deploy.NewDescribeDeployConfigRequest(deployConfigId))
+	dc, err := r.deploy.DescribeDeployment(ctx, deploy.NewDescribeDeploymentRequest(DeploymentId))
 	if err != nil {
 		return err
 	}

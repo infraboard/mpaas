@@ -109,7 +109,7 @@ func (r *VersionedRunParam) K8SJobRunnerParams() *K8SJobRunnerParams {
 	return params
 }
 
-func (r *VersionedRunParam) GetDeployConfigId() string {
+func (r *VersionedRunParam) GetDeploymentId() string {
 	return r.GetParamValue(SYSTEM_VARIABLE_DEPLOY_CONFIG_ID)
 }
 

@@ -5,14 +5,14 @@ option go_package = "github.com/infraboard/mpaas/apps/deploy";
 
 import "common/meta/meta.proto";
 
-message DeployConfigSet {
+message DeploymentSet {
     // 总数
     int64 total = 1;
     // 清单
-    repeated DeployConfig items = 2;
+    repeated Deployment items = 2;
 }
 
-message DeployConfig  {
+message Deployment  {
     // 元信息
     // @gotags: bson:",inline" json:"meta"
     common.meta.Meta meta = 1;
@@ -21,7 +21,7 @@ message DeployConfig  {
     common.meta.Scope scope = 2;
     // 创建信息
     // @gotags: bson:",inline" json:"spec"
-    CreateDeployConfigRequest spec = 3;
+    CreateDeploymentRequest spec = 3;
     // 部署配置状态
     // @gotags: bson:"status" json:"status"
     Status status = 4;
@@ -83,7 +83,7 @@ message HostTypeConfig {
 
 }
 
-message CreateDeployConfigRequest {
+message CreateDeploymentRequest {
     // 服务Id
     // @gotags: bson:"service_id" json:"service_id"
     string service_id = 1;

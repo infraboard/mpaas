@@ -16,18 +16,18 @@ const (
 )
 
 type Service interface {
-	CreateDeployConfig(context.Context, *CreateDeployConfigRequest) (*DeployConfig, error)
-	DeleteDeployConfig(context.Context, *DeleteDeployConfigRequest) (*DeployConfig, error)
+	CreateDeployment(context.Context, *CreateDeploymentRequest) (*Deployment, error)
+	DeleteDeployment(context.Context, *DeleteDeploymentRequest) (*Deployment, error)
 	RPCServer
 }
 
 // New 新建一个部署配置
-func New(req *CreateDeployConfigRequest) (*DeployConfig, error) {
+func New(req *CreateDeploymentRequest) (*Deployment, error) {
 	if err := req.Validate(); err != nil {
 		return nil, err
 	}
 
-	d := &DeployConfig{
+	d := &Deployment{
 		Meta:  meta.NewMeta(),
 		Scope: meta.NewScope(),
 		Spec:  req,
@@ -36,24 +36,24 @@ func New(req *CreateDeployConfigRequest) (*DeployConfig, error) {
 	return d, nil
 }
 
-func (req *CreateDeployConfigRequest) Validate() error {
+func (req *CreateDeploymentRequest) Validate() error {
 	return validate.Validate(req)
 }
 
-func NewQueryDeployConfigRequestFromHttp(r *http.Request) *QueryDeployConfigRequest {
-	req := NewQueryDeployConfigRequest()
+func NewQueryDeploymentRequestFromHttp(r *http.Request) *QueryDeploymentRequest {
+	req := NewQueryDeploymentRequest()
 	req.Page = request.NewPageRequestFromHTTP(r)
 	return req
 }
 
-func NewQueryDeployConfigRequest() *QueryDeployConfigRequest {
-	return &QueryDeployConfigRequest{
+func NewQueryDeploymentRequest() *QueryDeploymentRequest {
+	return &QueryDeploymentRequest{
 		Page: request.NewDefaultPageRequest(),
 	}
 }
 
-func NewCreateDeployConfigRequest() *CreateDeployConfigRequest {
-	return &CreateDeployConfigRequest{
+func NewCreateDeploymentRequest() *CreateDeploymentRequest {
+	return &CreateDeploymentRequest{
 		AuthEnabled:    false,
 		Labels:         make(map[string]string),
 		K8STypeConfig:  NewK8STypeConfig(),
@@ -70,7 +70,7 @@ func NewHostTypeConfig() *HostTypeConfig {
 }
 
 // Validate 校验请求是否合法
-func (req *UpdateDeployConfigRequest) Validate() error {
+func (req *UpdateDeploymentRequest) Validate() error {
 	if req.Id == "" {
 		return fmt.Errorf("id required")
 	}
@@ -81,34 +81,34 @@ func (req *UpdateDeployConfigRequest) Validate() error {
 	return nil
 }
 
-func NewDescribeDeployConfigRequest(id string) *DescribeDeployConfigRequest {
-	return &DescribeDeployConfigRequest{
+func NewDescribeDeploymentRequest(id string) *DescribeDeploymentRequest {
+	return &DescribeDeploymentRequest{
 		DescribeValue: id,
 	}
 }
 
-func (req *DescribeDeployConfigRequest) Validate() error {
+func (req *DescribeDeploymentRequest) Validate() error {
 	return validate.Validate(req)
 }
 
-func NewPutDeployRequest(id string) *UpdateDeployConfigRequest {
-	return &UpdateDeployConfigRequest{
+func NewPutDeployRequest(id string) *UpdateDeploymentRequest {
+	return &UpdateDeploymentRequest{
 		Id:         id,
 		UpdateMode: pb_request.UpdateMode_PUT,
-		Spec:       NewCreateDeployConfigRequest(),
+		Spec:       NewCreateDeploymentRequest(),
 	}
 }
 
-func NewPatchDeployRequest(id string) *UpdateDeployConfigRequest {
-	return &UpdateDeployConfigRequest{
+func NewPatchDeployRequest(id string) *UpdateDeploymentRequest {
+	return &UpdateDeploymentRequest{
 		Id:         id,
 		UpdateMode: pb_request.UpdateMode_PATCH,
-		Spec:       NewCreateDeployConfigRequest(),
+		Spec:       NewCreateDeploymentRequest(),
 	}
 }
 
-func NewDeleteDeployConfigRequest(id string) *DeleteDeployConfigRequest {
-	return &DeleteDeployConfigRequest{
+func NewDeleteDeploymentRequest(id string) *DeleteDeploymentRequest {
+	return &DeleteDeploymentRequest{
 		Id: id,
 	}
 }
