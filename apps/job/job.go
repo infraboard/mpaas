@@ -131,6 +131,17 @@ func (r *VersionedRunParam) EnvVars() (envs []corev1.EnvVar) {
 	return
 }
 
+func ParamsToEnvVar(params []*RunParam) (envs []corev1.EnvVar) {
+	for i := range params {
+		item := params[i]
+		envs = append(envs, corev1.EnvVar{
+			Name:  item.Name,
+			Value: item.Value,
+		})
+	}
+	return
+}
+
 // 获取参数的值
 func (r *VersionedRunParam) GetParamValue(key string) string {
 	for i := range r.Params {

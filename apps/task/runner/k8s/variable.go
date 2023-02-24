@@ -10,7 +10,7 @@ import (
 	v1 "k8s.io/api/batch/v1"
 )
 
-// 更加注解注入信息
+// 对系统变量进行处理
 
 func (r *K8sRunner) HanleSystemVariable(ctx context.Context, in *job.VersionedRunParam, job *v1.Job) error {
 	return r.handleDeployment(ctx, in, job)
@@ -46,6 +46,14 @@ func (r *K8sRunner) handleDeployment(ctx context.Context, in *job.VersionedRunPa
 			return err
 		}
 		workload.InjectPodSecretVolume(&job.Spec.Template.Spec, secret)
+
+		// 注入系统变量
+		variables, err := dc.SystemVariable()
+		if err != nil {
+			return err
+		}
+		// 给容器注入环境变量
+		workload.InjectPodEnvVars(&job.Spec.Template.Spec, variables)
 	case deploy.TYPE_HOST:
 		// 主机部署需要注入的信息
 	}

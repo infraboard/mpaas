@@ -63,7 +63,8 @@ func (d *Deployment) GetK8sClusterId() string {
 }
 
 // 部署时的系统变量, 在部署任务时注入
-func (d *Deployment) SystemVariable() (items []*job.RunParam, err error) {
+func (d *Deployment) SystemVariable() ([]v1.EnvVar, error) {
+	items := []*job.RunParam{}
 	switch d.Spec.Type {
 	case TYPE_KUBERNETES:
 		wc := d.Spec.K8STypeConfig
@@ -97,7 +98,8 @@ func (d *Deployment) SystemVariable() (items []*job.RunParam, err error) {
 			),
 		)
 	}
-	return
+
+	return job.ParamsToEnvVar(items), nil
 }
 
 func (c *K8STypeConfig) GetWorkLoad() (*workload.WorkLoad, error) {
