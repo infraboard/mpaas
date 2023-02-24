@@ -8,7 +8,7 @@ import (
 )
 
 var (
-	impl *config.Config
+	impl *config.Client
 	ctx  = context.Background()
 )
 

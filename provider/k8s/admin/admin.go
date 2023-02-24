@@ -5,12 +5,12 @@ import (
 	corev1 "k8s.io/client-go/kubernetes/typed/core/v1"
 )
 
-func NewAdmin(cs *kubernetes.Clientset) *Admin {
-	return &Admin{
+func NewAdmin(cs *kubernetes.Clientset) *Client {
+	return &Client{
 		corev1: cs.CoreV1(),
 	}
 }
 
-type Admin struct {
+type Client struct {
 	corev1 corev1.CoreV1Interface
 }

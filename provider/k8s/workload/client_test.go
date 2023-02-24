@@ -8,7 +8,7 @@ import (
 )
 
 var (
-	impl *workload.Workload
+	impl *workload.Client
 	ctx  = context.Background()
 )
 

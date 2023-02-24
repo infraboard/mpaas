@@ -104,31 +104,31 @@ func (c *Client) CurrentCluster() *clientcmdapi.Cluster {
 }
 
 // 应用负载
-func (c *Client) WorkLoad() *workload.Workload {
+func (c *Client) WorkLoad() *workload.Client {
 	return workload.NewWorkload(c.client, c.restconf)
 }
 
 // 应用配置
-func (c *Client) Config() *config.Config {
+func (c *Client) Config() *config.Client {
 	return config.NewConfig(c.client)
 }
 
 // 应用存储
-func (c *Client) Storage() *storage.Storage {
+func (c *Client) Storage() *storage.Client {
 	return storage.NewStorage(c.client)
 }
 
 // 应用网络
-func (c *Client) Network() *network.Network {
+func (c *Client) Network() *network.Client {
 	return network.NewNetwork(c.client)
 }
 
 // 应用事件
-func (c *Client) Event() *event.Event {
+func (c *Client) Event() *event.Client {
 	return event.NewEvent(c.client)
 }
 
 // 集群管理
-func (c *Client) Admin() *admin.Admin {
+func (c *Client) Admin() *admin.Client {
 	return admin.NewAdmin(c.client)
 }

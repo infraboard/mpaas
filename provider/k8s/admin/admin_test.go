@@ -8,7 +8,7 @@ import (
 )
 
 var (
-	impl *admin.Admin
+	impl *admin.Client
 	ctx  = context.Background()
 )
 

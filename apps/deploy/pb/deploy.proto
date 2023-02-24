@@ -49,19 +49,6 @@ enum TYPE {
     HOST = 1;
 }
 
-enum WORKLOAD_KIND {
-    // Deployment无状态部署 
-    DEPLOYMENT = 0;
-    // StatefulSet
-    STATEFULSET = 1;
-    // DaemonSet
-    DAEMONSET = 2;
-    // Job
-    JOB = 3;
-    // CronJob
-    CRONJOB = 4;
-}
-
 // K8sTypeConfig yaml文本格式的k8s部署相关配置文件
 message K8sTypeConfig {
     // 部署集群的名称
@@ -69,7 +56,7 @@ message K8sTypeConfig {
     string cluster_id = 1;
     // 负载类型
     // @gotags: bson:"workload_kind" json:"workload_kind"
-    WORKLOAD_KIND workload_kind = 2;
+    string workload_kind = 2;
     // k8s yaml配置, 支持deploy/statfulset/daemonset/job/cronjob
     // @gotags: bson:"workload_config" json:"workload_config" validate:"required"
     string workload_config = 3;

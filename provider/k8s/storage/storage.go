@@ -6,14 +6,14 @@ import (
 	storagev1 "k8s.io/client-go/kubernetes/typed/storage/v1"
 )
 
-func NewStorage(cs *kubernetes.Clientset) *Storage {
-	return &Storage{
+func NewStorage(cs *kubernetes.Clientset) *Client {
+	return &Client{
 		corev1:    cs.CoreV1(),
 		storagev1: cs.StorageV1(),
 	}
 }
 
-type Storage struct {
+type Client struct {
 	corev1    corev1.CoreV1Interface
 	storagev1 storagev1.StorageV1Interface
 }

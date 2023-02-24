@@ -41,7 +41,7 @@ type ContainerExecutor interface {
 }
 
 // 登录容器
-func (c *Workload) LoginContainer(ctx context.Context, req *LoginContainerRequest) error {
+func (c *Client) LoginContainer(ctx context.Context, req *LoginContainerRequest) error {
 	restReq := c.corev1.RESTClient().Post().
 		Resource("pods").
 		Name(req.PodName).
@@ -92,7 +92,7 @@ func (req *WatchConainterLogRequest) Validate() error {
 }
 
 // 查看容器日志
-func (c *Workload) WatchConainterLog(ctx context.Context, req *WatchConainterLogRequest) (io.ReadCloser, error) {
+func (c *Client) WatchConainterLog(ctx context.Context, req *WatchConainterLogRequest) (io.ReadCloser, error) {
 	restReq := c.corev1.Pods(req.Namespace).GetLogs(req.PodName, req.PodLogOptions)
 	return restReq.Stream(ctx)
 }

@@ -9,6 +9,7 @@ import (
 	"github.com/infraboard/mcube/http/request"
 	pb_request "github.com/infraboard/mcube/pb/request"
 	"github.com/infraboard/mpaas/common/meta"
+	"github.com/infraboard/mpaas/provider/k8s/workload"
 )
 
 const (
@@ -62,7 +63,9 @@ func NewCreateDeploymentRequest() *CreateDeploymentRequest {
 }
 
 func NewK8STypeConfig() *K8STypeConfig {
-	return &K8STypeConfig{}
+	return &K8STypeConfig{
+		WorkloadKind: workload.WORKLOAD_KIND_DEPLOYMENT.String(),
+	}
 }
 
 func NewHostTypeConfig() *HostTypeConfig {

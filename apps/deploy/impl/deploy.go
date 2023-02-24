@@ -30,6 +30,15 @@ func (i *impl) CreateDeployment(ctx context.Context, in *deploy.CreateDeployment
 	ins.Scope.Domain = svc.Spec.Namespace
 	ins.Scope.Namespace = svc.Spec.Namespace
 
+	// 如果服务是k8s服务则直接执行部署
+	switch in.Type {
+	case deploy.TYPE_KUBERNETES:
+		wl, err := ins.Spec.K8STypeConfig.GetWorkLoad()
+		if err != nil {
+			return nil, err
+		}
+	}
+
 	if _, err := i.col.InsertOne(ctx, ins); err != nil {
 		return nil, exception.NewInternalServerError("inserted a deploy document error, %s", err)
 	}

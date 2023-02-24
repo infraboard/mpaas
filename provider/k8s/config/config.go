@@ -5,12 +5,12 @@ import (
 	corev1 "k8s.io/client-go/kubernetes/typed/core/v1"
 )
 
-func NewConfig(cs *kubernetes.Clientset) *Config {
-	return &Config{
+func NewConfig(cs *kubernetes.Clientset) *Client {
+	return &Client{
 		corev1: cs.CoreV1(),
 	}
 }
 
-type Config struct {
+type Client struct {
 	corev1 corev1.CoreV1Interface
 }

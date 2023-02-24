@@ -8,7 +8,7 @@ import (
 )
 
 var (
-	impl *event.Event
+	impl *event.Client
 	ctx  = context.Background()
 )
 

@@ -9,16 +9,16 @@ import (
 	eventsv1 "k8s.io/client-go/kubernetes/typed/events/v1"
 )
 
-func NewEvent(cs *kubernetes.Clientset) *Event {
-	return &Event{
+func NewEvent(cs *kubernetes.Clientset) *Client {
+	return &Client{
 		eventsv1: cs.EventsV1(),
 	}
 }
 
-type Event struct {
+type Client struct {
 	eventsv1 eventsv1.EventsV1Interface
 }
 
-func (c *Event) ListEvent(ctx context.Context, req *meta.ListRequest) (*v1.EventList, error) {
+func (c *Client) ListEvent(ctx context.Context, req *meta.ListRequest) (*v1.EventList, error) {
 	return c.eventsv1.Events(req.Namespace).List(ctx, req.Opts)
 }
