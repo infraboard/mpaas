@@ -7,6 +7,8 @@ import (
 
 	"github.com/infraboard/mpaas/apps/job"
 	meta "github.com/infraboard/mpaas/common/meta"
+	k8smeta "github.com/infraboard/mpaas/provider/k8s/meta"
+	"sigs.k8s.io/yaml"
 )
 
 func NewDeployConfigSet() *DeployConfigSet {
@@ -60,10 +62,27 @@ func (d *DeployConfig) SystemVariable() (items []*job.RunParam) {
 				strings.ToLower(d.Spec.K8STypeConfig.WorkloadKind.String()),
 			),
 			job.NewRunParam(
+				job.SYSTEM_VARIABLE_PIPELINE_WORKLOAD_NAME,
+				strings.ToLower(d.Spec.K8STypeConfig.WorkloadKind.String()),
+			),
+			job.NewRunParam(
 				job.SYSTEM_VARIABLE_PIPELINE_SERVICE_NAME,
 				d.Spec.ServiceName,
 			),
 		)
 	}
 	return
+}
+
+func (c *K8STypeConfig) ObjectMeta() (*k8smeta.ObjectMeta, error) {
+	m := k8smeta.NewObjectMeta()
+	if c.GetWorkloadConfig() == "" {
+		return m, nil
+	}
+
+	err := yaml.Unmarshal([]byte(c.WorkloadConfig), m)
+	if err != nil {
+		return nil, err
+	}
+	return m, nil
 }
