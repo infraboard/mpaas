@@ -4,9 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 
-	"github.com/infraboard/mpaas/apps/job"
 	meta "github.com/infraboard/mpaas/common/meta"
-	v1 "k8s.io/api/core/v1"
 )
 
 func NewDeployConfigSet() *DeployConfigSet {
@@ -46,16 +44,4 @@ func (d *DeployConfig) MarshalJSON() ([]byte, error) {
 		*meta.Meta
 		*CreateDeployConfigRequest
 	}{d.Meta, d.Spec})
-}
-
-func (k *K8STypeConfig) AsEnv() (envs []v1.EnvVar) {
-	envs = append(envs,
-		v1.EnvVar{
-			Name:  job.SYSTEM_VARIABLE_DEPLOY_WORKLOAD,
-			Value: k.WorkloadConfig,
-		}, v1.EnvVar{
-			Name:  job.SYSTEM_VARIABLE_DEPLOY_SERVICE,
-			Value: k.Service,
-		})
-	return
 }

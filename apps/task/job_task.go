@@ -76,6 +76,15 @@ func NewJobTask(req *pipeline.RunJobRequest) *JobTask {
 	}
 }
 
+func (p *JobTask) SystemVariable() (items []*job.RunParam) {
+	param := job.NewRunParam(
+		job.SYSTEM_VARIABLE_PIPELINE_TASK_ID,
+		p.Spec.PipelineTask,
+	)
+	items = append(items, param)
+	return
+}
+
 func (p *JobTask) MarshalJSON() ([]byte, error) {
 	return json.Marshal(struct {
 		*pipeline.RunJobRequest

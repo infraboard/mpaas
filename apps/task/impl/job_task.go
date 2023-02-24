@@ -45,6 +45,7 @@ func (i *impl) RunJob(ctx context.Context, in *pipeline.RunJobRequest) (
 	// 2. 合并允许参数(Job里面有默认值)
 	params := j.GetVersionedRunParam(in.Params.Version)
 	params.Merge(in.Params)
+	params.Add(ins.SystemVariable()...)
 	runReq := task.NewRunTaskRequest(ins.Spec.Id, j.Spec.RunnerSpec, params)
 	runReq.Labels = in.Labels
 	r := runner.GetRunner(j.Spec.RunnerType)
