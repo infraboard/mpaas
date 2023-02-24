@@ -2,7 +2,6 @@ package k8s
 
 import (
 	"context"
-	"fmt"
 
 	"github.com/infraboard/mpaas/apps/cluster"
 	"github.com/infraboard/mpaas/apps/task"
@@ -47,12 +46,12 @@ func (r *K8sRunner) Run(ctx context.Context, in *task.RunTaskRequest) (*task.Job
 	status.MarkedRunning()
 
 	// 执行Job
-	obj, err = k8sClient.WorkLoad().CreateJob(ctx, obj)
-	if err != nil {
-		return nil, err
+	if !in.DryRun {
+		obj, err = k8sClient.WorkLoad().CreateJob(ctx, obj)
+		if err != nil {
+			return nil, err
+		}
 	}
-
-	fmt.Println(obj)
 
 	objYaml, err := yaml.Marshal(obj)
 	if err != nil {
