@@ -104,6 +104,16 @@ type WorkLoad struct {
 	Job          *batchv1.Job
 }
 
+func (w *WorkLoad) SetAnnotations(key, value string) {
+	m := w.GetObjectMeta()
+	if m != nil {
+		if m.Annotations == nil {
+			m.Annotations = map[string]string{}
+		}
+		m.Annotations[key] = value
+	}
+}
+
 func (w *WorkLoad) SetDefaultNamespace(ns string) {
 	switch w.WorkloadKind {
 	case WORKLOAD_KIND_DEPLOYMENT:

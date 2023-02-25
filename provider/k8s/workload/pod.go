@@ -46,7 +46,7 @@ func InjectPodEnvVars(pod *v1.PodSpec, envs []v1.EnvVar) {
 }
 
 const (
-	SECRET_MOUNT_ANNOTATION_KEY = "secret.mpaas.inforboard.io/mountpath"
+	ANNOTATION_SECRET_MOUNT = "secret.mpaas.inforboard.io/mountpath"
 )
 
 // 把secret注入到Pod中 挂载成卷使用
@@ -57,7 +57,7 @@ func InjectPodSecretVolume(pod *v1.PodSpec, ss ...*v1.Secret) {
 		secret := ss[i]
 		v := NewSecretVolume(secret)
 		pod.Volumes = append(pod.Volumes, v)
-		vm = append(vm, NewMountVolume(v, secret.Annotations[SECRET_MOUNT_ANNOTATION_KEY]))
+		vm = append(vm, NewMountVolume(v, secret.Annotations[ANNOTATION_SECRET_MOUNT]))
 	}
 
 	// 挂载到Pod中

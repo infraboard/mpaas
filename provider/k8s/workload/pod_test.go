@@ -48,7 +48,7 @@ func TestInjectPodSecretVolume(t *testing.T) {
 
 	ss := new(v1.Secret)
 	ss.Name = "test"
-	ss.Annotations = map[string]string{workload.SECRET_MOUNT_ANNOTATION_KEY: "/.kube"}
+	ss.Annotations = map[string]string{workload.ANNOTATION_SECRET_MOUNT: "/.kube"}
 
 	workload.InjectPodSecretVolume(&obj.Spec.Template.Spec, ss)
 

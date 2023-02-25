@@ -196,7 +196,7 @@ func (i *Cluster) KubeConfSecret(mountPath string) *v1.Secret {
 		"config": i.Spec.KubeConfig,
 	}
 	secret.Annotations = map[string]string{
-		workload.SECRET_MOUNT_ANNOTATION_KEY: mountPath,
+		workload.ANNOTATION_SECRET_MOUNT: mountPath,
 	}
 	return secret
 }
