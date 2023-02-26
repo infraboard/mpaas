@@ -106,6 +106,12 @@ func TestUpdateBuildJob(t *testing.T) {
 		Desc:     "应用git代码仓库地址",
 		Example:  "git@github.com:infraboard/mpaas.git",
 	})
+	v1.Add(&job.RunParam{
+		Required: true,
+		Name:     "GIT_COMMIT_ID",
+		Desc:     "应用git代码仓库地址",
+		Example:  "xxx",
+	})
 	// docker push registry.cn-hangzhou.aliyuncs.com/inforboard/mpaas:[镜像版本号]
 	v1.Add(&job.RunParam{
 		Required: true,

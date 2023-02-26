@@ -32,6 +32,7 @@ docker pull anjia0532/kaniko-project.executor:v1.9.1-debug
 启动一个deubg环境, 可以看看里面的工具(二进制可执行文件,工具的用法)
 ```sh
 docker run -it --entrypoint=/busybox/sh docker.io/anjia0532/kaniko-project.executor:v1.9.1-debug
+docker run -it --entrypoint=/busybox/sh registry.cn-hangzhou.aliyuncs.com/godev/kaniko-project.executor:v1.9.1-debug
 
 / # ls -l /kaniko/
 total 75448
@@ -125,9 +126,10 @@ docker pull bitnami/git
 测试下能否正常使用
 ```sh
 # 挂载secret
-docker run -it -v ${HOME}/.ssh/:/workspace -w /workspace bitnami/git
+docker run -it -v ${HOME}/.ssh/:/root/.ssh -w /workspace bitnami/git
+docker run -it -v ${HOME}/.ssh/:/root/.ssh -w /workspace registry.cn-hangzhou.aliyuncs.com/godev/git:2.39.2
 # 测试下载, 关于更多git参数说明请参考看: https://git-scm.com/docs/git-config
-git clone git@github.com:infraboard/mpaas.git  --single-branch --branch=master --config core.sshCommand="ssh -i ./id_rsa.pub"
+GIT_SSH_COMMAND='ssh -i ssh -i ./id_rsa.pub -o StrictHostKeyChecking=no'  git clone git@github.com:infraboard/mpaas.git  --single-branch --branch=master
 ```
 
 创建代码拉取的secret, 可以参考: [use-case-pod-with-ssh-keys](https://kubernetes.io/zh-cn/docs/concepts/configuration/secret/#use-case-pod-with-ssh-keys)

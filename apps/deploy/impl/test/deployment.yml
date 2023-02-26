@@ -1,25 +1,21 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: cmdb-deployment
+  name: mpaas
   labels:
-    app: cmdb
+    app: mpaas
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: cmdb
+      app: mpaas
   template:
     metadata:
       labels:
-        app: cmdb
+        app: mpaas
     spec:
       containers:
-        - name: cmdb
-          image: busybox:1.30
-          command:
-            [
-              "bin/sh",
-              "-c",
-              "for i in 9 8 7 6 5 4 3 2 1; do echo $i;sleep 2;done",
-            ]
+        - name: mpaas
+          image: registry.cn-hangzhou.aliyuncs.com/inforboard/mpaas:v0.0.1
+          ports:
+          - containerPort: 8080
