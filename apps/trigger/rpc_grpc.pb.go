@@ -22,8 +22,10 @@ const _ = grpc.SupportPackageIsVersion7
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type RPCClient interface {
-	// 处理Gitlab的事件
+	// 处理事件
 	HandleEvent(ctx context.Context, in *Event, opts ...grpc.CallOption) (*Record, error)
+	// 查询事件
+	QueryRecord(ctx context.Context, in *QueryRecordRequest, opts ...grpc.CallOption) (*RecordSet, error)
 }
 
 type rPCClient struct {
@@ -43,12 +45,23 @@ func (c *rPCClient) HandleEvent(ctx context.Context, in *Event, opts ...grpc.Cal
 	return out, nil
 }
 
+func (c *rPCClient) QueryRecord(ctx context.Context, in *QueryRecordRequest, opts ...grpc.CallOption) (*RecordSet, error) {
+	out := new(RecordSet)
+	err := c.cc.Invoke(ctx, "/infraboard.mpaas.trigger.RPC/QueryRecord", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // RPCServer is the server API for RPC service.
 // All implementations must embed UnimplementedRPCServer
 // for forward compatibility
 type RPCServer interface {
-	// 处理Gitlab的事件
+	// 处理事件
 	HandleEvent(context.Context, *Event) (*Record, error)
+	// 查询事件
+	QueryRecord(context.Context, *QueryRecordRequest) (*RecordSet, error)
 	mustEmbedUnimplementedRPCServer()
 }
 
@@ -58,6 +71,9 @@ type UnimplementedRPCServer struct {
 
 func (UnimplementedRPCServer) HandleEvent(context.Context, *Event) (*Record, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method HandleEvent not implemented")
+}
+func (UnimplementedRPCServer) QueryRecord(context.Context, *QueryRecordRequest) (*RecordSet, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method QueryRecord not implemented")
 }
 func (UnimplementedRPCServer) mustEmbedUnimplementedRPCServer() {}
 
@@ -90,6 +106,24 @@ func _RPC_HandleEvent_Handler(srv interface{}, ctx context.Context, dec func(int
 	return interceptor(ctx, in, info, handler)
 }
 
+func _RPC_QueryRecord_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(QueryRecordRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(RPCServer).QueryRecord(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/infraboard.mpaas.trigger.RPC/QueryRecord",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(RPCServer).QueryRecord(ctx, req.(*QueryRecordRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // RPC_ServiceDesc is the grpc.ServiceDesc for RPC service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -100,6 +134,10 @@ var RPC_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "HandleEvent",
 			Handler:    _RPC_HandleEvent_Handler,
+		},
+		{
+			MethodName: "QueryRecord",
+			Handler:    _RPC_QueryRecord_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

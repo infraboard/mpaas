@@ -99,10 +99,12 @@ message VersionedRunParam {
 enum PARAM_VALUE_TYPE {
 	// 文本
 	TEXT = 0;
+	// 布尔值, 只能是ture或者false
+	BOOLEAN = 1;
 	// 枚举
-	ENUM = 1;
+	ENUM = 2;
 	// 基于url的远程选项拉去, 仅存储URL地址, 前端自己处理
-	HTTP_ENUM = 2;
+	HTTP_ENUM = 3;
 }
 
 message EnumOption {
@@ -142,6 +144,9 @@ message RunParam {
 	// 默认值, task运行时如果未传人，会填充默认值
 	// @gotags: bson:"value" json:"value"
 	string value = 8;
+	// 设置了值后，不允许修改, 用于控制流水线模版变量
+	// @gotags: bson:"read_olny" json:"read_olny"
+	bool read_olny = 9;
 
 	// 扩展属性
 	// @gotags: bson:"extensions" json:"extensions"

@@ -7,6 +7,14 @@ import "apps/trigger/pb/gitlab.proto";
 import "apps/build/pb/build.proto";
 import "common/meta/meta.proto";
 
+message RecordSet {
+    // 总数
+    // @gotags: bson:"total" json:"total"
+    int64 total = 1;
+    // 列表
+    // @gotags: bson:"items" json:"items"
+    repeated Record items = 2;
+}
 
 // 事件记录
 message Record {

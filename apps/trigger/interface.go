@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"path"
 
+	"github.com/infraboard/mcube/http/request"
 	"github.com/infraboard/mpaas/apps/build"
 )
 
@@ -40,5 +41,11 @@ func NewGitlabEvent(serviceId string, event *GitlabWebHookEvent) *Event {
 func NewBuildStatus(bc *build.BuildConfig) *BuildStatus {
 	return &BuildStatus{
 		BuildConfig: bc,
+	}
+}
+
+func NewQueryRecordRequest() *QueryRecordRequest {
+	return &QueryRecordRequest{
+		Page: request.NewDefaultPageRequest(),
 	}
 }

@@ -22,3 +22,12 @@ func TestHandleEvent(t *testing.T) {
 	}
 	t.Log(ps)
 }
+
+func TestQueryRecord(t *testing.T) {
+	req := trigger.NewQueryRecordRequest()
+	set, err := impl.QueryRecord(ctx, req)
+	if err != nil {
+		t.Fatal(err)
+	}
+	t.Log(tools.MustToJson(set))
+}

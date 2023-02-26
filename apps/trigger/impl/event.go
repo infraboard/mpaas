@@ -62,3 +62,32 @@ func (i *impl) HandleEvent(ctx context.Context, in *trigger.Event) (
 	}
 	return ins, nil
 }
+
+// 查询事件
+func (i *impl) QueryRecord(ctx context.Context, in *trigger.QueryRecordRequest) (
+	*trigger.RecordSet, error) {
+	r := newQueryRequest(in)
+	resp, err := i.col.Find(ctx, r.FindFilter(), r.FindOptions())
+
+	if err != nil {
+		return nil, exception.NewInternalServerError("find event record error, error is %s", err)
+	}
+
+	set := trigger.NewRecordSet()
+	// 循环
+	for resp.Next(ctx) {
+		ins := trigger.NewDefaultRecord()
+		if err := resp.Decode(ins); err != nil {
+			return nil, exception.NewInternalServerError("decode event record error, error is %s", err)
+		}
+		set.Add(ins)
+	}
+
+	// count
+	count, err := i.col.CountDocuments(ctx, r.FindFilter())
+	if err != nil {
+		return nil, exception.NewInternalServerError("get event record count error, error is %s", err)
+	}
+	set.Total = count
+	return set, nil
+}
