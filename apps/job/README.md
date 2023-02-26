@@ -129,7 +129,7 @@ docker pull bitnami/git
 docker run -it -v ${HOME}/.ssh/:/root/.ssh -w /workspace bitnami/git
 docker run -it -v ${HOME}/.ssh/:/root/.ssh -w /workspace registry.cn-hangzhou.aliyuncs.com/godev/git:2.39.2
 # 测试下载, 关于更多git参数说明请参考看: https://git-scm.com/docs/git-config
-GIT_SSH_COMMAND='ssh -i ssh -i ./id_rsa.pub -o StrictHostKeyChecking=no'  git clone git@github.com:infraboard/mpaas.git  --single-branch --branch=master
+GIT_SSH_COMMAND='ssh -i ssh -i ./id_rsa.pub -o StrictHostKeyChecking=no'  git clone git@github.com:infraboard/mpaas.git src  --single-branch --branch=master
 ```
 
 创建代码拉取的secret, 可以参考: [use-case-pod-with-ssh-keys](https://kubernetes.io/zh-cn/docs/concepts/configuration/secret/#use-case-pod-with-ssh-keys)

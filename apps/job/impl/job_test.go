@@ -100,6 +100,7 @@ func TestUpdateBuildJob(t *testing.T) {
 		Value:    "default",
 	})
 
+	// 需要构建的代码信息
 	v1.Add(&job.RunParam{
 		Required: true,
 		Name:     "GIT_REPOSITORY",
@@ -108,9 +109,15 @@ func TestUpdateBuildJob(t *testing.T) {
 	})
 	v1.Add(&job.RunParam{
 		Required: true,
+		Name:     "GIT_BRANCH",
+		Desc:     "需要拉去的代码分支",
+		Example:  "master",
+	})
+	v1.Add(&job.RunParam{
+		Required: true,
 		Name:     "GIT_COMMIT_ID",
 		Desc:     "应用git代码仓库地址",
-		Example:  "xxx",
+		Example:  "32d63566098f7e0b0ac3a3d8ddffe71cc6cad7b0",
 	})
 	// docker push registry.cn-hangzhou.aliyuncs.com/inforboard/mpaas:[镜像版本号]
 	v1.Add(&job.RunParam{
