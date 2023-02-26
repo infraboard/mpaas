@@ -98,24 +98,24 @@ func TestUpdateBuildJob(t *testing.T) {
 		Value:    "default",
 	})
 
-	// 代码仓库地址, 比如 git@github.com:infraboard/mpaas.git
 	v1.Add(&job.RunParam{
 		Required: true,
 		Name:     "GIT_REPOSITORY",
 		Desc:     "应用git代码仓库地址",
+		Example:  "git@github.com:infraboard/mpaas.git",
 	})
 	// docker push registry.cn-hangzhou.aliyuncs.com/inforboard/mpaas:[镜像版本号]
-	// IMAGE_REPOSITORY: egistry.cn-hangzhou.aliyuncs.com/inforboard/mpaas
-	// IMAGE_VERSION: [镜像版本号]
 	v1.Add(&job.RunParam{
 		Required: true,
 		Name:     job.SYSTEM_VARIABLE_IMAGE_REPOSITORY,
 		Desc:     "镜像推送地址",
+		Example:  "egistry.cn-hangzhou.aliyuncs.com/inforboard/mpaas",
 	})
 	v1.Add(&job.RunParam{
 		Required: true,
 		Name:     job.SYSTEM_VARIABLE_IMAGE_VERSION,
 		Desc:     "镜像版本",
+		Example:  "v0.0.1",
 	})
 
 	req.Spec.AddVersionParams(v1)
