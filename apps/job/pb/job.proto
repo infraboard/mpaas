@@ -105,6 +105,18 @@ enum PARAM_VALUE_TYPE {
 	HTTP_ENUM = 2;
 }
 
+message EnumOption {
+	// 选项的值
+	// @gotags: bson:"value" json:"value" validate:"required"
+	string value = 1;
+	// 选项的说明
+	// @gotags: bson:"label" json:"label"
+	string label = 2;
+	// 扩展属性
+	// @gotags: bson:"extensions" json:"extensions"
+	map<string, string> extensions = 15;
+}
+
 message RunParam {
 	// 可选/必传
 	// @gotags: bson:"required"
@@ -120,7 +132,7 @@ message RunParam {
 	PARAM_VALUE_TYPE value_type = 4;
 	// 枚举值的选项
 	// @gotags: bson:"enum_options" json:"enum_options,omitempty"
-	repeated string enum_options = 5;
+	repeated EnumOption enum_options = 5;
 	// 基于枚举的URL
 	// @gotags: bson:"http_enum_url" json:"http_enum_url,omitempty"
 	string http_enum_url = 6;
