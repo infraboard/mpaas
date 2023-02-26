@@ -110,13 +110,13 @@ func (r *VersionedRunParam) K8SJobRunnerParams() *K8SJobRunnerParams {
 }
 
 func (r *VersionedRunParam) GetDeploymentId() string {
-	return r.GetParamValue(SYSTEM_VARIABLE_DEPLOY_CONFIG_ID)
+	return r.GetParamValue(SYSTEM_VARIABLE_DEPLOY_ID)
 }
 
 // 获取需要注入容器的环境变量参数:
 //
 //	用户变量: 大写开头的变量, 因为一般环境变量都是大写的比如 DB_PASS,
-//	系统变量: _开头为系统变量, 由Runner处理并注入, 比如 _DEPLOY_CONFIG_ID
+//	系统变量: _开头为系统变量, 由Runner处理并注入, 比如 _DEPLOY_ID
 //	Runner变量: 小写的变量, 用于系统内部使用, 不会注入, 比如 K8SJobRunnerParams 中的cluster_id
 func (r *VersionedRunParam) EnvVars() (envs []corev1.EnvVar) {
 	for i := range r.Params {

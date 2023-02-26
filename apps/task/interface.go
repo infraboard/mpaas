@@ -36,6 +36,15 @@ func NewRunTaskRequest(name, spec string, params *job.VersionedRunParam) *RunTas
 	}
 }
 
+// Job运行时需要的注解
+func (r *RunTaskRequest) Annotations() map[string]string {
+	annotations := map[string]string{}
+	if !r.ManualUpdateStatus {
+		annotations[ANNOTATION_TASK] = r.Params.GetParamValue(job.SYSTEM_VARIABLE_JOB_TASK_ID)
+	}
+	return annotations
+}
+
 type PipelineService interface {
 	PipelineRPCServer
 }

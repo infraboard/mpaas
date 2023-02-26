@@ -85,11 +85,14 @@ message RunTaskRequest {
 	// 试运行, 并不会真正执行Job
 	// @gotags: bson:"dry_run" json:"dry_run"
 	bool dry_run = 3;
+	// 手动更新Job的状态, 默认由job runner的operator更新
+	// @gotags: bson:"manual_update_status" json:"manual_update_status"
+	bool manual_update_status = 4;
 	// job运行时参数
 	// @gotags: bson:"params" json:"params"
-	job.VersionedRunParam params = 4;
+	job.VersionedRunParam params = 5;
 	// 标签
 	// @gotags: bson:"labels" json:"labels"
-	map<string, string> labels = 5;
+	map<string, string> labels = 15;
 }
 

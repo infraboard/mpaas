@@ -29,7 +29,8 @@ spec:
           command: [
               "sh",
               "-c",
-              # kubectl set image deployment/nginx busybox=busybox nginx=nginx:1.9.1, 补充annotate表示该Task的状态由Operator维护
+              # kubectl set image deployment/nginx busybox=busybox nginx=nginx:1.9.1, 补充annotate表示该Task的状态由Operator维护, 
+              # 当Job为ManualUpdateStatus时, 一定要自己根据task id更新自己状态
               "kubectl set image ${_WORKLOAD_KIND}/${_WORKLOAD_NAME} ${_SERVICE_NAME}=${_SERVICE_IMAGE_ADDR}:${_SERVICE_IMAGE_VERSION} &&
                kubectl annotate ${_WORKLOAD_NAME}s ${_SERVICE_NAME} task.mpaas.inforboar.io/id=${_JOB_TASK_ID} --overwrite",
             ]

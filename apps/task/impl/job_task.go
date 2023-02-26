@@ -49,6 +49,7 @@ func (i *impl) RunJob(ctx context.Context, in *pipeline.RunJobRequest) (
 	runReq := task.NewRunTaskRequest(ins.Spec.Id, j.Spec.RunnerSpec, params)
 	runReq.DryRun = in.DryRun
 	runReq.Labels = in.Labels
+	runReq.ManualUpdateStatus = j.Spec.ManualUpdateStatus
 	r := runner.GetRunner(j.Spec.RunnerType)
 	status, err := r.Run(ctx, runReq)
 	if err != nil {

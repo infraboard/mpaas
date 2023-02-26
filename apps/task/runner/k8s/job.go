@@ -39,7 +39,9 @@ func (r *K8sRunner) Run(ctx context.Context, in *task.RunTaskRequest) (*task.Job
 
 	// Job注入标签
 	workload.InjectJobLabels(obj, in.Labels)
-	// 给容器注入环境变量
+	// Job注入注解
+	workload.InjectJobAnnotations(obj, in.Annotations())
+	// 给Job容器注入环境变量
 	workload.InjectPodEnvVars(&obj.Spec.Template.Spec, in.Params.EnvVars())
 
 	status := task.NewJobTaskStatus()

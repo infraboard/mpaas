@@ -45,7 +45,7 @@ func (i *impl) CreateDeployment(ctx context.Context, in *deploy.CreateDeployment
 			return nil, err
 		}
 		wl.SetDefaultNamespace(ins.Scope.Namespace)
-		wl.SetAnnotations(deploy.ANNOTATION_DEPLOY_CONFIG, ins.Meta.Id)
+		wl.SetAnnotations(deploy.ANNOTATION_DEPLOY_ID, ins.Meta.Id)
 
 		// 检查主容器是否存在
 		serviceContainer := wl.GetServiceContainer(ins.Spec.ServiceName)

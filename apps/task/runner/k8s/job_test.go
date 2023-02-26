@@ -27,8 +27,8 @@ func TestRun(t *testing.T) {
 			Value: "xxx",
 		},
 		&job.RunParam{
-			Name:  job.SYSTEM_VARIABLE_DEPLOY_CONFIG_ID,
-			Value: conf.C.DEPLOY_CONFIG_ID,
+			Name:  job.SYSTEM_VARIABLE_DEPLOY_ID,
+			Value: conf.C.DEPLOY_ID,
 		},
 	)
 

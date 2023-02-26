@@ -10,7 +10,7 @@ import (
 
 func (h *downloadHandler) Registry(ws *restful.WebService) {
 	tags := []string{"部署配置下载"}
-	ws.Route(ws.GET("/deploy_configs/{id}").To(h.DownloadDeployment).
+	ws.Route(ws.GET("/deploys/{id}").To(h.DownloadDeployment).
 		Doc("下载配置详情").
 		Param(ws.PathParameter("id", "identifier of the deploy").DataType("string")).
 		Metadata(restfulspec.KeyOpenAPITags, tags).

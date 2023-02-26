@@ -52,7 +52,7 @@ func TestCreateDeployJob(t *testing.T) {
 	// 部署运行时变量
 	v1.Add(&job.RunParam{
 		Required: true,
-		Name:     job.SYSTEM_VARIABLE_DEPLOY_CONFIG_ID,
+		Name:     job.SYSTEM_VARIABLE_DEPLOY_ID,
 		Desc:     "部署配置id, 部署时由系统传人",
 	})
 

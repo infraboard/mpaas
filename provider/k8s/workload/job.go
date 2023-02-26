@@ -32,7 +32,20 @@ func (c *Client) DeleteJob(ctx context.Context, req *meta.DeleteRequest) error {
 
 // 注入Job标签
 func InjectJobLabels(pod *v1.Job, labels map[string]string) {
+	if pod.Labels == nil {
+		pod.Labels = make(map[string]string)
+	}
 	for k, v := range labels {
 		pod.Labels[k] = v
+	}
+}
+
+// 注入Job注解
+func InjectJobAnnotations(pod *v1.Job, annotations map[string]string) {
+	if pod.Annotations == nil {
+		pod.Annotations = make(map[string]string)
+	}
+	for k, v := range annotations {
+		pod.Annotations[k] = v
 	}
 }

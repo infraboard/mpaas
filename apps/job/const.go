@@ -9,10 +9,12 @@ const (
 type SYSTEM_VARIABLE string
 
 const (
-	// 部署配置ID, runner执行时，会挂载DEPLOY_CONFIG中配置的集群ID相应的kubeconf文件
-	SYSTEM_VARIABLE_DEPLOY_CONFIG_ID = "_DEPLOY_CONFIG_ID"
-	// 任务运行的Pipeline Task Id, 由Pipeline 允许时创建, runner注入
+	// 部署配置ID, runner执行时，会挂载Deploy中配置的集群ID相应的kubeconf文件
+	SYSTEM_VARIABLE_DEPLOY_ID = "_DEPLOY_ID"
+	// 任务运行的Pipeline Task Id, 由Pipeline 运行时创建, runner注入
 	SYSTEM_VARIABLE_PIPELINE_TASK_ID = "_PIPELINE_TASK_ID"
+	// 任务运行的Job Task Id, 由Job 运行时创建, runner注入
+	SYSTEM_VARIABLE_JOB_TASK_ID = "_JOB_TASK_ID"
 	// 部署工作负载类型
 	SYSTEM_VARIABLE_PIPELINE_WORKLOAD_KIND = "_WORKLOAD_KIND"
 	// 部署名称

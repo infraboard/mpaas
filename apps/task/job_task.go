@@ -77,11 +77,16 @@ func NewJobTask(req *pipeline.RunJobRequest) *JobTask {
 }
 
 func (p *JobTask) SystemVariable() (items []*job.RunParam) {
-	param := job.NewRunParam(
-		job.SYSTEM_VARIABLE_PIPELINE_TASK_ID,
-		p.Spec.PipelineTask,
+	items = append(items,
+		job.NewRunParam(
+			job.SYSTEM_VARIABLE_PIPELINE_TASK_ID,
+			p.Spec.PipelineTask,
+		),
+		job.NewRunParam(
+			job.SYSTEM_VARIABLE_JOB_TASK_ID,
+			p.Spec.Id,
+		),
 	)
-	items = append(items, param)
 	return
 }
 

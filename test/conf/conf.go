@@ -7,9 +7,8 @@ func newConfig() *Config {
 type Config struct {
 	DEPLOY_ID string `env:"DEPLOY_ID"`
 
-	BUILD_CONFIG_ID  string `env:"BUILD_CONFIG_ID"`
-	DEPLOY_CONFIG_ID string `env:"DEPLOY_CONFIG_ID"`
-	SERVICE_ID       string `env:"SERVICE_ID"`
+	BUILD_CONFIG_ID string `env:"BUILD_CONFIG_ID"`
+	SERVICE_ID      string `env:"SERVICE_ID"`
 
 	FEISHU_BOT_URL   string `env:"FEISHU_BOT_URL"`
 	DINGDING_BOT_URL string `env:"DINGDING_BOT_URL"`

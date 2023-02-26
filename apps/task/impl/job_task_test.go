@@ -32,15 +32,16 @@ func TestRunDeployJob(t *testing.T) {
 	req := pipeline.NewRunJobRequest("docker_deploy@default.default")
 	version := job.NewVersionedRunParam("v1")
 	version.Params = job.NewRunParamWithKVPaire(
-		job.SYSTEM_VARIABLE_DEPLOY_CONFIG_ID, conf.C.DEPLOY_CONFIG_ID,
+		job.SYSTEM_VARIABLE_DEPLOY_ID, conf.C.DEPLOY_ID,
 	)
 	req.Params = version
+	req.DryRun = true
 
 	ins, err := impl.RunJob(ctx, req)
 	if err != nil {
 		t.Fatal(err)
 	}
-	t.Log(tools.MustToJson(ins))
+	t.Log(tools.MustToYaml(ins.Status.Detail))
 }
 
 func TestQueryJobTask(t *testing.T) {
