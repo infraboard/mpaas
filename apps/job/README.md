@@ -189,10 +189,15 @@ kubectl apply -f http://localhost:8080/mpaas/api/v1/export/deploys/cfrcv8ea0brnt
 
 只更新版本
 ```
-# 更新惊喜版本
+# 更新镜像版本
 kubectl set image deployment/nginx busybox=busybox nginx=nginx:1.9.1
 # 补充任务标签
 kubectl annotate deployments cmdb-deployment task.mpaas.inforboar.io/id="test" --overwrite
 ```
 
+如果执行失败，也可以收到试试命令
+```
+kubectl set image deployment/cmdb-deployment cmdb-deployment=busybox:1.30
+kubectl annotate deployments cmdb task.mpaas.inforboar.io/id=cfthf85s99bgu9olqr50
+```
 

@@ -43,7 +43,7 @@ spec: # 详情描述
               readOnly: true
               mountPath: "/etc/secret-volume"
       containers:
-        - image: docker.io/anjia0532/kaniko-project.executor:v1.9.1-debug
+        - image: registry.cn-hangzhou.aliyuncs.com/godev/kaniko-project.executor:v1.9.1-debug
           workingDir: /workspace
           imagePullPolicy: IfNotPresent
           name: build-and-push

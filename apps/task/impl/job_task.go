@@ -192,7 +192,12 @@ func (i *impl) DeleteJobTask(ctx context.Context, in *task.DeleteJobTaskRequest)
 
 // 删除k8s中对应的job
 func (i *impl) deleteK8sJob(ctx context.Context, ins *task.JobTask) error {
-	k8sParams := ins.Spec.Params.K8SJobRunnerParams()
+	jobParams := ins.Job.GetVersionedRunParam(ins.Spec.Params.Version)
+	if jobParams == nil {
+		return fmt.Errorf("job version params not found")
+	}
+
+	k8sParams := jobParams.K8SJobRunnerParams()
 	c, err := i.cluster.DescribeCluster(ctx, cluster.NewDescribeClusterRequest(k8sParams.ClusterId))
 	if err != nil {
 		return err

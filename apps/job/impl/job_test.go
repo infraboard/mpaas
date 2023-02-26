@@ -65,12 +65,14 @@ func TestUpdateDeployJob(t *testing.T) {
 	v1.Add(&job.RunParam{
 		Required: true,
 		Name:     job.SYSTEM_VARIABLE_DEPLOY_ID,
-		Desc:     "部署配置id, 部署时由系统传人",
+		Desc:     "部署id, 部署时由系统传人",
+		Example:  "deploy01",
 	})
 	v1.Add(&job.RunParam{
 		Required: true,
 		Name:     job.SYSTEM_VARIABLE_IMAGE_VERSION,
 		Desc:     "应用部署时的版本",
+		Example:  "v0.0.1",
 	})
 	req.Spec.AddVersionParams(v1)
 

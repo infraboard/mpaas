@@ -56,17 +56,8 @@ func TestQueryJobTask(t *testing.T) {
 	t.Log(tools.MustToJson(set))
 }
 
-func TestDescribeJobTask(t *testing.T) {
-	req := task.NewDescribeJobTaskRequest(os.Getenv("JOB_TASK_ID"))
-	ins, err := impl.DescribeJobTask(ctx, req)
-	if err != nil {
-		t.Fatal(err)
-	}
-	t.Log(tools.MustToJson(ins))
-}
-
 func TestUpdateJobTaskStatus(t *testing.T) {
-	req := task.NewUpdateJobTaskStatusRequest(os.Getenv("JOB_TASK_ID"))
+	req := task.NewUpdateJobTaskStatusRequest(conf.C.JOB_TASK_ID)
 	req.Stage = task.STAGE_SUCCEEDED
 	req.Message = "执行成功"
 	req.Detail = tools.MustReadContentFile("test/k8s_job.yml")
@@ -77,8 +68,17 @@ func TestUpdateJobTaskStatus(t *testing.T) {
 	t.Log(tools.MustToYaml(ins))
 }
 
+func TestDescribeJobTask(t *testing.T) {
+	req := task.NewDescribeJobTaskRequest(conf.C.JOB_TASK_ID)
+	ins, err := impl.DescribeJobTask(ctx, req)
+	if err != nil {
+		t.Fatal(err)
+	}
+	t.Log(tools.MustToJson(ins))
+}
+
 func TestDeleteJobTask(t *testing.T) {
-	req := task.NewDeleteJobTaskRequest(os.Getenv("JOB_TASK_ID"))
+	req := task.NewDeleteJobTaskRequest(conf.C.JOB_TASK_ID)
 	set, err := impl.DeleteJobTask(ctx, req)
 	if err != nil {
 		t.Fatal(err)
