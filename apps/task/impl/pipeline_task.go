@@ -22,7 +22,7 @@ func (i *impl) RunPipeline(ctx context.Context, in *task.RunPipelineRequest) (
 	}
 
 	// 查询需要执行的Pipeline
-	p, err := i.pipeline.DescribePipeline(ctx, pipeline.NewDescribePipelineRequest(in.Id))
+	p, err := i.pipeline.DescribePipeline(ctx, pipeline.NewDescribePipelineRequest(in.PipelineId))
 	if err != nil {
 		return nil, err
 	}
@@ -169,9 +169,9 @@ func (i *impl) updatePipelineStatus(ctx context.Context, in *task.PipelineTask) 
 	i.updateCallback(ctx, in)
 
 	in.Meta.UpdateAt = time.Now().Unix()
-	if _, err := i.pcol.UpdateByID(ctx, in.Params.Id, bson.M{"$set": bson.M{"status": in.Status}}); err != nil {
+	if _, err := i.pcol.UpdateByID(ctx, in.Meta.Id, bson.M{"$set": bson.M{"status": in.Status}}); err != nil {
 		return nil, exception.NewInternalServerError("update task(%s) document error, %s",
-			in.Params.Id, err)
+			in.Meta.Id, err)
 	}
 	return in, nil
 }

@@ -5,11 +5,12 @@ import (
 	"testing"
 
 	"github.com/infraboard/mpaas/apps/task"
+	"github.com/infraboard/mpaas/test/conf"
 	"github.com/infraboard/mpaas/test/tools"
 )
 
 func TestRunPipeline(t *testing.T) {
-	req := task.NewRunPipelineRequest(os.Getenv("PIPELINE_ID"))
+	req := task.NewRunPipelineRequest(conf.C.PIPELINE_ID)
 	ins, err := impl.RunPipeline(ctx, req)
 	if err != nil {
 		t.Fatal(err)

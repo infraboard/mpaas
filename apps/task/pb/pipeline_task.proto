@@ -3,6 +3,7 @@ syntax = "proto3";
 package infraboard.mpaas.task;
 option go_package = "github.com/infraboard/mpaas/apps/task";
 
+import "common/meta/meta.proto";
 import "apps/task/pb/job_task.proto";
 import "apps/pipeline/pb/pipeline.proto";
 
@@ -18,7 +19,7 @@ message PipelineTaskSet {
 message PipelineTask {
     // 元信息
     // @gotags: bson:",inline" json:"meta"
-    Meta meta = 1;
+    common.meta.Meta meta = 1;
     // 运作时参数
     // @gotags: bson:",inline" json:"params"
     RunPipelineRequest params = 2;
@@ -32,14 +33,11 @@ message PipelineTask {
 
 message RunPipelineRequest {
     // pipeline id
-	// @gotags: bson:"_id" json:"id" validate:"required"
-    string id = 1;
-	// 允许于Domain
-	// @gotags: bson:"domain" json:"domain" validate:"required"
-	string domain = 2;
-	// 允许于Namespace
-	// @gotags: bson:"namespace" json:"namespace" validate:"required"
-	string namespace = 3;
+	// @gotags: bson:"pipeline_id" json:"pipeline_id" validate:"required"
+    string pipeline_id = 1;
+	// 试运行
+	// @gotags: bson:"dry_run" json:"dry_run"
+	bool dry_run = 2;
 	// 执行人
 	// @gotags: bson:"run_by" json:"run_by" validate:"required"
 	string run_by = 4;

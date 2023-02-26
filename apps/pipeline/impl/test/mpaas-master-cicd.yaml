@@ -1,0 +1,31 @@
+name: mpaas-master-cicd
+description: mpaas项目 master分支 cicd流水线
+stages:
+  - name: 容器镜像构建
+    jobs:
+      - job_name: docker_build@default.default
+        ignore_failed: false
+        params:
+          version: v0.1
+          params:
+            - name: GIT_REPOSITORY
+              value: git@github.com:infraboard/mpaas.git
+            - name: GIT_BRANCH
+              value: master
+            - name: GIT_COMMIT_ID
+              value: 32d63566098f7e0b0ac3a3d8ddffe71cc6cad7b0
+            - name: _IMAGE_REPOSITORY
+              value: registry.cn-hangzhou.aliyuncs.com/inforboard/mpaas
+            - name: _IMAGE_VERSION
+              value: v0.0.3
+  - name: 容器镜像部署
+    jobs:
+      - job_name: docker_build@default.default
+        ignore_failed: false
+        params:
+          version: v0.1
+          params:
+            - name: _DEPLOY_ID
+              value: xxxx
+            - name: _IMAGE_VERSION
+              value: v0.0.3

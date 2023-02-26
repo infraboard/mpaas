@@ -50,13 +50,15 @@ func (i *impl) HandleEvent(ctx context.Context, in *trigger.Event) (
 			if err != nil {
 				bs.ErrorMessage = err.Error()
 			} else {
-				bs.PiplineTaskId = pt.Params.Id
+				bs.PiplineTaskId = pt.Meta.Id
 			}
 			ins.AddBuildStatus(bs)
 		}
 	}
 
 	// 保存
-
+	if _, err := i.col.InsertOne(ctx, ins); err != nil {
+		return nil, exception.NewInternalServerError("inserted a deploy document error, %s", err)
+	}
 	return ins, nil
 }

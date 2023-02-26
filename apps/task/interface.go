@@ -49,10 +49,10 @@ type PipelineService interface {
 	PipelineRPCServer
 }
 
-func NewRunPipelineRequest(id string) *RunPipelineRequest {
+func NewRunPipelineRequest(pipelineId string) *RunPipelineRequest {
 	return &RunPipelineRequest{
-		Id:     id,
-		Labels: make(map[string]string),
+		PipelineId: pipelineId,
+		Labels:     make(map[string]string),
 	}
 }
 

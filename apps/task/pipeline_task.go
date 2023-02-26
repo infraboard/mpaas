@@ -6,6 +6,7 @@ import (
 
 	"github.com/infraboard/mcube/exception"
 	"github.com/infraboard/mpaas/apps/pipeline"
+	"github.com/infraboard/mpaas/common/meta"
 )
 
 func NewPipelineTaskSet() *PipelineTaskSet {
@@ -29,7 +30,7 @@ func NewPipelineTask(p *pipeline.Pipeline) *PipelineTask {
 	// 初始化所有的JobTask
 	for i := range p.Spec.Stages {
 		spec := p.Spec.Stages[i]
-		ss := NewStageStatus(spec, pt.Params.Id)
+		ss := NewStageStatus(spec, pt.Meta.Id)
 		pt.Status.AddStage(ss)
 	}
 	return pt
@@ -37,7 +38,7 @@ func NewPipelineTask(p *pipeline.Pipeline) *PipelineTask {
 
 func NewDefaultPipelineTask() *PipelineTask {
 	return &PipelineTask{
-		Meta:   NewMeta(),
+		Meta:   meta.NewMeta(),
 		Params: NewRunPipelineRequest(""),
 		Status: NewPipelineTaskStatus(),
 	}
@@ -45,7 +46,7 @@ func NewDefaultPipelineTask() *PipelineTask {
 
 func (p *PipelineTask) MarshalJSON() ([]byte, error) {
 	return json.Marshal(struct {
-		*Meta
+		*meta.Meta
 		*RunPipelineRequest
 		*PipelineTaskStatus
 		Pipeline *pipeline.Pipeline `json:"pipeline"`
@@ -157,7 +158,7 @@ func (p *PipelineTask) GetStage(name string) *StageStatus {
 		return nil
 	}
 
-	stage := NewStageStatus(stageSpec, p.Params.Id)
+	stage := NewStageStatus(stageSpec, p.Meta.Id)
 	p.Status.AddStage(stage)
 
 	return stage
