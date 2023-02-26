@@ -2,6 +2,7 @@ package job
 
 import (
 	"encoding/json"
+	"fmt"
 	"reflect"
 	"strings"
 	"time"
@@ -81,6 +82,17 @@ func NewVersionedRunParam(version string) *VersionedRunParam {
 
 func (r *VersionedRunParam) Add(items ...*RunParam) {
 	r.Params = append(r.Params, items...)
+}
+
+func (r *VersionedRunParam) Validate() error {
+	for i := range r.Params {
+		p := r.Params[i]
+		if p.Required && p.Value == "" {
+			return fmt.Errorf("参数: %s 不能为空", p.Name)
+		}
+	}
+
+	return nil
 }
 
 // 从参数中提取k8s job执行器(runner)需要的参数

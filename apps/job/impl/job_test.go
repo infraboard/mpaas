@@ -35,6 +35,18 @@ func TestCreateDeployJob(t *testing.T) {
 	req.Name = "docker_deploy"
 	req.CreateBy = "test"
 	req.RunnerSpec = tools.MustReadContentFile("test/deployment.yml")
+
+	ins, err := impl.CreateJob(ctx, req)
+	if err != nil {
+		t.Fatal(err)
+	}
+	t.Log(tools.MustToJson(ins))
+}
+
+func TestUpdateDeployJob(t *testing.T) {
+	req := job.NewPatchJobRequest(conf.C.DEPLOY_JOB_ID)
+	req.Spec.RunnerSpec = tools.MustReadContentFile("test/deployment.yml")
+
 	v1 := job.NewVersionedRunParam("v1")
 	v1.Add(&job.RunParam{
 		Required: true,
@@ -55,19 +67,12 @@ func TestCreateDeployJob(t *testing.T) {
 		Name:     job.SYSTEM_VARIABLE_DEPLOY_ID,
 		Desc:     "部署配置id, 部署时由系统传人",
 	})
-
-	req.AddVersionParams(v1)
-
-	ins, err := impl.CreateJob(ctx, req)
-	if err != nil {
-		t.Fatal(err)
-	}
-	t.Log(tools.MustToJson(ins))
-}
-
-func TestUpdateDeployJob(t *testing.T) {
-	req := job.NewPatchJobRequest(conf.C.DEPLOY_JOB_ID)
-	req.Spec.RunnerSpec = tools.MustReadContentFile("test/deployment.yml")
+	v1.Add(&job.RunParam{
+		Required: true,
+		Name:     job.SYSTEM_VARIABLE_IMAGE_VERSION,
+		Desc:     "应用部署时的版本",
+	})
+	req.Spec.AddVersionParams(v1)
 
 	ins, err := impl.UpdateJob(ctx, req)
 	if err != nil {
@@ -96,7 +101,7 @@ func TestUpdateBuildJob(t *testing.T) {
 	// 代码仓库地址, 比如 git@github.com:infraboard/mpaas.git
 	v1.Add(&job.RunParam{
 		Required: true,
-		Name:     "GIT_ADDRESS",
+		Name:     "GIT_REPOSITORY",
 		Desc:     "应用git代码仓库地址",
 	})
 	// docker push registry.cn-hangzhou.aliyuncs.com/inforboard/mpaas:[镜像版本号]
@@ -104,12 +109,12 @@ func TestUpdateBuildJob(t *testing.T) {
 	// IMAGE_VERSION: [镜像版本号]
 	v1.Add(&job.RunParam{
 		Required: true,
-		Name:     "IMAGE_REPOSITORY",
+		Name:     job.SYSTEM_VARIABLE_IMAGE_REPOSITORY,
 		Desc:     "镜像推送地址",
 	})
 	v1.Add(&job.RunParam{
 		Required: true,
-		Name:     "IMAGE_VERSION",
+		Name:     job.SYSTEM_VARIABLE_IMAGE_VERSION,
 		Desc:     "镜像版本",
 	})
 

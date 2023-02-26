@@ -68,33 +68,29 @@ func (d *Deployment) SystemVariable() ([]v1.EnvVar, error) {
 	switch d.Spec.Type {
 	case TYPE_KUBERNETES:
 		wc := d.Spec.K8STypeConfig
-		// 与k8s部署相关的系统变量
+		// 与k8s部署相关的系统变量, 不要注入版本信息, 部署版本由用户自己传人
 		wl, err := wc.GetWorkLoad()
 		if err != nil {
 			return nil, err
 		}
 		variables := wl.SystemVaraible(d.Spec.ServiceName)
-		addr, version := variables.ImageDetail()
+		addr, _ := variables.ImageDetail()
 		items = append(items,
 			job.NewRunParam(
-				job.SYSTEM_VARIABLE_PIPELINE_WORKLOAD_KIND,
+				job.SYSTEM_VARIABLE_WORKLOAD_KIND,
 				strings.ToLower(d.Spec.K8STypeConfig.WorkloadKind),
 			),
 			job.NewRunParam(
-				job.SYSTEM_VARIABLE_PIPELINE_WORKLOAD_NAME,
+				job.SYSTEM_VARIABLE_WORKLOAD_NAME,
 				variables.WorkloadName,
 			),
 			job.NewRunParam(
-				job.SYSTEM_VARIABLE_PIPELINE_SERVICE_NAME,
+				job.SYSTEM_VARIABLE_SERVICE_NAME,
 				d.Spec.ServiceName,
 			),
 			job.NewRunParam(
-				job.SYSTEM_VARIABLE_PIPELINE_SERVICE_IMAGE_ADDR,
+				job.SYSTEM_VARIABLE_IMAGE_REPOSITORY,
 				addr,
-			),
-			job.NewRunParam(
-				job.SYSTEM_VARIABLE_PIPELINE_SERVICE_IMAGE_VERSION,
-				version,
 			),
 		)
 	}

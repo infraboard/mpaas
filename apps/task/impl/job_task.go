@@ -34,7 +34,7 @@ func (i *impl) RunJob(ctx context.Context, in *pipeline.RunJobRequest) (
 
 	ins := task.NewJobTask(in)
 
-	// 1. 查询需要执行的Job
+	// 查询需要执行的Job
 	req := job.NewDescribeJobRequest(in.JobName)
 	j, err := i.job.DescribeJob(ctx, req)
 	if err != nil {
@@ -42,15 +42,20 @@ func (i *impl) RunJob(ctx context.Context, in *pipeline.RunJobRequest) (
 	}
 	ins.Job = j
 
-	// 2. 合并允许参数(Job里面有默认值)
+	// 合并允许参数(Job里面有默认值), 并检查参数合法性
 	params := j.GetVersionedRunParam(in.Params.Version)
 	params.Merge(in.Params)
 	params.Add(ins.SystemVariable()...)
+	if err := params.Validate(); err != nil {
+		return nil, err
+	}
+
+	// 获取执行器执行
+	r := runner.GetRunner(j.Spec.RunnerType)
 	runReq := task.NewRunTaskRequest(ins.Spec.Id, j.Spec.RunnerSpec, params)
 	runReq.DryRun = in.DryRun
 	runReq.Labels = in.Labels
 	runReq.ManualUpdateStatus = j.Spec.ManualUpdateStatus
-	r := runner.GetRunner(j.Spec.RunnerType)
 	status, err := r.Run(ctx, runReq)
 	if err != nil {
 		return nil, err

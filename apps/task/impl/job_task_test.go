@@ -33,9 +33,10 @@ func TestRunDeployJob(t *testing.T) {
 	version := job.NewVersionedRunParam("v1")
 	version.Params = job.NewRunParamWithKVPaire(
 		job.SYSTEM_VARIABLE_DEPLOY_ID, conf.C.DEPLOY_ID,
+		job.SYSTEM_VARIABLE_IMAGE_VERSION, "1.30",
 	)
 	req.Params = version
-	req.DryRun = true
+	req.DryRun = false
 
 	ins, err := impl.RunJob(ctx, req)
 	if err != nil {
