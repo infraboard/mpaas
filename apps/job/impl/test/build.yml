@@ -24,7 +24,7 @@ spec: # 详情描述
       restartPolicy: Never # 重启策略只能设置为 Never 或者 OnFailure
       initContainers:
         - name: download
-          image: bitnami/git
+          image: registry.cn-hangzhou.aliyuncs.com/godev/git:2.39.2
           workingDir: /
           imagePullPolicy: IfNotPresent
           command: ["sh"]

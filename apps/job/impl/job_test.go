@@ -117,7 +117,7 @@ func TestUpdateBuildJob(t *testing.T) {
 		Required: true,
 		Name:     job.SYSTEM_VARIABLE_IMAGE_VERSION,
 		Desc:     "镜像版本",
-		Example:  "v0.0.1",
+		Example:  "v0.0.2",
 	})
 
 	req.Spec.AddVersionParams(v1)

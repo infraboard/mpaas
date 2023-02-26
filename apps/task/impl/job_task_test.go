@@ -15,9 +15,9 @@ func TestRunBuildJob(t *testing.T) {
 	req := pipeline.NewRunJobRequest("docker_build@default.default")
 	version := job.NewVersionedRunParam("v1")
 	version.Params = job.NewRunParamWithKVPaire(
-		"GIT_ADDRESS", "git@github.com:infraboard/mpaas.git",
-		"IMAGE_REPOSITORY", "registry.cn-hangzhou.aliyuncs.com/inforboard/mpaas",
-		"IMAGE_VERSION", "v0.0.1",
+		"GIT_REPOSITORY", "git@github.com:infraboard/mpaas.git",
+		job.SYSTEM_VARIABLE_IMAGE_REPOSITORY, "registry.cn-hangzhou.aliyuncs.com/inforboard/mpaas",
+		job.SYSTEM_VARIABLE_IMAGE_VERSION, "v0.0.2",
 	)
 	req.Params = version
 
