@@ -165,6 +165,16 @@ func (t *JobTaskStatus) AddTemporaryResource(items ...*TemporaryResource) {
 	t.TemporaryResources = append(t.TemporaryResources, items...)
 }
 
+func (t *JobTaskStatus) GetTemporaryResource(kind, name string) *TemporaryResource {
+	for i := range t.TemporaryResources {
+		tr := t.TemporaryResources[i]
+		if tr.Kind == kind && tr.Name == name {
+			return tr
+		}
+	}
+	return nil
+}
+
 func NewTemporaryResource(kind, name string) *TemporaryResource {
 	return &TemporaryResource{
 		Kind:     kind,

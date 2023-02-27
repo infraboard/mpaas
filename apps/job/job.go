@@ -126,6 +126,10 @@ func (r *VersionedRunParam) GetDeploymentId() string {
 	return r.GetParamValue(SYSTEM_VARIABLE_DEPLOY_ID)
 }
 
+func (r *VersionedRunParam) GetJobTaskId() string {
+	return r.GetParamValue(SYSTEM_VARIABLE_JOB_TASK_ID)
+}
+
 func (r *VersionedRunParam) GetPipelineTaskId() string {
 	return r.GetParamValue(SYSTEM_VARIABLE_PIPELINE_TASK_ID)
 }

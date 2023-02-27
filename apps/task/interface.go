@@ -6,6 +6,8 @@ import (
 	"github.com/infraboard/mcenter/common/validate"
 	"github.com/infraboard/mcube/http/request"
 	job "github.com/infraboard/mpaas/apps/job"
+	"github.com/infraboard/mpaas/provider/k8s/workload"
+	v1 "k8s.io/api/core/v1"
 )
 
 const (
@@ -43,6 +45,24 @@ func (r *RunTaskRequest) Annotations() map[string]string {
 		annotations[ANNOTATION_TASK] = r.Params.GetParamValue(job.SYSTEM_VARIABLE_JOB_TASK_ID)
 	}
 	return annotations
+}
+
+func NewJobTaskEnvConfigMapName(pipelineTaskId string) string {
+	return fmt.Sprintf("task-%s", pipelineTaskId)
+}
+
+// Job Task 挂载一个空的config 用于收集运行时的 环境变量
+func (s *RunTaskRequest) RuntimeEnvConfigMap(mountPath string) *v1.ConfigMap {
+	cm := new(v1.ConfigMap)
+	s.Params.GetDeploymentId()
+	cm.Name = NewJobTaskEnvConfigMapName(s.Params.GetJobTaskId())
+	cm.BinaryData = map[string][]byte{
+		CONFIG_MAP_RUNTIME_ENV_KEY: []byte(""),
+	}
+	cm.Annotations = map[string]string{
+		workload.ANNOTATION_SECRET_MOUNT: mountPath,
+	}
+	return cm
 }
 
 type PipelineService interface {

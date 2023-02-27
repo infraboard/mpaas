@@ -2,6 +2,7 @@ package k8s
 
 import (
 	"context"
+	"time"
 
 	"github.com/infraboard/mpaas/apps/cluster"
 	"github.com/infraboard/mpaas/apps/task"
@@ -81,25 +82,15 @@ func (r *K8sRunner) PrepareRuntime(
 	obj *v1.Job,
 	status *task.JobTaskStatus,
 ) error {
-	pid := in.Params.GetPipelineTaskId()
-	if pid == "" {
-		return nil
-	}
-
-	pt, err := r.task.DescribePipelineTask(ctx, task.NewDescribePipelineTaskRequest(pid))
-	if err != nil {
-		return err
-	}
-
-	// 临时资源创建
-	runtimeEnvConfigMap := pt.RuntimeEnvConfigMap(task.CONFIG_MAP_RUNTIME_ENV_MOUNT_PATH)
+	// 创建一个configmap 用于收集Task运行时的中间信息(以环境变量的方式)
+	runtimeEnvConfigMap := in.RuntimeEnvConfigMap(task.CONFIG_MAP_RUNTIME_ENV_MOUNT_PATH)
 	runtimeEnvConfigMap.Namespace = in.Params.K8SJobRunnerParams().Namespace
-	err = k8sClient.Config().FindOrCreateConfigMap(ctx, runtimeEnvConfigMap)
+	err := k8sClient.Config().FindOrCreateConfigMap(ctx, runtimeEnvConfigMap)
 	if err != nil {
 		return err
 	}
 
-	// 把configmap 注入为卷进行挂载, 用于记录中间信息(以环境变量的方式)
+	// 把configmap 注入为卷进行挂载,
 	workload.InjectPodConfigMapVolume(&obj.Spec.Template.Spec, runtimeEnvConfigMap)
 
 	// 更新临时资源等待释放
@@ -115,13 +106,8 @@ func (r *K8sRunner) CleanUpRuntime(
 	k8sClient *k8s.Client,
 	in *task.RunTaskRequest,
 	status *task.JobTaskStatus) {
-	pid := in.Params.GetPipelineTaskId()
-	if pid == "" {
-		return
-	}
-
 	// 运行结束 从config map中读取Env, 并更新到Task状态中去
-	cmName := task.NewPipelineTaskEnvConfigMapName(pid)
+	cmName := task.NewJobTaskEnvConfigMapName(in.Params.GetJobTaskId())
 	ns := in.Params.K8SJobRunnerParams().Namespace
 	req := meta.NewGetRequest(cmName).WithNamespace(ns)
 	runtimeEnvConfigMap, err := k8sClient.Config().GetConfigMap(ctx, req)
@@ -138,4 +124,15 @@ func (r *K8sRunner) CleanUpRuntime(
 		return
 	}
 	status.RuntimeEnvs = envs
+
+	// 清除临时挂载的configmap
+	err = k8sClient.Config().DeleteConfigMap(ctx, meta.NewDeleteRequest(cmName).WithNamespace(ns))
+	if err != nil {
+		r.log.Errorf("delete config map error, %s", err)
+		return
+	}
+	tr := status.GetTemporaryResource("configmap", cmName)
+	if tr != nil {
+		tr.ReleaseAt = time.Now().Unix()
+	}
 }

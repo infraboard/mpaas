@@ -14,8 +14,11 @@ func (c *Client) ListConfigMap(ctx context.Context, req *meta.ListRequest) (*v1.
 }
 
 func (c *Client) GetConfigMap(ctx context.Context, req *meta.GetRequest) (*v1.ConfigMap, error) {
-
 	return c.corev1.ConfigMaps(req.Namespace).Get(ctx, req.Name, req.Opts)
+}
+
+func (c *Client) DeleteConfigMap(ctx context.Context, req *meta.DeleteRequest) error {
+	return c.corev1.ConfigMaps(req.Namespace).Delete(ctx, req.Name, req.Opts)
 }
 
 func (c *Client) CreateConfigMap(ctx context.Context, req *v1.ConfigMap) (*v1.ConfigMap, error) {

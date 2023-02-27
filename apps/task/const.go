@@ -6,6 +6,6 @@ const (
 )
 
 const (
-	CONFIG_MAP_RUNTIME_ENV_KEY        = "pipeline.env"
+	CONFIG_MAP_RUNTIME_ENV_KEY        = "task.env"
 	CONFIG_MAP_RUNTIME_ENV_MOUNT_PATH = "/workspace/runtime"
 )
