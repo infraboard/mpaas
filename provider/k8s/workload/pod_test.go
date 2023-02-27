@@ -54,3 +54,16 @@ func TestInjectPodSecretVolume(t *testing.T) {
 
 	t.Log(tools.MustToYaml(obj))
 }
+
+func TestInjectPodConfigMapVolume(t *testing.T) {
+	obj := new(batchv1.Job)
+	tools.MustReadYamlFile("test/job.yml", obj)
+
+	cm := new(v1.ConfigMap)
+	cm.Name = "test"
+	cm.Annotations = map[string]string{workload.ANNOTATION_CONFIGMAP_MOUNT: "/workspace/pipeline.env"}
+
+	workload.InjectPodConfigMapVolume(&obj.Spec.Template.Spec, cm)
+
+	t.Log(tools.MustToYaml(obj))
+}

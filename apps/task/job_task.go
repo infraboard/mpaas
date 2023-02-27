@@ -187,12 +187,18 @@ func ParseRuntimeEnvFromBytes(content []byte) ([]*RuntimeEnv, error) {
 	}
 
 	for _, l := range lines {
+		l := strings.TrimSpace(l)
+		if l == "" || strings.HasPrefix(l, "#") {
+			continue
+		}
+
 		kvs := strings.Split(l, "=")
 		if len(kvs) != 2 {
-			return nil, fmt.Errorf("环境变量格式错误: %s", l)
+			return nil, fmt.Errorf("环境变量格式错误: %s", kvs)
 		}
 		k, v := kvs[0], kvs[1]
-		env := NewRuntimeEnv(strings.TrimSpace(k), strings.TrimSpace(v))
+
+		env := NewRuntimeEnv(k, strings.Trim(v, `"`))
 		envs = append(envs, env)
 	}
 
