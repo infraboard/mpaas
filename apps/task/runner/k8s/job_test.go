@@ -2,7 +2,6 @@ package k8s_test
 
 import (
 	"testing"
-	"unicode"
 
 	"github.com/infraboard/mpaas/apps/job"
 	"github.com/infraboard/mpaas/apps/task"
@@ -38,8 +37,4 @@ func TestRun(t *testing.T) {
 		t.Fatal(err)
 	}
 	t.Log(tools.MustToYaml(ins))
-}
-
-func TestXxx(t *testing.T) {
-	t.Log(unicode.IsUpper('_'))
 }
