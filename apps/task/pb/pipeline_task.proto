@@ -59,9 +59,12 @@ message PipelineTaskStatus {
 	// 状态描述
 	// @gotags: bson:"message" json:"message"
 	string message = 4;
+	// Pipeline 运行时环境变量
+	// @gotags: bson:"runtime_envs" json:"runtime_envs"
+	repeated RuntimeEnv runtime_envs = 5;
 	// 任务状态详细描述, 用于Debug
 	// @gotags: bson:"stage_status" json:"stage_status"
-	repeated StageStatus stage_status = 5;
+	repeated StageStatus stage_status = 6;
 }
 
 message StageStatus {

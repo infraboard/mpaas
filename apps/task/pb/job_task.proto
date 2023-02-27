@@ -73,9 +73,32 @@ message JobTaskStatus {
 	// 任务状态详细描述, 用于Debug
 	// @gotags: bson:"detail" json:"detail"
 	string detail = 5;
+	// Job Task运行时环境变量
+	// @gotags: bson:"runtime_envs" json:"runtime_envs"
+	repeated RuntimeEnv runtime_envs = 6;
 	// 任务所需的临时资源
 	// @gotags: bson:"temporary_resources" json:"temporary_resources"
-	repeated TemporaryResource temporary_resources = 6;
+	repeated TemporaryResource temporary_resources = 7;
+}
+
+// task 运行过程中 产生的临时环境变量, 即用记录Job的输出(将输出保存为环境变量)
+// 在Task结束时同步到Pipeline Task中, 后续Task执行时 读取并注入
+message RuntimeEnv {
+	// 环境变量名称
+	// @gotags: bson:"name" json:"name"
+	string name = 1;
+	// 环境变量值
+	// @gotags: bson:"value" json:"value"
+	string value = 2;
+	// 是否只读 不允许修改
+	// @gotags: bson:"read_only" json:"read_only"
+	bool read_only = 3;
+	// 更新时间
+	// @gotags: bson:"update_at" json:"update_at"
+	int64 update_at = 4;
+	// 被谁更新的, 当值被修改后，追踪下谁修改的
+	// @gotags: bson:"update_task_id" json:"update_task_id"
+	string update_task_id = 5;
 }
 
 // 临时资源, 在Pipline允许结束时,调用释放

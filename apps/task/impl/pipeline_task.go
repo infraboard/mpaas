@@ -123,6 +123,9 @@ func (i *impl) PipelineTaskStatusChanged(ctx context.Context, in *task.JobTask) 
 		return nil, err
 	}
 
+	// 更新Pipeline Task 运行时环境变量
+	p.Status.UpdateRuntimeEnv(in.Spec.Id, in.Status.RuntimeEnvs)
+
 	switch in.Status.Stage {
 	case task.STAGE_PENDDING, task.STAGE_ACTIVE, task.STAGE_CANCELING:
 		// Pipeline Task状态无变化

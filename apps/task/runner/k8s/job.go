@@ -73,5 +73,8 @@ func (r *K8sRunner) PreparePipelineTask(ctx context.Context, k8sClient *k8s.Clie
 		return nil
 	}
 
+	// 临时资源创建
+	// k8sClient.Config().CreateConfigMap(ctx, )
+
 	return nil
 }

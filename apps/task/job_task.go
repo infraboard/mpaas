@@ -126,7 +126,8 @@ func (s *JobTask) ShowTitle() string {
 
 func NewJobTaskStatus() *JobTaskStatus {
 	return &JobTaskStatus{
-		StartAt: time.Now().Unix(),
+		StartAt:            time.Now().Unix(),
+		TemporaryResources: []*TemporaryResource{},
 	}
 }
 

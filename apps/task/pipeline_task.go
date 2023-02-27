@@ -214,6 +214,38 @@ func (s *PipelineTaskStatus) AddStage(item *StageStatus) {
 	s.StageStatus = append(s.StageStatus, item)
 }
 
+// 不更新只读
+func (s *PipelineTaskStatus) UpdateRuntimeEnv(updateBy string, envs []*RuntimeEnv) {
+	for i := range envs {
+		env := envs[i]
+		old := s.GetRuntimeEnv(env.Name)
+		if old == nil {
+			s.AddRuntimeEnv(env)
+			return
+		}
+		if old.ReadOnly {
+			return
+		}
+		old.UpdateAt = time.Now().Unix()
+		old.UpdateTaskId = updateBy
+		old.Value = env.Value
+	}
+}
+
+func (s *PipelineTaskStatus) AddRuntimeEnv(items ...*RuntimeEnv) {
+	s.RuntimeEnvs = append(s.RuntimeEnvs, items...)
+}
+
+func (s *PipelineTaskStatus) GetRuntimeEnv(name string) *RuntimeEnv {
+	for i := range s.RuntimeEnvs {
+		env := s.RuntimeEnvs[i]
+		if env.Name == name {
+			return env
+		}
+	}
+	return nil
+}
+
 func (s *PipelineTaskStatus) GetJobTask(id string) *JobTask {
 	for i := range s.StageStatus {
 		stage := s.StageStatus[i]
