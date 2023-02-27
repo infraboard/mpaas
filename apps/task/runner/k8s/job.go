@@ -5,6 +5,7 @@ import (
 
 	"github.com/infraboard/mpaas/apps/cluster"
 	"github.com/infraboard/mpaas/apps/task"
+	"github.com/infraboard/mpaas/provider/k8s"
 	"github.com/infraboard/mpaas/provider/k8s/workload"
 	v1 "k8s.io/api/batch/v1"
 	"sigs.k8s.io/yaml"
@@ -27,6 +28,8 @@ func (r *K8sRunner) Run(ctx context.Context, in *task.RunTaskRequest) (*task.Job
 	if err := yaml.Unmarshal([]byte(in.JobSpec), obj); err != nil {
 		return nil, err
 	}
+
+	// k8sClient.Config().CreateConfigMap(ctx, in.Params.GetPipelineTaskId())
 
 	// 处理系统变量
 	if err := r.HanleSystemVariable(ctx, in.Params, obj); err != nil {
@@ -61,4 +64,9 @@ func (r *K8sRunner) Run(ctx context.Context, in *task.RunTaskRequest) (*task.Job
 	}
 	status.Detail = string(objYaml)
 	return status, nil
+}
+
+// 准备
+func (r *K8sRunner) Prepare(ctx context.Context, k8sClient *k8s.Client, in *task.RunTaskRequest) error {
+	return nil
 }

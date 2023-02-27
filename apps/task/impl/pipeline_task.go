@@ -45,6 +45,13 @@ func (i *impl) RunPipeline(ctx context.Context, in *task.RunPipelineRequest) (
 		return nil, err
 	}
 
+	// 运行Pipeline的一些准备工作
+	err = i.PreparePipelineTask(ctx, ins)
+	if err != nil {
+		return nil, err
+	}
+	defer i.CleanPipelinTask(ctx, ins)
+
 	// 运行 第一个Job, 驱动Pipeline执行
 	ins.MarkedRunning()
 	resp, err := i.RunJob(ctx, t.Spec)
@@ -59,6 +66,15 @@ func (i *impl) RunPipeline(ctx context.Context, in *task.RunPipelineRequest) (
 	}
 
 	return ins, nil
+}
+
+// 为Pipeline Task创建一个volume(通过创建secret 挂入), 用于记录Task运行时 输出的一些中间变量
+func (i *impl) PreparePipelineTask(ctx context.Context, in *task.PipelineTask) error {
+	return nil
+}
+
+// Pipeline Task运行结束时的一些清理工作, 比如删除中间生成的共享卷
+func (i *impl) CleanPipelinTask(ctx context.Context, in *task.PipelineTask) {
 }
 
 func (i *impl) CheckPipelineAllowRun(ctx context.Context, ins *pipeline.Pipeline) error {

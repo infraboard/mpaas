@@ -125,6 +125,10 @@ func (r *VersionedRunParam) GetDeploymentId() string {
 	return r.GetParamValue(SYSTEM_VARIABLE_DEPLOY_ID)
 }
 
+func (r *VersionedRunParam) GetPipelineTaskId() string {
+	return r.GetParamValue(SYSTEM_VARIABLE_PIPELINE_TASK_ID)
+}
+
 // 获取需要注入容器的环境变量参数:
 //
 //	用户变量: 大写开头的变量, 因为一般环境变量都是大写的比如 DB_PASS,
