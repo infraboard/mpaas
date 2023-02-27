@@ -331,3 +331,10 @@ func (s *StageStatus) GetJobTask(id string) *JobTask {
 	}
 	return nil
 }
+
+func NewRuntimeEnv(name, value string) *RuntimeEnv {
+	return &RuntimeEnv{
+		Name:  name,
+		Value: value,
+	}
+}

@@ -3,6 +3,7 @@ package task
 import (
 	"encoding/json"
 	"fmt"
+	"strings"
 	"time"
 
 	"github.com/infraboard/mpaas/apps/job"
@@ -172,8 +173,30 @@ func NewTemporaryResource(kind, name string) *TemporaryResource {
 	}
 }
 
-func ParseRuntimeEnvFromBytes(lines []byte) []*RuntimeEnv {
-	return nil
+func ParseRuntimeEnvFromBytes(content []byte) ([]*RuntimeEnv, error) {
+	envs := []*RuntimeEnv{}
+	lines := []string{}
+	line := []byte{}
+	for _, c := range content {
+		if c == '\n' {
+			lines = append(lines, string(line))
+			line = []byte{}
+		} else {
+			line = append(line, c)
+		}
+	}
+
+	for _, l := range lines {
+		kvs := strings.Split(l, "=")
+		if len(kvs) != 2 {
+			return nil, fmt.Errorf("环境变量格式错误: %s", l)
+		}
+		k, v := kvs[0], kvs[1]
+		env := NewRuntimeEnv(strings.TrimSpace(k), strings.TrimSpace(v))
+		envs = append(envs, env)
+	}
+
+	return envs, nil
 }
 
 func (r *RuntimeEnv) FileLine() (line []byte) {

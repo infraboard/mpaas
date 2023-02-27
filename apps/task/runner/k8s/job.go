@@ -107,7 +107,8 @@ func (r *K8sRunner) PrepareRuntime(
 	return nil
 }
 
-// 准备
+// 临时资源回收与Runtime Env更新
+// 不用清理, PipelineTask结束时统一清理
 func (r *K8sRunner) CleanUpRuntime(
 	ctx context.Context,
 	k8sClient *k8s.Client,
@@ -124,12 +125,16 @@ func (r *K8sRunner) CleanUpRuntime(
 	req := meta.NewGetRequest(cmName).WithNamespace(ns)
 	runtimeEnvConfigMap, err := k8sClient.Config().GetConfigMap(ctx, req)
 	if err != nil {
-		r.log.Errorf("get config map error")
+		r.log.Errorf("get config map error, %s", err)
 		return
 	}
 
+	// 解析并更新Runtime Env
 	data := runtimeEnvConfigMap.BinaryData[task.CONFIG_MAP_RUNTIME_ENV_KEY]
-	envs := task.ParseRuntimeEnvFromBytes(data)
+	envs, err := task.ParseRuntimeEnvFromBytes(data)
+	if err != nil {
+		r.log.Errorf("parse env data error, %s", err)
+		return
+	}
 	status.RuntimeEnvs = envs
-	// 不用清理, PipelineTask结束时统一清理
 }
