@@ -73,6 +73,25 @@ message JobTaskStatus {
 	// 任务状态详细描述, 用于Debug
 	// @gotags: bson:"detail" json:"detail"
 	string detail = 5;
+	// 任务所需的临时资源
+	// @gotags: bson:"temporary_resources" json:"temporary_resources"
+	repeated TemporaryResource temporary_resources = 6;
+}
+
+// 临时资源, 在Pipline允许结束时,调用释放
+message TemporaryResource {
+	// 资源的类型, 比如 configmap
+	// @gotags: bson:"kind" json:"kind"
+	string kind = 1;
+	// 资源的名字, 资源的集群和Namespace 由job维护
+	// @gotags: bson:"name" json:"name"
+	string name = 2;
+    // 创建时间
+    // @gotags: bson:"create_at" json:"create_at"
+    int64 create_at = 3;
+    // 创建时间
+    // @gotags: bson:"release_at" json:"release_at"
+    int64 release_at = 4;
 }
 
 message RunTaskRequest {

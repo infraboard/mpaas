@@ -29,8 +29,6 @@ func (r *K8sRunner) Run(ctx context.Context, in *task.RunTaskRequest) (*task.Job
 		return nil, err
 	}
 
-	// k8sClient.Config().CreateConfigMap(ctx, in.Params.GetPipelineTaskId())
-
 	// 处理系统变量
 	if err := r.HanleSystemVariable(ctx, in.Params, obj); err != nil {
 		return nil, err
@@ -50,6 +48,8 @@ func (r *K8sRunner) Run(ctx context.Context, in *task.RunTaskRequest) (*task.Job
 	status := task.NewJobTaskStatus()
 	status.MarkedRunning()
 
+	// k8sClient.Config().CreateConfigMap(ctx, in.Params.GetPipelineTaskId())
+
 	// 执行Job
 	if !in.DryRun {
 		obj, err = k8sClient.WorkLoad().CreateJob(ctx, obj)
@@ -67,6 +67,11 @@ func (r *K8sRunner) Run(ctx context.Context, in *task.RunTaskRequest) (*task.Job
 }
 
 // 准备
-func (r *K8sRunner) Prepare(ctx context.Context, k8sClient *k8s.Client, in *task.RunTaskRequest) error {
+func (r *K8sRunner) PreparePipelineTask(ctx context.Context, k8sClient *k8s.Client, in *task.RunTaskRequest) error {
+	pid := in.Params.GetPipelineTaskId()
+	if pid == "" {
+		return nil
+	}
+
 	return nil
 }
