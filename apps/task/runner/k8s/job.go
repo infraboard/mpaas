@@ -6,6 +6,7 @@ import (
 	"github.com/infraboard/mpaas/apps/cluster"
 	"github.com/infraboard/mpaas/apps/task"
 	"github.com/infraboard/mpaas/provider/k8s"
+	"github.com/infraboard/mpaas/provider/k8s/meta"
 	"github.com/infraboard/mpaas/provider/k8s/workload"
 	v1 "k8s.io/api/batch/v1"
 	"sigs.k8s.io/yaml"
@@ -53,6 +54,7 @@ func (r *K8sRunner) Run(ctx context.Context, in *task.RunTaskRequest) (*task.Job
 	if err != nil {
 		return nil, err
 	}
+	defer r.CleanUpRuntime(ctx, k8sClient, in, status)
 
 	// 执行Job
 	if !in.DryRun {
@@ -90,6 +92,7 @@ func (r *K8sRunner) PrepareRuntime(
 
 	// 临时资源创建
 	runtimeEnvConfigMap := pt.RuntimeEnvConfigMap(task.CONFIG_MAP_RUNTIME_ENV_MOUNT_PATH)
+	runtimeEnvConfigMap.Namespace = in.Params.K8SJobRunnerParams().Namespace
 	err = k8sClient.Config().FindOrCreateConfigMap(ctx, runtimeEnvConfigMap)
 	if err != nil {
 		return err
@@ -98,8 +101,35 @@ func (r *K8sRunner) PrepareRuntime(
 	// 把configmap 注入为卷进行挂载
 	workload.InjectPodConfigMapVolume(&obj.Spec.Template.Spec, runtimeEnvConfigMap)
 
-	// 更新掉临时资源等待释放
+	// 更新临时资源等待释放
 	tr := task.NewTemporaryResource(runtimeEnvConfigMap.Kind, runtimeEnvConfigMap.Name)
 	status.AddTemporaryResource(tr)
 	return nil
+}
+
+// 准备
+func (r *K8sRunner) CleanUpRuntime(
+	ctx context.Context,
+	k8sClient *k8s.Client,
+	in *task.RunTaskRequest,
+	status *task.JobTaskStatus) {
+	pid := in.Params.GetPipelineTaskId()
+	if pid == "" {
+		return
+	}
+
+	// 运行结束 从config map中读取Env, 并更新到Task状态中去
+	cmName := task.NewPipelineTaskEnvConfigMapName(pid)
+	ns := in.Params.K8SJobRunnerParams().Namespace
+	req := meta.NewGetRequest(cmName).WithNamespace(ns)
+	runtimeEnvConfigMap, err := k8sClient.Config().GetConfigMap(ctx, req)
+	if err != nil {
+		r.log.Errorf("get config map error")
+		return
+	}
+
+	data := runtimeEnvConfigMap.BinaryData[task.CONFIG_MAP_RUNTIME_ENV_KEY]
+	envs := task.ParseRuntimeEnvFromBytes(data)
+	status.RuntimeEnvs = envs
+	// 不用清理, PipelineTask结束时统一清理
 }

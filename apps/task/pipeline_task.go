@@ -198,9 +198,13 @@ func (p *PipelineTask) IsComplete() bool {
 	return false
 }
 
+func NewPipelineTaskEnvConfigMapName(pipelineTaskId string) string {
+	return fmt.Sprintf("pt-%s", pipelineTaskId)
+}
+
 func (s *PipelineTask) RuntimeEnvConfigMap(mountPath string) *v1.ConfigMap {
 	cm := new(v1.ConfigMap)
-	cm.Name = fmt.Sprintf("pt-%s", s.Meta.Id)
+	cm.Name = NewPipelineTaskEnvConfigMapName(s.Meta.Id)
 	cm.BinaryData = map[string][]byte{
 		CONFIG_MAP_RUNTIME_ENV_KEY: []byte(""),
 	}

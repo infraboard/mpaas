@@ -172,6 +172,10 @@ func NewTemporaryResource(kind, name string) *TemporaryResource {
 	}
 }
 
+func ParseRuntimeEnvFromBytes(lines []byte) []*RuntimeEnv {
+	return nil
+}
+
 func (r *RuntimeEnv) FileLine() (line []byte) {
 	return []byte(fmt.Sprintf("%s=%s\n", r.Name, r.Value))
 }
