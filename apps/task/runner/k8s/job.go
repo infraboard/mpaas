@@ -12,7 +12,8 @@ import (
 	"sigs.k8s.io/yaml"
 )
 
-func (r *K8sRunner) Run(ctx context.Context, in *task.RunTaskRequest) (*task.JobTaskStatus, error) {
+func (r *K8sRunner) Run(ctx context.Context, in *task.RunTaskRequest) (
+	*task.JobTaskStatus, error) {
 	runnerParams := in.Params.K8SJobRunnerParams()
 	cReq := cluster.NewDescribeClusterRequest(runnerParams.ClusterId)
 	c, err := r.cluster.DescribeCluster(ctx, cReq)
@@ -98,7 +99,7 @@ func (r *K8sRunner) PrepareRuntime(
 		return err
 	}
 
-	// 把configmap 注入为卷进行挂载
+	// 把configmap 注入为卷进行挂载, 用于记录中间信息(以环境变量的方式)
 	workload.InjectPodConfigMapVolume(&obj.Spec.Template.Spec, runtimeEnvConfigMap)
 
 	// 更新临时资源等待释放

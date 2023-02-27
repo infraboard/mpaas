@@ -223,6 +223,22 @@ func (s *PipelineTask) RuntimeEnvConfigMap(mountPath string) *v1.ConfigMap {
 	return cm
 }
 
+func (s *PipelineTask) RuntimeEnvVars() (envs []v1.EnvVar) {
+	if s.Status == nil {
+		return
+	}
+
+	for i := range s.Status.RuntimeEnvs {
+		env := s.Status.RuntimeEnvs[i]
+		envs = append(envs, v1.EnvVar{
+			Name:  env.Name,
+			Value: env.Value,
+		})
+	}
+
+	return
+}
+
 func NewPipelineTaskStatus() *PipelineTaskStatus {
 	return &PipelineTaskStatus{
 		StageStatus: []*StageStatus{},

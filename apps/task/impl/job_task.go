@@ -46,7 +46,12 @@ func (i *impl) RunJob(ctx context.Context, in *pipeline.RunJobRequest) (
 	params := j.GetVersionedRunParam(in.Params.Version)
 	params.Merge(in.Params)
 	params.Add(ins.SystemVariable()...)
-	if err := params.Validate(); err != nil {
+	err = i.LoadRuntimeEnvs(ctx, in.Params.GetPipelineTaskId(), params)
+	if err != nil {
+		return nil, err
+	}
+	err = params.Validate()
+	if err != nil {
 		return nil, err
 	}
 
@@ -69,6 +74,19 @@ func (i *impl) RunJob(ctx context.Context, in *pipeline.RunJobRequest) (
 		return nil, exception.NewInternalServerError("inserted a job task document error, %s", err)
 	}
 	return ins, nil
+}
+
+// 加载Pipeline 提供的Runtime env
+func (i *impl) LoadRuntimeEnvs(ctx context.Context, pipelineId string, params *job.VersionedRunParam) error {
+	if pipelineId == "" {
+		return nil
+	}
+	pt, err := i.DescribePipelineTask(ctx, task.NewDescribePipelineTaskRequest(pipelineId))
+	if err != nil {
+		return err
+	}
+	params.UpdateFromEnvs(pt.RuntimeEnvVars())
+	return nil
 }
 
 // 判断任务是否还处于运行中

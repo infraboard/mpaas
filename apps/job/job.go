@@ -11,6 +11,7 @@ import (
 	"github.com/imdario/mergo"
 	"github.com/infraboard/mpaas/common/meta"
 	corev1 "k8s.io/api/core/v1"
+	v1 "k8s.io/api/core/v1"
 )
 
 // New 新建一个部署配置
@@ -183,6 +184,13 @@ func (r *VersionedRunParam) SetParamValue(key, value string) {
 func (r *VersionedRunParam) Merge(target *VersionedRunParam) {
 	for i := range target.Params {
 		t := target.Params[i]
+		r.SetParamValue(t.Name, t.Value)
+	}
+}
+
+func (r *VersionedRunParam) UpdateFromEnvs(targets []v1.EnvVar) {
+	for i := range targets {
+		t := targets[i]
 		r.SetParamValue(t.Name, t.Value)
 	}
 }

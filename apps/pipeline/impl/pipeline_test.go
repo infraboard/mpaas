@@ -11,7 +11,7 @@ import (
 
 func TestCreatePipeline(t *testing.T) {
 	req := pipeline.NewCreatePipelineRequest()
-	tools.MustReadYamlFile("test/create.yml", req)
+	tools.MustReadYamlFile("test/mpaas-master-cicd.yml", req)
 	ins, err := impl.CreatePipeline(ctx, req)
 	if err != nil {
 		t.Fatal(err)
