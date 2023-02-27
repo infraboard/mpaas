@@ -2,11 +2,14 @@ package task
 
 import (
 	"encoding/json"
+	"fmt"
 	"time"
 
 	"github.com/infraboard/mcube/exception"
 	"github.com/infraboard/mpaas/apps/pipeline"
 	"github.com/infraboard/mpaas/common/meta"
+	"github.com/infraboard/mpaas/provider/k8s/workload"
+	v1 "k8s.io/api/core/v1"
 )
 
 func NewPipelineTaskSet() *PipelineTaskSet {
@@ -193,6 +196,27 @@ func (p *PipelineTask) IsComplete() bool {
 	}
 
 	return false
+}
+
+func (s *PipelineTask) RuntimeEnvConfigMap(mountPath string) *v1.ConfigMap {
+	cm := new(v1.ConfigMap)
+	cm.Name = fmt.Sprintf("pt-%s", s.Meta.Id)
+	cm.BinaryData = map[string][]byte{
+		CONFIG_MAP_RUNTIME_ENV_KEY: []byte(""),
+	}
+	cm.Annotations = map[string]string{
+		workload.ANNOTATION_SECRET_MOUNT: mountPath,
+	}
+
+	buf := []byte{}
+	if s.Status != nil {
+		for i := range s.Status.RuntimeEnvs {
+			env := s.Status.RuntimeEnvs[i]
+			buf = append(buf, env.FileLine()...)
+		}
+	}
+	cm.BinaryData[CONFIG_MAP_RUNTIME_ENV_KEY] = buf
+	return cm
 }
 
 func NewPipelineTaskStatus() *PipelineTaskStatus {

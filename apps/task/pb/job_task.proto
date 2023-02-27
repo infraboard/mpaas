@@ -109,12 +109,15 @@ message TemporaryResource {
 	// 资源的名字, 资源的集群和Namespace 由job维护
 	// @gotags: bson:"name" json:"name"
 	string name = 2;
+	// 资源的详情数据
+	// @gotags: bson:"detail" json:"detail"
+	string detail = 3;
     // 创建时间
     // @gotags: bson:"create_at" json:"create_at"
-    int64 create_at = 3;
+    int64 create_at = 4;
     // 创建时间
     // @gotags: bson:"release_at" json:"release_at"
-    int64 release_at = 4;
+    int64 release_at = 5;
 }
 
 message RunTaskRequest {

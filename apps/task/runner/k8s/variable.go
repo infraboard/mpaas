@@ -41,7 +41,7 @@ func (r *K8sRunner) handleDeployment(ctx context.Context, in *job.VersionedRunPa
 		// 如果没有则创建Secret 并挂载到/.kube, 注意secret要声明挂载注解
 		secret := c.KubeConfSecret("/.kube")
 		secret.Namespace = in.K8SJobRunnerParams().Namespace
-		err = r.k8sClient.Config().FindOrCreate(ctx, secret)
+		err = r.k8sClient.Config().FindOrCreateSecret(ctx, secret)
 		if err != nil {
 			return err
 		}

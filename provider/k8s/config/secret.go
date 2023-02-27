@@ -25,7 +25,7 @@ func (c *Client) UpdateSecret(ctx context.Context, req *v1.Secret) (*v1.Secret, 
 	return c.corev1.Secrets(req.Namespace).Update(ctx, req, metav1.UpdateOptions{})
 }
 
-func (c *Client) FindOrCreate(ctx context.Context, secret *v1.Secret) error {
+func (c *Client) FindOrCreateSecret(ctx context.Context, secret *v1.Secret) error {
 	req := meta.NewGetRequest(secret.Name).WithNamespace(secret.Namespace)
 	_, err := c.GetSecret(ctx, req)
 	if errors.IsNotFound(err) {

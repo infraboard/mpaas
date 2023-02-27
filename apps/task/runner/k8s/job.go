@@ -48,7 +48,11 @@ func (r *K8sRunner) Run(ctx context.Context, in *task.RunTaskRequest) (*task.Job
 	status := task.NewJobTaskStatus()
 	status.MarkedRunning()
 
-	// k8sClient.Config().CreateConfigMap(ctx, in.Params.GetPipelineTaskId())
+	// 运行时环境变量注入
+	err = r.PrepareRuntime(ctx, k8sClient, in, obj, status)
+	if err != nil {
+		return nil, err
+	}
 
 	// 执行Job
 	if !in.DryRun {
@@ -67,14 +71,35 @@ func (r *K8sRunner) Run(ctx context.Context, in *task.RunTaskRequest) (*task.Job
 }
 
 // 准备
-func (r *K8sRunner) PreparePipelineTask(ctx context.Context, k8sClient *k8s.Client, in *task.RunTaskRequest) error {
+func (r *K8sRunner) PrepareRuntime(
+	ctx context.Context,
+	k8sClient *k8s.Client,
+	in *task.RunTaskRequest,
+	obj *v1.Job,
+	status *task.JobTaskStatus,
+) error {
 	pid := in.Params.GetPipelineTaskId()
 	if pid == "" {
 		return nil
 	}
 
-	// 临时资源创建
-	// k8sClient.Config().CreateConfigMap(ctx, )
+	pt, err := r.task.DescribePipelineTask(ctx, task.NewDescribePipelineTaskRequest(pid))
+	if err != nil {
+		return err
+	}
 
+	// 临时资源创建
+	runtimeEnvConfigMap := pt.RuntimeEnvConfigMap(task.CONFIG_MAP_RUNTIME_ENV_MOUNT_PATH)
+	err = k8sClient.Config().FindOrCreateConfigMap(ctx, runtimeEnvConfigMap)
+	if err != nil {
+		return err
+	}
+
+	// 把configmap 注入为卷进行挂载
+	workload.InjectPodConfigMapVolume(&obj.Spec.Template.Spec, runtimeEnvConfigMap)
+
+	// 更新掉临时资源等待释放
+	tr := task.NewTemporaryResource(runtimeEnvConfigMap.Kind, runtimeEnvConfigMap.Name)
+	status.AddTemporaryResource(tr)
 	return nil
 }

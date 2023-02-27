@@ -140,6 +140,7 @@ func (t *JobTaskStatus) MarkedSuccess() {
 	t.Stage = STAGE_SUCCEEDED
 	t.EndAt = time.Now().Unix()
 }
+
 func (t *JobTaskStatus) IsComplete() bool {
 	return t.Stage > 10
 }
@@ -157,4 +158,20 @@ func (t *JobTaskStatus) Update(req *UpdateJobTaskStatusRequest) {
 	if t.IsComplete() && t.EndAt == 0 {
 		t.EndAt = time.Now().Unix()
 	}
+}
+
+func (t *JobTaskStatus) AddTemporaryResource(items ...*TemporaryResource) {
+	t.TemporaryResources = append(t.TemporaryResources, items...)
+}
+
+func NewTemporaryResource(kind, name string) *TemporaryResource {
+	return &TemporaryResource{
+		Kind:     kind,
+		Name:     name,
+		CreateAt: time.Now().Unix(),
+	}
+}
+
+func (r *RuntimeEnv) FileLine() (line []byte) {
+	return []byte(fmt.Sprintf("%s=%s\n", r.Name, r.Value))
 }
