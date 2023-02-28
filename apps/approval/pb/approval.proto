@@ -74,9 +74,8 @@ enum STAGE {
 	// 审核通过
 	PASSED = 4;
 
-    // 发布执行中
-	// 发布中
-	PUBLISHING = 10;
+	// 执行中, 关联的流水线正在执行
+	RUNNING = 10;
 	// 发布取消
 	CANCELED = 11;
 	// 发布失败

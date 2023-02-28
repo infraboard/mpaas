@@ -84,7 +84,7 @@ func (s *Status) Update(stage STAGE) {
 	switch stage {
 	case STAGE_DENY, STAGE_PASSED:
 		s.AuditAt = time.Now().Unix()
-	case STAGE_PUBLISHING:
+	case STAGE_RUNNING:
 		s.PublishAt = time.Now().Unix()
 	case STAGE_CANCELED:
 		s.CancelAt = time.Now().Unix()
