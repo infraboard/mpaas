@@ -3,7 +3,6 @@ package task
 import (
 	"fmt"
 
-	"github.com/infraboard/mcenter/common/validate"
 	"github.com/infraboard/mcube/http/request"
 	job "github.com/infraboard/mpaas/apps/job"
 	"github.com/infraboard/mpaas/provider/k8s/workload"
@@ -67,17 +66,6 @@ func (s *RunTaskRequest) RuntimeEnvConfigMap(mountPath string) *v1.ConfigMap {
 
 type PipelineService interface {
 	PipelineRPCServer
-}
-
-func NewRunPipelineRequest(pipelineId string) *RunPipelineRequest {
-	return &RunPipelineRequest{
-		PipelineId: pipelineId,
-		Labels:     make(map[string]string),
-	}
-}
-
-func (req *RunPipelineRequest) Validate() error {
-	return validate.Validate(req)
 }
 
 func NewDescribeJobTaskRequest(id string) *DescribeJobTaskRequest {

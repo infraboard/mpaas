@@ -5,7 +5,7 @@ import (
 
 	"github.com/infraboard/mcube/exception"
 	"github.com/infraboard/mpaas/apps/build"
-	"github.com/infraboard/mpaas/apps/task"
+	"github.com/infraboard/mpaas/apps/pipeline"
 	"github.com/infraboard/mpaas/apps/trigger"
 )
 
@@ -46,7 +46,7 @@ func (i *impl) HandleEvent(ctx context.Context, in *trigger.Event) (
 			}
 
 			bs := trigger.NewBuildStatus(buildConf)
-			pt, err := i.task.RunPipeline(ctx, task.NewRunPipelineRequest(pipelineId))
+			pt, err := i.task.RunPipeline(ctx, pipeline.NewRunPipelineRequest(pipelineId))
 			if err != nil {
 				bs.ErrorMessage = err.Error()
 			} else {

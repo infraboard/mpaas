@@ -21,12 +21,6 @@ service RPC {
     rpc DeletePipeline(DeletePipelineRequest) returns(Pipeline);
 }
 
-message RunPipelineRequest {
-    // pipeline id
-	// @gotags: json:"id"
-    string id = 1;
-}
-
 message QueryPipelineRequest {
     // 分页请求
     // @gotags: json:"page"

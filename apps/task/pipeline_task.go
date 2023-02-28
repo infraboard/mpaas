@@ -40,7 +40,7 @@ func NewPipelineTask(p *pipeline.Pipeline) *PipelineTask {
 func NewDefaultPipelineTask() *PipelineTask {
 	return &PipelineTask{
 		Meta:   meta.NewMeta(),
-		Params: NewRunPipelineRequest(""),
+		Params: pipeline.NewRunPipelineRequest(""),
 		Status: NewPipelineTaskStatus(),
 	}
 }
@@ -48,7 +48,7 @@ func NewDefaultPipelineTask() *PipelineTask {
 func (p *PipelineTask) MarshalJSON() ([]byte, error) {
 	return json.Marshal(struct {
 		*meta.Meta
-		*RunPipelineRequest
+		*pipeline.RunPipelineRequest
 		*PipelineTaskStatus
 		Pipeline *pipeline.Pipeline `json:"pipeline"`
 	}{p.Meta, p.Params, p.Status, p.Pipeline})

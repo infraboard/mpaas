@@ -14,7 +14,7 @@ import (
 )
 
 // 执行Pipeline
-func (i *impl) RunPipeline(ctx context.Context, in *task.RunPipelineRequest) (
+func (i *impl) RunPipeline(ctx context.Context, in *pipeline.RunPipelineRequest) (
 	*task.PipelineTask, error) {
 	// 检查请求
 	if err := in.Validate(); err != nil {

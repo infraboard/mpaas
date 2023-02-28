@@ -6,6 +6,7 @@ import (
 	"time"
 
 	"github.com/imdario/mergo"
+	"github.com/infraboard/mcenter/common/validate"
 	"github.com/infraboard/mcube/http/request"
 	job "github.com/infraboard/mpaas/apps/job"
 	"github.com/infraboard/mpaas/common/meta"
@@ -147,4 +148,15 @@ func (h *WebHook) IsMatch(t string) bool {
 	}
 
 	return false
+}
+
+func NewRunPipelineRequest(pipelineId string) *RunPipelineRequest {
+	return &RunPipelineRequest{
+		PipelineId: pipelineId,
+		Labels:     make(map[string]string),
+	}
+}
+
+func (req *RunPipelineRequest) Validate() error {
+	return validate.Validate(req)
 }

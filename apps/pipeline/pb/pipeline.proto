@@ -119,6 +119,40 @@ message RunJobRequest {
     map<string,string> labels = 15;
 }
 
+// Pipeline编排已经定义完成, Run时只能修改任务的参数
+message RunPipelnieJobRequest {
+	// task属于那个stage, 可以为空
+	// @gotags: bson:"stage_name" json:"stage_name"
+    string stage_name = 1;
+	// job名称: name
+	// @gotags: bson:"job_name" json:"job_name" validate:"required"
+    string job_name = 2;
+	// job运行时参数
+	// @gotags: bson:"run_params" json:"run_params"
+	job.VersionedRunParam run_params = 3;
+}
+
+message RunPipelineRequest {
+    // pipeline id
+	// @gotags: bson:"pipeline_id" json:"pipeline_id" validate:"required"
+    string pipeline_id = 1;
+	// 运行模式
+	// @gotags: bson:"run_mode" json:"run_mode"
+	job.RUN_MODE run_mode = 2;
+	// 试运行
+	// @gotags: bson:"dry_run" json:"dry_run"
+	bool dry_run = 3;
+	// 执行人
+	// @gotags: bson:"run_by" json:"run_by" validate:"required"
+	string run_by = 4;
+	// Pipeline 的运行时参数
+	// @gotags: bson:"run_params" json:"run_params" validate:"required"
+	repeated RunPipelnieJobRequest run_params = 5;
+	// 任务标签
+	// @gotags: bson:"labels" json:"labels"
+	map<string, string> labels = 15;
+}
+
 message WebHook {
 	// POST URL
 	// @gotags: bson:"url" json:"url" validate:"required,url"

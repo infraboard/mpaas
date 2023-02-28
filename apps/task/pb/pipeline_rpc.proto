@@ -3,13 +3,14 @@ syntax = "proto3";
 package infraboard.mpaas.task;
 option go_package = "github.com/infraboard/mpaas/apps/task";
 
+import "apps/pipeline/pb/pipeline.proto";
 import "apps/task/pb/pipeline_task.proto";
 import "github.com/infraboard/mcube/pb/page/page.proto";
 
 // RPC 执行Pipeline
 service PipelineRPC {
     // 执行Pipeline
-    rpc RunPipeline(RunPipelineRequest) returns(PipelineTask);
+    rpc RunPipeline(pipeline.RunPipelineRequest) returns(PipelineTask);
 
     // 查询Pipeline任务列表
     rpc QueryPipelineTask(QueryPipelineTaskRequest) returns(PipelineTaskSet);

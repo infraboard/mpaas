@@ -10,7 +10,7 @@ import (
 	"github.com/infraboard/mcube/exception"
 	"github.com/infraboard/mcube/pb/request"
 	"github.com/infraboard/mpaas/apps/approval"
-	"github.com/infraboard/mpaas/apps/task"
+	"github.com/infraboard/mpaas/apps/pipeline"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
 )
@@ -196,7 +196,7 @@ func (i *impl) UpdateApprovalStatus(ctx context.Context, in *approval.UpdateAppr
 
 	// 5. 如果允许自动执行, 则审核通过后执行
 	if ins.Spec.AutoPublish && ins.Status.Stage.Equal(approval.STAGE_PASSED) {
-		pt, err := i.task.RunPipeline(ctx, task.NewRunPipelineRequest(ins.Spec.DeployPipelineId))
+		pt, err := i.task.RunPipeline(ctx, pipeline.NewRunPipelineRequest(ins.Spec.DeployPipelineId))
 		if err != nil {
 			return nil, err
 		}

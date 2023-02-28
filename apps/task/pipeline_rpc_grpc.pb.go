@@ -8,6 +8,7 @@ package task
 
 import (
 	context "context"
+	pipeline "github.com/infraboard/mpaas/apps/pipeline"
 	grpc "google.golang.org/grpc"
 	codes "google.golang.org/grpc/codes"
 	status "google.golang.org/grpc/status"
@@ -23,7 +24,7 @@ const _ = grpc.SupportPackageIsVersion7
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type PipelineRPCClient interface {
 	// 执行Pipeline
-	RunPipeline(ctx context.Context, in *RunPipelineRequest, opts ...grpc.CallOption) (*PipelineTask, error)
+	RunPipeline(ctx context.Context, in *pipeline.RunPipelineRequest, opts ...grpc.CallOption) (*PipelineTask, error)
 	// 查询Pipeline任务列表
 	QueryPipelineTask(ctx context.Context, in *QueryPipelineTaskRequest, opts ...grpc.CallOption) (*PipelineTaskSet, error)
 	// 查询Pipeline任务详情
@@ -40,7 +41,7 @@ func NewPipelineRPCClient(cc grpc.ClientConnInterface) PipelineRPCClient {
 	return &pipelineRPCClient{cc}
 }
 
-func (c *pipelineRPCClient) RunPipeline(ctx context.Context, in *RunPipelineRequest, opts ...grpc.CallOption) (*PipelineTask, error) {
+func (c *pipelineRPCClient) RunPipeline(ctx context.Context, in *pipeline.RunPipelineRequest, opts ...grpc.CallOption) (*PipelineTask, error) {
 	out := new(PipelineTask)
 	err := c.cc.Invoke(ctx, "/infraboard.mpaas.task.PipelineRPC/RunPipeline", in, out, opts...)
 	if err != nil {
@@ -81,7 +82,7 @@ func (c *pipelineRPCClient) DeletePipelineTask(ctx context.Context, in *DeletePi
 // for forward compatibility
 type PipelineRPCServer interface {
 	// 执行Pipeline
-	RunPipeline(context.Context, *RunPipelineRequest) (*PipelineTask, error)
+	RunPipeline(context.Context, *pipeline.RunPipelineRequest) (*PipelineTask, error)
 	// 查询Pipeline任务列表
 	QueryPipelineTask(context.Context, *QueryPipelineTaskRequest) (*PipelineTaskSet, error)
 	// 查询Pipeline任务详情
@@ -95,7 +96,7 @@ type PipelineRPCServer interface {
 type UnimplementedPipelineRPCServer struct {
 }
 
-func (UnimplementedPipelineRPCServer) RunPipeline(context.Context, *RunPipelineRequest) (*PipelineTask, error) {
+func (UnimplementedPipelineRPCServer) RunPipeline(context.Context, *pipeline.RunPipelineRequest) (*PipelineTask, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method RunPipeline not implemented")
 }
 func (UnimplementedPipelineRPCServer) QueryPipelineTask(context.Context, *QueryPipelineTaskRequest) (*PipelineTaskSet, error) {
@@ -121,7 +122,7 @@ func RegisterPipelineRPCServer(s grpc.ServiceRegistrar, srv PipelineRPCServer) {
 }
 
 func _PipelineRPC_RunPipeline_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(RunPipelineRequest)
+	in := new(pipeline.RunPipelineRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -133,7 +134,7 @@ func _PipelineRPC_RunPipeline_Handler(srv interface{}, ctx context.Context, dec 
 		FullMethod: "/infraboard.mpaas.task.PipelineRPC/RunPipeline",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(PipelineRPCServer).RunPipeline(ctx, req.(*RunPipelineRequest))
+		return srv.(PipelineRPCServer).RunPipeline(ctx, req.(*pipeline.RunPipelineRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
