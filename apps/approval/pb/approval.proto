@@ -73,17 +73,29 @@ enum STAGE {
 	DENY = 3;
 	// 审核通过
 	PASSED = 4;
-	// 发布中
-	PUBLISHING = 5;
 
+    // 发布执行中
+	// 发布中
+	PUBLISHING = 10;
 	// 发布取消
-	CANCELED = 10;
-	// 发布成功
-	SUCCEEDED = 11;
+	CANCELED = 11;
 	// 发布失败
 	FAILED = 12;
+	// 发布成功
+	SUCCEEDED = 13;
+
+    // 无论发布成功或者失败都可以执行回滚
+    // 回滚中
+    ROLLBACKING = 20;
+	// 回滚取消
+	ROLLBACK_CANCELED = 21;
+	// 回滚失败
+	ROLLBACK_FAILED = 22;
+	// 回滚成功
+	ROLLBACK_SUCCEEDED = 23;
+
 	// 发布关闭, 发布成功后,验证没问题, 发布结束
-	CLOSED = 15;
+	CLOSED = 55;
 }
 
 message Status {
