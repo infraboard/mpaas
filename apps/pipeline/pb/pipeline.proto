@@ -78,9 +78,9 @@ message Stage {
 }
 
 message RunJobRequest {
-    // 唯一ID, 如果不传，则由系统自动生成
-	// @gotags: bson:"_id" json:"id,omitempty"
-    string id = 1;
+    // 任务唯一ID, 如果不传，则由系统自动生成
+	// @gotags: bson:"_id" json:"task_id,omitempty"
+    string task_id = 1;
 	// task执行的域
 	// @gotags: bson:"domain" json:"domain"
     string domain = 2;

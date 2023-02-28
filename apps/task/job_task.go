@@ -65,8 +65,8 @@ func NewMeta() *Meta {
 }
 
 func NewJobTask(req *pipeline.RunJobRequest) *JobTask {
-	if req.Id == "" {
-		req.Id = xid.New().String()
+	if req.TaskId == "" {
+		req.TaskId = xid.New().String()
 	}
 
 	return &JobTask{
@@ -85,7 +85,7 @@ func (p *JobTask) SystemVariable() (items []*job.RunParam) {
 		),
 		job.NewRunParam(
 			job.SYSTEM_VARIABLE_JOB_TASK_ID,
-			p.Spec.Id,
+			p.Spec.TaskId,
 		),
 	)
 	return

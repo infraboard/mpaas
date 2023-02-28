@@ -124,7 +124,7 @@ func (i *impl) PipelineTaskStatusChanged(ctx context.Context, in *task.JobTask) 
 	}
 
 	// 更新Pipeline Task 运行时环境变量
-	p.Status.UpdateRuntimeEnv(in.Spec.Id, in.Status.RuntimeEnvs)
+	p.Status.UpdateRuntimeEnv(in.Spec.TaskId, in.Status.RuntimeEnvs)
 
 	switch in.Status.Stage {
 	case task.STAGE_PENDDING, task.STAGE_ACTIVE, task.STAGE_CANCELING:
@@ -285,7 +285,7 @@ func (i *impl) DeletePipelineTask(ctx context.Context, in *task.DeletePipelineTa
 			continue
 		}
 
-		_, err := i.DeleteJobTask(ctx, task.NewDeleteJobTaskRequest(t.Spec.Id))
+		_, err := i.DeleteJobTask(ctx, task.NewDeleteJobTaskRequest(t.Spec.TaskId))
 		if err != nil {
 			if !exception.IsNotFoundError(err) {
 				return nil, err

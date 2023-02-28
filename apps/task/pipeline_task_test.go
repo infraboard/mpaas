@@ -16,7 +16,7 @@ func TestNewPipelineTask(t *testing.T) {
 	tasks := pt.JobTasks()
 	for i := range tasks.Items {
 		task := tasks.Items[i]
-		t.Log(task.Spec.Id, task.Spec.JobName, task.Status.Stage)
+		t.Log(task.Spec.TaskId, task.Spec.JobName, task.Status.Stage)
 	}
 
 	// 即将运行的tasks

@@ -21,14 +21,14 @@ import (
 
 func (i *impl) RunJob(ctx context.Context, in *pipeline.RunJobRequest) (
 	*task.JobTask, error) {
-	if in.Id != "" {
+	if in.TaskId != "" {
 		// 如果任务重新运行, 需要等待之前的任务结束后才能执行
-		isActive, err := i.CheckJotTaskIsActive(ctx, in.Id)
+		isActive, err := i.CheckJotTaskIsActive(ctx, in.TaskId)
 		if err != nil {
 			return nil, err
 		}
 		if isActive {
-			return nil, exception.NewConflict("任务: %s 当前处于运行中, 需要等待运行结束后才能执行", in.Id)
+			return nil, exception.NewConflict("任务: %s 当前处于运行中, 需要等待运行结束后才能执行", in.TaskId)
 		}
 	}
 
@@ -57,7 +57,7 @@ func (i *impl) RunJob(ctx context.Context, in *pipeline.RunJobRequest) (
 
 	// 获取执行器执行
 	r := runner.GetRunner(j.Spec.RunnerType)
-	runReq := task.NewRunTaskRequest(ins.Spec.Id, j.Spec.RunnerSpec, params)
+	runReq := task.NewRunTaskRequest(ins.Spec.TaskId, j.Spec.RunnerSpec, params)
 	runReq.DryRun = in.DryRun
 	runReq.Labels = in.Labels
 	runReq.ManualUpdateStatus = j.Spec.ManualUpdateStatus
@@ -70,7 +70,7 @@ func (i *impl) RunJob(ctx context.Context, in *pipeline.RunJobRequest) (
 	// 3. 保存任务
 	updateOpt := options.Update()
 	updateOpt.SetUpsert(true)
-	if _, err := i.jcol.UpdateByID(ctx, ins.Spec.Id, bson.M{"$set": ins}, updateOpt); err != nil {
+	if _, err := i.jcol.UpdateByID(ctx, ins.Spec.TaskId, bson.M{"$set": ins}, updateOpt); err != nil {
 		return nil, exception.NewInternalServerError("inserted a job task document error, %s", err)
 	}
 	return ins, nil
@@ -150,7 +150,7 @@ func (i *impl) UpdateJobTaskStatus(ctx context.Context, in *task.UpdateJobTaskSt
 	ins.Status.Update(in)
 
 	// 更新数据库
-	if _, err := i.jcol.UpdateByID(ctx, ins.Spec.Id, bson.M{"$set": ins}); err != nil {
+	if _, err := i.jcol.UpdateByID(ctx, ins.Spec.TaskId, bson.M{"$set": ins}); err != nil {
 		return nil, exception.NewInternalServerError("update task(%s) document error, %s",
 			in.Id, err)
 	}
