@@ -54,12 +54,34 @@ message CreateApprovalRequest {
     // 部署流水线配置
     // @gotags: bson:"-" json:"deploy_pipeline_spec,omitempty"
     pipeline.CreatePipelineRequest deploy_pipeline_spec = 7;
-   // 部署流水线配置Id
+    // 部署流水线配置Id
     // @gotags: bson:"deploy_pipeline_id" json:"deploy_pipeline_id"
     string deploy_pipeline_id = 8;
+    // 发布项列表
+    // @gotags: bson:"publish_items" json:"publish_items"
+    PublishItemSet publish_items = 9;
 	// 申请单标签
 	// @gotags: bson:"labels" json:"labels"
 	map<string, string> labels = 15;
+}
+
+message PublishItemSet {
+    // 发布项列表
+    // @gotags: bson:"items" json:"items"
+    repeated PublishItem items = 1;
+}
+
+// 发布项
+message PublishItem {
+    // 部署Id
+    // @gotags: bson:"deploy_id" json:"deploy_id"
+    string deploy_id = 1;
+    // 当前版本, 记录下当前版本 用于回滚
+    // @gotags: bson:"current_version" json:"current_version"
+    string current_version = 2;
+    // 需要升级的版本
+    // @gotags: bson:"upgrade_version" json:"upgrade_version"
+    string upgrade_version = 3;
 }
 
 enum STAGE {

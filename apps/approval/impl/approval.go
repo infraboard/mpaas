@@ -42,7 +42,7 @@ func (i *impl) CreateApproval(ctx context.Context, in *approval.CreateApprovalRe
 	if _, err := i.col.InsertOne(ctx, ins); err != nil {
 		return nil, exception.NewInternalServerError("inserted a approval document error, %s", err)
 	}
-	return nil, nil
+	return ins, nil
 }
 
 func (i *impl) CheckApprovalUser(ctx context.Context, ins *approval.Approval) error {
