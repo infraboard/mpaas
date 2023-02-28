@@ -47,14 +47,16 @@ enum STAGE {
 	PENDDING = 0;
 	// 运行中
 	ACTIVE = 1;
+	// 回滚中, 回滚是一种特殊的运行中状态, 回滚时会运行回滚参数
+	ROLLBACKING = 2;
 	// 取消中
-	CANCELING = 2;
+	CANCELING = 3;
 	// 任务被取消
 	CANCELED = 10;
-	// 运行成功
-	SUCCEEDED = 11;
 	// 运行失败
-	FAILED = 12;
+	FAILED = 11;
+	// 运行成功
+	SUCCEEDED = 12;
 }
 
 message JobTaskStatus {

@@ -21,7 +21,7 @@ func TestRunBuildJob(t *testing.T) {
 		job.SYSTEM_VARIABLE_IMAGE_REPOSITORY, "registry.cn-hangzhou.aliyuncs.com/inforboard/mpaas",
 		job.SYSTEM_VARIABLE_IMAGE_VERSION, "v0.0.2",
 	)
-	req.Params = version
+	req.RunParams = version
 
 	ins, err := impl.RunJob(ctx, req)
 	if err != nil {
@@ -37,7 +37,7 @@ func TestRunDeployJob(t *testing.T) {
 		job.SYSTEM_VARIABLE_DEPLOY_ID, conf.C.DEPLOY_ID,
 		job.SYSTEM_VARIABLE_IMAGE_VERSION, "1.30",
 	)
-	req.Params = version
+	req.RunParams = version
 	req.DryRun = false
 
 	ins, err := impl.RunJob(ctx, req)

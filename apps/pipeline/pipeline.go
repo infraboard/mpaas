@@ -106,8 +106,8 @@ func (req *CreatePipelineRequest) AddStage(stages ...*Stage) {
 
 func NewRunJobRequest(jobName string) *RunJobRequest {
 	return &RunJobRequest{
-		JobName: jobName,
-		Params:  job.NewVersionedRunParam(""),
+		JobName:   jobName,
+		RunParams: job.NewVersionedRunParam(""),
 	}
 }
 

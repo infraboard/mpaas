@@ -43,10 +43,10 @@ func (i *impl) RunJob(ctx context.Context, in *pipeline.RunJobRequest) (
 	ins.Job = j
 
 	// 合并允许参数(Job里面有默认值), 并检查参数合法性
-	params := j.GetVersionedRunParam(in.Params.Version)
-	params.Merge(in.Params)
+	params := j.GetVersionedRunParam(in.RunParams.Version)
+	params.Merge(in.RunParams)
 	params.Add(ins.SystemVariable()...)
-	err = i.LoadRuntimeEnvs(ctx, in.Params.GetPipelineTaskId(), params)
+	err = i.LoadRuntimeEnvs(ctx, in.RunParams.GetPipelineTaskId(), params)
 	if err != nil {
 		return nil, err
 	}
@@ -210,7 +210,7 @@ func (i *impl) DeleteJobTask(ctx context.Context, in *task.DeleteJobTaskRequest)
 
 // 删除k8s中对应的job
 func (i *impl) deleteK8sJob(ctx context.Context, ins *task.JobTask) error {
-	jobParams := ins.Job.GetVersionedRunParam(ins.Spec.Params.Version)
+	jobParams := ins.Job.GetVersionedRunParam(ins.Spec.RunParams.Version)
 	if jobParams == nil {
 		return fmt.Errorf("job version params not found")
 	}

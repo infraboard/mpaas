@@ -77,7 +77,7 @@ func TestToYaml(t *testing.T) {
 				{Name: "param1", Value: "value1"},
 			},
 			Jobs: []*pipeline.RunJobRequest{
-				{JobName: "job01", Params: &job.VersionedRunParam{
+				{JobName: "job01", RunParams: &job.VersionedRunParam{
 					Version: "v0.1",
 					Params: []*job.RunParam{
 						{Name: "param1", Value: "value1"},
@@ -91,7 +91,7 @@ func TestToYaml(t *testing.T) {
 				{Name: "param1", Value: "value1"},
 			},
 			Jobs: []*pipeline.RunJobRequest{
-				{JobName: "job01", Params: &job.VersionedRunParam{
+				{JobName: "job01", RunParams: &job.VersionedRunParam{
 					Version: "v0.1",
 					Params: []*job.RunParam{
 						{Name: "param1", Value: "value1"},

@@ -54,6 +54,51 @@ func (t *RUNNER_TYPE) UnmarshalJSON(b []byte) error {
 	return nil
 }
 
+// ParseRUN_MODEFromString Parse RUN_MODE from string
+func ParseRUN_MODEFromString(str string) (RUN_MODE, error) {
+	key := strings.Trim(string(str), `"`)
+	v, ok := RUN_MODE_value[strings.ToUpper(key)]
+	if !ok {
+		return 0, fmt.Errorf("unknown RUN_MODE: %s", str)
+	}
+
+	return RUN_MODE(v), nil
+}
+
+// Equal type compare
+func (t RUN_MODE) Equal(target RUN_MODE) bool {
+	return t == target
+}
+
+// IsIn todo
+func (t RUN_MODE) IsIn(targets ...RUN_MODE) bool {
+	for _, target := range targets {
+		if t.Equal(target) {
+			return true
+		}
+	}
+
+	return false
+}
+
+// MarshalJSON todo
+func (t RUN_MODE) MarshalJSON() ([]byte, error) {
+	b := bytes.NewBufferString(`"`)
+	b.WriteString(strings.ToUpper(t.String()))
+	b.WriteString(`"`)
+	return b.Bytes(), nil
+}
+
+// UnmarshalJSON todo
+func (t *RUN_MODE) UnmarshalJSON(b []byte) error {
+	ins, err := ParseRUN_MODEFromString(string(b))
+	if err != nil {
+		return err
+	}
+	*t = ins
+	return nil
+}
+
 // ParsePARAM_VALUE_TYPEFromString Parse PARAM_VALUE_TYPE from string
 func ParsePARAM_VALUE_TYPEFromString(str string) (PARAM_VALUE_TYPE, error) {
 	key := strings.Trim(string(str), `"`)

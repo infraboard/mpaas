@@ -96,18 +96,24 @@ message RunJobRequest {
 	// job名称: name
 	// @gotags: bson:"job_name" json:"job_name" validate:"required"
     string job_name = 6;
+	// 运行模式
+	// @gotags: bson:"run_mode" json:"run_mode"
+	job.RUN_MODE run_mode = 7;
 	// job运行时参数
-	// @gotags: bson:"params" json:"params"
-	job.VersionedRunParam params = 7;
+	// @gotags: bson:"run_params" json:"run_params"
+	job.VersionedRunParam run_params = 8;
+	// job回滚时参数, 如果要回滚 则回滚参数必填
+	// @gotags: bson:"rollback_params" json:"rollback_params"
+	job.VersionedRunParam rollback_params = 9;
 	// 忽略失败, 当Pipeline运行时, 不会因为执行失败而 中断Pipeline执行
 	// @gotags: bson:"ignore_failed" json:"ignore_failed"
-	bool ignore_failed = 8;
+	bool ignore_failed = 10;
 	// 试运行
 	// @gotags: bson:"dry_run" json:"dry_run"
-	bool dry_run = 9;
+	bool dry_run = 11;
 	// WebHook配置, 及时把job执行状态推送给外部, 比如各种机器人
 	// @gotags: bson:"webhooks" json:"webhooks"
-	repeated WebHook webhooks = 10;
+	repeated WebHook webhooks = 12;
     // 任务标签
     // @gotags: bson:"labels" json:"labels"
     map<string,string> labels = 15;

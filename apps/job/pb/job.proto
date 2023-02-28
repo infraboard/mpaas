@@ -41,6 +41,13 @@ message Job {
     CreateJobRequest spec = 2; 
 }
 
+enum RUN_MODE {
+	// 正常运行
+	NORMAL = 0;
+	// 回滚运行
+	ROLLBACK = 1;
+}
+
 message CreateJobRequest {
 	// 执行器类型, 默认采用k8s job执行
 	// @gotags: bson:"runner_type" json:"runner_type"
@@ -54,33 +61,37 @@ message CreateJobRequest {
 	// 运行时 用户传人的参数说明(不同版本有不同参数)
 	// @gotags: bson:"run_params" json:"run_params"
 	repeated VersionedRunParam run_params = 4;
-	// 运行时 用户传人的参数说明(不同版本有不同参数)
-	// @gotags: bson:"run_params" json:"run_params"
-	repeated VersionedRunParam rollback_params = 5;
+	// 是否允许回滚, 有些特殊的操作是不允许回滚的, 
+	// 能使用上次执行成功的结果 进行执行 该任务就支持回滚
+	// @gotags: bson:"allow_rollback" json:"allow_rollback"
+	bool allow_rollback = 5;
+	// 回滚参数, 当执行回滚时执行的参数, 往往由上次成功执行的参数进行填充
+	// @gotags: bson:"rollback_params" json:"rollback_params"
+	repeated VersionedRunParam rollback_params = 6;
 	// 所属域
 	// @gotags: bson:"domain" json:"domain" validate:"required"
-	string domain = 6;
+	string domain = 7;
 	// 所属空间
 	// @gotags: bson:"namespace" json:"namespace" validate:"required"
-	string namespace = 7;
+	string namespace = 8;
 	// 创建人
 	// @gotags: bson:"create_by" json:"create_by" validate:"required"
-	string create_by = 8;
+	string create_by = 9;
 	// 图片
 	// @gotags: bson:"logo" json:"logo"
-	string logo = 9;
+	string logo = 10;
 	// 名称, 不能包含特殊字符(. , #)
 	// @gotags: bson:"name" json:"name" validate:"required"
-	string name = 10;
+	string name = 11;
 	// 展示名称
 	// @gotags: bson:"display_name" json:"display_name"
-	string display_name = 11;
+	string display_name = 12;
 	// 是否是公开Job, 默认只能本空间内访问
 	// @gotags: bson:"visiable_mode" json:"visiable_mode"
-	mcube.resource.VISIABLE_MODE visiable_mode = 12;
+	mcube.resource.VISIABLE_MODE visiable_mode = 13;
 	// 描述
 	// @gotags: bson:"description" json:"description"
-	string description = 13;
+	string description = 14;
 	// 标签
 	// @gotags: bson:"labels" json:"labels"
 	map<string, string> labels = 15;

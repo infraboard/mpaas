@@ -10,7 +10,6 @@ import (
 
 	"github.com/imdario/mergo"
 	"github.com/infraboard/mpaas/common/meta"
-	corev1 "k8s.io/api/core/v1"
 	v1 "k8s.io/api/core/v1"
 )
 
@@ -139,11 +138,11 @@ func (r *VersionedRunParam) GetPipelineTaskId() string {
 //	用户变量: 大写开头的变量, 因为一般环境变量都是大写的比如 DB_PASS,
 //	系统变量: _开头为系统变量, 由Runner处理并注入, 比如 _DEPLOY_ID
 //	Runner变量: 小写的变量, 用于系统内部使用, 不会注入, 比如 K8SJobRunnerParams 中的cluster_id
-func (r *VersionedRunParam) EnvVars() (envs []corev1.EnvVar) {
+func (r *VersionedRunParam) EnvVars() (envs []v1.EnvVar) {
 	for i := range r.Params {
 		item := r.Params[i]
 		if item.Name != "" && (unicode.IsUpper(rune(item.Name[0])) || strings.HasPrefix(item.Name, "_")) {
-			envs = append(envs, corev1.EnvVar{
+			envs = append(envs, v1.EnvVar{
 				Name:  item.Name,
 				Value: item.Value,
 			})
@@ -152,10 +151,10 @@ func (r *VersionedRunParam) EnvVars() (envs []corev1.EnvVar) {
 	return
 }
 
-func ParamsToEnvVar(params []*RunParam) (envs []corev1.EnvVar) {
+func ParamsToEnvVar(params []*RunParam) (envs []v1.EnvVar) {
 	for i := range params {
 		item := params[i]
-		envs = append(envs, corev1.EnvVar{
+		envs = append(envs, v1.EnvVar{
 			Name:  item.Name,
 			Value: item.Value,
 		})
