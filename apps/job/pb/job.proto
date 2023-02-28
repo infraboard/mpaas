@@ -54,30 +54,33 @@ message CreateJobRequest {
 	// 运行时 用户传人的参数说明(不同版本有不同参数)
 	// @gotags: bson:"run_params" json:"run_params"
 	repeated VersionedRunParam run_params = 4;
+	// 运行时 用户传人的参数说明(不同版本有不同参数)
+	// @gotags: bson:"run_params" json:"run_params"
+	repeated VersionedRunParam rollback_params = 5;
 	// 所属域
 	// @gotags: bson:"domain" json:"domain" validate:"required"
-	string domain = 5;
+	string domain = 6;
 	// 所属空间
 	// @gotags: bson:"namespace" json:"namespace" validate:"required"
-	string namespace = 6;
+	string namespace = 7;
 	// 创建人
 	// @gotags: bson:"create_by" json:"create_by" validate:"required"
-	string create_by = 7;
+	string create_by = 8;
 	// 图片
 	// @gotags: bson:"logo" json:"logo"
-	string logo = 8;
+	string logo = 9;
 	// 名称, 不能包含特殊字符(. , #)
 	// @gotags: bson:"name" json:"name" validate:"required"
-	string name = 9;
+	string name = 10;
 	// 展示名称
 	// @gotags: bson:"display_name" json:"display_name"
-	string display_name = 10;
+	string display_name = 11;
 	// 是否是公开Job, 默认只能本空间内访问
 	// @gotags: bson:"visiable_mode" json:"visiable_mode"
-	mcube.resource.VISIABLE_MODE visiable_mode = 11;
+	mcube.resource.VISIABLE_MODE visiable_mode = 12;
 	// 描述
 	// @gotags: bson:"description" json:"description"
-	string description = 12;
+	string description = 13;
 	// 标签
 	// @gotags: bson:"labels" json:"labels"
 	map<string, string> labels = 15;
