@@ -131,7 +131,7 @@ func TestUpdateBuildJob(t *testing.T) {
 		Required: true,
 		Name:     job.SYSTEM_VARIABLE_IMAGE_REPOSITORY,
 		Desc:     "镜像推送地址",
-		Example:  "egistry.cn-hangzhou.aliyuncs.com/inforboard/mpaas",
+		Example:  "registry.cn-hangzhou.aliyuncs.com/inforboard/mpaas",
 	})
 	v1.Add(&job.RunParam{
 		Required: true,

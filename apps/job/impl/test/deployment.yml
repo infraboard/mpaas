@@ -19,7 +19,7 @@ spec:
   template: # 模板，当副本数量不足时，会根据下面的模板创建 pod 副本
     metadata:
       labels:
-        app: counter-pod
+        app: deploy-pod
     spec:
       restartPolicy: Never # 重启策略只能设置为 Never 或者 OnFailure
       containers:
