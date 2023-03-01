@@ -2,6 +2,7 @@ package task
 
 import (
 	"fmt"
+	"strings"
 
 	"github.com/infraboard/mcube/http/request"
 	job "github.com/infraboard/mpaas/apps/job"
@@ -44,6 +45,16 @@ func (r *RunTaskRequest) Annotations() map[string]string {
 		annotations[ANNOTATION_TASK] = r.Params.GetParamValue(job.SYSTEM_VARIABLE_JOB_TASK_ID)
 	}
 	return annotations
+}
+
+func (r *RunTaskRequest) RenderJobSpec() string {
+	renderedSpec := r.JobSpec
+	vars := r.Params.TemplateVars()
+	for i := range vars {
+		t := vars[i]
+		renderedSpec = strings.ReplaceAll(renderedSpec, t.RefName(), t.Value)
+	}
+	return renderedSpec
 }
 
 func NewJobTaskEnvConfigMapName(pipelineTaskId string) string {

@@ -63,8 +63,8 @@ spec: # 详情描述
           emptyDir: {}
         - name: secret-volume
           secret:
-            secretName: git-ssh-key
+            secretName: ${GIT_SSH_SECRET}
             defaultMode: 0600
         - name: kaniko-secret
           secret:
-            secretName: kaniko-secret
+            secretName: ${IMAGE_PUSH_SECRET}

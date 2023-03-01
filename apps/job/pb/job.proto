@@ -122,8 +122,6 @@ enum PARAM_VALUE_TYPE {
 	ENUM = 2;
 	// 基于url的远程选项拉去, 仅存储URL地址, 前端自己处理
 	HTTP_ENUM = 3;
-	// 密钥卷, 不会以环境变量注入, 会替换掉K8s Job中 volume定义的secret名称
-	SECRET_VOLUME = 4;
 }
 
 message EnumOption {
@@ -138,34 +136,44 @@ message EnumOption {
 	map<string, string> extensions = 15;
 }
 
+enum PARAM_USAGE_TYPE {
+	// 环境变量
+	ENV = 0;
+	// 模版变量
+	TEMPLATE = 1;
+}
+
 message RunParam {
 	// 可选/必传
 	// @gotags: bson:"required"
 	bool required = 1;
+	// 参数使用类型
+	// @gotags: bson:"usage_type"
+	PARAM_USAGE_TYPE usage_type = 2;
 	// 参数名称
 	// @gotags: bson:"name" json:"name" validate:"required"
-	string name = 2;
+	string name = 3;
 	// 参数描述
 	// @gotags: bson:"desc" json:"desc"
-	string desc = 3;
+	string desc = 4;
 	// 值类型
 	// @gotags: bson:"value_type" json:"value_type"
-	PARAM_VALUE_TYPE value_type = 4;
+	PARAM_VALUE_TYPE value_type = 5;
 	// 枚举值的选项
 	// @gotags: bson:"enum_options" json:"enum_options,omitempty"
-	repeated EnumOption enum_options = 5;
+	repeated EnumOption enum_options = 6;
 	// 基于枚举的URL
 	// @gotags: bson:"http_enum_url" json:"http_enum_url,omitempty"
-	string http_enum_url = 6;
+	string http_enum_url = 7;
 	// 值的样例
 	// @gotags: bson:"example" json:"example"
-	string example = 7;
+	string example = 8;
 	// 默认值, task运行时如果未传人，会填充默认值
 	// @gotags: bson:"value" json:"value"
-	string value = 8;
+	string value = 9;
 	// 设置了值后，不允许修改, 用于控制流水线模版变量
 	// @gotags: bson:"read_olny" json:"read_olny"
-	bool read_olny = 9;
+	bool read_olny = 10;
 
 	// 扩展属性
 	// @gotags: bson:"extensions" json:"extensions"

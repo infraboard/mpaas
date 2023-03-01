@@ -120,11 +120,11 @@ func TestUpdateBuildJob(t *testing.T) {
 		Example:  "32d63566098f7e0b0ac3a3d8ddffe71cc6cad7b0",
 	})
 	v1.Add(&job.RunParam{
-		ReadOlny: true,
-		Name:     "GIT_SSH_SECRET",
-		Desc:     "用于拉取git仓库代码的secret名称, kubectl create secret generic git-ssh-key --from-file=id_rsa=${HOME}/.ssh/id_rsa",
-		Example:  "git-ssh-key",
-		Value:    "git-ssh-key",
+		UsageType: job.PARAM_USAGE_TYPE_TEMPLATE,
+		Name:      "GIT_SSH_SECRET",
+		Desc:      "用于拉取git仓库代码的secret名称, kubectl create secret generic git-ssh-key --from-file=id_rsa=${HOME}/.ssh/id_rsa",
+		Example:   "git-ssh-key",
+		Value:     "git-ssh-key",
 	})
 	// docker push registry.cn-hangzhou.aliyuncs.com/inforboard/mpaas:[镜像版本号]
 	v1.Add(&job.RunParam{
@@ -140,11 +140,11 @@ func TestUpdateBuildJob(t *testing.T) {
 		Example:  "v0.0.2",
 	})
 	v1.Add(&job.RunParam{
-		ReadOlny: true,
-		Name:     "IMAGE_PUSH_SECRET",
-		Desc:     "用于推送镜像的secret名称, 具体文档参考: https://github.com/GoogleContainerTools/kaniko#pushing-to-docker-hub",
-		Example:  "kaniko-secret",
-		Value:    "kaniko-secret",
+		UsageType: job.PARAM_USAGE_TYPE_TEMPLATE,
+		Name:      "IMAGE_PUSH_SECRET",
+		Desc:      "用于推送镜像的secret名称, 具体文档参考: https://github.com/GoogleContainerTools/kaniko#pushing-to-docker-hub",
+		Example:   "kaniko-secret",
+		Value:     "kaniko-secret",
 	})
 	req.Spec.AddVersionParams(v1)
 

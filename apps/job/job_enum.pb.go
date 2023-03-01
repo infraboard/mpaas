@@ -143,3 +143,48 @@ func (t *PARAM_VALUE_TYPE) UnmarshalJSON(b []byte) error {
 	*t = ins
 	return nil
 }
+
+// ParsePARAM_USAGE_TYPEFromString Parse PARAM_USAGE_TYPE from string
+func ParsePARAM_USAGE_TYPEFromString(str string) (PARAM_USAGE_TYPE, error) {
+	key := strings.Trim(string(str), `"`)
+	v, ok := PARAM_USAGE_TYPE_value[strings.ToUpper(key)]
+	if !ok {
+		return 0, fmt.Errorf("unknown PARAM_USAGE_TYPE: %s", str)
+	}
+
+	return PARAM_USAGE_TYPE(v), nil
+}
+
+// Equal type compare
+func (t PARAM_USAGE_TYPE) Equal(target PARAM_USAGE_TYPE) bool {
+	return t == target
+}
+
+// IsIn todo
+func (t PARAM_USAGE_TYPE) IsIn(targets ...PARAM_USAGE_TYPE) bool {
+	for _, target := range targets {
+		if t.Equal(target) {
+			return true
+		}
+	}
+
+	return false
+}
+
+// MarshalJSON todo
+func (t PARAM_USAGE_TYPE) MarshalJSON() ([]byte, error) {
+	b := bytes.NewBufferString(`"`)
+	b.WriteString(strings.ToUpper(t.String()))
+	b.WriteString(`"`)
+	return b.Bytes(), nil
+}
+
+// UnmarshalJSON todo
+func (t *PARAM_USAGE_TYPE) UnmarshalJSON(b []byte) error {
+	ins, err := ParsePARAM_USAGE_TYPEFromString(string(b))
+	if err != nil {
+		return err
+	}
+	*t = ins
+	return nil
+}

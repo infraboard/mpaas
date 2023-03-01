@@ -28,7 +28,7 @@ func (r *K8sRunner) Run(ctx context.Context, in *task.RunTaskRequest) (
 	r.k8sClient = k8sClient
 
 	obj := new(v1.Job)
-	if err := yaml.Unmarshal([]byte(in.JobSpec), obj); err != nil {
+	if err := yaml.Unmarshal([]byte(in.RenderJobSpec()), obj); err != nil {
 		return nil, err
 	}
 

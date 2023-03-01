@@ -141,11 +141,26 @@ func (r *VersionedRunParam) GetPipelineTaskId() string {
 func (r *VersionedRunParam) EnvVars() (envs []v1.EnvVar) {
 	for i := range r.Params {
 		item := r.Params[i]
+		// 只导出环境变量
+		if !item.UsageType.Equal(PARAM_USAGE_TYPE_ENV) {
+			continue
+		}
 		if item.Name != "" && (unicode.IsUpper(rune(item.Name[0])) || strings.HasPrefix(item.Name, "_")) {
 			envs = append(envs, v1.EnvVar{
 				Name:  item.Name,
 				Value: item.Value,
 			})
+		}
+	}
+	return
+}
+
+func (r *VersionedRunParam) TemplateVars() (vars []*RunParam) {
+	for i := range r.Params {
+		item := r.Params[i]
+		// 只导出模版变量
+		if item.UsageType.Equal(PARAM_USAGE_TYPE_TEMPLATE) {
+			vars = append(vars, item)
 		}
 	}
 	return
@@ -228,4 +243,9 @@ func NewRunParamWithKVPaire(kvs ...string) (params []*RunParam) {
 	}
 
 	return
+}
+
+// 引用名称
+func (p *RunParam) RefName() string {
+	return fmt.Sprintf("${%s}", p.Name)
 }
