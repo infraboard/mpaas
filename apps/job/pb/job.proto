@@ -55,46 +55,49 @@ message CreateJobRequest {
 	// 执行器定义, 比如 k8s job 定义
 	// @gotags: bson:"runner_spec" json:"runner_spec"
 	string runner_spec = 2;
+	// Job 的Readme说明文档, 支持Markdown格式
+	// @gotags: bson:"readme" json:"readme"
+	string readme = 3;
 	// 手动更新Job的状态, 默认由job runner的operator更新
 	// @gotags: bson:"manual_update_status" json:"manual_update_status"
-	bool manual_update_status = 3;
+	bool manual_update_status = 4;
 	// 运行时 用户传人的参数说明(不同版本有不同参数)
 	// @gotags: bson:"run_params" json:"run_params"
-	repeated VersionedRunParam run_params = 4;
+	repeated VersionedRunParam run_params = 5;
 	// 是否允许回滚, 有些特殊的操作是不允许回滚的, 
 	// 能使用上次执行成功的结果 进行执行 该任务就支持回滚
 	// @gotags: bson:"allow_rollback" json:"allow_rollback"
-	bool allow_rollback = 5;
+	bool allow_rollback = 6;
 	// 回滚参数, 当执行回滚时执行的参数, 往往由上次成功执行的参数进行填充
 	// @gotags: bson:"rollback_params" json:"rollback_params"
-	repeated VersionedRunParam rollback_params = 6;
+	repeated VersionedRunParam rollback_params = 7;
 	// 所属域
 	// @gotags: bson:"domain" json:"domain" validate:"required"
-	string domain = 7;
+	string domain = 8;
 	// 所属空间
 	// @gotags: bson:"namespace" json:"namespace" validate:"required"
-	string namespace = 8;
+	string namespace = 9;
 	// 创建人
 	// @gotags: bson:"create_by" json:"create_by" validate:"required"
-	string create_by = 9;
+	string create_by = 10;
 	// 图片
 	// @gotags: bson:"logo" json:"logo"
-	string logo = 10;
+	string logo = 11;
 	// 名称, 不能包含特殊字符(. , #)
 	// @gotags: bson:"name" json:"name" validate:"required"
-	string name = 11;
+	string name = 12;
 	// 展示名称
 	// @gotags: bson:"display_name" json:"display_name"
-	string display_name = 12;
+	string display_name = 13;
 	// 是否是公开Job, 默认只能本空间内访问
 	// @gotags: bson:"visiable_mode" json:"visiable_mode"
-	mcube.resource.VISIABLE_MODE visiable_mode = 13;
+	mcube.resource.VISIABLE_MODE visiable_mode = 14;
 	// 描述
 	// @gotags: bson:"description" json:"description"
-	string description = 14;
+	string description = 15;
 	// 标签
 	// @gotags: bson:"labels" json:"labels"
-	map<string, string> labels = 15;
+	map<string, string> labels = 25;
 
 }
 
