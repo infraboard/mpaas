@@ -119,6 +119,8 @@ enum PARAM_VALUE_TYPE {
 	ENUM = 2;
 	// 基于url的远程选项拉去, 仅存储URL地址, 前端自己处理
 	HTTP_ENUM = 3;
+	// 密钥卷, 不会以环境变量注入, 会替换掉K8s Job中 volume定义的secret名称
+	SECRET_VOLUME = 4;
 }
 
 message EnumOption {
