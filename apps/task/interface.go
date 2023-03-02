@@ -70,7 +70,7 @@ func (s *RunTaskRequest) RuntimeEnvConfigMap(mountPath string) *v1.ConfigMap {
 		CONFIG_MAP_RUNTIME_ENV_KEY: []byte(""),
 	}
 	cm.Annotations = map[string]string{
-		workload.ANNOTATION_SECRET_MOUNT: mountPath,
+		workload.ANNOTATION_CONFIGMAP_MOUNT: mountPath,
 	}
 	return cm
 }

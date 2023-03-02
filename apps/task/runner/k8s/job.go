@@ -8,6 +8,7 @@ import (
 	"github.com/infraboard/mpaas/apps/task"
 	"github.com/infraboard/mpaas/common/format"
 	"github.com/infraboard/mpaas/provider/k8s"
+	"github.com/infraboard/mpaas/provider/k8s/config"
 	"github.com/infraboard/mpaas/provider/k8s/meta"
 	"github.com/infraboard/mpaas/provider/k8s/workload"
 	v1 "k8s.io/api/batch/v1"
@@ -60,11 +61,10 @@ func (r *K8sRunner) Run(ctx context.Context, in *task.RunTaskRequest) (
 	if err != nil {
 		return nil, err
 	}
-	defer r.CleanUpRuntime(ctx, k8sClient, in, status)
 
 	// 执行Job
 	if !in.DryRun {
-		r.log.Debug("run job yaml: %s", format.MustToYaml(obj))
+		r.log.Debugf("run job yaml: %s", format.MustToYaml(obj))
 		obj, err = k8sClient.WorkLoad().CreateJob(ctx, obj)
 		if err != nil {
 			return nil, err
@@ -87,7 +87,6 @@ func (r *K8sRunner) PrepareRuntime(
 	obj *v1.Job,
 	status *task.JobTaskStatus,
 ) error {
-
 	// 创建一个configmap 用于收集Task运行时的中间信息(以环境变量的方式)
 	runtimeEnvConfigMap := in.RuntimeEnvConfigMap(task.CONFIG_MAP_RUNTIME_ENV_MOUNT_PATH)
 	runtimeEnvConfigMap.Namespace = in.Params.K8SJobRunnerParams().Namespace
@@ -101,7 +100,10 @@ func (r *K8sRunner) PrepareRuntime(
 	workload.InjectPodConfigMapVolume(&obj.Spec.Template.Spec, runtimeEnvConfigMap)
 
 	// 更新临时资源等待释放
-	tr := task.NewTemporaryResource(runtimeEnvConfigMap.Kind, runtimeEnvConfigMap.Name)
+	tr := task.NewTemporaryResource(
+		config.CONFIG_KIND_CONFIG_MAP.String(),
+		runtimeEnvConfigMap.Name,
+	)
 	status.AddTemporaryResource(tr)
 	return nil
 }
@@ -139,7 +141,7 @@ func (r *K8sRunner) CleanUpRuntime(
 		return
 	}
 
-	r.log.Info("delete job runtime env configmap: %s", cmName)
+	r.log.Infof("delete job runtime env configmap: %s", cmName)
 	tr := status.GetTemporaryResource("configmap", cmName)
 	if tr != nil {
 		tr.ReleaseAt = time.Now().Unix()

@@ -41,7 +41,7 @@ func (i *impl) RunJob(ctx context.Context, in *pipeline.RunJobRequest) (
 		return nil, err
 	}
 	ins.Job = j
-	i.log.Info("describe job success, %s[%s]", j.Spec.Name, j.Meta.Id)
+	i.log.Infof("describe job success, %s[%s]", j.Spec.Name, j.Meta.Id)
 
 	// 合并允许参数(Job里面有默认值), 并检查参数合法性
 	params := j.GetVersionedRunParam(in.RunParams.Version)
@@ -151,6 +151,9 @@ func (i *impl) UpdateJobTaskStatus(ctx context.Context, in *task.UpdateJobTaskSt
 	}
 	ins.Status.Update(in)
 
+	// 状态钩子
+	i.TaskStatusHook(ctx, ins)
+
 	// 更新数据库
 	if _, err := i.jcol.UpdateByID(ctx, ins.Spec.TaskId, bson.M{"$set": ins}); err != nil {
 		return nil, exception.NewInternalServerError("update task(%s) document error, %s",
@@ -159,9 +162,23 @@ func (i *impl) UpdateJobTaskStatus(ctx context.Context, in *task.UpdateJobTaskSt
 
 	// Pipeline Task 状态变更回调
 	if ins.Spec.PipelineTask != "" {
-		i.PipelineTaskStatusChanged(ctx, ins)
+		_, err := i.PipelineTaskStatusChanged(ctx, ins)
+		if err != nil {
+			return nil, err
+		}
 	}
 	return ins, nil
+}
+
+// 任务状态变化处理
+func (i *impl) TaskStatusHook(ctx context.Context, in *task.JobTask) {
+	if err := i.CleanTaskTemplateResource(ctx, in); err != nil {
+
+	}
+}
+
+func (i *impl) CleanTaskTemplateResource(ctx context.Context, in *task.JobTask) error {
+	return nil
 }
 
 // 任务执行详情

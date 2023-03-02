@@ -171,14 +171,14 @@ const (
 
 // Enum value maps for WORKLOAD_KIND.
 var (
-	WORKLOAD_KIND_name = map[int32]string{
+	WORKLOAD_KIND_NAME = map[int32]string{
 		0: "DEPLOYMENT",
 		1: "STATEFULSET",
 		2: "DAEMONSET",
 		3: "JOB",
 		4: "CRONJOB",
 	}
-	WORKLOAD_KIND_value = map[string]int32{
+	WORKLOAD_KIND_VALUE = map[string]int32{
 		"DEPLOYMENT":  0,
 		"STATEFULSET": 1,
 		"DAEMONSET":   2,
