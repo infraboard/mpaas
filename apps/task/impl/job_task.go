@@ -41,6 +41,7 @@ func (i *impl) RunJob(ctx context.Context, in *pipeline.RunJobRequest) (
 		return nil, err
 	}
 	ins.Job = j
+	i.log.Info("describe job success, %s[%s]", j.Spec.Name, j.Meta.Id)
 
 	// 合并允许参数(Job里面有默认值), 并检查参数合法性
 	params := j.GetVersionedRunParam(in.RunParams.Version)
@@ -54,6 +55,7 @@ func (i *impl) RunJob(ctx context.Context, in *pipeline.RunJobRequest) (
 	if err != nil {
 		return nil, err
 	}
+	i.log.Infof("params check ok, %s", params)
 
 	// 获取执行器执行
 	r := runner.GetRunner(j.Spec.RunnerType)
@@ -230,7 +232,6 @@ func (i *impl) deleteK8sJob(ctx context.Context, ins *task.JobTask) error {
 		return fmt.Errorf("no k8s job found in status detail")
 	}
 
-	fmt.Println(detail)
 	obj := new(v1.Job)
 	if err := yaml.Unmarshal([]byte(detail), obj); err != nil {
 		return err

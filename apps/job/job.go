@@ -219,8 +219,10 @@ func NewK8SJobRunnerParams() *K8SJobRunnerParams {
 
 func NewRunParam(name, value string) *RunParam {
 	return &RunParam{
-		Name:  name,
-		Value: value,
+		Name:        name,
+		Value:       value,
+		EnumOptions: []*EnumOption{},
+		Extensions:  map[string]string{},
 	}
 }
 
