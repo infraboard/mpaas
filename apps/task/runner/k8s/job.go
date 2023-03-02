@@ -6,10 +6,10 @@ import (
 
 	"github.com/infraboard/mpaas/apps/cluster"
 	"github.com/infraboard/mpaas/apps/task"
+	"github.com/infraboard/mpaas/common/format"
 	"github.com/infraboard/mpaas/provider/k8s"
 	"github.com/infraboard/mpaas/provider/k8s/meta"
 	"github.com/infraboard/mpaas/provider/k8s/workload"
-	"github.com/infraboard/mpaas/test/tools"
 	v1 "k8s.io/api/batch/v1"
 	"sigs.k8s.io/yaml"
 )
@@ -64,7 +64,7 @@ func (r *K8sRunner) Run(ctx context.Context, in *task.RunTaskRequest) (
 
 	// 执行Job
 	if !in.DryRun {
-		r.log.Debug("run job yaml: %s", tools.MustToYaml(obj))
+		r.log.Debug("run job yaml: %s", format.MustToYaml(obj))
 		obj, err = k8sClient.WorkLoad().CreateJob(ctx, obj)
 		if err != nil {
 			return nil, err
