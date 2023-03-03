@@ -221,11 +221,12 @@ func (i *impl) CleanTaskResource(ctx context.Context, in *task.JobTask) error {
 		if jobParams == nil {
 			return fmt.Errorf("job version params not found")
 		}
-		runnerParams := in.Spec.RunParams.K8SJobRunnerParams()
-		cReq := cluster.NewDescribeClusterRequest(runnerParams.ClusterId)
-		c, err := i.cluster.DescribeCluster(ctx, cReq)
+		k8sParams := jobParams.K8SJobRunnerParams()
+
+		descReq := cluster.NewDescribeClusterRequest(k8sParams.ClusterId)
+		c, err := i.cluster.DescribeCluster(ctx, descReq)
 		if err != nil {
-			return err
+			return fmt.Errorf("find k8s cluster error, %s", err)
 		}
 
 		k8sClient, err := c.Client()
@@ -241,7 +242,7 @@ func (i *impl) CleanTaskResource(ctx context.Context, in *task.JobTask) error {
 			}
 			switch resource.Kind {
 			case config.CONFIG_KIND_CONFIG_MAP.String():
-				cmDeleteReq := meta.NewDeleteRequest(resource.Name).WithNamespace(runnerParams.Namespace)
+				cmDeleteReq := meta.NewDeleteRequest(resource.Name).WithNamespace(k8sParams.Namespace)
 				err = k8sClient.Config().DeleteConfigMap(ctx, cmDeleteReq)
 				if err != nil {
 					return fmt.Errorf("delete config map error, %s", err)
