@@ -153,9 +153,6 @@ func (i *impl) UpdateJobTaskStatus(ctx context.Context, in *task.UpdateJobTaskSt
 	}
 	ins.Status.Update(in)
 
-	// 状态钩子
-	i.TaskStatusHook(ctx, ins)
-
 	// 更新数据库
 	if _, err := i.jcol.UpdateByID(ctx, ins.Spec.TaskId, bson.M{"$set": ins}); err != nil {
 		return nil, exception.NewInternalServerError("update task(%s) document error, %s",
@@ -172,20 +169,58 @@ func (i *impl) UpdateJobTaskStatus(ctx context.Context, in *task.UpdateJobTaskSt
 	return ins, nil
 }
 
-// 任务状态变化处理
-func (i *impl) TaskStatusHook(ctx context.Context, in *task.JobTask) {
-	// 清理临时资源
-	if err := i.CleanTaskTemplateResource(ctx, in); err != nil {
-		in.Status.AddEvent(task.EVENT_LEVEL_WARN, "清理任务临时资源异常, %s", err)
+// 任务执行详情
+func (i *impl) DescribeJobTask(ctx context.Context, in *task.DescribeJobTaskRequest) (
+	*task.JobTask, error) {
+	if err := in.Validate(); err != nil {
+		return nil, err
 	}
+
+	ins := task.NewDefaultJobTask()
+	if err := i.jcol.FindOne(ctx, bson.M{"_id": in.Id}).Decode(ins); err != nil {
+		if err == mongo.ErrNoDocuments {
+			return nil, exception.NewNotFound("job task %s not found", in.Id)
+		}
+
+		return nil, exception.NewInternalServerError("find job task %s error, %s", in.Id, err)
+	}
+	return ins, nil
 }
 
-func (i *impl) CleanTaskTemplateResource(ctx context.Context, in *task.JobTask) error {
-	if in.Job == nil {
-		return fmt.Errorf("job is nil")
+// 删除任务
+func (i *impl) DeleteJobTask(ctx context.Context, in *task.DeleteJobTaskRequest) (
+	*task.JobTask, error) {
+	ins, err := i.DescribeJobTask(ctx, task.NewDescribeJobTaskRequest(in.Id))
+	if err != nil {
+		return nil, err
 	}
+
+	// 清理Job关联的临时资源
+	err = i.CleanTaskResource(ctx, ins)
+	if err != nil {
+		return nil, err
+	}
+
+	// 删除本地记录
+	_, err = i.jcol.DeleteOne(ctx, bson.M{"_id": in.Id})
+	if err != nil {
+		return nil, err
+	}
+
+	return ins, nil
+}
+
+func (i *impl) CleanTaskResource(ctx context.Context, in *task.JobTask) error {
+	if !in.HasJobSpec() {
+		return fmt.Errorf("job spec is nil")
+	}
+
 	switch in.Job.Spec.RunnerType {
 	case job.RUNNER_TYPE_K8S_JOB:
+		jobParams := in.Job.GetVersionedRunParam(in.Spec.RunParams.Version)
+		if jobParams == nil {
+			return fmt.Errorf("job version params not found")
+		}
 		runnerParams := in.Spec.RunParams.K8SJobRunnerParams()
 		cReq := cluster.NewDescribeClusterRequest(runnerParams.ClusterId)
 		c, err := i.cluster.DescribeCluster(ctx, cReq)
@@ -215,94 +250,26 @@ func (i *impl) CleanTaskTemplateResource(ctx context.Context, in *task.JobTask) 
 				resource.ReleaseAt = time.Now().Unix()
 			}
 		}
+
+		// 清理Job
+		detail := in.GetStatusDetail()
+		if detail == "" {
+			return fmt.Errorf("no k8s job found in status detail")
+		}
+
+		obj := new(v1.Job)
+		if err := yaml.Unmarshal([]byte(detail), obj); err != nil {
+			return err
+		}
+
+		req := meta.NewDeleteRequest(obj.Name)
+		req.Namespace = obj.Namespace
+		err = k8sClient.WorkLoad().DeleteJob(ctx, req)
+		if err != nil {
+			return fmt.Errorf("delete k8s job error, %s", err)
+		}
+		return err
 	}
 
 	return nil
-}
-
-// 任务执行详情
-func (i *impl) DescribeJobTask(ctx context.Context, in *task.DescribeJobTaskRequest) (
-	*task.JobTask, error) {
-	if err := in.Validate(); err != nil {
-		return nil, err
-	}
-
-	ins := task.NewDefaultJobTask()
-	if err := i.jcol.FindOne(ctx, bson.M{"_id": in.Id}).Decode(ins); err != nil {
-		if err == mongo.ErrNoDocuments {
-			return nil, exception.NewNotFound("job task %s not found", in.Id)
-		}
-
-		return nil, exception.NewInternalServerError("find job task %s error, %s", in.Id, err)
-	}
-	return ins, nil
-}
-
-// 删除任务
-func (i *impl) DeleteJobTask(ctx context.Context, in *task.DeleteJobTaskRequest) (
-	*task.JobTask, error) {
-	ins, err := i.DescribeJobTask(ctx, task.NewDescribeJobTaskRequest(in.Id))
-	if err != nil {
-		return nil, err
-	}
-
-	// 任务清理
-	if ins.HasJobSpec() {
-		// 清理Job
-		switch ins.Job.Spec.RunnerType {
-		case job.RUNNER_TYPE_K8S_JOB:
-			err = i.deleteK8sJob(ctx, ins)
-			if err != nil {
-				return nil, fmt.Errorf("delete k8s job error, %s", err)
-			}
-		}
-
-		// 清理Job关联的临时资源
-		err := i.CleanTaskTemplateResource(ctx, ins)
-		if err != nil {
-			return nil, err
-		}
-	}
-
-	// 删除本地记录
-	_, err = i.jcol.DeleteOne(ctx, bson.M{"_id": in.Id})
-	if err != nil {
-		return nil, err
-	}
-
-	return ins, nil
-}
-
-// 删除k8s中对应的job
-func (i *impl) deleteK8sJob(ctx context.Context, ins *task.JobTask) error {
-	jobParams := ins.Job.GetVersionedRunParam(ins.Spec.RunParams.Version)
-	if jobParams == nil {
-		return fmt.Errorf("job version params not found")
-	}
-
-	k8sParams := jobParams.K8SJobRunnerParams()
-	c, err := i.cluster.DescribeCluster(ctx, cluster.NewDescribeClusterRequest(k8sParams.ClusterId))
-	if err != nil {
-		return err
-	}
-	k8sClient, err := c.Client()
-	if err != nil {
-		return err
-	}
-
-	detail := ins.GetStatusDetail()
-	if detail == "" {
-		return fmt.Errorf("no k8s job found in status detail")
-	}
-
-	obj := new(v1.Job)
-	if err := yaml.Unmarshal([]byte(detail), obj); err != nil {
-		return err
-	}
-
-	fmt.Println(obj)
-
-	req := meta.NewDeleteRequest(obj.Name)
-	req.Namespace = obj.Namespace
-	return k8sClient.WorkLoad().DeleteJob(ctx, req)
 }
