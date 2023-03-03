@@ -3,6 +3,7 @@ package impl
 import (
 	"context"
 	"fmt"
+	"time"
 
 	"github.com/infraboard/mcube/exception"
 	"go.mongodb.org/mongo-driver/bson"
@@ -16,6 +17,7 @@ import (
 	"github.com/infraboard/mpaas/apps/pipeline"
 	"github.com/infraboard/mpaas/apps/task"
 	"github.com/infraboard/mpaas/apps/task/runner"
+	"github.com/infraboard/mpaas/provider/k8s/config"
 	"github.com/infraboard/mpaas/provider/k8s/meta"
 )
 
@@ -179,6 +181,39 @@ func (i *impl) TaskStatusHook(ctx context.Context, in *task.JobTask) {
 }
 
 func (i *impl) CleanTaskTemplateResource(ctx context.Context, in *task.JobTask) error {
+	if in.Job == nil {
+		return fmt.Errorf("job is nil")
+	}
+	switch in.Job.Spec.RunnerType {
+	case job.RUNNER_TYPE_K8S_JOB:
+		runnerParams := in.Spec.RunParams.K8SJobRunnerParams()
+		cReq := cluster.NewDescribeClusterRequest(runnerParams.ClusterId)
+		c, err := i.cluster.DescribeCluster(ctx, cReq)
+		if err != nil {
+			return err
+		}
+
+		k8sClient, err := c.Client()
+		if err != nil {
+			return err
+		}
+
+		// 清除临时挂载的configmap
+		for i := range in.Status.TemporaryResources {
+			resource := in.Status.TemporaryResources[i]
+			switch resource.Kind {
+			case config.CONFIG_KIND_CONFIG_MAP.String():
+				cmDeleteReq := meta.NewDeleteRequest(resource.Name).WithNamespace(runnerParams.Namespace)
+				err = k8sClient.Config().DeleteConfigMap(ctx, cmDeleteReq)
+				if err != nil {
+					return fmt.Errorf("delete config map error, %s", err)
+				}
+				in.Status.AddEvent(task.EVENT_LEVEL_DEBUG, "delete job runtime env configmap: %s", resource.Name)
+				resource.ReleaseAt = time.Now().Unix()
+			}
+		}
+	}
+
 	return nil
 }
 
