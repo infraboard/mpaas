@@ -172,8 +172,9 @@ func (i *impl) UpdateJobTaskStatus(ctx context.Context, in *task.UpdateJobTaskSt
 
 // 任务状态变化处理
 func (i *impl) TaskStatusHook(ctx context.Context, in *task.JobTask) {
+	// 清理临时资源
 	if err := i.CleanTaskTemplateResource(ctx, in); err != nil {
-
+		in.Status.AddEvent(task.EVENT_LEVEL_WARN, "清理任务临时资源异常, %s", err)
 	}
 }
 

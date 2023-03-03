@@ -165,6 +165,10 @@ func (t *JobTaskStatus) AddTemporaryResource(items ...*TemporaryResource) {
 	t.TemporaryResources = append(t.TemporaryResources, items...)
 }
 
+func (t *JobTaskStatus) AddEvent(level EVENT_LEVEL, format string, a ...any) {
+	t.Events = append(t.Events, NewEvent(level, fmt.Sprintf(format, a...)))
+}
+
 func (t *JobTaskStatus) GetTemporaryResource(kind, name string) *TemporaryResource {
 	for i := range t.TemporaryResources {
 		tr := t.TemporaryResources[i]
@@ -217,4 +221,12 @@ func ParseRuntimeEnvFromBytes(content []byte) ([]*RuntimeEnv, error) {
 
 func (r *RuntimeEnv) FileLine() (line []byte) {
 	return []byte(fmt.Sprintf("%s=%s\n", r.Name, r.Value))
+}
+
+func NewEvent(level EVENT_LEVEL, message string) *Event {
+	return &Event{
+		Time:    time.Now().Unix(),
+		Level:   level,
+		Message: message,
+	}
 }
