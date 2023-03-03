@@ -4,6 +4,7 @@ import (
 	"testing"
 
 	"github.com/infraboard/mpaas/provider/k8s/meta"
+	"github.com/infraboard/mpaas/test/conf"
 	"github.com/infraboard/mpaas/test/tools"
 	v1 "k8s.io/api/batch/v1"
 )
@@ -23,7 +24,7 @@ func TestListJob(t *testing.T) {
 }
 
 func TestGetJob(t *testing.T) {
-	req := meta.NewGetRequest("cfkeq7ds99bvnft65p30")
+	req := meta.NewGetRequest(conf.C.JOB_TASK_ID)
 	req.Namespace = "default"
 	ins, err := impl.GetJob(ctx, req)
 	if err != nil {

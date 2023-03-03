@@ -104,6 +104,7 @@ func (r *K8sRunner) PrepareRuntime(
 		config.CONFIG_KIND_CONFIG_MAP.String(),
 		runtimeEnvConfigMap.Name,
 	)
+	tr.Detail = format.MustToYaml(runtimeEnvConfigMap)
 	status.AddTemporaryResource(tr)
 	return nil
 }

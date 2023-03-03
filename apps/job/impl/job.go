@@ -8,6 +8,7 @@ import (
 	"github.com/infraboard/mpaas/apps/job"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
+	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
 func (i *impl) CreateJob(ctx context.Context, in *job.CreateJobRequest) (
@@ -69,8 +70,13 @@ func (i *impl) DescribeJob(ctx context.Context, in *job.DescribeJobRequest) (
 		filter["domain"] = domain
 	}
 
+	opt := &options.FindOneOptions{
+		Sort: bson.D{
+			{Key: "create_at", Value: -1},
+		},
+	}
 	ins := job.NewDefaultJob()
-	if err := i.col.FindOne(ctx, filter).Decode(ins); err != nil {
+	if err := i.col.FindOne(ctx, filter, opt).Decode(ins); err != nil {
 		if err == mongo.ErrNoDocuments {
 			return nil, exception.NewNotFound("job %s not found", in)
 		}

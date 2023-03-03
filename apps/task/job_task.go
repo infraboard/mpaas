@@ -187,6 +187,10 @@ func NewTemporaryResource(kind, name string) *TemporaryResource {
 	}
 }
 
+func (r *TemporaryResource) IsReleased() bool {
+	return r.ReleaseAt != 0
+}
+
 func ParseRuntimeEnvFromBytes(content []byte) ([]*RuntimeEnv, error) {
 	envs := []*RuntimeEnv{}
 	lines := []string{}

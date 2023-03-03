@@ -17,9 +17,9 @@ func TestRunBuildJob(t *testing.T) {
 	version.Params = job.NewRunParamWithKVPaire(
 		"GIT_REPOSITORY", "git@github.com:infraboard/mpaas.git",
 		"GIT_BRANCH", "master",
-		"GIT_COMMIT_ID", "32d63566098f7e0b0ac3a3d8ddffe71cc6cad7b0",
+		"GIT_COMMIT_ID", "0fc8ca3b0730156102290a3f4beb8b7cd2b09b9d",
 		job.SYSTEM_VARIABLE_IMAGE_REPOSITORY, "registry.cn-hangzhou.aliyuncs.com/inforboard/mpaas",
-		job.SYSTEM_VARIABLE_IMAGE_VERSION, "v0.0.2",
+		job.SYSTEM_VARIABLE_IMAGE_VERSION, "v0.0.3",
 	)
 	req.RunParams = version
 

@@ -201,6 +201,9 @@ func (i *impl) CleanTaskTemplateResource(ctx context.Context, in *task.JobTask) 
 		// 清除临时挂载的configmap
 		for i := range in.Status.TemporaryResources {
 			resource := in.Status.TemporaryResources[i]
+			if resource.IsReleased() {
+				continue
+			}
 			switch resource.Kind {
 			case config.CONFIG_KIND_CONFIG_MAP.String():
 				cmDeleteReq := meta.NewDeleteRequest(resource.Name).WithNamespace(runnerParams.Namespace)
@@ -245,12 +248,19 @@ func (i *impl) DeleteJobTask(ctx context.Context, in *task.DeleteJobTaskRequest)
 
 	// 任务清理
 	if ins.HasJobSpec() {
+		// 清理Job
 		switch ins.Job.Spec.RunnerType {
 		case job.RUNNER_TYPE_K8S_JOB:
 			err = i.deleteK8sJob(ctx, ins)
 			if err != nil {
 				return nil, fmt.Errorf("delete k8s job error, %s", err)
 			}
+		}
+
+		// 清理Job关联的临时资源
+		err := i.CleanTaskTemplateResource(ctx, ins)
+		if err != nil {
+			return nil, err
 		}
 	}
 

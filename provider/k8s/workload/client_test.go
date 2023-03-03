@@ -5,6 +5,7 @@ import (
 
 	"github.com/infraboard/mpaas/provider/k8s"
 	"github.com/infraboard/mpaas/provider/k8s/workload"
+	test "github.com/infraboard/mpaas/test/conf"
 )
 
 var (
@@ -17,5 +18,7 @@ func init() {
 	if err != nil {
 		panic(err)
 	}
+	// 加载单元测试的变量
+	test.LoadConfigFromEnv()
 	impl = client.WorkLoad()
 }
