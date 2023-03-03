@@ -153,6 +153,9 @@ func (i *impl) UpdateJobTaskStatus(ctx context.Context, in *task.UpdateJobTaskSt
 	}
 	ins.Status.Update(in)
 
+	// 任务状态变化处理
+	i.StatusChangedHook(ctx, ins)
+
 	// 更新数据库
 	if _, err := i.jcol.UpdateByID(ctx, ins.Spec.TaskId, bson.M{"$set": ins}); err != nil {
 		return nil, exception.NewInternalServerError("update task(%s) document error, %s",
@@ -167,6 +170,53 @@ func (i *impl) UpdateJobTaskStatus(ctx context.Context, in *task.UpdateJobTaskSt
 		}
 	}
 	return ins, nil
+}
+
+func (i *impl) StatusChangedHook(ctx context.Context, in *task.JobTask) {
+	if !in.HasJobSpec() {
+		return
+	}
+
+	switch in.Job.Spec.RunnerType {
+	case job.RUNNER_TYPE_K8S_JOB:
+		jobParams := in.Job.GetVersionedRunParam(in.Spec.RunParams.Version)
+		if jobParams == nil {
+			in.Status.AddErrorEvent("job version params not found")
+			return
+		}
+		k8sParams := jobParams.K8SJobRunnerParams()
+
+		descReq := cluster.NewDescribeClusterRequest(k8sParams.ClusterId)
+		c, err := i.cluster.DescribeCluster(ctx, descReq)
+		if err != nil {
+			in.Status.AddErrorEvent("find k8s cluster error, %s", err)
+			return
+		}
+
+		k8sClient, err := c.Client()
+		if err != nil {
+			in.Status.AddErrorEvent("init k8s client error, %s", err)
+			return
+		}
+
+		// 读取挂载的runtime configmap
+		taskId := in.Spec.RunParams.GetJobTaskId()
+		cmName := task.NewJobTaskEnvConfigMapName(taskId)
+		req := meta.NewGetRequest(cmName).WithNamespace(k8sParams.Namespace)
+		runtimeEnvConfigMap, err := k8sClient.Config().GetConfigMap(ctx, req)
+		if err != nil {
+			in.Status.AddErrorEvent("get config map error, %s", err)
+			return
+		}
+		// 解析并更新Runtime Env
+		data := runtimeEnvConfigMap.BinaryData[task.CONFIG_MAP_RUNTIME_ENV_KEY]
+		envs, err := task.ParseRuntimeEnvFromBytes(data)
+		if err != nil {
+			in.Status.AddErrorEvent("parse env data error, %s", err)
+			return
+		}
+		in.Status.RuntimeEnvs = envs
+	}
 }
 
 // 任务执行详情

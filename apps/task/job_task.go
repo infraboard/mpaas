@@ -165,6 +165,10 @@ func (t *JobTaskStatus) AddTemporaryResource(items ...*TemporaryResource) {
 	t.TemporaryResources = append(t.TemporaryResources, items...)
 }
 
+func (t *JobTaskStatus) AddErrorEvent(format string, a ...any) {
+	t.Events = append(t.Events, NewEvent(EVENT_LEVEL_ERROR, fmt.Sprintf(format, a...)))
+}
+
 func (t *JobTaskStatus) AddEvent(level EVENT_LEVEL, format string, a ...any) {
 	t.Events = append(t.Events, NewEvent(level, fmt.Sprintf(format, a...)))
 }
