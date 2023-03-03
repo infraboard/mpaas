@@ -2,14 +2,12 @@ package k8s
 
 import (
 	"context"
-	"time"
 
 	"github.com/infraboard/mpaas/apps/cluster"
 	"github.com/infraboard/mpaas/apps/task"
 	"github.com/infraboard/mpaas/common/format"
 	"github.com/infraboard/mpaas/provider/k8s"
 	"github.com/infraboard/mpaas/provider/k8s/config"
-	"github.com/infraboard/mpaas/provider/k8s/meta"
 	"github.com/infraboard/mpaas/provider/k8s/workload"
 	v1 "k8s.io/api/batch/v1"
 	"sigs.k8s.io/yaml"
@@ -79,7 +77,9 @@ func (r *K8sRunner) Run(ctx context.Context, in *task.RunTaskRequest) (
 	return status, nil
 }
 
-// 准备
+// Task运行时 需要提前准备一些资源
+// 资源的清理在Task 状态更新时执行, 不在这里执行,
+// 这里任务的异步执行的, k8s job是异步执行
 func (r *K8sRunner) PrepareRuntime(
 	ctx context.Context,
 	k8sClient *k8s.Client,
@@ -106,44 +106,4 @@ func (r *K8sRunner) PrepareRuntime(
 	)
 	status.AddTemporaryResource(tr)
 	return nil
-}
-
-// 临时资源回收与Runtime Env更新
-// 不用清理, PipelineTask结束时统一清理
-func (r *K8sRunner) CleanUpRuntime(
-	ctx context.Context,
-	k8sClient *k8s.Client,
-	in *task.RunTaskRequest,
-	status *task.JobTaskStatus) {
-	// 运行结束 从config map中读取Env, 并更新到Task状态中去
-	cmName := task.NewJobTaskEnvConfigMapName(in.Params.GetJobTaskId())
-	ns := in.Params.K8SJobRunnerParams().Namespace
-	req := meta.NewGetRequest(cmName).WithNamespace(ns)
-	runtimeEnvConfigMap, err := k8sClient.Config().GetConfigMap(ctx, req)
-	if err != nil {
-		r.log.Errorf("get config map error, %s", err)
-		return
-	}
-
-	// 解析并更新Runtime Env
-	data := runtimeEnvConfigMap.BinaryData[task.CONFIG_MAP_RUNTIME_ENV_KEY]
-	envs, err := task.ParseRuntimeEnvFromBytes(data)
-	if err != nil {
-		r.log.Errorf("parse env data error, %s", err)
-		return
-	}
-	status.RuntimeEnvs = envs
-
-	// 清除临时挂载的configmap
-	err = k8sClient.Config().DeleteConfigMap(ctx, meta.NewDeleteRequest(cmName).WithNamespace(ns))
-	if err != nil {
-		r.log.Errorf("delete config map error, %s", err)
-		return
-	}
-
-	r.log.Infof("delete job runtime env configmap: %s", cmName)
-	tr := status.GetTemporaryResource("configmap", cmName)
-	if tr != nil {
-		tr.ReleaseAt = time.Now().Unix()
-	}
 }
