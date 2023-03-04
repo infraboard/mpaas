@@ -57,8 +57,8 @@ func (r *RunTaskRequest) RenderJobSpec() string {
 	return renderedSpec
 }
 
-func NewJobTaskEnvConfigMapName(pipelineTaskId string) string {
-	return fmt.Sprintf("task-%s", pipelineTaskId)
+func NewJobTaskEnvConfigMapName(TaskId string) string {
+	return fmt.Sprintf("task-%s", TaskId)
 }
 
 // Job Task 挂载一个空的config 用于收集运行时的 环境变量

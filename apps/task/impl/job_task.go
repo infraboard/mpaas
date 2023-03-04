@@ -148,9 +148,9 @@ func (i *impl) UpdateJobTaskStatus(ctx context.Context, in *task.UpdateJobTaskSt
 	}
 
 	// 修改任务状态
-	if ins.Status.IsComplete() {
-		return nil, exception.NewBadRequest("已经结束的任务不能更新状态")
-	}
+	// if ins.Status.IsComplete() {
+	// 	return nil, exception.NewBadRequest("已经结束的任务不能更新状态")
+	// }
 	ins.Status.Update(in)
 
 	// 任务状态变化处理
@@ -200,8 +200,7 @@ func (i *impl) StatusChangedHook(ctx context.Context, in *task.JobTask) {
 		}
 
 		// 读取挂载的runtime configmap
-		taskId := in.Spec.RunParams.GetJobTaskId()
-		cmName := task.NewJobTaskEnvConfigMapName(taskId)
+		cmName := task.NewJobTaskEnvConfigMapName(in.Spec.TaskId)
 		req := meta.NewGetRequest(cmName).WithNamespace(k8sParams.Namespace)
 		runtimeEnvConfigMap, err := k8sClient.Config().GetConfigMap(ctx, req)
 		if err != nil {
