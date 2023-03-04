@@ -148,13 +148,13 @@ func (i *impl) UpdateJobTaskStatus(ctx context.Context, in *task.UpdateJobTaskSt
 	}
 
 	// 修改任务状态
-	// if ins.Status.IsComplete() {
-	// 	return nil, exception.NewBadRequest("已经结束的任务不能更新状态")
-	// }
+	if ins.Status.IsComplete() {
+		return nil, exception.NewBadRequest("已经结束的任务不能更新状态")
+	}
 	ins.Status.Update(in)
 
 	// 任务状态变化处理
-	i.StatusChangedHook(ctx, ins)
+	// i.StatusChangedHook(ctx, ins)
 
 	// 更新数据库
 	if _, err := i.jcol.UpdateByID(ctx, ins.Spec.TaskId, bson.M{"$set": ins}); err != nil {

@@ -55,10 +55,10 @@ func (r *K8sRunner) Run(ctx context.Context, in *task.RunTaskRequest) (
 	status.MarkedRunning()
 
 	// 运行时环境变量注入
-	err = r.PrepareRuntime(ctx, k8sClient, in, obj, status)
-	if err != nil {
-		return nil, err
-	}
+	// err = r.PrepareRuntime(ctx, k8sClient, in, obj, status)
+	// if err != nil {
+	// 	return nil, err
+	// }
 
 	// 执行Job
 	if !in.DryRun {

@@ -52,7 +52,7 @@ spec: # 详情描述
           args:
             [
               "-c",
-              "/kaniko/executor --destination=${_IMAGE_REPOSITORY}:${_IMAGE_VERSION} && echo _IMAGE_VERSION=${_IMAGE_VERSION} >> /workspace/runtime/task.env",
+              "/kaniko/executor --destination=${_IMAGE_REPOSITORY}:${_IMAGE_VERSION}",
             ]
           volumeMounts:
             - name: workspace
