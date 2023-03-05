@@ -10,6 +10,20 @@ import (
 	"go.mongodb.org/mongo-driver/mongo"
 )
 
+// 创建Pipeline
+func (i *impl) CreatePipeline(ctx context.Context, in *pipeline.CreatePipelineRequest) (
+	*pipeline.Pipeline, error) {
+	ins, err := pipeline.New(in)
+	if err != nil {
+		return nil, exception.NewBadRequest(err.Error())
+	}
+
+	if _, err := i.col.InsertOne(ctx, ins); err != nil {
+		return nil, exception.NewInternalServerError("inserted a pipeline document error, %s", err)
+	}
+	return ins, nil
+}
+
 // 查询Pipeline列表
 func (i *impl) QueryPipeline(ctx context.Context, in *pipeline.QueryPipelineRequest) (
 	*pipeline.PipelineSet, error) {
@@ -55,20 +69,6 @@ func (i *impl) DescribePipeline(ctx context.Context, in *pipeline.DescribePipeli
 		return nil, exception.NewInternalServerError("find pipeline %s error, %s", in.Id, err)
 	}
 
-	return ins, nil
-}
-
-// 创建Pipeline
-func (i *impl) CreatePipeline(ctx context.Context, in *pipeline.CreatePipelineRequest) (
-	*pipeline.Pipeline, error) {
-	ins, err := pipeline.New(in)
-	if err != nil {
-		return nil, exception.NewBadRequest(err.Error())
-	}
-
-	if _, err := i.col.InsertOne(ctx, ins); err != nil {
-		return nil, exception.NewInternalServerError("inserted a pipeline document error, %s", err)
-	}
 	return ins, nil
 }
 

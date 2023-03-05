@@ -22,6 +22,20 @@ func TestCreateTestJob(t *testing.T) {
 	req.Name = "test"
 	req.CreateBy = "test"
 	req.RunnerSpec = tools.MustReadContentFile("test/test.yml")
+	v1 := job.NewVersionedRunParam("v1")
+	v1.Add(&job.RunParam{
+		Required: true,
+		Name:     "cluster_id",
+		Desc:     "job运行时的k8s集群",
+		Value:    "k8s-test",
+	})
+	v1.Add(&job.RunParam{
+		Required: true,
+		Name:     "namespace",
+		Desc:     "job运行时的namespace",
+		Value:    "default",
+	})
+	req.AddVersionParams(v1)
 
 	ins, err := impl.CreateJob(ctx, req)
 	if err != nil {

@@ -9,7 +9,6 @@ import (
 
 	"github.com/infraboard/mpaas/apps/job"
 	pipeline "github.com/infraboard/mpaas/apps/pipeline"
-	"github.com/rs/xid"
 )
 
 func NewJobTaskSet() *JobTaskSet {
@@ -66,12 +65,7 @@ func NewMeta() *Meta {
 }
 
 func NewJobTask(req *pipeline.RunJobRequest) *JobTask {
-	if req.TaskId == "" {
-		req.TaskId = xid.New().String()
-	}
-	if req.UpdateToken == "" {
-		req.UpdateToken = xid.New().String()
-	}
+	req.SetDefault()
 
 	return &JobTask{
 		Meta:   NewMeta(),

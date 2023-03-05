@@ -36,7 +36,6 @@ func (i *impl) HandleEvent(ctx context.Context, in *trigger.Event) (
 
 		matched := set.MatchBranch(in.GitlabEvent.GetBranche())
 		for index := range matched.Items {
-
 			// 执行构建配置匹配的流水线
 			buildConf := matched.Items[index]
 			pipelineId := buildConf.Spec.PipielineId()
@@ -46,12 +45,15 @@ func (i *impl) HandleEvent(ctx context.Context, in *trigger.Event) (
 			}
 
 			bs := trigger.NewBuildStatus(buildConf)
-			pt, err := i.task.RunPipeline(ctx, pipeline.NewRunPipelineRequest(pipelineId))
-			if err != nil {
-				bs.ErrorMessage = err.Error()
-			} else {
-				bs.PiplineTaskId = pt.Meta.Id
+			if !in.SkipRunPipeline {
+				pt, err := i.task.RunPipeline(ctx, pipeline.NewRunPipelineRequest(pipelineId))
+				if err != nil {
+					bs.ErrorMessage = err.Error()
+				} else {
+					bs.PiplineTaskId = pt.Meta.Id
+				}
 			}
+
 			ins.AddBuildStatus(bs)
 		}
 	}

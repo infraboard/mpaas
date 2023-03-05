@@ -22,10 +22,11 @@ type Service interface {
 
 func NewCreateJobRequest() *CreateJobRequest {
 	return &CreateJobRequest{
-		Domain:    domain.DEFAULT_DOMAIN,
-		Namespace: namespace.DEFAULT_NAMESPACE,
-		RunParams: []*VersionedRunParam{},
-		Labels:    make(map[string]string),
+		Domain:         domain.DEFAULT_DOMAIN,
+		Namespace:      namespace.DEFAULT_NAMESPACE,
+		RunParams:      []*VersionedRunParam{},
+		RollbackParams: []*VersionedRunParam{},
+		Labels:         make(map[string]string),
 	}
 }
 

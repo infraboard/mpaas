@@ -5,8 +5,8 @@ stages:
     jobs:
       - job_name: test@default.default
         ignore_failed: false
-        params:
-          version: v0.1
+        run_params:
+          version: v1
           params:
             - name: cluster_id
               value: k8s-test
@@ -18,8 +18,8 @@ stages:
     jobs:
       - job_name: test@default.default
         ignore_failed: false
-        params:
-          version: v0.1
+        run_params:
+          version: v1
           params:
             - name: cluster_id
               value: k8s-test

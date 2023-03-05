@@ -46,7 +46,14 @@ func (i *impl) RunJob(ctx context.Context, in *pipeline.RunJobRequest) (
 	i.log.Infof("describe job success, %s[%s]", j.Spec.Name, j.Meta.Id)
 
 	// 合并允许参数(Job里面有默认值), 并检查参数合法性
-	params := j.GetVersionedRunParam(in.RunParams.Version)
+	params := j.GetVersionedRunParam(in.GetRunParamsVersion())
+	if params == nil {
+		return nil, fmt.Errorf("job %s version: %s not found, allow version: %s",
+			j.Spec.Name,
+			in.GetRunParamsVersion(),
+			j.AllowVersions(),
+		)
+	}
 	params.Merge(in.RunParams)
 	params.Add(ins.SystemVariable()...)
 	err = i.LoadRuntimeEnvs(ctx, in.RunParams.GetPipelineTaskId(), params)

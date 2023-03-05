@@ -37,7 +37,7 @@ func TestDescribePipeline(t *testing.T) {
 	t.Log(tools.MustToJson(ins))
 }
 
-func TestUpdatePipeline(t *testing.T) {
+func TestUpdateTestPipeline(t *testing.T) {
 	req := pipeline.NewPutPipelineRequest(conf.C.PIPELINE_ID)
 	tools.MustReadYamlFile("test/test.yml", req.Spec)
 	ins, err := impl.UpdatePipeline(ctx, req)

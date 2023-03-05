@@ -45,12 +45,15 @@ message Event {
     // 服务Id
     // @gotags: json:"service_id" validate:"required"
     string service_id = 1;
+    // 不执行Pipeline, 用于调试
+    // @gotags: json:"skip_run_pipeline"
+    bool skip_run_pipeline = 2;
     // 应用ID
     // @gotags: json:"provider"
-    EVENT_PROVIDER provider = 2;
+    EVENT_PROVIDER provider = 3;
     // gitlab webhook事件
     // @gotags: json:"gitlab_event" validate:"-"
-    GitlabWebHookEvent gitlab_event = 3;
+    GitlabWebHookEvent gitlab_event = 4;
 }
 
 enum EVENT_PROVIDER {

@@ -5,7 +5,7 @@ stages:
     jobs:
       - job_name: docker_build@default.default
         ignore_failed: false
-        params:
+        run_params:
           version: v0.1
           params:
             - name: GIT_REPOSITORY
@@ -22,7 +22,7 @@ stages:
     jobs:
       - job_name: docker_build@default.default
         ignore_failed: false
-        params:
+        run_params:
           version: v0.1
           params:
             - name: _DEPLOY_ID

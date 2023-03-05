@@ -1,7 +1,6 @@
 package impl_test
 
 import (
-	"os"
 	"testing"
 
 	"github.com/infraboard/mpaas/apps/pipeline"
@@ -12,6 +11,7 @@ import (
 
 func TestRunPipeline(t *testing.T) {
 	req := pipeline.NewRunPipelineRequest(conf.C.PIPELINE_ID)
+	req.RunBy = "test"
 	ins, err := impl.RunPipeline(ctx, req)
 	if err != nil {
 		t.Fatal(err)
@@ -29,7 +29,7 @@ func TestQueryPipelineTask(t *testing.T) {
 }
 
 func TestDescribePipelineTask(t *testing.T) {
-	req := task.NewDescribePipelineTaskRequest(os.Getenv("PIPELINE_TASK_ID"))
+	req := task.NewDescribePipelineTaskRequest(conf.C.PIPELINE_TASK_ID)
 	ins, err := impl.DescribePipelineTask(ctx, req)
 	if err != nil {
 		t.Fatal(err)
@@ -38,7 +38,7 @@ func TestDescribePipelineTask(t *testing.T) {
 }
 
 func TestDeletePipelineTask(t *testing.T) {
-	req := task.NewDeletePipelineTaskRequest(os.Getenv("PIPELINE_TASK_ID"))
+	req := task.NewDeletePipelineTaskRequest(conf.C.PIPELINE_TASK_ID)
 	ins, err := impl.DeletePipelineTask(ctx, req)
 	if err != nil {
 		t.Fatal(err)

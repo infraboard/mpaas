@@ -59,6 +59,14 @@ func (i *Job) HasRunParams() bool {
 	return len(i.Spec.RunParams) > 0
 }
 
+func (i *Job) AllowVersions() (versions []string) {
+	for m := range i.Spec.RunParams {
+		v := i.Spec.RunParams[m]
+		versions = append(versions, v.Version)
+	}
+	return
+}
+
 func (i *Job) MarshalJSON() ([]byte, error) {
 	return json.Marshal(struct {
 		*meta.Meta
@@ -204,6 +212,10 @@ func (r *VersionedRunParam) SetParamValue(key, value string) {
 }
 
 func (r *VersionedRunParam) Merge(target *VersionedRunParam) {
+	if target == nil {
+		return
+	}
+
 	for i := range target.Params {
 		t := target.Params[i]
 		r.SetParamValue(t.Name, t.Value)

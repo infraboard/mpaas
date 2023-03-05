@@ -10,6 +10,7 @@ import (
 	"github.com/infraboard/mcube/http/request"
 	job "github.com/infraboard/mpaas/apps/job"
 	"github.com/infraboard/mpaas/common/meta"
+	"github.com/rs/xid"
 	"sigs.k8s.io/yaml"
 )
 
@@ -88,6 +89,7 @@ func NewCreatePipelineRequestFromYAML(yml string) (*CreatePipelineRequest, error
 
 func NewCreatePipelineRequest() *CreatePipelineRequest {
 	return &CreatePipelineRequest{
+		With:   []*job.RunParam{},
 		Stages: []*Stage{},
 		Labels: map[string]string{},
 	}
@@ -109,6 +111,35 @@ func NewRunJobRequest(jobName string) *RunJobRequest {
 	return &RunJobRequest{
 		JobName:   jobName,
 		RunParams: job.NewVersionedRunParam(""),
+	}
+}
+
+func (r *RunJobRequest) GetRunParamsVersion() string {
+	if r.RunParams != nil {
+		return r.RunParams.Version
+	}
+
+	return ""
+}
+
+func (r *RunJobRequest) SetDefault() {
+	if r.TaskId == "" {
+		r.TaskId = xid.New().String()
+	}
+	if r.UpdateToken == "" {
+		r.UpdateToken = xid.New().String()
+	}
+	if r.RunParams == nil {
+		r.RunParams = job.NewVersionedRunParam("")
+	}
+	if r.RollbackParams == nil {
+		r.RollbackParams = job.NewVersionedRunParam("")
+	}
+	if r.Webhooks == nil {
+		r.Webhooks = []*WebHook{}
+	}
+	if r.Labels == nil {
+		r.Labels = map[string]string{}
 	}
 }
 
@@ -153,6 +184,7 @@ func (h *WebHook) IsMatch(t string) bool {
 func NewRunPipelineRequest(pipelineId string) *RunPipelineRequest {
 	return &RunPipelineRequest{
 		PipelineId: pipelineId,
+		RunParams:  []*RunPipelnieJobRequest{},
 		Labels:     make(map[string]string),
 	}
 }
