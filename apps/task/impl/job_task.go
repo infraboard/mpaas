@@ -146,7 +146,7 @@ func (i *impl) QueryJobTask(ctx context.Context, in *task.QueryJobTaskRequest) (
 	return set, nil
 }
 
-func (i *impl) CheckAllowUpdate(ctx context.Context, ins *task.JobTask, token string) error {
+func (i *impl) CheckAllowUpdate(ctx context.Context, ins *task.JobTask, token string, force bool) error {
 	// 校验更新合法性
 	err := ins.ValidateToken(token)
 	if err != nil {
@@ -154,10 +154,9 @@ func (i *impl) CheckAllowUpdate(ctx context.Context, ins *task.JobTask, token st
 	}
 
 	// 修改任务状态
-	if ins.Status.IsComplete() {
+	if !force && ins.Status.IsComplete() {
 		return exception.NewBadRequest("已经结束的任务不能更新状态")
 	}
-
 	return nil
 }
 
@@ -170,7 +169,7 @@ func (i *impl) UpdateJobTaskOutput(ctx context.Context, in *task.UpdateJobTaskOu
 	}
 
 	// 校验更新合法性
-	err = i.CheckAllowUpdate(ctx, ins, in.UpdateToken)
+	err = i.CheckAllowUpdate(ctx, ins, in.UpdateToken, in.Force)
 	if err != nil {
 		return nil, err
 	}
@@ -194,7 +193,7 @@ func (i *impl) UpdateJobTaskStatus(ctx context.Context, in *task.UpdateJobTaskSt
 	}
 
 	// 校验更新合法性
-	err = i.CheckAllowUpdate(ctx, ins, in.UpdateToken)
+	err = i.CheckAllowUpdate(ctx, ins, in.UpdateToken, in.Force)
 	if err != nil {
 		return nil, err
 	}

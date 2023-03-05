@@ -1,8 +1,8 @@
 metadata:
   annotations:
     batch.kubernetes.io/job-tracking: ""
-    task.mpaas.inforboar.io/id: cg29bols99bssqbquteg
-  creationTimestamp: "2023-03-05T13:15:14Z"
+    task.mpaas.inforboar.io/id: cg2a7bds99bvru8365dg
+  creationTimestamp: "2023-03-05T14:14:05Z"
   generation: 1
   labels:
     app: app01
@@ -57,7 +57,7 @@ metadata:
               f:terminationGracePeriodSeconds: {}
       manager: impl.test
       operation: Update
-      time: "2023-03-05T13:15:14Z"
+      time: "2023-03-05T14:14:05Z"
     - apiVersion: batch/v1
       fieldsType: FieldsV1
       fieldsV1:
@@ -71,11 +71,11 @@ metadata:
       manager: kube-controller-manager
       operation: Update
       subresource: status
-      time: "2023-03-05T13:15:36Z"
-  name: cg29bols99bssqbquteg
+      time: "2023-03-05T14:14:28Z"
+  name: cg2a7bds99bvru8365dg
   namespace: default
-  resourceVersion: "1239028"
-  uid: 4d28ef7e-1975-4a41-9e65-0efc08361a54
+  resourceVersion: "1243547"
+  uid: 7f93c2d0-8ca1-4009-b8ec-1bb4c6be5a3c
 spec:
   activeDeadlineSeconds: 30
   backoffLimit: 3
@@ -84,15 +84,15 @@ spec:
   parallelism: 1
   selector:
     matchLabels:
-      controller-uid: 4d28ef7e-1975-4a41-9e65-0efc08361a54
+      controller-uid: 7f93c2d0-8ca1-4009-b8ec-1bb4c6be5a3c
   suspend: false
   template:
     metadata:
       creationTimestamp: null
       labels:
         app: counter-pod
-        controller-uid: 4d28ef7e-1975-4a41-9e65-0efc08361a54
-        job-name: cg29bols99bssqbquteg
+        controller-uid: 7f93c2d0-8ca1-4009-b8ec-1bb4c6be5a3c
+        job-name: cg2a7bds99bvru8365dg
     spec:
       containers:
         - command:
@@ -101,9 +101,9 @@ spec:
             - for i in 9 8 7 6 5 4 3 2 1; do echo $i;sleep 2;done
           env:
             - name: _PIPELINE_TASK_ID
-              value: cg29bols99bssqbqute0
+              value: cg2a7bds99bvru8365d0
             - name: _JOB_TASK_ID
-              value: cg29bols99bssqbquteg
+              value: cg2a7bds99bvru8365dg
           image: busybox:1.30
           imagePullPolicy: IfNotPresent
           name: counter
@@ -116,13 +116,13 @@ spec:
       securityContext: {}
       terminationGracePeriodSeconds: 30
 status:
-  completionTime: "2023-03-05T13:15:36Z"
+  completionTime: "2023-03-05T14:14:28Z"
   conditions:
-    - lastProbeTime: "2023-03-05T13:15:36Z"
-      lastTransitionTime: "2023-03-05T13:15:36Z"
+    - lastProbeTime: "2023-03-05T14:14:28Z"
+      lastTransitionTime: "2023-03-05T14:14:28Z"
       status: "True"
       type: Complete
   ready: 0
-  startTime: "2023-03-05T13:15:14Z"
+  startTime: "2023-03-05T14:14:05Z"
   succeeded: 1
   uncountedTerminatedPods: {}

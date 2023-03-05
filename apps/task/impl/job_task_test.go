@@ -73,6 +73,7 @@ func TestUpdateJobTaskStatus(t *testing.T) {
 	req := task.NewUpdateJobTaskStatusRequest(conf.C.JOB_TASK_ID)
 	req.Stage = task.STAGE_SUCCEEDED
 	req.Message = "执行成功"
+	req.Force = true
 	req.UpdateToken = conf.C.JOB_TASK_TOKEN
 	req.Detail = tools.MustReadContentFile("test/k8s_job.yml")
 	ins, err := impl.UpdateJobTaskStatus(ctx, req)

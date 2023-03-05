@@ -127,16 +127,17 @@ func (p *PipelineTask) NextRun() (*JobTaskSet, error) {
 	// 当未执行的任务中，没有运行中的时，剩下的就是需要被执行的任务
 	tasks := set.GetJobTaskByStage(STAGE_PENDDING)
 
+	nextTasks := NewJobTaskSet()
 	stageSpec := p.Pipeline.GetStage(stage.Name)
 	if stageSpec.IsParallel {
 		// 并行任务 返回该Stage所有等待执行的job
-		set.Add(tasks...)
+		nextTasks.Add(tasks...)
 	} else {
 		// 串行任务取第一个
-		set.Add(tasks[0])
+		nextTasks.Add(tasks[0])
 	}
 
-	return set, nil
+	return nextTasks, nil
 }
 
 func (p *PipelineTask) GetStage(name string) *StageStatus {

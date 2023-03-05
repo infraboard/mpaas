@@ -43,11 +43,11 @@ func (s *JobTaskSet) HasStage(stage STAGE) bool {
 }
 
 // 查询Stage中 等待执行的Job Task
-func (s *JobTaskSet) GetJobTaskByStage(stage STAGE) (jobs []*JobTask) {
+func (s *JobTaskSet) GetJobTaskByStage(stage STAGE) (tasks []*JobTask) {
 	for i := range s.Items {
 		item := s.Items[i]
 		if item.Status != nil && item.Status.Stage.Equal(stage) {
-			jobs = append(jobs, item)
+			tasks = append(tasks, item)
 		}
 	}
 	return
@@ -163,7 +163,7 @@ func (t *JobTaskStatus) MarkedSuccess() {
 }
 
 func (t *JobTaskStatus) IsComplete() bool {
-	return t.Stage > 10
+	return t.Stage >= STAGE_CANCELED
 }
 
 func (t *JobTaskStatus) UpdateStatus(req *UpdateJobTaskStatusRequest) {
