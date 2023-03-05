@@ -58,6 +58,17 @@ func TestQueryJobTask(t *testing.T) {
 	t.Log(tools.MustToJson(set))
 }
 
+func TestUpdateJobTaskOutput(t *testing.T) {
+	req := task.NewUpdateJobTaskOutputRequest(conf.C.JOB_TASK_ID)
+	req.AddRuntimeEnv(job.SYSTEM_VARIABLE_IMAGE_VERSION, "v0.0.4")
+	req.MarkdownOutput = "构建产物描述信息"
+	ins, err := impl.UpdateJobTaskOutput(ctx, req)
+	if err != nil {
+		t.Fatal(err)
+	}
+	t.Log(tools.MustToYaml(ins))
+}
+
 func TestUpdateJobTaskStatus(t *testing.T) {
 	req := task.NewUpdateJobTaskStatusRequest(conf.C.JOB_TASK_ID)
 	req.Stage = task.STAGE_SUCCEEDED

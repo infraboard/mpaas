@@ -105,6 +105,10 @@ func NewUpdateJobTaskOutputRequest(id string) *UpdateJobTaskOutputRequest {
 	}
 }
 
+func (req *UpdateJobTaskOutputRequest) AddRuntimeEnv(name, value string) {
+	req.RuntimeEnvs = append(req.RuntimeEnvs, NewRuntimeEnv(name, value))
+}
+
 func NewUpdateJobTaskStatusRequest(id string) *UpdateJobTaskStatusRequest {
 	return &UpdateJobTaskStatusRequest{
 		Id: id,
