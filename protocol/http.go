@@ -79,10 +79,11 @@ func (s *HTTPService) PathPrefix() string {
 func (s *HTTPService) Start() error {
 	// 装置子服务路由
 	app.LoadRESTfulApp(s.PathPrefix(), s.r)
+
 	// API Doc
 	config := restfulspec.Config{
 		WebServices:                   restful.RegisteredWebServices(), // you control what services are visible
-		APIPath:                       "/apidocs.json/",
+		APIPath:                       "/apidocs.json",
 		PostBuildSwaggerObjectHandler: swagger.Docs,
 		DefinitionNameHandler: func(name string) string {
 			if name == "state" || name == "sizeCache" || name == "unknownFields" {

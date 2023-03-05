@@ -98,6 +98,13 @@ func NewDeleteJobTaskRequest(id string) *DeleteJobTaskRequest {
 	}
 }
 
+func NewUpdateJobTaskOutputRequest(id string) *UpdateJobTaskOutputRequest {
+	return &UpdateJobTaskOutputRequest{
+		Id:          id,
+		RuntimeEnvs: []*RuntimeEnv{},
+	}
+}
+
 func NewUpdateJobTaskStatusRequest(id string) *UpdateJobTaskStatusRequest {
 	return &UpdateJobTaskStatusRequest{
 		Id: id,
