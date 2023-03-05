@@ -9,7 +9,7 @@ import (
 	"github.com/infraboard/mpaas/test/tools"
 )
 
-func TestCreatePipeline(t *testing.T) {
+func TestCreateMpaasPipeline(t *testing.T) {
 	req := pipeline.NewCreatePipelineRequest()
 	tools.MustReadYamlFile("test/mpaas-master-cicd.yml", req)
 	ins, err := impl.CreatePipeline(ctx, req)
@@ -39,7 +39,7 @@ func TestDescribePipeline(t *testing.T) {
 
 func TestUpdatePipeline(t *testing.T) {
 	req := pipeline.NewPutPipelineRequest(conf.C.PIPELINE_ID)
-	tools.MustReadYamlFile("test/create.yml", req.Spec)
+	tools.MustReadYamlFile("test/test.yml", req.Spec)
 	ins, err := impl.UpdatePipeline(ctx, req)
 	if err != nil {
 		t.Fatal(err)
@@ -57,7 +57,7 @@ func TestDeletePipeline(t *testing.T) {
 }
 
 func TestNewCreatePipelineRequestFromYAML(t *testing.T) {
-	yml := tools.MustReadContentFile("test/create.yml")
+	yml := tools.MustReadContentFile("test/test.yml")
 
 	obj, err := pipeline.NewCreatePipelineRequestFromYAML(yml)
 	if err != nil {

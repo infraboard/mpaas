@@ -287,7 +287,10 @@ func (i *impl) DeleteJobTask(ctx context.Context, in *task.DeleteJobTaskRequest)
 	// 清理Job关联的临时资源
 	err = i.CleanTaskResource(ctx, ins)
 	if err != nil {
-		return nil, err
+		if !in.Force {
+			return nil, err
+		}
+		i.log.Warnf("force delete, but has error, %s", err)
 	}
 
 	// 删除本地记录
@@ -307,7 +310,9 @@ func (i *impl) CleanTaskResource(ctx context.Context, in *task.JobTask) error {
 	switch in.Job.Spec.RunnerType {
 	case job.RUNNER_TYPE_K8S_JOB:
 		jobParams := in.Job.GetVersionedRunParam(in.Spec.RunParams.Version)
-		if jobParams == nil {
+		if jobParams == nil && in.Job.HasRunParams() {
+			jobParams = in.Job.Spec.RunParams[0]
+		} else {
 			return fmt.Errorf("job version params not found")
 		}
 		k8sParams := jobParams.K8SJobRunnerParams()

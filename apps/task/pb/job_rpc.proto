@@ -80,4 +80,7 @@ message DeleteJobTaskRequest {
 	// 任务Id
 	// @gotags: json:"id"
     string id = 1;
+	// 强制删除, 当job有资源无法释放时, 比如 k8s里对应的job已经被删除了
+	// @gotags: json:"force"
+    bool force = 2;
 }

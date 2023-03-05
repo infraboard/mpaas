@@ -17,6 +17,19 @@ func TestQueryJob(t *testing.T) {
 	t.Log(tools.MustToJson(set))
 }
 
+func TestCreateTestJob(t *testing.T) {
+	req := job.NewCreateJobRequest()
+	req.Name = "test"
+	req.CreateBy = "test"
+	req.RunnerSpec = tools.MustReadContentFile("test/test.yml")
+
+	ins, err := impl.CreateJob(ctx, req)
+	if err != nil {
+		t.Fatal(err)
+	}
+	t.Log(tools.MustToJson(ins))
+}
+
 func TestCreateBuildJob(t *testing.T) {
 	req := job.NewCreateJobRequest()
 	req.Name = "docker_build"

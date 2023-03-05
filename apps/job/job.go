@@ -55,6 +55,10 @@ func (i *Job) Patch(req *UpdateJobRequest) error {
 	return mergo.MergeWithOverwrite(i.Spec, req.Spec)
 }
 
+func (i *Job) HasRunParams() bool {
+	return len(i.Spec.RunParams) > 0
+}
+
 func (i *Job) MarshalJSON() ([]byte, error) {
 	return json.Marshal(struct {
 		*meta.Meta

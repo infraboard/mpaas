@@ -1,7 +1,6 @@
 package impl_test
 
 import (
-	"os"
 	"testing"
 
 	"github.com/infraboard/mpaas/apps/job"
@@ -49,7 +48,7 @@ func TestRunDeployJob(t *testing.T) {
 
 func TestQueryJobTask(t *testing.T) {
 	req := task.NewQueryTaskRequest()
-	req.PipelineTaskId = os.Getenv("PIPELINE_TASK_ID")
+	// req.PipelineTaskId = os.Getenv("PIPELINE_TASK_ID")
 	set, err := impl.QueryJobTask(ctx, req)
 	if err != nil {
 		t.Fatal(err)
@@ -93,6 +92,7 @@ func TestDescribeJobTask(t *testing.T) {
 
 func TestDeleteJobTask(t *testing.T) {
 	req := task.NewDeleteJobTaskRequest(conf.C.JOB_TASK_ID)
+	req.Force = true
 	set, err := impl.DeleteJobTask(ctx, req)
 	if err != nil {
 		t.Fatal(err)
