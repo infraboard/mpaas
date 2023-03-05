@@ -1,8 +1,8 @@
 metadata:
   annotations:
     batch.kubernetes.io/job-tracking: ""
-    task.mpaas.inforboar.io/id: cg20vtls99bh9mrs8i70
-  creationTimestamp: "2023-03-05T03:43:50Z"
+    task.mpaas.inforboar.io/id: cg29bols99bssqbquteg
+  creationTimestamp: "2023-03-05T13:15:14Z"
   generation: 1
   labels:
     app: app01
@@ -31,36 +31,16 @@ metadata:
                 f:app: {}
             f:spec:
               f:containers:
-                k:{"name":"build-and-push"}:
+                k:{"name":"counter"}:
                   .: {}
-                  f:args: {}
                   f:command: {}
                   f:env:
                     .: {}
-                    k:{"name":"_IMAGE_REPOSITORY"}:
-                      .: {}
-                      f:name: {}
-                      f:value: {}
-                    k:{"name":"_IMAGE_VERSION"}:
-                      .: {}
-                      f:name: {}
-                      f:value: {}
                     k:{"name":"_JOB_TASK_ID"}:
                       .: {}
                       f:name: {}
                       f:value: {}
                     k:{"name":"_PIPELINE_TASK_ID"}:
-                      .: {}
-                      f:name: {}
-                    k:{"name":"GIT_BRANCH"}:
-                      .: {}
-                      f:name: {}
-                      f:value: {}
-                    k:{"name":"GIT_COMMIT_ID"}:
-                      .: {}
-                      f:name: {}
-                      f:value: {}
-                    k:{"name":"GIT_REPOSITORY"}:
                       .: {}
                       f:name: {}
                       f:value: {}
@@ -70,102 +50,14 @@ metadata:
                   f:resources: {}
                   f:terminationMessagePath: {}
                   f:terminationMessagePolicy: {}
-                  f:volumeMounts:
-                    .: {}
-                    k:{"mountPath":"/kaniko/.docker"}:
-                      .: {}
-                      f:mountPath: {}
-                      f:name: {}
-                    k:{"mountPath":"/workspace"}:
-                      .: {}
-                      f:mountPath: {}
-                      f:name: {}
-                  f:workingDir: {}
               f:dnsPolicy: {}
-              f:initContainers:
-                .: {}
-                k:{"name":"download"}:
-                  .: {}
-                  f:args: {}
-                  f:command: {}
-                  f:env:
-                    .: {}
-                    k:{"name":"_IMAGE_REPOSITORY"}:
-                      .: {}
-                      f:name: {}
-                      f:value: {}
-                    k:{"name":"_IMAGE_VERSION"}:
-                      .: {}
-                      f:name: {}
-                      f:value: {}
-                    k:{"name":"_JOB_TASK_ID"}:
-                      .: {}
-                      f:name: {}
-                      f:value: {}
-                    k:{"name":"_PIPELINE_TASK_ID"}:
-                      .: {}
-                      f:name: {}
-                    k:{"name":"GIT_BRANCH"}:
-                      .: {}
-                      f:name: {}
-                      f:value: {}
-                    k:{"name":"GIT_COMMIT_ID"}:
-                      .: {}
-                      f:name: {}
-                      f:value: {}
-                    k:{"name":"GIT_REPOSITORY"}:
-                      .: {}
-                      f:name: {}
-                      f:value: {}
-                    k:{"name":"GIT_SSH_COMMAND"}:
-                      .: {}
-                      f:name: {}
-                      f:value: {}
-                  f:image: {}
-                  f:imagePullPolicy: {}
-                  f:name: {}
-                  f:resources: {}
-                  f:terminationMessagePath: {}
-                  f:terminationMessagePolicy: {}
-                  f:volumeMounts:
-                    .: {}
-                    k:{"mountPath":"/etc/secret-volume"}:
-                      .: {}
-                      f:mountPath: {}
-                      f:name: {}
-                      f:readOnly: {}
-                    k:{"mountPath":"/workspace"}:
-                      .: {}
-                      f:mountPath: {}
-                      f:name: {}
-                  f:workingDir: {}
               f:restartPolicy: {}
               f:schedulerName: {}
               f:securityContext: {}
               f:terminationGracePeriodSeconds: {}
-              f:volumes:
-                .: {}
-                k:{"name":"kaniko-secret"}:
-                  .: {}
-                  f:name: {}
-                  f:secret:
-                    .: {}
-                    f:defaultMode: {}
-                    f:secretName: {}
-                k:{"name":"secret-volume"}:
-                  .: {}
-                  f:name: {}
-                  f:secret:
-                    .: {}
-                    f:defaultMode: {}
-                    f:secretName: {}
-                k:{"name":"workspace"}:
-                  .: {}
-                  f:emptyDir: {}
-                  f:name: {}
       manager: impl.test
       operation: Update
-      time: "2023-03-05T03:43:50Z"
+      time: "2023-03-05T13:15:14Z"
     - apiVersion: batch/v1
       fieldsType: FieldsV1
       fieldsV1:
@@ -179,121 +71,58 @@ metadata:
       manager: kube-controller-manager
       operation: Update
       subresource: status
-      time: "2023-03-05T03:51:54Z"
-  name: cg20vtls99bh9mrs8i70
+      time: "2023-03-05T13:15:36Z"
+  name: cg29bols99bssqbquteg
   namespace: default
-  resourceVersion: "1196485"
-  uid: bb93ef3d-5adb-412b-aba2-4f13986fefc5
+  resourceVersion: "1239028"
+  uid: 4d28ef7e-1975-4a41-9e65-0efc08361a54
 spec:
-  activeDeadlineSeconds: 1800
+  activeDeadlineSeconds: 30
   backoffLimit: 3
   completionMode: NonIndexed
   completions: 1
   parallelism: 1
   selector:
     matchLabels:
-      controller-uid: bb93ef3d-5adb-412b-aba2-4f13986fefc5
+      controller-uid: 4d28ef7e-1975-4a41-9e65-0efc08361a54
   suspend: false
   template:
     metadata:
       creationTimestamp: null
       labels:
-        app: build-pod
-        controller-uid: bb93ef3d-5adb-412b-aba2-4f13986fefc5
-        job-name: cg20vtls99bh9mrs8i70
+        app: counter-pod
+        controller-uid: 4d28ef7e-1975-4a41-9e65-0efc08361a54
+        job-name: cg29bols99bssqbquteg
     spec:
       containers:
-        - args:
+        - command:
+            - bin/sh
             - -c
-            - /kaniko/executor --destination=${_IMAGE_REPOSITORY}:${_IMAGE_VERSION}
-          command:
-            - sh
+            - for i in 9 8 7 6 5 4 3 2 1; do echo $i;sleep 2;done
           env:
-            - name: GIT_REPOSITORY
-              value: git@github.com:infraboard/mpaas.git
-            - name: GIT_BRANCH
-              value: master
-            - name: GIT_COMMIT_ID
-              value: 57612b40df7fc9619ddc537e3dc117ab335ed294
-            - name: _IMAGE_REPOSITORY
-              value: registry.cn-hangzhou.aliyuncs.com/inforboard/mpaas
-            - name: _IMAGE_VERSION
-              value: v0.0.5
             - name: _PIPELINE_TASK_ID
+              value: cg29bols99bssqbqute0
             - name: _JOB_TASK_ID
-              value: cg20vtls99bh9mrs8i70
-          image: registry.cn-hangzhou.aliyuncs.com/godev/kaniko-project.executor:v1.9.1-debug
+              value: cg29bols99bssqbquteg
+          image: busybox:1.30
           imagePullPolicy: IfNotPresent
-          name: build-and-push
+          name: counter
           resources: {}
           terminationMessagePath: /dev/termination-log
           terminationMessagePolicy: File
-          volumeMounts:
-            - mountPath: /workspace
-              name: workspace
-            - mountPath: /kaniko/.docker
-              name: kaniko-secret
-          workingDir: /workspace
       dnsPolicy: ClusterFirst
-      initContainers:
-        - args:
-            - -c
-            - git clone ${GIT_REPOSITORY} workspace --branch=${GIT_BRANCH} --single-branch
-              && cd workspace && git reset --hard ${GIT_COMMIT_ID}
-          command:
-            - sh
-          env:
-            - name: GIT_SSH_COMMAND
-              value: ssh -i /etc/secret-volume/id_rsa -o StrictHostKeyChecking=no
-            - name: GIT_REPOSITORY
-              value: git@github.com:infraboard/mpaas.git
-            - name: GIT_BRANCH
-              value: master
-            - name: GIT_COMMIT_ID
-              value: 57612b40df7fc9619ddc537e3dc117ab335ed294
-            - name: _IMAGE_REPOSITORY
-              value: registry.cn-hangzhou.aliyuncs.com/inforboard/mpaas
-            - name: _IMAGE_VERSION
-              value: v0.0.5
-            - name: _PIPELINE_TASK_ID
-            - name: _JOB_TASK_ID
-              value: cg20vtls99bh9mrs8i70
-          image: registry.cn-hangzhou.aliyuncs.com/godev/git:2.39.2
-          imagePullPolicy: IfNotPresent
-          name: download
-          resources: {}
-          terminationMessagePath: /dev/termination-log
-          terminationMessagePolicy: File
-          volumeMounts:
-            - mountPath: /workspace
-              name: workspace
-            - mountPath: /etc/secret-volume
-              name: secret-volume
-              readOnly: true
-          workingDir: /
       restartPolicy: Never
       schedulerName: default-scheduler
       securityContext: {}
       terminationGracePeriodSeconds: 30
-      volumes:
-        - emptyDir: {}
-          name: workspace
-        - name: secret-volume
-          secret:
-            defaultMode: 384
-            secretName: git-ssh-key
-        - name: kaniko-secret
-          secret:
-            defaultMode: 420
-            secretName: kaniko-secret
 status:
-  completionTime: "2023-03-05T03:51:54Z"
+  completionTime: "2023-03-05T13:15:36Z"
   conditions:
-    - lastProbeTime: "2023-03-05T03:51:54Z"
-      lastTransitionTime: "2023-03-05T03:51:54Z"
+    - lastProbeTime: "2023-03-05T13:15:36Z"
+      lastTransitionTime: "2023-03-05T13:15:36Z"
       status: "True"
       type: Complete
   ready: 0
-  startTime: "2023-03-05T03:43:50Z"
+  startTime: "2023-03-05T13:15:14Z"
   succeeded: 1
   uncountedTerminatedPods: {}

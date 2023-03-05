@@ -48,7 +48,7 @@ func TestRunDeployJob(t *testing.T) {
 
 func TestQueryJobTask(t *testing.T) {
 	req := task.NewQueryTaskRequest()
-	// req.PipelineTaskId = os.Getenv("PIPELINE_TASK_ID")
+	req.PipelineTaskId = conf.C.PIPELINE_TASK_ID
 	set, err := impl.QueryJobTask(ctx, req)
 	if err != nil {
 		t.Fatal(err)
@@ -73,6 +73,7 @@ func TestUpdateJobTaskStatus(t *testing.T) {
 	req := task.NewUpdateJobTaskStatusRequest(conf.C.JOB_TASK_ID)
 	req.Stage = task.STAGE_SUCCEEDED
 	req.Message = "执行成功"
+	req.UpdateToken = conf.C.JOB_TASK_TOKEN
 	req.Detail = tools.MustReadContentFile("test/k8s_job.yml")
 	ins, err := impl.UpdateJobTaskStatus(ctx, req)
 	if err != nil {

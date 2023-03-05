@@ -151,7 +151,7 @@ func (i *impl) PipelineTaskStatusChanged(ctx context.Context, in *task.JobTask) 
 	}
 
 	// 如果没有需要执行的任务, Pipeline执行结束, 更新Pipeline状态为成功
-	if nexts == nil && nexts.Len() == 0 {
+	if nexts == nil || nexts.Len() == 0 {
 		p.MarkedSuccess()
 		return i.updatePipelineStatus(ctx, p)
 	}
@@ -273,7 +273,10 @@ func (i *impl) DeletePipelineTask(ctx context.Context, in *task.DeletePipelineTa
 	if err != nil {
 		return nil, err
 	}
-	// TODO: 运行中的流水线不运行删除, 先取消 才能删除
+	// 运行中的流水线不运行删除, 先取消 才能删除
+	if !ins.IsComplete() {
+		return nil, fmt.Errorf("任务结束才能删除, 如果没结束, 请先取消")
+	}
 
 	// 删除该Pipeline下所有的Job Task
 	tasks := ins.Status.JobTasks()
@@ -285,7 +288,9 @@ func (i *impl) DeletePipelineTask(ctx context.Context, in *task.DeletePipelineTa
 			continue
 		}
 
-		_, err := i.DeleteJobTask(ctx, task.NewDeleteJobTaskRequest(t.Spec.TaskId))
+		deleteReq := task.NewDeleteJobTaskRequest(t.Spec.TaskId)
+		deleteReq.Force = in.Force
+		_, err := i.DeleteJobTask(ctx, deleteReq)
 		if err != nil {
 			if !exception.IsNotFoundError(err) {
 				return nil, err

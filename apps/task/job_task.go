@@ -75,6 +75,21 @@ func NewJobTask(req *pipeline.RunJobRequest) *JobTask {
 	}
 }
 
+func (p *JobTask) GetVersionedRunParam() (*job.VersionedRunParam, error) {
+	j := p.Job
+	v := p.Spec.GetRunParamsVersion()
+	params := j.GetVersionedRunParam(v)
+	if params != nil {
+		return params, nil
+	}
+
+	return nil, fmt.Errorf("job %s version: %s not found, allow version: %s",
+		j.Spec.Name,
+		v,
+		j.AllowVersions(),
+	)
+}
+
 func (p *JobTask) SystemVariable() (items []*job.RunParam) {
 	items = append(items,
 		job.NewRunParam(

@@ -316,11 +316,9 @@ func (i *impl) CleanTaskResource(ctx context.Context, in *task.JobTask) error {
 
 	switch in.Job.Spec.RunnerType {
 	case job.RUNNER_TYPE_K8S_JOB:
-		jobParams := in.Job.GetVersionedRunParam(in.Spec.RunParams.Version)
-		if jobParams == nil && in.Job.HasRunParams() {
-			jobParams = in.Job.Spec.RunParams[0]
-		} else {
-			return fmt.Errorf("job version params not found")
+		jobParams, err := in.GetVersionedRunParam()
+		if err != nil {
+			return err
 		}
 		k8sParams := jobParams.K8SJobRunnerParams()
 
