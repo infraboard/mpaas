@@ -329,6 +329,12 @@ func (s *StageStatus) GetJobTask(id string) *JobTask {
 	return nil
 }
 
+func NewReadOnlyRuntimeEnv(name, value string) *RuntimeEnv {
+	env := NewRuntimeEnv(name, value)
+	env.ReadOnly = true
+	return env
+}
+
 func NewRuntimeEnv(name, value string) *RuntimeEnv {
 	return &RuntimeEnv{
 		Name:  name,

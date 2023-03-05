@@ -14,6 +14,7 @@ type Config struct {
 	DINGDING_BOT_URL string `env:"DINGDING_BOT_URL"`
 	WECHAT_BOT_URL   string `env:"WECHAT_BOT_URL"`
 	JOB_TASK_ID      string `env:"JOB_TASK_ID"`
+	JOB_TASK_TOKEN   string `env:"JOB_TASK_TOKEN"`
 	PIPELINE_TASK_ID string `env:"PIPELINE_TASK_ID"`
 
 	DEPLOY_JOB_ID string `env:"DEPLOY_JOB_ID"`

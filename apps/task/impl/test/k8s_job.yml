@@ -1,7 +1,9 @@
 metadata:
   annotations:
-    task.mpaas.inforboar.io/id: cg0qddua0brvcjjokbt0
-  creationTimestamp: "2023-03-03T07:50:16Z"
+    batch.kubernetes.io/job-tracking: ""
+    task.mpaas.inforboar.io/id: cg20vtls99bh9mrs8i70
+  creationTimestamp: "2023-03-05T03:43:50Z"
+  generation: 1
   labels:
     app: app01
   managedFields:
@@ -18,8 +20,10 @@ metadata:
         f:spec:
           f:activeDeadlineSeconds: {}
           f:backoffLimit: {}
+          f:completionMode: {}
           f:completions: {}
           f:parallelism: {}
+          f:suspend: {}
           f:template:
             f:metadata:
               f:labels:
@@ -73,10 +77,6 @@ metadata:
                       f:mountPath: {}
                       f:name: {}
                     k:{"mountPath":"/workspace"}:
-                      .: {}
-                      f:mountPath: {}
-                      f:name: {}
-                    k:{"mountPath":"/workspace/runtime"}:
                       .: {}
                       f:mountPath: {}
                       f:name: {}
@@ -159,65 +159,53 @@ metadata:
                     .: {}
                     f:defaultMode: {}
                     f:secretName: {}
-                k:{"name":"task-cg0qddua0brvcjjokbt0"}:
-                  .: {}
-                  f:configMap:
-                    .: {}
-                    f:defaultMode: {}
-                    f:name: {}
-                  f:name: {}
                 k:{"name":"workspace"}:
                   .: {}
                   f:emptyDir: {}
                   f:name: {}
       manager: impl.test
       operation: Update
-      time: "2023-03-03T07:50:16Z"
+      time: "2023-03-05T03:43:50Z"
     - apiVersion: batch/v1
       fieldsType: FieldsV1
       fieldsV1:
         f:status:
-          f:conditions:
-            .: {}
-            k:{"type":"Failed"}:
-              .: {}
-              f:lastProbeTime: {}
-              f:lastTransitionTime: {}
-              f:message: {}
-              f:reason: {}
-              f:status: {}
-              f:type: {}
-          f:failed: {}
+          f:completionTime: {}
+          f:conditions: {}
+          f:ready: {}
           f:startTime: {}
+          f:succeeded: {}
+          f:uncountedTerminatedPods: {}
       manager: kube-controller-manager
       operation: Update
-      time: "2023-03-03T08:10:44Z"
-  name: cg0qddua0brvcjjokbt0
+      subresource: status
+      time: "2023-03-05T03:51:54Z"
+  name: cg20vtls99bh9mrs8i70
   namespace: default
-  resourceVersion: "479316542"
-  selfLink: /apis/batch/v1/namespaces/default/jobs/cg0qddua0brvcjjokbt0
-  uid: 6129c04a-9c03-420b-b455-bf3c3bfe54f1
+  resourceVersion: "1196485"
+  uid: bb93ef3d-5adb-412b-aba2-4f13986fefc5
 spec:
   activeDeadlineSeconds: 1800
   backoffLimit: 3
+  completionMode: NonIndexed
   completions: 1
   parallelism: 1
   selector:
     matchLabels:
-      controller-uid: 6129c04a-9c03-420b-b455-bf3c3bfe54f1
+      controller-uid: bb93ef3d-5adb-412b-aba2-4f13986fefc5
+  suspend: false
   template:
     metadata:
       creationTimestamp: null
       labels:
         app: build-pod
-        controller-uid: 6129c04a-9c03-420b-b455-bf3c3bfe54f1
-        job-name: cg0qddua0brvcjjokbt0
+        controller-uid: bb93ef3d-5adb-412b-aba2-4f13986fefc5
+        job-name: cg20vtls99bh9mrs8i70
     spec:
       containers:
         - args:
             - -c
-            - /kaniko/executor --destination=${_IMAGE_REPOSITORY}:${_IMAGE_VERSION} &&
-              echo _IMAGE_VERSION=${_IMAGE_VERSION} >> /workspace/runtime/task.env
+            - /kaniko/executor --destination=${_IMAGE_REPOSITORY}:${_IMAGE_VERSION}
           command:
             - sh
           env:
@@ -226,14 +214,14 @@ spec:
             - name: GIT_BRANCH
               value: master
             - name: GIT_COMMIT_ID
-              value: 82a34223ba28489246bd260ed471e72b7310420a
+              value: 57612b40df7fc9619ddc537e3dc117ab335ed294
             - name: _IMAGE_REPOSITORY
               value: registry.cn-hangzhou.aliyuncs.com/inforboard/mpaas
             - name: _IMAGE_VERSION
-              value: v0.0.4
+              value: v0.0.5
             - name: _PIPELINE_TASK_ID
             - name: _JOB_TASK_ID
-              value: cg0qddua0brvcjjokbt0
+              value: cg20vtls99bh9mrs8i70
           image: registry.cn-hangzhou.aliyuncs.com/godev/kaniko-project.executor:v1.9.1-debug
           imagePullPolicy: IfNotPresent
           name: build-and-push
@@ -245,8 +233,6 @@ spec:
               name: workspace
             - mountPath: /kaniko/.docker
               name: kaniko-secret
-            - mountPath: /workspace/runtime
-              name: task-cg0qddua0brvcjjokbt0
           workingDir: /workspace
       dnsPolicy: ClusterFirst
       initContainers:
@@ -264,14 +250,14 @@ spec:
             - name: GIT_BRANCH
               value: master
             - name: GIT_COMMIT_ID
-              value: 82a34223ba28489246bd260ed471e72b7310420a
+              value: 57612b40df7fc9619ddc537e3dc117ab335ed294
             - name: _IMAGE_REPOSITORY
               value: registry.cn-hangzhou.aliyuncs.com/inforboard/mpaas
             - name: _IMAGE_VERSION
-              value: v0.0.4
+              value: v0.0.5
             - name: _PIPELINE_TASK_ID
             - name: _JOB_TASK_ID
-              value: cg0qddua0brvcjjokbt0
+              value: cg20vtls99bh9mrs8i70
           image: registry.cn-hangzhou.aliyuncs.com/godev/git:2.39.2
           imagePullPolicy: IfNotPresent
           name: download
@@ -300,17 +286,14 @@ spec:
           secret:
             defaultMode: 420
             secretName: kaniko-secret
-        - configMap:
-            defaultMode: 420
-            name: task-cg0qddua0brvcjjokbt0
-          name: task-cg0qddua0brvcjjokbt0
 status:
+  completionTime: "2023-03-05T03:51:54Z"
   conditions:
-    - lastProbeTime: "2023-03-03T08:10:44Z"
-      lastTransitionTime: "2023-03-03T08:10:44Z"
-      message: Job has reached the specified backoff limit
-      reason: BackoffLimitExceeded
+    - lastProbeTime: "2023-03-05T03:51:54Z"
+      lastTransitionTime: "2023-03-05T03:51:54Z"
       status: "True"
-      type: Failed
-  failed: 3
-  startTime: "2023-03-03T07:50:16Z"
+      type: Complete
+  ready: 0
+  startTime: "2023-03-05T03:43:50Z"
+  succeeded: 1
+  uncountedTerminatedPods: {}

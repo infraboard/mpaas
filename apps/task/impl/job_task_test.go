@@ -17,9 +17,9 @@ func TestRunBuildJob(t *testing.T) {
 	version.Params = job.NewRunParamWithKVPaire(
 		"GIT_REPOSITORY", "git@github.com:infraboard/mpaas.git",
 		"GIT_BRANCH", "master",
-		"GIT_COMMIT_ID", "82a34223ba28489246bd260ed471e72b7310420a",
+		"GIT_COMMIT_ID", "57612b40df7fc9619ddc537e3dc117ab335ed294",
 		job.SYSTEM_VARIABLE_IMAGE_REPOSITORY, "registry.cn-hangzhou.aliyuncs.com/inforboard/mpaas",
-		job.SYSTEM_VARIABLE_IMAGE_VERSION, "v0.0.4",
+		job.SYSTEM_VARIABLE_IMAGE_VERSION, "v0.0.5",
 	)
 	req.RunParams = version
 
@@ -60,7 +60,8 @@ func TestQueryJobTask(t *testing.T) {
 
 func TestUpdateJobTaskOutput(t *testing.T) {
 	req := task.NewUpdateJobTaskOutputRequest(conf.C.JOB_TASK_ID)
-	req.AddRuntimeEnv(job.SYSTEM_VARIABLE_IMAGE_VERSION, "v0.0.4")
+	req.UpdateToken = conf.C.JOB_TASK_TOKEN
+	req.AddRuntimeEnv(job.SYSTEM_VARIABLE_IMAGE_VERSION, "v0.0.5")
 	req.MarkdownOutput = "构建产物描述信息"
 	ins, err := impl.UpdateJobTaskOutput(ctx, req)
 	if err != nil {

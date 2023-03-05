@@ -69,6 +69,9 @@ func NewJobTask(req *pipeline.RunJobRequest) *JobTask {
 	if req.TaskId == "" {
 		req.TaskId = xid.New().String()
 	}
+	if req.UpdateToken == "" {
+		req.UpdateToken = xid.New().String()
+	}
 
 	return &JobTask{
 		Meta:   NewMeta(),
