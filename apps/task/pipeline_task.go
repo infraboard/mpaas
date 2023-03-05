@@ -231,15 +231,23 @@ func (s *PipelineTaskStatus) AddStage(item *StageStatus) {
 	s.StageStatus = append(s.StageStatus, item)
 }
 
-// 不更新只读
 func (s *PipelineTaskStatus) UpdateRuntimeEnv(updateBy string, envs []*RuntimeEnv) {
 	for i := range envs {
 		env := envs[i]
+
+		// 未导出变量不更新
+		if !env.IsExport() {
+			continue
+		}
+
+		// 获取Pipeline中变量
 		old := s.GetRuntimeEnv(env.Name)
 		if old == nil {
 			s.AddRuntimeEnv(env)
 			return
 		}
+
+		// 不更新只读
 		if old.ReadOnly {
 			return
 		}

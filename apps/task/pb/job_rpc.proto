@@ -14,8 +14,10 @@ service JobRPC {
 
     // 查询任务
     rpc QueryJobTask(QueryJobTaskRequest) returns(JobTaskSet);
-    // 更新任务
+    // 更新任务状态
     rpc UpdateJobTaskStatus(UpdateJobTaskStatusRequest) returns(JobTask);
+    // 更新任务输出结果
+    rpc UpdateJobTaskOutput(UpdateJobTaskOutputRequest) returns(JobTask);
     // 任务执行详情
     rpc DescribeJobTask(DescribeJobTaskRequest) returns(JobTask);
     // 删除任务
@@ -38,15 +40,34 @@ message UpdateJobTaskStatusRequest {
 	// 任务Id
 	// @gotags: json:"id"
     string id = 1;
+    // 任务状态需要手动更新时的Token
+	// @gotags: bson:"token" json:"token"
+    string update_token = 2;
 	// 任务当前状态
 	// @gotags: bson:"stage" json:"stage"
-    STAGE stage = 2;
+    STAGE stage = 3;
 	// 状态描述
 	// @gotags: bson:"message" json:"message"
-	string message = 3;
+	string message = 4;
 	// 任务状态详细描述, 用于Debug
 	// @gotags: bson:"detail" json:"detail"
-	string detail = 4;
+	string detail = 5;
+}
+
+message UpdateJobTaskOutputRequest {
+	// 任务Id
+	// @gotags: json:"id"
+    string id = 1;
+    // 任务状态需要手动更新时的Token
+	// @gotags: json:"token"
+    string update_token = 2;
+	// Job Task运行时环境变量, 大写开头的变量会更新到pipline中, 注入到后续执行的任务中
+	// 小写开头的变量, 作为Task运行后的输出, task自己保留
+	// @gotags: json:"runtime_envs"
+	repeated RuntimeEnv runtime_envs = 3;
+	// 任务运行后的产物信息, 用于界面展示
+	// @gotags: json:"markdown_output"
+	string markdown_output = 4;
 }
 
 message DescribeJobTaskRequest {

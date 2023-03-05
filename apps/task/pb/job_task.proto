@@ -75,15 +75,19 @@ message JobTaskStatus {
 	// 任务状态详细描述, 用于Debug
 	// @gotags: bson:"detail" json:"detail"
 	string detail = 5;
-	// Job Task运行时环境变量
+	// Job Task运行时环境变量, 大写开头的变量会更新到pipline中, 注入到后续执行的任务中
+	// 小写开头的变量, 作为Task运行后的输出, task自己保留
 	// @gotags: bson:"runtime_envs" json:"runtime_envs"
 	repeated RuntimeEnv runtime_envs = 6;
+	// 任务运行后的产物信息, 用于界面展示
+	// @gotags: bson:"markdown_output" json:"markdown_output"
+	string markdown_output = 7;
 	// 任务所需的临时资源
 	// @gotags: bson:"temporary_resources" json:"temporary_resources"
-	repeated TemporaryResource temporary_resources = 7;
+	repeated TemporaryResource temporary_resources = 8;
 	// 任务事件
 	// @gotags: bson:"events" json:"events"
-	repeated Event events = 8;
+	repeated Event events = 9;
 }
 
 enum EVENT_LEVEL {
@@ -111,6 +115,7 @@ message Event {
 
 // task 运行过程中 产生的临时环境变量, 即用记录Job的输出(将输出保存为环境变量)
 // 在Task结束时同步到Pipeline Task中, 后续Task执行时 读取并注入
+// 注意只有大写的变量才会被导出
 message RuntimeEnv {
 	// 环境变量名称
 	// @gotags: bson:"name" json:"name"

@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"strings"
 	"time"
+	"unicode"
 
 	"github.com/infraboard/mpaas/apps/job"
 	pipeline "github.com/infraboard/mpaas/apps/pipeline"
@@ -121,6 +122,13 @@ func (t *JobTask) Update(job *job.Job, status *JobTaskStatus) {
 	t.Status = status
 }
 
+func (t *JobTask) ValidateToken(token string) error {
+	if t.Spec.UpdateToken != token {
+		return fmt.Errorf("update token invalidate")
+	}
+	return nil
+}
+
 func (s *JobTask) ShowTitle() string {
 	return fmt.Sprintf("任务[%s]当前状态: %s", s.Spec.JobName, s.Status.Stage.String())
 }
@@ -146,7 +154,7 @@ func (t *JobTaskStatus) IsComplete() bool {
 	return t.Stage > 10
 }
 
-func (t *JobTaskStatus) Update(req *UpdateJobTaskStatusRequest) {
+func (t *JobTaskStatus) UpdateStatus(req *UpdateJobTaskStatusRequest) {
 	t.Stage = req.Stage
 	t.Message = req.Message
 
@@ -158,6 +166,13 @@ func (t *JobTaskStatus) Update(req *UpdateJobTaskStatusRequest) {
 	// 如果没传递结束时间, 则自动生成结束时间
 	if t.IsComplete() && t.EndAt == 0 {
 		t.EndAt = time.Now().Unix()
+	}
+}
+
+func (t *JobTaskStatus) UpdateOutput(req *UpdateJobTaskOutputRequest) {
+	t.RuntimeEnvs = req.RuntimeEnvs
+	if req.MarkdownOutput != "" {
+		t.MarkdownOutput = req.MarkdownOutput
 	}
 }
 
@@ -229,6 +244,13 @@ func ParseRuntimeEnvFromBytes(content []byte) ([]*RuntimeEnv, error) {
 
 func (r *RuntimeEnv) FileLine() (line []byte) {
 	return []byte(fmt.Sprintf("%s=%s\n", r.Name, r.Value))
+}
+
+func (r *RuntimeEnv) IsExport() bool {
+	if r.Name == "" && unicode.IsUpper(rune(r.Name[0])) {
+		return true
+	}
+	return false
 }
 
 func NewEvent(level EVENT_LEVEL, message string) *Event {

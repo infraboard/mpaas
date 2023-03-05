@@ -27,8 +27,10 @@ type JobRPCClient interface {
 	RunJob(ctx context.Context, in *pipeline.RunJobRequest, opts ...grpc.CallOption) (*JobTask, error)
 	// 查询任务
 	QueryJobTask(ctx context.Context, in *QueryJobTaskRequest, opts ...grpc.CallOption) (*JobTaskSet, error)
-	// 更新任务
+	// 更新任务状态
 	UpdateJobTaskStatus(ctx context.Context, in *UpdateJobTaskStatusRequest, opts ...grpc.CallOption) (*JobTask, error)
+	// 更新任务输出结果
+	UpdateJobTaskOutput(ctx context.Context, in *UpdateJobTaskOutputRequest, opts ...grpc.CallOption) (*JobTask, error)
 	// 任务执行详情
 	DescribeJobTask(ctx context.Context, in *DescribeJobTaskRequest, opts ...grpc.CallOption) (*JobTask, error)
 	// 删除任务
@@ -70,6 +72,15 @@ func (c *jobRPCClient) UpdateJobTaskStatus(ctx context.Context, in *UpdateJobTas
 	return out, nil
 }
 
+func (c *jobRPCClient) UpdateJobTaskOutput(ctx context.Context, in *UpdateJobTaskOutputRequest, opts ...grpc.CallOption) (*JobTask, error) {
+	out := new(JobTask)
+	err := c.cc.Invoke(ctx, "/infraboard.mpaas.task.JobRPC/UpdateJobTaskOutput", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *jobRPCClient) DescribeJobTask(ctx context.Context, in *DescribeJobTaskRequest, opts ...grpc.CallOption) (*JobTask, error) {
 	out := new(JobTask)
 	err := c.cc.Invoke(ctx, "/infraboard.mpaas.task.JobRPC/DescribeJobTask", in, out, opts...)
@@ -96,8 +107,10 @@ type JobRPCServer interface {
 	RunJob(context.Context, *pipeline.RunJobRequest) (*JobTask, error)
 	// 查询任务
 	QueryJobTask(context.Context, *QueryJobTaskRequest) (*JobTaskSet, error)
-	// 更新任务
+	// 更新任务状态
 	UpdateJobTaskStatus(context.Context, *UpdateJobTaskStatusRequest) (*JobTask, error)
+	// 更新任务输出结果
+	UpdateJobTaskOutput(context.Context, *UpdateJobTaskOutputRequest) (*JobTask, error)
 	// 任务执行详情
 	DescribeJobTask(context.Context, *DescribeJobTaskRequest) (*JobTask, error)
 	// 删除任务
@@ -117,6 +130,9 @@ func (UnimplementedJobRPCServer) QueryJobTask(context.Context, *QueryJobTaskRequ
 }
 func (UnimplementedJobRPCServer) UpdateJobTaskStatus(context.Context, *UpdateJobTaskStatusRequest) (*JobTask, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method UpdateJobTaskStatus not implemented")
+}
+func (UnimplementedJobRPCServer) UpdateJobTaskOutput(context.Context, *UpdateJobTaskOutputRequest) (*JobTask, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UpdateJobTaskOutput not implemented")
 }
 func (UnimplementedJobRPCServer) DescribeJobTask(context.Context, *DescribeJobTaskRequest) (*JobTask, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method DescribeJobTask not implemented")
@@ -191,6 +207,24 @@ func _JobRPC_UpdateJobTaskStatus_Handler(srv interface{}, ctx context.Context, d
 	return interceptor(ctx, in, info, handler)
 }
 
+func _JobRPC_UpdateJobTaskOutput_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(UpdateJobTaskOutputRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(JobRPCServer).UpdateJobTaskOutput(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/infraboard.mpaas.task.JobRPC/UpdateJobTaskOutput",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(JobRPCServer).UpdateJobTaskOutput(ctx, req.(*UpdateJobTaskOutputRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _JobRPC_DescribeJobTask_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(DescribeJobTaskRequest)
 	if err := dec(in); err != nil {
@@ -245,6 +279,10 @@ var JobRPC_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "UpdateJobTaskStatus",
 			Handler:    _JobRPC_UpdateJobTaskStatus_Handler,
+		},
+		{
+			MethodName: "UpdateJobTaskOutput",
+			Handler:    _JobRPC_UpdateJobTaskOutput_Handler,
 		},
 		{
 			MethodName: "DescribeJobTask",

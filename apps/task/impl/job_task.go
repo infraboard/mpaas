@@ -139,6 +139,45 @@ func (i *impl) QueryJobTask(ctx context.Context, in *task.QueryJobTaskRequest) (
 	return set, nil
 }
 
+func (i *impl) CheckAllowUpdate(ctx context.Context, ins *task.JobTask, token string) error {
+	// 校验更新合法性
+	err := ins.ValidateToken(token)
+	if err != nil {
+		return err
+	}
+
+	// 修改任务状态
+	if ins.Status.IsComplete() {
+		return exception.NewBadRequest("已经结束的任务不能更新状态")
+	}
+
+	return nil
+}
+
+// 更新任务运行结果
+func (i *impl) UpdateJobTaskOutput(ctx context.Context, in *task.UpdateJobTaskOutputRequest) (
+	*task.JobTask, error) {
+	ins, err := i.DescribeJobTask(ctx, task.NewDescribeJobTaskRequest(in.Id))
+	if err != nil {
+		return nil, err
+	}
+
+	// 校验更新合法性
+	err = i.CheckAllowUpdate(ctx, ins, in.UpdateToken)
+	if err != nil {
+		return nil, err
+	}
+	ins.Status.UpdateOutput(in)
+
+	// 更新数据库
+	if _, err := i.jcol.UpdateByID(ctx, ins.Spec.TaskId, bson.M{"$set": ins}); err != nil {
+		return nil, exception.NewInternalServerError("update task(%s) document error, %s",
+			in.Id, err)
+	}
+
+	return ins, nil
+}
+
 // 更新Job状态
 func (i *impl) UpdateJobTaskStatus(ctx context.Context, in *task.UpdateJobTaskStatusRequest) (
 	*task.JobTask, error) {
@@ -147,11 +186,12 @@ func (i *impl) UpdateJobTaskStatus(ctx context.Context, in *task.UpdateJobTaskSt
 		return nil, err
 	}
 
-	// 修改任务状态
-	if ins.Status.IsComplete() {
-		return nil, exception.NewBadRequest("已经结束的任务不能更新状态")
+	// 校验更新合法性
+	err = i.CheckAllowUpdate(ctx, ins, in.UpdateToken)
+	if err != nil {
+		return nil, err
 	}
-	ins.Status.Update(in)
+	ins.Status.UpdateStatus(in)
 
 	// 任务状态变化处理
 	// i.StatusChangedHook(ctx, ins)
