@@ -34,7 +34,10 @@ message QueryJobRequest {
     repeated string ids = 5;
     // job 名称列表
     // @gotags: json:"names"
-    repeated string names = 6; 
+    repeated string names = 6;
+    // job 标签
+    // @gotags: json:"label"
+    map<string,string> label = 7;
 }
 
 

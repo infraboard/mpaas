@@ -10,6 +10,7 @@ import (
 
 func TestQueryJob(t *testing.T) {
 	req := job.NewQueryJobRequest()
+	req.Label["cluster_id"] = "k8s-test"
 	set, err := impl.QueryJob(ctx, req)
 	if err != nil {
 		t.Fatal(err)
@@ -76,16 +77,18 @@ func TestUpdateDeployJob(t *testing.T) {
 
 	v1 := job.NewVersionedRunParam("v1")
 	v1.Add(&job.RunParam{
-		Required: true,
-		Name:     "cluster_id",
-		Desc:     "job运行时的k8s集群",
-		Value:    "k8s-test",
+		Required:    true,
+		Name:        "cluster_id",
+		Desc:        "job运行时的k8s集群",
+		Value:       "k8s-test",
+		SearchLabel: true,
 	})
 	v1.Add(&job.RunParam{
-		Required: true,
-		Name:     "namespace",
-		Desc:     "job运行时的namespace",
-		Value:    "default",
+		Required:    true,
+		Name:        "namespace",
+		Desc:        "job运行时的namespace",
+		Value:       "default",
+		SearchLabel: true,
 	})
 
 	// 部署运行时变量

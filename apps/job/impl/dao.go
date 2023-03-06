@@ -49,6 +49,12 @@ func (r *queryRequest) FindFilter() bson.M {
 		filter["namespace"] = r.Namespace
 	}
 
+	if r.Label != nil && len(r.Label) > 0 {
+		for k, v := range r.Label {
+			filter["labels."+k] = v
+		}
+	}
+
 	if len(r.Ids) > 0 {
 		filter["_id"] = bson.M{"$in": r.Ids}
 	}

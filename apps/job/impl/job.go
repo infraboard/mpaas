@@ -105,6 +105,7 @@ func (i *impl) UpdateJob(ctx context.Context, in *job.UpdateJobRequest) (
 	}
 
 	// 校验更新后数据合法性
+	ins.Spec.BuildSearchLabels()
 	if err := ins.Spec.Validate(); err != nil {
 		return nil, err
 	}

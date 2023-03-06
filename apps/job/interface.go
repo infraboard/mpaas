@@ -57,6 +57,7 @@ func NewQueryJobRequest() *QueryJobRequest {
 		Page:  request.NewDefaultPageRequest(),
 		Ids:   []string{},
 		Names: []string{},
+		Label: map[string]string{},
 	}
 }
 
