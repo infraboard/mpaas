@@ -166,8 +166,8 @@ message RunParam {
 	// @gotags: bson:"name" json:"name" validate:"required"
 	string name = 3;
 	// 设置了值后，不允许修改, 用于控制流水线模版变量
-	// @gotags: bson:"read_olny" json:"read_olny"
-	bool read_olny = 4;
+	// @gotags: bson:"read_only" json:"read_only"
+	bool read_only = 4;
 	// 参数描述
 	// @gotags: bson:"desc" json:"desc"
 	string desc = 5;
@@ -186,8 +186,24 @@ message RunParam {
 	// 默认值, task运行时如果未传人，会填充默认值
 	// @gotags: bson:"value" json:"value"
 	string value = 10;
+	// 参数生效的范围
+	// @gotags: bson:"param_scope" json:"param_scope"
+	ParamScope param_scope = 11;
 
 	// 扩展属性
 	// @gotags: bson:"extensions" json:"extensions"
 	map<string, string> extensions = 15;
+}
+
+// 参数生效的范围
+message ParamScope {
+	// 作用与Stage
+	// @gotags: bson:"stage" json:"stage"
+	string stage = 1;
+	// 作用与Job
+	// @gotags: bson:"job" json:"job"
+	string job = 2;
+	// 作用于标签
+	// @gotags: bson:"label" json:"label"
+	map<string, string> label = 3;
 }

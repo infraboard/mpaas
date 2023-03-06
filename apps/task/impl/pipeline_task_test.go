@@ -9,8 +9,18 @@ import (
 	"github.com/infraboard/mpaas/test/tools"
 )
 
-func TestRunPipeline(t *testing.T) {
+func TestRunTestPipeline(t *testing.T) {
 	req := pipeline.NewRunPipelineRequest(conf.C.PIPELINE_ID)
+	req.RunBy = "test"
+	ins, err := impl.RunPipeline(ctx, req)
+	if err != nil {
+		t.Fatal(err)
+	}
+	t.Log(tools.MustToYaml(ins))
+}
+
+func TestRunMpaasPipeline(t *testing.T) {
+	req := pipeline.NewRunPipelineRequest(conf.C.MPAAS_PIPELINE_ID)
 	req.RunBy = "test"
 	ins, err := impl.RunPipeline(ctx, req)
 	if err != nil {

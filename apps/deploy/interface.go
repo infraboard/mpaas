@@ -27,9 +27,13 @@ func New(req *CreateDeploymentRequest) (*Deployment, error) {
 	if err := req.Validate(); err != nil {
 		return nil, err
 	}
+	m := meta.NewMeta()
+	if req.DeployId != "" {
+		m.Id = req.DeployId
+	}
 
 	d := &Deployment{
-		Meta:  meta.NewMeta(),
+		Meta:  m,
 		Scope: meta.NewScope(),
 		Spec:  req,
 	}

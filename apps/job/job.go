@@ -9,6 +9,7 @@ import (
 	"unicode"
 
 	"github.com/imdario/mergo"
+	"github.com/infraboard/mcube/logger/zap"
 	"github.com/infraboard/mpaas/common/meta"
 	v1 "k8s.io/api/core/v1"
 )
@@ -92,6 +93,8 @@ func NewVersionedRunParam(version string) *VersionedRunParam {
 	}
 }
 
+// 绕开Merge, 直接注入, 因为Merge只允许注入Job声明的变量
+// 非job声明的变量只能通过Add添加, 比如系统变量
 func (r *VersionedRunParam) Add(items ...*RunParam) {
 	r.Params = append(r.Params, items...)
 }
@@ -203,12 +206,13 @@ func (r *VersionedRunParam) GetParamValue(key string) string {
 // 设置参数的值
 func (r *VersionedRunParam) SetParamValue(key, value string) {
 	for i := range r.Params {
-		item := r.Params[i]
-		if item.Name == key {
-			item.Value = value
+		param := r.Params[i]
+		if param.IsEdit() && param.Name == key {
+			param.Value = value
 			return
 		}
 	}
+	zap.L().Warnf("set param %s value failed, job no param or readonly", key)
 }
 
 func (r *VersionedRunParam) Merge(targets []*RunParam) {
@@ -216,13 +220,6 @@ func (r *VersionedRunParam) Merge(targets []*RunParam) {
 		return
 	}
 
-	for i := range targets {
-		t := targets[i]
-		r.SetParamValue(t.Name, t.Value)
-	}
-}
-
-func (r *VersionedRunParam) UpdateFromEnvs(targets []v1.EnvVar) {
 	for i := range targets {
 		t := targets[i]
 		r.SetParamValue(t.Name, t.Value)
@@ -238,7 +235,14 @@ func NewRunParam(name, value string) *RunParam {
 		Name:        name,
 		Value:       value,
 		EnumOptions: []*EnumOption{},
+		ParamScope:  NewParamScope(),
 		Extensions:  map[string]string{},
+	}
+}
+
+func NewParamScope() *ParamScope {
+	return &ParamScope{
+		Label: map[string]string{},
 	}
 }
 
@@ -268,9 +272,18 @@ func (p *RunParam) RefName() string {
 	return fmt.Sprintf("${%s}", p.Name)
 }
 
+// 是否允许修改
+func (p *RunParam) IsEdit() bool {
+	// 只读且有值时不允许修改
+	if p.ReadOnly && p.Value != "" {
+		return false
+	}
+	return true
+}
+
 // 设置ReadOnly
 func (p *RunParam) SetReadOnly(v bool) *RunParam {
-	p.ReadOlny = v
+	p.ReadOnly = v
 	return p
 }
 

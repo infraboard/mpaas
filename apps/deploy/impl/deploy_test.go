@@ -41,6 +41,7 @@ func TestCreateDeployment(t *testing.T) {
 	req.Region = "上海"
 	req.Environment = "生产"
 	req.ServiceId = conf.C.SERVICE_ID
+	req.DeployId = "deploy01"
 
 	ds, err := impl.CreateDeployment(ctx, req)
 	if err != nil {

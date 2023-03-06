@@ -20,7 +20,7 @@ func TestQueryBuildConfig(t *testing.T) {
 }
 
 func TestDescribeBuildConfig(t *testing.T) {
-	req := build.NewDescribeBuildConfigRequst(conf.C.BUILD_CONFIG_ID)
+	req := build.NewDescribeBuildConfigRequst(conf.C.BUILD_ID)
 	ins, err := impl.DescribeBuildConfig(ctx, req)
 	if err != nil {
 		t.Fatal(err)
@@ -29,7 +29,7 @@ func TestDescribeBuildConfig(t *testing.T) {
 }
 
 func TestUpdateBuildConfig(t *testing.T) {
-	req := build.NewPatchDeployRequest(conf.C.BUILD_CONFIG_ID)
+	req := build.NewPatchDeployRequest(conf.C.BUILD_ID)
 	req.Spec.Condition.AddEvent("push")
 	req.Spec.Condition.AddBranche("master")
 	req.Spec.ImageBuild.PipelineId = conf.C.PIPELINE_ID
@@ -41,7 +41,7 @@ func TestUpdateBuildConfig(t *testing.T) {
 }
 
 func TestDeleteBuildConfig(t *testing.T) {
-	req := build.NewDeleteBuildConfigRequest(conf.C.BUILD_CONFIG_ID)
+	req := build.NewDeleteBuildConfigRequest(conf.C.BUILD_ID)
 	ins, err := impl.DeleteBuildConfig(ctx, req)
 	if err != nil {
 		t.Fatal(err)

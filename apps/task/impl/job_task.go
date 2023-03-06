@@ -107,7 +107,7 @@ func (i *impl) LoadPipelineRunParam(ctx context.Context, pipelineTaskId string, 
 	// 合并PipelineTask传入的变量参数
 	params.Merge(pt.Params.RunParams)
 	// 合并PipelineTask的运行时参数, Task运行时更新的
-	params.UpdateFromEnvs(pt.RuntimeEnvVars())
+	params.Merge(pt.RuntimeRunParams())
 	return nil
 }
 

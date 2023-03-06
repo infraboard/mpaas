@@ -104,9 +104,12 @@ message CreateDeploymentRequest {
     // 部署描述信息
     // @gotags: bson:"describe" json:"describe"
     string describe = 12;
+    // 部署Id, 没有系统会自动生成
+    // @gotags: bson:"deploy_id" json:"deploy_id"
+    string deploy_id = 13;
     // 是否需要发布申请, 需要发布申请的部署 不允许执行自动部署
     // @gotags: bson:"is_approval" json:"is_approval"
-    bool is_approval = 13;
+    bool is_approval = 14;
     // 部署标签
     // @gotags: bson:"labels" json:"labels"
     map<string,string> labels = 15;

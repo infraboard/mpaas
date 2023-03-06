@@ -5,9 +5,9 @@ import (
 	"time"
 
 	"github.com/infraboard/mcube/exception"
+	"github.com/infraboard/mpaas/apps/job"
 	"github.com/infraboard/mpaas/apps/pipeline"
 	"github.com/infraboard/mpaas/common/meta"
-	v1 "k8s.io/api/core/v1"
 )
 
 func NewPipelineTaskSet() *PipelineTaskSet {
@@ -198,7 +198,7 @@ func (p *PipelineTask) IsComplete() bool {
 }
 
 // 大写导出
-func (s *PipelineTask) RuntimeEnvVars() (envs []v1.EnvVar) {
+func (s *PipelineTask) RuntimeRunParams() (envs []*job.RunParam) {
 	if s.Status == nil {
 		return
 	}
@@ -206,10 +206,10 @@ func (s *PipelineTask) RuntimeEnvVars() (envs []v1.EnvVar) {
 	for i := range s.Status.RuntimeEnvs {
 		env := s.Status.RuntimeEnvs[i]
 		if env.IsExport() {
-			envs = append(envs, v1.EnvVar{
-				Name:  env.Name,
-				Value: env.Value,
-			})
+			envs = append(envs, job.NewRunParam(
+				env.Name,
+				env.Value,
+			))
 		}
 	}
 
