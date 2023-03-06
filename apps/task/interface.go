@@ -1,11 +1,13 @@
 package task
 
 import (
+	context "context"
 	"fmt"
 	"strings"
 
 	"github.com/infraboard/mcube/http/request"
 	job "github.com/infraboard/mpaas/apps/job"
+	pipeline "github.com/infraboard/mpaas/apps/pipeline"
 	"github.com/infraboard/mpaas/provider/k8s/workload"
 	v1 "k8s.io/api/core/v1"
 )
@@ -20,6 +22,10 @@ type Service interface {
 }
 
 type JobService interface {
+	// 执行Job
+	RunJob(context.Context, *pipeline.RunJobRequest) (*JobTask, error)
+	// 删除任务
+	DeleteJobTask(context.Context, *DeleteJobTaskRequest) (*JobTask, error)
 	JobRPCServer
 }
 
