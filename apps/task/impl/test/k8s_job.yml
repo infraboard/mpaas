@@ -1,7 +1,7 @@
 metadata:
   annotations:
-    task.mpaas.inforboar.io/id: cg2pi7ea0brjb4iu5s80
-  creationTimestamp: "2023-03-06T07:41:18Z"
+    task.mpaas.inforboar.io/id: cg2q5nma0brg23tlii1g
+  creationTimestamp: "2023-03-06T08:22:55Z"
   labels:
     app: app01
   managedFields:
@@ -163,21 +163,30 @@ metadata:
                   f:name: {}
       manager: impl.test
       operation: Update
-      time: "2023-03-06T07:41:18Z"
+      time: "2023-03-06T08:22:55Z"
     - apiVersion: batch/v1
       fieldsType: FieldsV1
       fieldsV1:
         f:status:
-          f:active: {}
+          f:completionTime: {}
+          f:conditions:
+            .: {}
+            k:{"type":"Complete"}:
+              .: {}
+              f:lastProbeTime: {}
+              f:lastTransitionTime: {}
+              f:status: {}
+              f:type: {}
           f:startTime: {}
+          f:succeeded: {}
       manager: kube-controller-manager
       operation: Update
-      time: "2023-03-06T07:41:19Z"
-  name: cg2pi7ea0brjb4iu5s80
+      time: "2023-03-06T08:31:55Z"
+  name: cg2q5nma0brg23tlii1g
   namespace: default
-  resourceVersion: "482205101"
-  selfLink: /apis/batch/v1/namespaces/default/jobs/cg2pi7ea0brjb4iu5s80
-  uid: 5d49abaa-09e6-49f4-8571-a3bde050f13c
+  resourceVersion: "482239223"
+  selfLink: /apis/batch/v1/namespaces/default/jobs/cg2q5nma0brg23tlii1g
+  uid: 7b22a133-3464-40c9-90df-7c5bed91c78d
 spec:
   activeDeadlineSeconds: 1800
   backoffLimit: 3
@@ -185,14 +194,14 @@ spec:
   parallelism: 1
   selector:
     matchLabels:
-      controller-uid: 5d49abaa-09e6-49f4-8571-a3bde050f13c
+      controller-uid: 7b22a133-3464-40c9-90df-7c5bed91c78d
   template:
     metadata:
       creationTimestamp: null
       labels:
         app: build-pod
-        controller-uid: 5d49abaa-09e6-49f4-8571-a3bde050f13c
-        job-name: cg2pi7ea0brjb4iu5s80
+        controller-uid: 7b22a133-3464-40c9-90df-7c5bed91c78d
+        job-name: cg2q5nma0brg23tlii1g
     spec:
       containers:
         - args:
@@ -206,15 +215,15 @@ spec:
             - name: GIT_BRANCH
               value: master
             - name: GIT_COMMIT_ID
-              value: 57612b40df7fc9619ddc537e3dc117ab335ed294
+              value: bfacd86c647935aea532f29421fe83c6a6111260
             - name: IMAGE_REPOSITORY
               value: registry.cn-hangzhou.aliyuncs.com/inforboard/mpaas
             - name: IMAGE_VERSION
-              value: v0.0.5
+              value: v0.0.6
             - name: _PIPELINE_TASK_ID
-              value: cg2pi7ea0brjb4iu5s7g
+              value: cg2q5nma0brg23tlii10
             - name: _JOB_TASK_ID
-              value: cg2pi7ea0brjb4iu5s80
+              value: cg2q5nma0brg23tlii1g
           image: registry.cn-hangzhou.aliyuncs.com/godev/kaniko-project.executor:v1.9.1-debug
           imagePullPolicy: IfNotPresent
           name: build-and-push
@@ -243,15 +252,15 @@ spec:
             - name: GIT_BRANCH
               value: master
             - name: GIT_COMMIT_ID
-              value: 57612b40df7fc9619ddc537e3dc117ab335ed294
+              value: bfacd86c647935aea532f29421fe83c6a6111260
             - name: IMAGE_REPOSITORY
               value: registry.cn-hangzhou.aliyuncs.com/inforboard/mpaas
             - name: IMAGE_VERSION
-              value: v0.0.5
+              value: v0.0.6
             - name: _PIPELINE_TASK_ID
-              value: cg2pi7ea0brjb4iu5s7g
+              value: cg2q5nma0brg23tlii10
             - name: _JOB_TASK_ID
-              value: cg2pi7ea0brjb4iu5s80
+              value: cg2q5nma0brg23tlii1g
           image: registry.cn-hangzhou.aliyuncs.com/godev/git:2.39.2
           imagePullPolicy: IfNotPresent
           name: download
@@ -281,5 +290,11 @@ spec:
             defaultMode: 420
             secretName: kaniko-secret
 status:
-  active: 1
-  startTime: "2023-03-06T07:41:19Z"
+  completionTime: "2023-03-06T08:31:55Z"
+  conditions:
+    - lastProbeTime: "2023-03-06T08:31:55Z"
+      lastTransitionTime: "2023-03-06T08:31:55Z"
+      status: "True"
+      type: Complete
+  startTime: "2023-03-06T08:22:56Z"
+  succeeded: 1

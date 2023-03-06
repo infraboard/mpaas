@@ -280,7 +280,7 @@ func (i *impl) DeletePipelineTask(ctx context.Context, in *task.DeletePipelineTa
 		return nil, err
 	}
 	// 运行中的流水线不运行删除, 先取消 才能删除
-	if !ins.IsComplete() {
+	if ins.IsRunning() {
 		return nil, fmt.Errorf("任务结束才能删除, 如果没结束, 请先取消")
 	}
 

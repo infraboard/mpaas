@@ -198,6 +198,15 @@ func (p *PipelineTask) IsComplete() bool {
 	return false
 }
 
+// Pipeline执行取消
+func (p *PipelineTask) IsRunning() bool {
+	if p.Status == nil {
+		return false
+	}
+
+	return p.Status.Stage > STAGE_PENDDING && p.Status.Stage < STAGE_CANCELED
+}
+
 // 大写导出
 func (s *PipelineTask) RuntimeRunParams() (envs []*job.RunParam) {
 	if s.Status == nil {
