@@ -1,10 +1,10 @@
 package impl_test
 
 import (
-	"os"
 	"testing"
 
 	"github.com/infraboard/mpaas/apps/trigger"
+	"github.com/infraboard/mpaas/test/conf"
 	"github.com/infraboard/mpaas/test/tools"
 )
 
@@ -15,7 +15,8 @@ func TestHandleEvent(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	req := trigger.NewGitlabEvent(os.Getenv("SERVICE_ID"), event)
+	req := trigger.NewGitlabEvent(conf.C.SERVICE_ID, event)
+	req.SkipRunPipeline = true
 	ps, err := impl.HandleEvent(ctx, req)
 	if err != nil {
 		t.Fatal(err)

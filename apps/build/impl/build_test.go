@@ -1,16 +1,16 @@
 package impl_test
 
 import (
-	"os"
 	"testing"
 
 	"github.com/infraboard/mpaas/apps/build"
+	"github.com/infraboard/mpaas/test/conf"
 	"github.com/infraboard/mpaas/test/tools"
 )
 
 func TestQueryBuildConfig(t *testing.T) {
 	req := build.NewQueryBuildConfigRequest()
-	req.AddService(os.Getenv("SERVICE_ID"))
+	req.AddService(conf.C.SERVICE_ID)
 	req.Event = "push"
 	set, err := impl.QueryBuildConfig(ctx, req)
 	if err != nil {
@@ -20,7 +20,7 @@ func TestQueryBuildConfig(t *testing.T) {
 }
 
 func TestDescribeBuildConfig(t *testing.T) {
-	req := build.NewDescribeBuildConfigRequst(os.Getenv("BUILD_CONFIG_ID"))
+	req := build.NewDescribeBuildConfigRequst(conf.C.BUILD_CONFIG_ID)
 	ins, err := impl.DescribeBuildConfig(ctx, req)
 	if err != nil {
 		t.Fatal(err)
@@ -29,9 +29,10 @@ func TestDescribeBuildConfig(t *testing.T) {
 }
 
 func TestUpdateBuildConfig(t *testing.T) {
-	req := build.NewPatchDeployRequest(os.Getenv("BUILD_CONFIG_ID"))
+	req := build.NewPatchDeployRequest(conf.C.BUILD_CONFIG_ID)
 	req.Spec.Condition.AddEvent("push")
 	req.Spec.Condition.AddBranche("master")
+	req.Spec.ImageBuild.PipelineId = conf.C.PIPELINE_ID
 	ins, err := impl.UpdateBuildConfig(ctx, req)
 	if err != nil {
 		t.Fatal(err)
@@ -40,7 +41,7 @@ func TestUpdateBuildConfig(t *testing.T) {
 }
 
 func TestDeleteBuildConfig(t *testing.T) {
-	req := build.NewDeleteBuildConfigRequest(os.Getenv("BUILD_CONFIG_ID"))
+	req := build.NewDeleteBuildConfigRequest(conf.C.BUILD_CONFIG_ID)
 	ins, err := impl.DeleteBuildConfig(ctx, req)
 	if err != nil {
 		t.Fatal(err)
@@ -51,7 +52,9 @@ func TestDeleteBuildConfig(t *testing.T) {
 func TestCreateBuildConfig(t *testing.T) {
 	req := build.NewCreateBuildConfigRequest()
 	req.Name = "测试构建"
-	req.ServiceId = os.Getenv("SERVICE_ID")
+	req.ServiceId = conf.C.SERVICE_ID
+	req.Condition.AddEvent("push")
+	req.Condition.AddBranche("master")
 	ins, err := impl.CreateBuildConfig(ctx, req)
 	if err != nil {
 		t.Fatal(err)
