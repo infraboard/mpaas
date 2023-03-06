@@ -26,9 +26,8 @@ func TestRunMpaasPipeline(t *testing.T) {
 	req.RunParams = job.NewRunParamWithKVPaire(
 		"GIT_REPOSITORY", "git@github.com:infraboard/mpaas.git",
 		"GIT_BRANCH", "master",
-		"GIT_COMMIT_ID", "57612b40df7fc9619ddc537e3dc117ab335ed294",
-		job.SYSTEM_VARIABLE_IMAGE_REPOSITORY, "registry.cn-hangzhou.aliyuncs.com/inforboard/mpaas",
-		job.SYSTEM_VARIABLE_IMAGE_VERSION, "v0.0.5",
+		"GIT_COMMIT_ID", "bfacd86c647935aea532f29421fe83c6a6111260",
+		job.SYSTEM_VARIABLE_IMAGE_VERSION, "v0.0.6",
 	)
 
 	ins, err := impl.RunPipeline(ctx, req)
