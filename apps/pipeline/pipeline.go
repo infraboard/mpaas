@@ -184,7 +184,7 @@ func (h *WebHook) IsMatch(t string) bool {
 func NewRunPipelineRequest(pipelineId string) *RunPipelineRequest {
 	return &RunPipelineRequest{
 		PipelineId: pipelineId,
-		RunParams:  []*RunPipelnieJobRequest{},
+		RunParams:  []*job.RunParam{},
 		Labels:     make(map[string]string),
 	}
 }

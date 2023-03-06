@@ -125,15 +125,27 @@ enum PARAM_VALUE_TYPE {
 }
 
 message EnumOption {
-	// 选项的值
-	// @gotags: bson:"value" json:"value" validate:"required"
-	string value = 1;
 	// 选项的说明
 	// @gotags: bson:"label" json:"label"
-	string label = 2;
+	string label = 1;
+	// 选项的值
+	// @gotags: bson:"value" json:"value" validate:"required"
+	string value = 2;
 	// 扩展属性
 	// @gotags: bson:"extensions" json:"extensions"
 	map<string, string> extensions = 15;
+}
+
+message HttpEnumConfig {
+	// 基于枚举的URL, 注意只支持Get方法
+	// @gotags: bson:"url" json:"url"
+	string url = 1;
+	// Enum Label映射的字段名
+	// @gotags: bson:"enum_label_name" json:"enum_label_name"
+	string enum_label_name = 2;
+	// Enum Value映射的字段名
+	// @gotags: bson:"enum_label_value" json:"enum_label_value"
+	string enum_label_value = 3;
 }
 
 enum PARAM_USAGE_TYPE {
@@ -153,27 +165,27 @@ message RunParam {
 	// 参数名称
 	// @gotags: bson:"name" json:"name" validate:"required"
 	string name = 3;
-	// 参数描述
-	// @gotags: bson:"desc" json:"desc"
-	string desc = 4;
-	// 值类型
-	// @gotags: bson:"value_type" json:"value_type"
-	PARAM_VALUE_TYPE value_type = 5;
-	// 枚举值的选项
-	// @gotags: bson:"enum_options" json:"enum_options,omitempty"
-	repeated EnumOption enum_options = 6;
-	// 基于枚举的URL
-	// @gotags: bson:"http_enum_url" json:"http_enum_url,omitempty"
-	string http_enum_url = 7;
-	// 值的样例
-	// @gotags: bson:"example" json:"example"
-	string example = 8;
-	// 默认值, task运行时如果未传人，会填充默认值
-	// @gotags: bson:"value" json:"value"
-	string value = 9;
 	// 设置了值后，不允许修改, 用于控制流水线模版变量
 	// @gotags: bson:"read_olny" json:"read_olny"
-	bool read_olny = 10;
+	bool read_olny = 4;
+	// 参数描述
+	// @gotags: bson:"desc" json:"desc"
+	string desc = 5;
+	// 值类型
+	// @gotags: bson:"value_type" json:"value_type"
+	PARAM_VALUE_TYPE value_type = 6;
+	// 枚举值的选项
+	// @gotags: bson:"enum_options" json:"enum_options,omitempty"
+	repeated EnumOption enum_options = 7;
+	// 基于Http枚举的配置
+	// @gotags: bson:"http_enum_config" json:"http_enum_config,omitempty"
+	HttpEnumConfig http_enum_config = 8;
+	// 值的样例
+	// @gotags: bson:"example" json:"example"
+	string example = 9;
+	// 默认值, task运行时如果未传人，会填充默认值
+	// @gotags: bson:"value" json:"value"
+	string value = 10;
 
 	// 扩展属性
 	// @gotags: bson:"extensions" json:"extensions"
