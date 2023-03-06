@@ -197,6 +197,7 @@ func (p *PipelineTask) IsComplete() bool {
 	return false
 }
 
+// 大写导出
 func (s *PipelineTask) RuntimeEnvVars() (envs []v1.EnvVar) {
 	if s.Status == nil {
 		return
@@ -204,10 +205,12 @@ func (s *PipelineTask) RuntimeEnvVars() (envs []v1.EnvVar) {
 
 	for i := range s.Status.RuntimeEnvs {
 		env := s.Status.RuntimeEnvs[i]
-		envs = append(envs, v1.EnvVar{
-			Name:  env.Name,
-			Value: env.Value,
-		})
+		if env.IsExport() {
+			envs = append(envs, v1.EnvVar{
+				Name:  env.Name,
+				Value: env.Value,
+			})
+		}
 	}
 
 	return

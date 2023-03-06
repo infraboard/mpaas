@@ -33,7 +33,6 @@ func (i *impl) RunJob(ctx context.Context, in *pipeline.RunJobRequest) (
 			return nil, exception.NewConflict("任务: %s 当前处于运行中, 需要等待运行结束后才能执行", in.TaskId)
 		}
 	}
-
 	ins := task.NewJobTask(in)
 
 	// 查询需要执行的Job
@@ -46,6 +45,11 @@ func (i *impl) RunJob(ctx context.Context, in *pipeline.RunJobRequest) (
 	i.log.Infof("describe job success, %s[%s]", j.Spec.Name, j.Meta.Id)
 
 	// 合并允许参数(Job里面有默认值), 并检查参数合法性
+	// 注意Param的合并是有顺序的，也就是参数优先级(低-->高):
+	// 1. job默认变量
+	// 2. 系统变量(默认禁止修改)
+	// 3. pipeline变量
+	// 4. task变量
 	params := j.GetVersionedRunParam(in.GetRunParamsVersion())
 	if params == nil {
 		return nil, fmt.Errorf("job %s version: %s not found, allow version: %s",
@@ -54,12 +58,14 @@ func (i *impl) RunJob(ctx context.Context, in *pipeline.RunJobRequest) (
 			j.AllowVersions(),
 		)
 	}
-	params.Merge(in.RunParams)
-	params.Add(ins.SystemVariable()...)
-	err = i.LoadRuntimeEnvs(ctx, in.RunParams.GetPipelineTaskId(), params)
+	params.Add(ins.SystemRunParam()...)
+	err = i.LoadPipelineRunParam(ctx, in.RunParams.GetPipelineTaskId(), params)
 	if err != nil {
 		return nil, err
 	}
+	params.Merge(in.RunParams.Params)
+
+	// 校验参数合法性
 	err = params.Validate()
 	if err != nil {
 		return nil, err
@@ -87,15 +93,20 @@ func (i *impl) RunJob(ctx context.Context, in *pipeline.RunJobRequest) (
 	return ins, nil
 }
 
-// 加载Pipeline 提供的Runtime env
-func (i *impl) LoadRuntimeEnvs(ctx context.Context, pipelineId string, params *job.VersionedRunParam) error {
-	if pipelineId == "" {
+// 加载Pipeline 提供的运行时参数
+func (i *impl) LoadPipelineRunParam(ctx context.Context, pipelineTaskId string, params *job.VersionedRunParam) error {
+	if pipelineTaskId == "" {
 		return nil
 	}
-	pt, err := i.DescribePipelineTask(ctx, task.NewDescribePipelineTaskRequest(pipelineId))
+	// 查询出Pipeline
+	pt, err := i.DescribePipelineTask(ctx, task.NewDescribePipelineTaskRequest(pipelineTaskId))
 	if err != nil {
 		return err
 	}
+
+	// 合并PipelineTask传入的变量参数
+	params.Merge(pt.Params.RunParams)
+	// 合并PipelineTask的运行时参数, Task运行时更新的
 	params.UpdateFromEnvs(pt.RuntimeEnvVars())
 	return nil
 }

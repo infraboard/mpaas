@@ -211,13 +211,13 @@ func (r *VersionedRunParam) SetParamValue(key, value string) {
 	}
 }
 
-func (r *VersionedRunParam) Merge(target *VersionedRunParam) {
-	if target == nil {
+func (r *VersionedRunParam) Merge(targets []*RunParam) {
+	if targets == nil {
 		return
 	}
 
-	for i := range target.Params {
-		t := target.Params[i]
+	for i := range targets {
+		t := targets[i]
 		r.SetParamValue(t.Name, t.Value)
 	}
 }
@@ -266,4 +266,16 @@ func NewRunParamWithKVPaire(kvs ...string) (params []*RunParam) {
 // 引用名称
 func (p *RunParam) RefName() string {
 	return fmt.Sprintf("${%s}", p.Name)
+}
+
+// 设置ReadOnly
+func (p *RunParam) SetReadOnly(v bool) *RunParam {
+	p.ReadOlny = v
+	return p
+}
+
+// 设置Required
+func (p *RunParam) SetRequired(v bool) *RunParam {
+	p.Required = v
+	return p
 }
