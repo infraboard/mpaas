@@ -20,12 +20,27 @@ func New(req *CreateJobRequest) (*Job, error) {
 		return nil, err
 	}
 
+	req.BuildSearchLabels()
 	d := &Job{
 		Meta: meta.NewMeta(),
 		Spec: req,
 	}
 
 	return d, nil
+}
+
+func (r *CreateJobRequest) BuildSearchLabels() {
+	if r.Labels == nil {
+		r.Labels = map[string]string{}
+	}
+
+	for i := range r.RunParams {
+		v := r.RunParams[i]
+		sl := v.SearchLabels()
+		for k, v := range sl {
+			r.Labels[k] = v
+		}
+	}
 }
 
 func NewJobSet() *JobSet {
@@ -224,6 +239,18 @@ func (r *VersionedRunParam) Merge(targets []*RunParam) {
 		t := targets[i]
 		r.SetParamValue(t.Name, t.Value)
 	}
+}
+
+func (r *VersionedRunParam) SearchLabels() map[string]string {
+	labels := map[string]string{}
+	for i := range r.Params {
+		p := r.Params[i]
+		if p.SearchLabel {
+			labels[p.Name] = p.Value
+		}
+	}
+
+	return labels
 }
 
 func NewK8SJobRunnerParams() *K8SJobRunnerParams {

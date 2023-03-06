@@ -115,16 +115,18 @@ func TestUpdateBuildJob(t *testing.T) {
 	req.Spec.RunnerSpec = tools.MustReadContentFile("test/build.yml")
 	v1 := job.NewVersionedRunParam("v1")
 	v1.Add(&job.RunParam{
-		Required: true,
-		Name:     "cluster_id",
-		Desc:     "job运行时的k8s集群",
-		Value:    "k8s-test",
+		Required:    true,
+		Name:        "cluster_id",
+		Desc:        "job运行时的k8s集群",
+		Value:       "k8s-test",
+		SearchLabel: true,
 	})
 	v1.Add(&job.RunParam{
-		Required: true,
-		Name:     "namespace",
-		Desc:     "job运行时的namespace",
-		Value:    "default",
+		Required:    true,
+		Name:        "namespace",
+		Desc:        "job运行时的namespace",
+		Value:       "default",
+		SearchLabel: true,
 	})
 
 	// 需要构建的代码信息

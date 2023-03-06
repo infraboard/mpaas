@@ -189,6 +189,9 @@ message RunParam {
 	// 参数生效的范围
 	// @gotags: bson:"param_scope" json:"param_scope"
 	ParamScope param_scope = 11;
+	// 是否加入到过滤标签中, 方便过滤搜索, 默认不会加入到搜索标签中
+	// @gotags: bson:"search_label" json:"search_label"
+	bool search_label = 12;
 
 	// 扩展属性
 	// @gotags: bson:"extensions" json:"extensions"
