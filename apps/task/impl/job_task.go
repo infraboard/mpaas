@@ -48,8 +48,8 @@ func (i *impl) RunJob(ctx context.Context, in *pipeline.RunJobRequest) (
 	// 注意Param的合并是有顺序的，也就是参数优先级(低-->高):
 	// 1. job默认变量
 	// 2. 系统变量(默认禁止修改)
-	// 3. pipeline变量
-	// 4. task变量
+	// 3. task变量
+	// 4. pipeline变量
 	params := j.GetVersionedRunParam(in.GetRunParamsVersion())
 	if params == nil {
 		return nil, fmt.Errorf("job %s version: %s not found, allow version: %s",
@@ -59,16 +59,16 @@ func (i *impl) RunJob(ctx context.Context, in *pipeline.RunJobRequest) (
 		)
 	}
 	params.Add(ins.SystemRunParam()...)
-	err = i.LoadPipelineRunParam(ctx, in.RunParams.GetPipelineTaskId(), params)
+	params.Merge(in.RunParams.Params)
+	err = i.LoadPipelineRunParam(ctx, params)
 	if err != nil {
 		return nil, err
 	}
-	params.Merge(in.RunParams.Params)
 
 	// 校验参数合法性
 	err = params.Validate()
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("校验任务【%s】参数错误, %s", j.Spec.Name, err)
 	}
 	i.log.Infof("params check ok, %s", params)
 
@@ -94,7 +94,8 @@ func (i *impl) RunJob(ctx context.Context, in *pipeline.RunJobRequest) (
 }
 
 // 加载Pipeline 提供的运行时参数
-func (i *impl) LoadPipelineRunParam(ctx context.Context, pipelineTaskId string, params *job.VersionedRunParam) error {
+func (i *impl) LoadPipelineRunParam(ctx context.Context, params *job.VersionedRunParam) error {
+	pipelineTaskId := params.GetPipelineTaskId()
 	if pipelineTaskId == "" {
 		return nil
 	}

@@ -3,6 +3,7 @@ package impl_test
 import (
 	"testing"
 
+	"github.com/infraboard/mpaas/apps/job"
 	"github.com/infraboard/mpaas/apps/pipeline"
 	"github.com/infraboard/mpaas/apps/task"
 	"github.com/infraboard/mpaas/test/conf"
@@ -22,6 +23,14 @@ func TestRunTestPipeline(t *testing.T) {
 func TestRunMpaasPipeline(t *testing.T) {
 	req := pipeline.NewRunPipelineRequest(conf.C.MPAAS_PIPELINE_ID)
 	req.RunBy = "test"
+	req.RunParams = job.NewRunParamWithKVPaire(
+		"GIT_REPOSITORY", "git@github.com:infraboard/mpaas.git",
+		"GIT_BRANCH", "master",
+		"GIT_COMMIT_ID", "57612b40df7fc9619ddc537e3dc117ab335ed294",
+		job.SYSTEM_VARIABLE_IMAGE_REPOSITORY, "registry.cn-hangzhou.aliyuncs.com/inforboard/mpaas",
+		job.SYSTEM_VARIABLE_IMAGE_VERSION, "v0.0.5",
+	)
+
 	ins, err := impl.RunPipeline(ctx, req)
 	if err != nil {
 		t.Fatal(err)

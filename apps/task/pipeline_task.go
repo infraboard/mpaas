@@ -24,9 +24,10 @@ func (s *PipelineTaskSet) Len() int {
 	return len(s.Items)
 }
 
-func NewPipelineTask(p *pipeline.Pipeline) *PipelineTask {
+func NewPipelineTask(p *pipeline.Pipeline, in *pipeline.RunPipelineRequest) *PipelineTask {
 	pt := NewDefaultPipelineTask()
 	pt.Pipeline = p
+	pt.Params = in
 
 	// 初始化所有的JobTask
 	for i := range p.Spec.Stages {

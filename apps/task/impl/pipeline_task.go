@@ -33,7 +33,7 @@ func (i *impl) RunPipeline(ctx context.Context, in *pipeline.RunPipelineRequest)
 	}
 
 	// 从pipeline 取出需要执行的任务
-	ins := task.NewPipelineTask(p)
+	ins := task.NewPipelineTask(p, in)
 	t := ins.GetFirstJobTask()
 	if t == nil {
 		return nil, fmt.Errorf("not job task to run")
@@ -45,6 +45,11 @@ func (i *impl) RunPipeline(ctx context.Context, in *pipeline.RunPipelineRequest)
 		return nil, err
 	}
 
+	// 保存Pipeline状态
+	if _, err := i.pcol.InsertOne(ctx, ins); err != nil {
+		return nil, exception.NewInternalServerError("inserted a pipeline task document error, %s", err)
+	}
+
 	// 运行 第一个Job, 驱动Pipeline执行
 	ins.MarkedRunning()
 	resp, err := i.RunJob(ctx, t.Spec)
@@ -53,9 +58,10 @@ func (i *impl) RunPipeline(ctx context.Context, in *pipeline.RunPipelineRequest)
 	}
 	t.Update(resp.Job, resp.Status)
 
-	// 保存Pipeline状态
-	if _, err := i.pcol.InsertOne(ctx, ins); err != nil {
-		return nil, exception.NewInternalServerError("inserted a pipeline task document error, %s", err)
+	//
+	ins, err = i.updatePipelineStatus(ctx, ins)
+	if err != nil {
+		return nil, err
 	}
 
 	return ins, nil

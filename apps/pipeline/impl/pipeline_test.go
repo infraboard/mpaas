@@ -39,7 +39,7 @@ func TestDescribePipeline(t *testing.T) {
 
 func TestUpdateTestPipeline(t *testing.T) {
 	req := pipeline.NewPutPipelineRequest(conf.C.PIPELINE_ID)
-	tools.MustReadYamlFile("test/test.yml", req.Spec)
+	tools.MustReadYamlFile("test/mpaas-master-cicd.yml", req.Spec)
 	ins, err := impl.UpdatePipeline(ctx, req)
 	if err != nil {
 		t.Fatal(err)

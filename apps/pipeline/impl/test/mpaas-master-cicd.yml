@@ -18,7 +18,7 @@ stages:
               value: registry.cn-hangzhou.aliyuncs.com/inforboard/mpaas
   - name: 容器镜像部署
     jobs:
-      - job_name: docker_build@default.default
+      - job_name: docker_deploy@default.default
         ignore_failed: false
         run_params:
           version: v1

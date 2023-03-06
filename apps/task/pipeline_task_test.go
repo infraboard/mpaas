@@ -11,7 +11,8 @@ import (
 func TestNewPipelineTask(t *testing.T) {
 	p := pipeline.NewDefaultPipeline()
 	tools.MustReadYamlFile("impl/test/pipeline.yml", p)
-	pt := task.NewPipelineTask(p)
+	req := pipeline.NewRunPipelineRequest("")
+	pt := task.NewPipelineTask(p, req)
 
 	tasks := pt.JobTasks()
 	for i := range tasks.Items {
