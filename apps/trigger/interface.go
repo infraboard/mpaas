@@ -41,7 +41,7 @@ func (e *GitlabWebHookEvent) GetLatestCommit() *Commit {
 func (e *GitlabWebHookEvent) GetLatestCommitShortId() string {
 	cm := e.GetLatestCommit()
 	if cm != nil {
-		cm.Short()
+		return cm.Short()
 	}
 	return ""
 }

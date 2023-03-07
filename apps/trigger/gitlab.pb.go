@@ -225,11 +225,11 @@ type Project struct {
 	// @gotags: bson:"name" json:"name"
 	Name string `protobuf:"bytes,3,opt,name=name,proto3" json:"name" bson:"name"`
 	// ssh 地址
-	// @gotags: bson:"ssh_url_to_repo" json:"ssh_url_to_repo"
-	GitSshUrl string `protobuf:"bytes,4,opt,name=git_ssh_url,json=gitSshUrl,proto3" json:"ssh_url_to_repo" bson:"ssh_url_to_repo"`
+	// @gotags: bson:"git_ssh_url" json:"git_ssh_url"
+	GitSshUrl string `protobuf:"bytes,4,opt,name=git_ssh_url,json=gitSshUrl,proto3" json:"git_ssh_url" bson:"git_ssh_url"`
 	// http 地址
-	// @gotags: bson:"http_url_to_repo" json:"http_url_to_repo"
-	GitHttpUrl string `protobuf:"bytes,5,opt,name=git_http_url,json=gitHttpUrl,proto3" json:"http_url_to_repo" bson:"http_url_to_repo"`
+	// @gotags: bson:"git_http_url" json:"git_http_url"
+	GitHttpUrl string `protobuf:"bytes,5,opt,name=git_http_url,json=gitHttpUrl,proto3" json:"git_http_url" bson:"git_http_url"`
 	// namespace
 	// @gotags: bson:"path_with_namespace" json:"path_with_namespace"
 	NamespacePath string `protobuf:"bytes,6,opt,name=namespace_path,json=namespacePath,proto3" json:"path_with_namespace" bson:"path_with_namespace"`
