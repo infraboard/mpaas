@@ -13,6 +13,7 @@ const (
 	GitlabEventTokenKey  = "X-Gitlab-Token"
 )
 
+// 参考文档: https://docs.gitlab.com/ee/user/project/integrations/webhook_events.html
 func (h *handler) HandleGitlabEvent(r *restful.Request, w *restful.Response) {
 	eventType := r.HeaderParameter(GitlabEventHeaderKey)
 	serviceId := r.HeaderParameter(GitlabEventTokenKey)
@@ -38,5 +39,9 @@ func (h *handler) HandleGitlabEvent(r *restful.Request, w *restful.Response) {
 		}
 
 		response.Success(w, ins)
+	case "Tag Push Hook":
+	case "Merge Request Hook":
+	case "Note Hook":
+	case "Issue Hook":
 	}
 }

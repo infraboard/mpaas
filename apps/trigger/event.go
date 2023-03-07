@@ -2,6 +2,7 @@ package trigger
 
 import (
 	"github.com/infraboard/mcenter/common/validate"
+	"github.com/infraboard/mpaas/apps/job"
 	"github.com/infraboard/mpaas/common/meta"
 )
 
@@ -21,6 +22,18 @@ func (e *Event) Validate() error {
 
 func (e *GitlabWebHookEvent) Validate() error {
 	return validate.Validate(e)
+}
+
+// Event产生的参数, 作用于Pipeline运行
+// GIT_REPOSITORY: git@github.com:infraboard/mpaas.git
+// GIT_BRANCH: master
+// GIT_COMMIT_ID: bfacd86c647935aea532f29421fe83c6a6111260
+func (e *GitlabWebHookEvent) PipelineRunParams() (params []*job.RunParam) {
+	repo := job.NewRunParam("GIT_REPOSITORY", e.Project.GitSshUrl)
+	branche := job.NewRunParam("GIT_BRANCH", e.GetBranche())
+	// commit := job.NewRunParam("GIT_COMMIT_ID", e.com)
+	params = append(params, repo, branche)
+	return params
 }
 
 func NewRecord(e *Event) *Record {
