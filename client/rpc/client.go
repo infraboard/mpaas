@@ -26,10 +26,15 @@ func NewClientSetFromEnv() (*ClientSet, error) {
 
 // NewClient todo
 func NewClientSetConfig(conf *rpc.Config) (*ClientSet, error) {
+	log := zap.L().Named("sdk.mpaas")
 	// 加载mcenter client, mpaas基于mcenter client实现服务发现
-	err := rpc.LoadClientFromConfig(conf)
-	if err != nil {
-		return nil, err
+	if !rpc.HasLoaded() {
+		err := rpc.LoadClientFromConfig(conf)
+		if err != nil {
+			return nil, err
+		}
+	} else {
+		log.Warnf("mecenter client is loaded, skip loaded agine")
 	}
 
 	ctx, cancel := context.WithTimeout(context.Background(), conf.Timeout())
@@ -52,7 +57,7 @@ func NewClientSetConfig(conf *rpc.Config) (*ClientSet, error) {
 	return &ClientSet{
 		conf: conf,
 		conn: conn,
-		log:  zap.L().Named("sdk.mpaas"),
+		log:  log,
 	}, nil
 }
 
