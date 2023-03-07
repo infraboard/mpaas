@@ -21,7 +21,7 @@ func TestHandleEvent(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	t.Log(ps)
+	t.Log(tools.MustToJson(ps))
 }
 
 func TestQueryRecord(t *testing.T) {

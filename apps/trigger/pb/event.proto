@@ -5,6 +5,7 @@ option go_package = "github.com/infraboard/mpaas/apps/trigger";
 
 import "apps/trigger/pb/gitlab.proto";
 import "apps/build/pb/build.proto";
+import "apps/task/pb/pipeline_task.proto";
 import "common/meta/meta.proto";
 
 message RecordSet {
@@ -36,9 +37,12 @@ message BuildStatus {
     // 构建信息
     // @gotags: bson:"pipline_task_id" json:"pipline_task_id"
     string pipline_task_id = 2;
+    // pipline具体信息, 动态查询，不保持
+    // @gotags: bson:"-" json:"pipline_task"
+    task.PipelineTask pipline_task = 3;
     // 如果流水线运行报错的报错信息
     // @gotags: bson:"error_message" json:"error_message"
-    string error_message = 3;
+    string error_message = 4;
 }
 
 message Event {

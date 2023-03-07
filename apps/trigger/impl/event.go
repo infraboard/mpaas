@@ -45,22 +45,23 @@ func (i *impl) HandleEvent(ctx context.Context, in *trigger.Event) (
 			}
 
 			bs := trigger.NewBuildStatus(buildConf)
-			if !in.SkipRunPipeline {
-				runReq := pipeline.NewRunPipelineRequest(pipelineId)
-				// 补充Git信息
-				runReq.AddRunParam(in.GitlabEvent.GitRunParams()...)
-				// 补充版本信息
-				switch buildConf.Spec.VersionNamedRule {
-				case build.VERSION_NAMED_RULE_DATE_BRANCH_COMMIT:
-					runReq.AddRunParam(in.GitlabEvent.VersionRunParam(buildConf.Spec.VersionPrefix))
-				}
+			runReq := pipeline.NewRunPipelineRequest(pipelineId)
+			runReq.RunBy = "gitlab_trigger"
+			runReq.DryRun = in.SkipRunPipeline
+			// 补充Git信息
+			runReq.AddRunParam(in.GitlabEvent.GitRunParams()...)
+			// 补充版本信息
+			switch buildConf.Spec.VersionNamedRule {
+			case build.VERSION_NAMED_RULE_DATE_BRANCH_COMMIT:
+				runReq.AddRunParam(in.GitlabEvent.VersionRunParam(buildConf.Spec.VersionPrefix))
+			}
 
-				pt, err := i.task.RunPipeline(ctx, runReq)
-				if err != nil {
-					bs.ErrorMessage = err.Error()
-				} else {
-					bs.PiplineTaskId = pt.Meta.Id
-				}
+			pt, err := i.task.RunPipeline(ctx, runReq)
+			if err != nil {
+				bs.ErrorMessage = err.Error()
+			} else {
+				bs.PiplineTaskId = pt.Meta.Id
+				bs.PiplineTask = pt
 			}
 
 			ins.AddBuildStatus(bs)

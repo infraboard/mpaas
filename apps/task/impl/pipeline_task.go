@@ -39,6 +39,11 @@ func (i *impl) RunPipeline(ctx context.Context, in *pipeline.RunPipelineRequest)
 		return nil, fmt.Errorf("not job task to run")
 	}
 
+	// dry run 不执行
+	if in.DryRun {
+		return ins, nil
+	}
+
 	// 保存Job Task, 所有JobTask 批量生成, 全部处于Pendding状态, 然后入库 等待状态更新
 	err = i.JobTaskBatchSave(ctx, ins.JobTasks())
 	if err != nil {
@@ -58,7 +63,7 @@ func (i *impl) RunPipeline(ctx context.Context, in *pipeline.RunPipelineRequest)
 	}
 	t.Update(resp.Job, resp.Status)
 
-	//
+	// 更新状态
 	ins, err = i.updatePipelineStatus(ctx, ins)
 	if err != nil {
 		return nil, err
@@ -101,8 +106,9 @@ func (i *impl) CheckPipelineAllowRun(ctx context.Context, ins *pipeline.Pipeline
 			return nil
 		}
 
-		if set.Items[0].IsActive() {
-			return fmt.Errorf("流水线当前处于运行中, 运行完成后才能运行")
+		t := set.Items[0]
+		if t.IsActive() {
+			return fmt.Errorf("流水线【%s】当前处于运行中, 请取消或者等待之前运行结束", t.Pipeline.Spec.Name)
 		}
 	}
 
@@ -281,7 +287,7 @@ func (i *impl) DeletePipelineTask(ctx context.Context, in *task.DeletePipelineTa
 	}
 	// 运行中的流水线不运行删除, 先取消 才能删除
 	if ins.IsRunning() {
-		return nil, fmt.Errorf("任务结束才能删除, 如果没结束, 请先取消")
+		return nil, fmt.Errorf("流水线运行结束才能删除, 如果没结束, 请先取消再删除")
 	}
 
 	// 删除该Pipeline下所有的Job Task
