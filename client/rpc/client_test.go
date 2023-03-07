@@ -8,7 +8,6 @@ import (
 
 	"github.com/infraboard/mpaas/apps/task"
 	"github.com/infraboard/mpaas/client/rpc"
-	"github.com/infraboard/mpaas/conf"
 )
 
 var (
@@ -30,7 +29,7 @@ func init() {
 		panic(err)
 	}
 
-	c, err := rpc.NewClientSet(conf.C().Mcenter)
+	c, err := rpc.NewClientSetFromEnv()
 	if err != nil {
 		panic(err)
 	}

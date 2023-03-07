@@ -14,8 +14,17 @@ import (
 	"github.com/infraboard/mcube/logger/zap"
 )
 
+func NewClientSetFromEnv() (*ClientSet, error) {
+	mc, err := rpc.NewConfigFromEnv()
+	if err != nil {
+		return nil, err
+	}
+
+	return NewClientSetConfig(mc)
+}
+
 // NewClient todo
-func NewClientSet(conf *rpc.Config) (*ClientSet, error) {
+func NewClientSetConfig(conf *rpc.Config) (*ClientSet, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), conf.Timeout())
 	defer cancel()
 
