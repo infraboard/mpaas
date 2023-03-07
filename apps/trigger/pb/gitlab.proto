@@ -3,31 +3,48 @@ syntax = "proto3";
 package infraboard.mpaas.trigger;
 option go_package = "github.com/infraboard/mpaas/apps/trigger";
 
+// https://docs.gitlab.com/ee/user/project/integrations/webhook_events.html
+enum EVENT_TYPE {
+    // 推送事件
+    PUSH = 0;
+    // 打标事件
+    TAG = 1;
+    // bug事件
+    ISSUE = 2;
+    // 评论事件
+    COMMENT = 3;
+    // MR事件
+    MERGE_REQUEST = 4;
+}
+
 message GitlabWebHookEvent {
     // 事件类型
+    // @gotags: bson:"event_type" json:"event_type"
+    EVENT_TYPE event_type = 1;
+    // 事件类型
     // @gotags: bson:"object_kind" json:"object_kind" validate:"required"
-    string object_kind = 1;
+    string object_kind = 2;
     // 事件名称
     // @gotags: bson:"event_name" json:"event_name" validate:"required"
-    string event_name = 2;
+    string event_name = 3;
     // 关联分支
     // @gotags: bson:"ref" json:"ref" validate:"required"
-    string ref = 3;
+    string ref = 4;
     // 触发者用户ID
     // @gotags: bson:"user_id" json:"user_id"
-    int64 user_id = 4;
+    int64 user_id = 5;
     // 触发者用户名称
     // @gotags: bson:"user_name" json:"user_name"
-    string user_name = 5; 
+    string user_name = 6; 
     // 用户头像
     // @gotags: bson:"user_avatar" json:"user_avatar"
-    string user_avatar = 6;
+    string user_avatar = 7;
     // 用户头像
     // @gotags: bson:"project" json:"project"
-    Project project = 7;
+    Project project = 8;
     // Commit信息
     // @gotags: bson:"commits" json:"commits"
-    repeated Commit commits = 8;
+    repeated Commit commits = 9;
 }
 
 message Project {

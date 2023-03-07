@@ -46,7 +46,9 @@ func (i *impl) HandleEvent(ctx context.Context, in *trigger.Event) (
 
 			bs := trigger.NewBuildStatus(buildConf)
 			if !in.SkipRunPipeline {
-				pt, err := i.task.RunPipeline(ctx, pipeline.NewRunPipelineRequest(pipelineId))
+				runReq := pipeline.NewRunPipelineRequest(pipelineId)
+				runReq.RunParams = in.GitlabEvent.PipelineRunParams()
+				pt, err := i.task.RunPipeline(ctx, runReq)
 				if err != nil {
 					bs.ErrorMessage = err.Error()
 				} else {

@@ -30,6 +30,14 @@ func (e *GitlabWebHookEvent) GetBranche() string {
 	return path.Base(e.GetRef())
 }
 
+func (e *GitlabWebHookEvent) GetLatestCommit() *Commit {
+	count := len(e.Commits)
+	if count > 0 {
+		return e.Commits[count-1]
+	}
+	return nil
+}
+
 func NewGitlabEvent(serviceId string, event *GitlabWebHookEvent) *Event {
 	return &Event{
 		ServiceId:   serviceId,

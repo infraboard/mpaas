@@ -29,10 +29,22 @@ func (e *GitlabWebHookEvent) Validate() error {
 // GIT_BRANCH: master
 // GIT_COMMIT_ID: bfacd86c647935aea532f29421fe83c6a6111260
 func (e *GitlabWebHookEvent) PipelineRunParams() (params []*job.RunParam) {
-	repo := job.NewRunParam("GIT_REPOSITORY", e.Project.GitSshUrl)
-	branche := job.NewRunParam("GIT_BRANCH", e.GetBranche())
-	// commit := job.NewRunParam("GIT_COMMIT_ID", e.com)
-	params = append(params, repo, branche)
+	switch e.EventType {
+	case EVENT_TYPE_PUSH:
+		repo := job.NewRunParam("GIT_REPOSITORY", e.Project.GitSshUrl)
+		branche := job.NewRunParam("GIT_BRANCH", e.GetBranche())
+		cm := e.GetLatestCommit()
+		if cm != nil {
+			commit := job.NewRunParam("GIT_COMMIT_ID", cm.Short())
+			params = append(params, commit)
+		}
+
+		params = append(params, repo, branche)
+	case EVENT_TYPE_TAG:
+	case EVENT_TYPE_COMMENT:
+	case EVENT_TYPE_MERGE_REQUEST:
+	}
+
 	return params
 }
 
