@@ -32,7 +32,7 @@ func TestUpdateBuildConfig(t *testing.T) {
 	req := build.NewPatchDeployRequest(conf.C.BUILD_ID)
 	req.Spec.Condition.AddEvent("push")
 	req.Spec.Condition.AddBranche("master")
-	req.Spec.ImageBuild.PipelineId = conf.C.PIPELINE_ID
+	req.Spec.ImageBuild.PipelineId = conf.C.MPAAS_PIPELINE_ID
 	ins, err := impl.UpdateBuildConfig(ctx, req)
 	if err != nil {
 		t.Fatal(err)
