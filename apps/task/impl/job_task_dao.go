@@ -42,5 +42,15 @@ func (r *queryRequest) FindFilter() bson.M {
 		filter["pipeline_task"] = r.PipelineTaskId
 	}
 
+	if r.Stage != nil {
+		filter["status.stage"] = *r.Stage
+	}
+
+	if r.HasLabel() {
+		for k, v := range r.Labels {
+			filter["labels."+k] = v
+		}
+	}
+
 	return filter
 }

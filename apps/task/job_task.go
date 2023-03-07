@@ -66,13 +66,26 @@ func NewMeta() *Meta {
 
 func NewJobTask(req *pipeline.RunJobRequest) *JobTask {
 	req.SetDefault()
-
 	return &JobTask{
 		Meta:   NewMeta(),
 		Spec:   req,
 		Job:    nil,
 		Status: NewJobTaskStatus(),
 	}
+}
+
+func (p *JobTask) BuildSearchLabel() {
+	if p.Job != nil && p.Job.Spec != nil {
+		if p.Job.Spec.Labels == nil {
+			p.Job.Spec.Labels = map[string]string{}
+		}
+
+		for k, v := range p.Job.Spec.Labels {
+			p.Spec.Labels[k] = v
+		}
+	}
+
+	p.Spec.BuildSearchLabel()
 }
 
 func (p *JobTask) GetVersionedRunParam() (*job.VersionedRunParam, error) {

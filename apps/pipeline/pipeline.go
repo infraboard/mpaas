@@ -122,6 +122,20 @@ func (r *RunJobRequest) GetRunParamsVersion() string {
 	return ""
 }
 
+func (r *RunJobRequest) BuildSearchLabel() {
+	if r.Labels == nil {
+		r.Labels = map[string]string{}
+	}
+	if r.RunParams == nil {
+		return
+	}
+
+	lables := r.RunParams.SearchLabels()
+	for k, v := range lables {
+		r.Labels[k] = v
+	}
+}
+
 func (r *RunJobRequest) SetDefault() {
 	if r.TaskId == "" {
 		r.TaskId = xid.New().String()

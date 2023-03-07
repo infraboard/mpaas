@@ -28,6 +28,12 @@ message QueryJobTaskRequest {
 	// 与该pipeline task关联的任务
 	// @gotags: json:"id"
     string pipeline_task_id = 3;
+	// 任务当前状态
+	// @gotags: json:"stage"
+    optional STAGE stage = 4;
+    // 任务标签
+    // @gotags: json:"labels"
+    map<string,string> labels = 5;
 }
 
 message UpdateJobTaskStatusRequest {

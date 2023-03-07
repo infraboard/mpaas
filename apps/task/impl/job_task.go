@@ -84,7 +84,10 @@ func (i *impl) RunJob(ctx context.Context, in *pipeline.RunJobRequest) (
 	}
 	ins.Status = status
 
-	// 3. 保存任务
+	// 添加搜索标签
+	ins.BuildSearchLabel()
+
+	// 保存任务
 	updateOpt := options.Update()
 	updateOpt.SetUpsert(true)
 	if _, err := i.jcol.UpdateByID(ctx, ins.Spec.TaskId, bson.M{"$set": ins}, updateOpt); err != nil {

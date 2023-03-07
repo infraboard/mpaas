@@ -36,6 +36,10 @@ func NewQueryTaskRequest() *QueryJobTaskRequest {
 	}
 }
 
+func (req *QueryJobTaskRequest) HasLabel() bool {
+	return req.Labels != nil && len(req.Labels) > 0
+}
+
 func NewRunTaskRequest(name, spec string, params *job.VersionedRunParam) *RunTaskRequest {
 	return &RunTaskRequest{
 		Name:    name,
