@@ -21,11 +21,11 @@ func NewClientSetFromEnv() (*ClientSet, error) {
 		return nil, err
 	}
 
-	return NewClientSetConfig(mc)
+	return NewClientSetFromConfig(mc)
 }
 
 // NewClient todo
-func NewClientSetConfig(conf *rpc.Config) (*ClientSet, error) {
+func NewClientSetFromConfig(conf *rpc.Config) (*ClientSet, error) {
 	log := zap.L().Named("sdk.mpaas")
 	// 加载mcenter client, mpaas基于mcenter client实现服务发现
 	if !rpc.HasLoaded() {
