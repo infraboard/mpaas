@@ -10,6 +10,15 @@ import (
 	"github.com/infraboard/mpaas/test/tools"
 )
 
+func TestQueryPipelineTask(t *testing.T) {
+	req := task.NewQueryPipelineTaskRequest()
+	set, err := impl.QueryPipelineTask(ctx, req)
+	if err != nil {
+		t.Fatal(err)
+	}
+	t.Log(tools.MustToJson(set))
+}
+
 func TestRunTestPipeline(t *testing.T) {
 	req := pipeline.NewRunPipelineRequest(conf.C.PIPELINE_ID)
 	req.RunBy = "test"
@@ -27,7 +36,7 @@ func TestRunMpaasPipeline(t *testing.T) {
 		"GIT_REPOSITORY", "git@github.com:infraboard/mpaas.git",
 		"GIT_BRANCH", "master",
 		"GIT_COMMIT_ID", "bfacd86c647935aea532f29421fe83c6a6111260",
-		job.SYSTEM_VARIABLE_IMAGE_VERSION, "v0.0.6",
+		job.SYSTEM_VARIABLE_IMAGE_VERSION, "v0.0.7",
 	)
 
 	ins, err := impl.RunPipeline(ctx, req)
@@ -35,15 +44,6 @@ func TestRunMpaasPipeline(t *testing.T) {
 		t.Fatal(err)
 	}
 	t.Log(tools.MustToYaml(ins))
-}
-
-func TestQueryPipelineTask(t *testing.T) {
-	req := task.NewQueryPipelineTaskRequest()
-	set, err := impl.QueryPipelineTask(ctx, req)
-	if err != nil {
-		t.Fatal(err)
-	}
-	t.Log(tools.MustToJson(set))
 }
 
 func TestDescribePipelineTask(t *testing.T) {

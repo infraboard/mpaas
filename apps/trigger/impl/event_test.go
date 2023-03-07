@@ -16,7 +16,7 @@ func TestHandleEvent(t *testing.T) {
 	}
 
 	req := trigger.NewGitlabEvent(conf.C.SERVICE_ID, event)
-	req.SkipRunPipeline = true
+	req.SkipRunPipeline = false
 	ps, err := impl.HandleEvent(ctx, req)
 	if err != nil {
 		t.Fatal(err)

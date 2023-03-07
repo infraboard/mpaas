@@ -10,6 +10,17 @@ import (
 	"github.com/infraboard/mpaas/test/tools"
 )
 
+func TestQueryJobTask(t *testing.T) {
+	req := task.NewQueryTaskRequest()
+	req.PipelineTaskId = conf.C.PIPELINE_TASK_ID
+	set, err := impl.QueryJobTask(ctx, req)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	t.Log(tools.MustToJson(set))
+}
+
 func TestRunBuildJob(t *testing.T) {
 	req := pipeline.NewRunJobRequest("docker_build@default.default")
 	version := job.NewVersionedRunParam("v1")
@@ -44,17 +55,6 @@ func TestRunDeployJob(t *testing.T) {
 		t.Fatal(err)
 	}
 	t.Log(tools.MustToYaml(ins.Status.Detail))
-}
-
-func TestQueryJobTask(t *testing.T) {
-	req := task.NewQueryTaskRequest()
-	req.PipelineTaskId = conf.C.PIPELINE_TASK_ID
-	set, err := impl.QueryJobTask(ctx, req)
-	if err != nil {
-		t.Fatal(err)
-	}
-
-	t.Log(tools.MustToJson(set))
 }
 
 func TestUpdateJobTaskOutput(t *testing.T) {
