@@ -1,5 +1,5 @@
 package cluster
 
 const (
-	CLUSTER_ID_ANNOTATION_KEY = "cluster_id"
+	ANNOTATION_CLUSTER_ID = "cluster_id"
 )

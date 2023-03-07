@@ -16,7 +16,7 @@ func (c *ClientSet) CreateDeployment(ctx context.Context, req *appsv1.Deployment
 	ins := cluster.NewDefaultCluster()
 
 	err := c.c.Group("clusters").
-		Group(req.Annotations[cluster.CLUSTER_ID_ANNOTATION_KEY]).
+		Group(req.Annotations[cluster.ANNOTATION_CLUSTER_ID]).
 		Post("deployments").
 		Body(req).
 		Do(ctx).

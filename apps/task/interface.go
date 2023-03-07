@@ -52,7 +52,7 @@ func NewRunTaskRequest(name, spec string, params *job.VersionedRunParam) *RunTas
 func (r *RunTaskRequest) Annotations() map[string]string {
 	annotations := map[string]string{}
 	if !r.ManualUpdateStatus {
-		annotations[ANNOTATION_TASK] = r.Params.GetParamValue(job.SYSTEM_VARIABLE_JOB_TASK_ID)
+		annotations[ANNOTATION_TASK_ID] = r.Params.GetParamValue(job.SYSTEM_VARIABLE_JOB_TASK_ID)
 	}
 	return annotations
 }
