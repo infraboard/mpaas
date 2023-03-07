@@ -15,6 +15,9 @@ type Service interface {
 }
 
 func (req *CreateBuildConfigRequest) Validate() error {
+	if req.VersionPrefix == "" {
+		req.VersionPrefix = "v"
+	}
 	return validate.Validate(req)
 }
 
