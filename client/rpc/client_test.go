@@ -29,9 +29,6 @@ func init() {
 	if err := zap.DevelopmentSetup(); err != nil {
 		panic(err)
 	}
-	if err := conf.LoadConfigFromEnv(); err != nil {
-		panic(err)
-	}
 
 	c, err := rpc.NewClientSet(conf.C().Mcenter)
 	if err != nil {
