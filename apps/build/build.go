@@ -60,10 +60,11 @@ func (b *BuildConfig) MarshalJSON() ([]byte, error) {
 
 func NewCreateBuildConfigRequest() *CreateBuildConfigRequest {
 	return &CreateBuildConfigRequest{
-		Condition:  NewTrigger(),
-		ImageBuild: NewImageBuild(),
-		PkgBuild:   NewPkgBuildConfig(),
-		Labels:     make(map[string]string),
+		VersionPrefix: "v",
+		Condition:     NewTrigger(),
+		ImageBuild:    NewImageBuild(),
+		PkgBuild:      NewPkgBuildConfig(),
+		Labels:        make(map[string]string),
 	}
 }
 

@@ -46,6 +46,9 @@ message CreateBuildConfigRequest {
     // 版本命名规则
     // @gotags: bson:"version_named_rule" json:"version_named_rule"
     VERSION_NAMED_RULE version_named_rule = 8;
+    // 版本前缀
+    // @gotags: bson:"version_prefix" json:"version_prefix"
+    string version_prefix = 9;
 
     // 构建配置标签
     // @gotags: bson:"labels" json:"labels"

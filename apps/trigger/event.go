@@ -5,7 +5,6 @@ import (
 	"time"
 
 	"github.com/infraboard/mcenter/common/validate"
-	"github.com/infraboard/mpaas/apps/build"
 	"github.com/infraboard/mpaas/apps/job"
 	"github.com/infraboard/mpaas/common/meta"
 )
@@ -52,21 +51,17 @@ func (e *GitlabWebHookEvent) GitRunParams() (params []*job.RunParam) {
 	return params
 }
 
-func (e *GitlabWebHookEvent) VersionRunParam(r build.VERSION_NAMED_RULE) *job.RunParam {
-	version := e.GenBuildVersion(r)
+func (e *GitlabWebHookEvent) VersionRunParam(prefix string) *job.RunParam {
+	version := prefix + e.GenBuildVersion()
 	return job.NewRunParam(job.SYSTEM_VARIABLE_IMAGE_VERSION, version)
 }
 
-func (e *GitlabWebHookEvent) GenBuildVersion(r build.VERSION_NAMED_RULE) string {
-	switch r {
-	case build.VERSION_NAMED_RULE_DATE_BRANCH_COMMIT:
-		return fmt.Sprintf("%s-%s-%s",
-			time.Now().Format("20060102"),
-			e.GetBranche(),
-			e.GetLatestCommitShortId(),
-		)
-	}
-	return ""
+func (e *GitlabWebHookEvent) GenBuildVersion() string {
+	return fmt.Sprintf("%s-%s-%s",
+		time.Now().Format("20060102"),
+		e.GetBranche(),
+		e.GetLatestCommitShortId(),
+	)
 }
 
 func NewRecord(e *Event) *Record {
