@@ -38,6 +38,14 @@ func (e *GitlabWebHookEvent) GetLatestCommit() *Commit {
 	return nil
 }
 
+func (e *GitlabWebHookEvent) GetLatestCommitShortId() string {
+	cm := e.GetLatestCommit()
+	if cm != nil {
+		cm.Short()
+	}
+	return ""
+}
+
 func NewGitlabEvent(serviceId string, event *GitlabWebHookEvent) *Event {
 	return &Event{
 		ServiceId:   serviceId,

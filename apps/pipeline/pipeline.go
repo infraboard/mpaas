@@ -203,6 +203,10 @@ func NewRunPipelineRequest(pipelineId string) *RunPipelineRequest {
 	}
 }
 
+func (req *RunPipelineRequest) AddRunParam(params ...*job.RunParam) {
+	req.RunParams = append(req.RunParams, params...)
+}
+
 func (req *RunPipelineRequest) Validate() error {
 	return validate.Validate(req)
 }

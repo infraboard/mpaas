@@ -43,9 +43,18 @@ message CreateBuildConfigRequest {
     // 包构建配置
     // @gotags: bson:"pkg_build" json:"pkg_build"
     PkgBuildConfig pkg_build = 7;
+    // 版本命名规则
+    // @gotags: bson:"version_named_rule" json:"version_named_rule"
+    VERSION_NAMED_RULE version_named_rule = 8;
+
     // 构建配置标签
     // @gotags: bson:"labels" json:"labels"
-    map<string,string> labels = 11;
+    map<string,string> labels = 15;
+}
+
+enum VERSION_NAMED_RULE {
+    // 比如v20230203-master-xxxx
+    DATE_BRANCH_COMMIT = 0;
 }
 
 // 触发执行的条件

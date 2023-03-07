@@ -9,6 +9,51 @@ import (
 	"strings"
 )
 
+// ParseVERSION_NAMED_RULEFromString Parse VERSION_NAMED_RULE from string
+func ParseVERSION_NAMED_RULEFromString(str string) (VERSION_NAMED_RULE, error) {
+	key := strings.Trim(string(str), `"`)
+	v, ok := VERSION_NAMED_RULE_value[strings.ToUpper(key)]
+	if !ok {
+		return 0, fmt.Errorf("unknown VERSION_NAMED_RULE: %s", str)
+	}
+
+	return VERSION_NAMED_RULE(v), nil
+}
+
+// Equal type compare
+func (t VERSION_NAMED_RULE) Equal(target VERSION_NAMED_RULE) bool {
+	return t == target
+}
+
+// IsIn todo
+func (t VERSION_NAMED_RULE) IsIn(targets ...VERSION_NAMED_RULE) bool {
+	for _, target := range targets {
+		if t.Equal(target) {
+			return true
+		}
+	}
+
+	return false
+}
+
+// MarshalJSON todo
+func (t VERSION_NAMED_RULE) MarshalJSON() ([]byte, error) {
+	b := bytes.NewBufferString(`"`)
+	b.WriteString(strings.ToUpper(t.String()))
+	b.WriteString(`"`)
+	return b.Bytes(), nil
+}
+
+// UnmarshalJSON todo
+func (t *VERSION_NAMED_RULE) UnmarshalJSON(b []byte) error {
+	ins, err := ParseVERSION_NAMED_RULEFromString(string(b))
+	if err != nil {
+		return err
+	}
+	*t = ins
+	return nil
+}
+
 // ParseTARGET_TYPEFromString Parse TARGET_TYPE from string
 func ParseTARGET_TYPEFromString(str string) (TARGET_TYPE, error) {
 	key := strings.Trim(string(str), `"`)
