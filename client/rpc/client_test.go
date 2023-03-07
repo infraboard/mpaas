@@ -15,7 +15,7 @@ var (
 	ctx    = context.Background()
 )
 
-func TestClient(t *testing.T) {
+func TestQueryJobTask(t *testing.T) {
 	req := task.NewQueryTaskRequest()
 	set, err := client.JobTask().QueryJobTask(ctx, req)
 	if err != nil {

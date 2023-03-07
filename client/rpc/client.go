@@ -15,6 +15,7 @@ import (
 )
 
 func NewClientSetFromEnv() (*ClientSet, error) {
+	// 从环境变量中获取mcenter配置
 	mc, err := rpc.NewConfigFromEnv()
 	if err != nil {
 		return nil, err
@@ -25,6 +26,12 @@ func NewClientSetFromEnv() (*ClientSet, error) {
 
 // NewClient todo
 func NewClientSetConfig(conf *rpc.Config) (*ClientSet, error) {
+	// 加载mcenter client, mpaas基于mcenter client实现服务发现
+	err := rpc.LoadClientFromConfig(conf)
+	if err != nil {
+		return nil, err
+	}
+
 	ctx, cancel := context.WithTimeout(context.Background(), conf.Timeout())
 	defer cancel()
 
