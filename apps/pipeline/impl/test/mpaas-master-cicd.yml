@@ -3,7 +3,8 @@ description: mpaas项目 master分支 cicd流水线
 stages:
   - name: 容器镜像构建
     jobs:
-      - job_name: docker_build@default.default
+      - task_name: 容器镜像构建
+        job_name: docker_build@default.default
         ignore_failed: false
         run_params:
           version: v1
@@ -18,7 +19,8 @@ stages:
               value: registry.cn-hangzhou.aliyuncs.com/inforboard/mpaas
   - name: 容器镜像部署
     jobs:
-      - job_name: docker_deploy@default.default
+      - task_name: 容器镜像部署
+        job_name: docker_deploy@default.default
         ignore_failed: false
         run_params:
           version: v1

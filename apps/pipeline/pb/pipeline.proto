@@ -96,6 +96,9 @@ message RunJobRequest {
 	// task属于那个stage, 可以为空
 	// @gotags: bson:"stage_name" json:"stage_name"
     string stage_name = 6;
+	// 任务名称
+	// @gotags: bson:"task_name" json:"task_name" validate:"required"
+    string task_name = 14;
 	// job名称: name
 	// @gotags: bson:"job_name" json:"job_name" validate:"required"
     string job_name = 7;
