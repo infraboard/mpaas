@@ -53,7 +53,7 @@ func (i *impl) CreateDeployment(ctx context.Context, in *deploy.CreateDeployment
 			return nil, fmt.Errorf("部署配置必须包含一个服务名称同名的容器 作为主容器")
 		}
 		// 从镜像中获取部署的版本信息
-		// serviceContainer.Image
+		ins.Spec.ServiceVersion = wl.GetServiceContainerVersion(ins.Spec.ServiceName)
 
 		// 查询部署的k8s集群
 		k8sClient, err := i.GetDeployK8sClient(ctx, wc.ClusterId)

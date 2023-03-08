@@ -6,6 +6,7 @@ import (
 
 	"github.com/infraboard/mcube/logger/zap"
 
+	"github.com/infraboard/mpaas/apps/deploy"
 	"github.com/infraboard/mpaas/apps/task"
 	"github.com/infraboard/mpaas/client/rpc"
 )
@@ -25,7 +26,7 @@ func TestQueryJobTask(t *testing.T) {
 }
 
 func TestQueryDeployment(t *testing.T) {
-	req := task.NewQueryTaskRequest()
+	req := deploy.NewQueryDeploymentRequest()
 	set, err := client.Deploy().QueryDeployment(ctx, req)
 	if err != nil {
 		t.Fatal(err)

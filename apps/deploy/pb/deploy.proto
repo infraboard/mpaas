@@ -22,12 +22,45 @@ message Deployment  {
     // 创建信息
     // @gotags: bson:",inline" json:"spec"
     CreateDeploymentRequest spec = 3;
-    // 部署配置状态
+    // 部署访问凭证, 用于外部更新部署对象
+    // @gotags: bson:"credential" json:"credential"
+    Credential credential = 4;
+    // 部署状态
     // @gotags: bson:"status" json:"status"
-    Status status = 4;
+    Status status = 5;
 }
 
+enum STAGE {
+    // 准备中
+    PENDDING = 0;
+    // 运行中
+    RUNNING = 1;
+    // 升级中
+    UPGRADING = 2;
+    // 已停止
+    STOPPED = 10;
+}
+
+// 部署状态
 message Status {
+    // 部署阶段
+    // @gotags: bson:"stage" json:"stage"
+    STAGE stage = 1;
+    // 状态更新时间
+    // @gotags: bson:"update_at" json:"update_at"
+    int64 update_at = 2;
+    // 谁更新的
+    // @gotags: bson:"update_by" json:"update_by"
+    string update_by = 3;
+    // 状态更新的原因
+    // @gotags: bson:"reason" json:"reason"
+    string reason = 4;
+    // 状态更新的具体信息
+    // @gotags: bson:"message" json:"message"
+    string message = 5;
+}
+
+message Credential {
     // 部署Token 用于访问集群配置
     // @gotags: json:"token"
     string token = 1;
@@ -108,7 +141,7 @@ message CreateDeploymentRequest {
     // @gotags: bson:"describe" json:"describe"
     string describe = 13;
     // 部署Id, 没有系统会自动生成
-    // @gotags: bson:"deploy_id" json:"deploy_id"
+    // @gotags: bson:"deploy_id" json:"deploy_id,omitempty"
     string deploy_id = 14;
     // 是否需要发布申请, 需要发布申请的部署 不允许执行自动部署
     // @gotags: bson:"is_approval" json:"is_approval"

@@ -37,7 +37,7 @@ func (d *Deployment) ValidateToken(token string) error {
 		return nil
 	}
 
-	if d.Status.Token != token {
+	if d.Credential.Token != token {
 		return fmt.Errorf("集群访问Token不合法")
 	}
 

@@ -41,6 +41,18 @@ func (w *WorkLoad) SystemVaraible(serviceName string) *SystemVaraible {
 	return m
 }
 
+func (w *WorkLoad) GetServiceContainerVersion(serviceName string) string {
+	c := w.GetServiceContainer(serviceName)
+	if c != nil && c.Image != "" {
+		image := strings.Split(c.Image, ":")
+		count := len(image)
+		if count > 1 {
+			return image[count-1]
+		}
+	}
+	return ""
+}
+
 func (w *WorkLoad) GetServiceContainer(serviceName string) *v1.Container {
 	var container *v1.Container
 	switch w.WorkloadKind {
