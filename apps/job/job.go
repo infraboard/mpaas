@@ -314,6 +314,12 @@ func (p *RunParam) SetReadOnly(v bool) *RunParam {
 	return p
 }
 
+// 设置SearchLabel
+func (p *RunParam) SetSearchLabel(v bool) *RunParam {
+	p.SearchLabel = v
+	return p
+}
+
 // 设置Required
 func (p *RunParam) SetRequired(v bool) *RunParam {
 	p.Required = v

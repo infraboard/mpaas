@@ -79,15 +79,15 @@ func (d *Deployment) SystemVariable() ([]v1.EnvVar, error) {
 			job.NewRunParam(
 				job.SYSTEM_VARIABLE_WORKLOAD_KIND,
 				strings.ToLower(d.Spec.K8STypeConfig.WorkloadKind),
-			),
+			).SetReadOnly(true),
 			job.NewRunParam(
 				job.SYSTEM_VARIABLE_WORKLOAD_NAME,
 				variables.WorkloadName,
-			),
+			).SetReadOnly(true).SetSearchLabel(true),
 			job.NewRunParam(
 				job.SYSTEM_VARIABLE_SERVICE_NAME,
 				d.Spec.ServiceName,
-			),
+			).SetReadOnly(true).SetSearchLabel(true),
 			job.NewRunParam(
 				job.SYSTEM_VARIABLE_IMAGE_REPOSITORY,
 				addr,

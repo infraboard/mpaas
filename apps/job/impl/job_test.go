@@ -136,10 +136,11 @@ func TestUpdateBuildJob(t *testing.T) {
 
 	// 需要构建的代码信息
 	v1.Add(&job.RunParam{
-		Required: true,
-		Name:     "GIT_REPOSITORY",
-		Desc:     "应用git代码仓库地址",
-		Example:  "git@github.com:infraboard/mpaas.git",
+		Required:    true,
+		Name:        "GIT_REPOSITORY",
+		Desc:        "应用git代码仓库地址",
+		Example:     "git@github.com:infraboard/mpaas.git",
+		SearchLabel: true,
 	})
 	v1.Add(&job.RunParam{
 		Required: true,
