@@ -80,37 +80,40 @@ message CreateDeploymentRequest {
     // 服务名称
     // @gotags: bson:"service_name" json:"service_name"
     string service_name = 4;
+    // 服务版本, k8s部署时 通过yaml自动提取
+    // @gotags: bson:"service_version" json:"service_version"
+    string service_version = 5;
     // 部署环境
     // @gotags: bson:"environment" json:"environment" validate:"required"
-    string environment = 5;
+    string environment = 6;
     // 部署资源提供方
     // @gotags: bson:"provider" json:"provider" validate:"required"
-    string provider = 6;
+    string provider = 7;
     // 部署地域
     // @gotags: bson:"region" json:"region" validate:"required"
-    string region = 7;
+    string region = 8;
     // 部署方式
     // @gotags: bson:"type" json:"type"
-    TYPE type = 8;
+    TYPE type = 9;
     // 集群的配置是否需要认证才能访问, 开启后会生成一个Token
     // @gotags: bson:"auth_enabled" json:"auth_enabled"
-    bool auth_enabled = 9;
+    bool auth_enabled = 10;
     // k8s模式下的部署配置
     // @gotags: json:"k8s_type_config" bson:"k8s_type_config"
-    K8sTypeConfig k8s_type_config = 10;
+    K8sTypeConfig k8s_type_config = 11;
     // 主机部署相关配置
     // @gotags: json:"host_type_config" bson:"host_type_config"
-    HostTypeConfig host_type_config = 11;
+    HostTypeConfig host_type_config = 12;
     // 部署描述信息
     // @gotags: bson:"describe" json:"describe"
-    string describe = 12;
+    string describe = 13;
     // 部署Id, 没有系统会自动生成
     // @gotags: bson:"deploy_id" json:"deploy_id"
-    string deploy_id = 13;
+    string deploy_id = 14;
     // 是否需要发布申请, 需要发布申请的部署 不允许执行自动部署
     // @gotags: bson:"is_approval" json:"is_approval"
-    bool is_approval = 14;
+    bool is_approval = 15;
     // 部署标签
     // @gotags: bson:"labels" json:"labels"
-    map<string,string> labels = 15;
+    map<string,string> labels = 25;
 }

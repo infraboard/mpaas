@@ -79,7 +79,7 @@ func (d *Deployment) SystemVariable() ([]v1.EnvVar, error) {
 			job.NewRunParam(
 				job.SYSTEM_VARIABLE_WORKLOAD_KIND,
 				strings.ToLower(d.Spec.K8STypeConfig.WorkloadKind),
-			).SetReadOnly(true),
+			).SetReadOnly(true).SetSearchLabel(true),
 			job.NewRunParam(
 				job.SYSTEM_VARIABLE_WORKLOAD_NAME,
 				variables.WorkloadName,

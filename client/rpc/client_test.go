@@ -24,6 +24,15 @@ func TestQueryJobTask(t *testing.T) {
 	t.Log(set)
 }
 
+func TestQueryDeployment(t *testing.T) {
+	req := task.NewQueryTaskRequest()
+	set, err := client.Deploy().QueryDeployment(ctx, req)
+	if err != nil {
+		t.Fatal(err)
+	}
+	t.Log(set)
+}
+
 func init() {
 	if err := zap.DevelopmentSetup(); err != nil {
 		panic(err)
