@@ -23,8 +23,8 @@ func NewQueryApprovalRequest() *QueryApprovalRequest {
 }
 
 func (req *CreateApprovalRequest) Validate() error {
-	if req.DeployPipelineSpec == nil &&
-		req.DeployPipelineId == "" {
+	if req.PipelineSpec == nil &&
+		req.PipelineId == "" {
 		return fmt.Errorf("流水线配置缺失")
 	}
 
@@ -41,7 +41,7 @@ func (req *CreateApprovalRequest) Validate() error {
 
 func NewCreateApprovalRequest() *CreateApprovalRequest {
 	return &CreateApprovalRequest{
-		DeployPipelineSpec: pipeline.NewCreatePipelineRequest(),
+		PipelineSpec: pipeline.NewCreatePipelineRequest(),
 	}
 }
 

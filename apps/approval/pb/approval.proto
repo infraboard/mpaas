@@ -51,12 +51,12 @@ message CreateApprovalRequest {
     // 审核通过后, 是否自动执行发布
     // @gotags: bson:"auto_publish" json:"auto_publish"
     bool auto_publish = 6;
-    // 部署流水线配置
-    // @gotags: bson:"-" json:"deploy_pipeline_spec,omitempty"
-    pipeline.CreatePipelineRequest deploy_pipeline_spec = 7;
-    // 部署流水线配置Id
-    // @gotags: bson:"deploy_pipeline_id" json:"deploy_pipeline_id"
-    string deploy_pipeline_id = 8;
+    // 流水线配置
+    // @gotags: bson:"-" json:"pipeline_spec,omitempty"
+    pipeline.CreatePipelineRequest pipeline_spec = 7;
+    // 流水线Id
+    // @gotags: bson:"pipeline_id" json:"pipeline_id"
+    string pipeline_id = 8;
 	// 申请单标签
 	// @gotags: bson:"labels" json:"labels"
 	map<string, string> labels = 15;

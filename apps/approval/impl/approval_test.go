@@ -50,7 +50,7 @@ func TestCreateApproval(t *testing.T) {
 	req.Describe = "发布说明, 支持Markdown语法"
 	req.AddProposer("admin")
 	req.AddAuditor("admin")
-	tools.MustReadYamlFile("test/create.yml", req.DeployPipelineSpec)
+	tools.MustReadYamlFile("test/create.yml", req.PipelineSpec)
 	set, err := impl.CreateApproval(ctx, req)
 	if err != nil {
 		t.Fatal(err)

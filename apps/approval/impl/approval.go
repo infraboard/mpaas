@@ -29,14 +29,14 @@ func (i *impl) CreateApproval(ctx context.Context, in *approval.CreateApprovalRe
 	}
 
 	// 补充Pipeline创建
-	if ins.Spec.DeployPipelineId == "" {
-		in.DeployPipelineSpec.ApprovalId = ins.Meta.Id
-		p, err := i.pipeline.CreatePipeline(ctx, in.DeployPipelineSpec)
+	if ins.Spec.PipelineId == "" {
+		in.PipelineSpec.ApprovalId = ins.Meta.Id
+		p, err := i.pipeline.CreatePipeline(ctx, in.PipelineSpec)
 		if err != nil {
 			return nil, err
 		}
 
-		ins.Spec.DeployPipelineId = p.Meta.Id
+		ins.Spec.PipelineId = p.Meta.Id
 	}
 
 	if _, err := i.col.InsertOne(ctx, ins); err != nil {
@@ -196,7 +196,7 @@ func (i *impl) UpdateApprovalStatus(ctx context.Context, in *approval.UpdateAppr
 
 	// 5. 如果允许自动执行, 则审核通过后执行
 	if ins.Spec.AutoPublish && ins.Status.Stage.Equal(approval.STAGE_PASSED) {
-		pt, err := i.task.RunPipeline(ctx, pipeline.NewRunPipelineRequest(ins.Spec.DeployPipelineId))
+		pt, err := i.task.RunPipeline(ctx, pipeline.NewRunPipelineRequest(ins.Spec.PipelineId))
 		if err != nil {
 			return nil, err
 		}
