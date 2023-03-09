@@ -19,7 +19,6 @@ import (
 const _ = grpc.SupportPackageIsVersion7
 
 const (
-	RPC_UpdateDeployment_FullMethodName       = "/infraboard.mpaas.deploy.RPC/UpdateDeployment"
 	RPC_QueryDeployment_FullMethodName        = "/infraboard.mpaas.deploy.RPC/QueryDeployment"
 	RPC_DescribeDeployment_FullMethodName     = "/infraboard.mpaas.deploy.RPC/DescribeDeployment"
 	RPC_UpdateDeploymentStatus_FullMethodName = "/infraboard.mpaas.deploy.RPC/UpdateDeploymentStatus"
@@ -29,7 +28,6 @@ const (
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type RPCClient interface {
-	UpdateDeployment(ctx context.Context, in *UpdateDeploymentRequest, opts ...grpc.CallOption) (*Deployment, error)
 	QueryDeployment(ctx context.Context, in *QueryDeploymentRequest, opts ...grpc.CallOption) (*DeploymentSet, error)
 	DescribeDeployment(ctx context.Context, in *DescribeDeploymentRequest, opts ...grpc.CallOption) (*Deployment, error)
 	UpdateDeploymentStatus(ctx context.Context, in *UpdateDeploymentStatusRequest, opts ...grpc.CallOption) (*Deployment, error)
@@ -41,15 +39,6 @@ type rPCClient struct {
 
 func NewRPCClient(cc grpc.ClientConnInterface) RPCClient {
 	return &rPCClient{cc}
-}
-
-func (c *rPCClient) UpdateDeployment(ctx context.Context, in *UpdateDeploymentRequest, opts ...grpc.CallOption) (*Deployment, error) {
-	out := new(Deployment)
-	err := c.cc.Invoke(ctx, RPC_UpdateDeployment_FullMethodName, in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
 }
 
 func (c *rPCClient) QueryDeployment(ctx context.Context, in *QueryDeploymentRequest, opts ...grpc.CallOption) (*DeploymentSet, error) {
@@ -83,7 +72,6 @@ func (c *rPCClient) UpdateDeploymentStatus(ctx context.Context, in *UpdateDeploy
 // All implementations must embed UnimplementedRPCServer
 // for forward compatibility
 type RPCServer interface {
-	UpdateDeployment(context.Context, *UpdateDeploymentRequest) (*Deployment, error)
 	QueryDeployment(context.Context, *QueryDeploymentRequest) (*DeploymentSet, error)
 	DescribeDeployment(context.Context, *DescribeDeploymentRequest) (*Deployment, error)
 	UpdateDeploymentStatus(context.Context, *UpdateDeploymentStatusRequest) (*Deployment, error)
@@ -94,9 +82,6 @@ type RPCServer interface {
 type UnimplementedRPCServer struct {
 }
 
-func (UnimplementedRPCServer) UpdateDeployment(context.Context, *UpdateDeploymentRequest) (*Deployment, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method UpdateDeployment not implemented")
-}
 func (UnimplementedRPCServer) QueryDeployment(context.Context, *QueryDeploymentRequest) (*DeploymentSet, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method QueryDeployment not implemented")
 }
@@ -117,24 +102,6 @@ type UnsafeRPCServer interface {
 
 func RegisterRPCServer(s grpc.ServiceRegistrar, srv RPCServer) {
 	s.RegisterService(&RPC_ServiceDesc, srv)
-}
-
-func _RPC_UpdateDeployment_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(UpdateDeploymentRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(RPCServer).UpdateDeployment(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: RPC_UpdateDeployment_FullMethodName,
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(RPCServer).UpdateDeployment(ctx, req.(*UpdateDeploymentRequest))
-	}
-	return interceptor(ctx, in, info, handler)
 }
 
 func _RPC_QueryDeployment_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
@@ -198,10 +165,6 @@ var RPC_ServiceDesc = grpc.ServiceDesc{
 	ServiceName: "infraboard.mpaas.deploy.RPC",
 	HandlerType: (*RPCServer)(nil),
 	Methods: []grpc.MethodDesc{
-		{
-			MethodName: "UpdateDeployment",
-			Handler:    _RPC_UpdateDeployment_Handler,
-		},
 		{
 			MethodName: "QueryDeployment",
 			Handler:    _RPC_QueryDeployment_Handler,

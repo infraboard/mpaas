@@ -18,6 +18,7 @@ const (
 
 type Service interface {
 	CreateDeployment(context.Context, *CreateDeploymentRequest) (*Deployment, error)
+	UpdateDeployment(context.Context, *UpdateDeploymentRequest) (*Deployment, error)
 	DeleteDeployment(context.Context, *DeleteDeploymentRequest) (*Deployment, error)
 	RPCServer
 }
@@ -33,9 +34,10 @@ func New(req *CreateDeploymentRequest) (*Deployment, error) {
 	}
 
 	d := &Deployment{
-		Meta:  m,
-		Scope: meta.NewScope(),
-		Spec:  req,
+		Meta:   m,
+		Scope:  meta.NewScope(),
+		Spec:   req,
+		Status: NewStatus(),
 	}
 
 	return d, nil

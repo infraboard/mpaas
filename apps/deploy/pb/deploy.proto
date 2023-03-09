@@ -33,12 +33,26 @@ message Deployment  {
 enum STAGE {
     // 准备中
     PENDDING = 0;
-    // 运行中
-    RUNNING = 1;
-    // 升级中
+    // 创建中, 创建时触发
+    CREATING = 1;
+    // 版本升级中, 发布新版本时触发
     UPGRADING = 2;
-    // 已停止
-    STOPPED = 10;
+    // 升级规模, 副本增加时触发
+    SCALE_UP = 4;
+    // 版本降级中, 回滚时触发
+    DOWNGRADING = 3;
+    // 降级规模, 副本缩减时触发
+    SCAL_DOWN = 5;
+
+    // 正常运行
+    ACTIVE = 6;
+    // 有风险,但是服务正常使用
+    WARNNING = 8;
+    // 异常运行
+    ERROR = 10;
+
+    // 已停止, 副本数调整为0时触发
+    STOPPED = 14;
 }
 
 // 部署状态

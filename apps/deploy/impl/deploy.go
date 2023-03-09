@@ -61,6 +61,7 @@ func (i *impl) CreateDeployment(ctx context.Context, in *deploy.CreateDeployment
 			return nil, err
 		}
 		// 运行工作负载
+		ins.Status.MarkCreating()
 		wl, err = k8sClient.WorkLoad().Run(ctx, wl)
 		if err != nil {
 			return nil, err
@@ -224,4 +225,9 @@ func (i *impl) GetDeployK8sClient(ctx context.Context, k8sClusterId string) (*k8
 		return nil, err
 	}
 	return c.Client()
+}
+
+func (i *impl) UpdateDeploymentStatus(ctx context.Context, in *deploy.UpdateDeploymentStatusRequest) (
+	*deploy.Deployment, error) {
+	return nil, nil
 }

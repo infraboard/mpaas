@@ -49,7 +49,8 @@ func (d *Deployment) MarshalJSON() ([]byte, error) {
 		*meta.Meta
 		*meta.Scope
 		*CreateDeploymentRequest
-	}{d.Meta, d.Scope, d.Spec})
+		Status *Status `json:"status"`
+	}{d.Meta, d.Scope, d.Spec, d.Status})
 }
 
 func (d *Deployment) GetK8sClusterId() string {
@@ -107,4 +108,12 @@ func (c *K8STypeConfig) GetServiceObj() (*v1.Service, error) {
 		return nil, nil
 	}
 	return network.ParseServiceFromYaml(c.Service)
+}
+
+func NewStatus() *Status {
+	return &Status{}
+}
+
+func (s *Status) MarkCreating() {
+	s.Stage = STAGE_CREATING
 }

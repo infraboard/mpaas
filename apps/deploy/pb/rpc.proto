@@ -9,14 +9,37 @@ import "apps/deploy/pb/deploy.proto";
 
 // RPC 应用部署配置
 service RPC {
-    rpc UpdateDeployment(UpdateDeploymentRequest) returns(Deployment);
     rpc QueryDeployment(QueryDeploymentRequest) returns(DeploymentSet);
     rpc DescribeDeployment(DescribeDeploymentRequest) returns(Deployment);
     rpc UpdateDeploymentStatus(UpdateDeploymentStatusRequest) returns(Deployment);
 }
 
 message UpdateDeploymentStatusRequest {
-    
+    // 部署Id
+    // @gotags: json:"id"
+    string id = 1;
+    // 更新Token, 校验合法性
+    // @gotags: json:"update_token"
+    string update_token = 2;
+    // 更新人
+    // @gotags: json:"update_by"
+    string update_by = 3;
+    // 部署状态
+    // @gotags: json:"status"
+    Status status = 4;
+    // k8s相关配置更新
+    // @gotags: json:"k8s_update_detail"
+    K8sUpdateDetail k8s_update_detail = 5;
+}
+
+// 实时更新k8s相关配置
+message K8sUpdateDetail {
+    // k8s yaml配置, 支持deploy/statfulset/daemonset/job/cronjob
+    // @gotags: bson:"workload_config" json:"workload_config" validate:"required"
+    string workload_config = 1;
+    // k8s service配置
+    // @gotags: bson:"service" json:"service"
+    string service = 2;
 }
 
 message QueryDeploymentRequest {
