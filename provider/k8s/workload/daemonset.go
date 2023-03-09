@@ -19,3 +19,7 @@ func (c *Client) CreateDaemonSet(ctx context.Context, obj *appsv1.DaemonSet) (*a
 func (c *Client) DeleteDaemonSet(ctx context.Context, req *meta.DeleteRequest) error {
 	return c.appsv1.DaemonSets(req.Namespace).Delete(ctx, req.Name, req.Opts)
 }
+
+func GetDaemonSetStatus(*appsv1.DaemonSet) *WorklaodStatus {
+	return nil
+}

@@ -1,7 +1,6 @@
 package impl_test
 
 import (
-	"os"
 	"testing"
 
 	"github.com/infraboard/mpaas/apps/deploy"
@@ -53,9 +52,24 @@ func TestCreateDeployment(t *testing.T) {
 func TestUpdateDeployment(t *testing.T) {
 	k8sConf := deploy.NewK8STypeConfig()
 	k8sConf.WorkloadConfig = tools.MustReadContentFile("test/deployment.yml")
-	req := deploy.NewPatchDeployRequest(os.Getenv("DEPLOY_JOB_ID"))
+	req := deploy.NewPatchDeployRequest(conf.C.DEPLOY_ID)
 	req.Spec.K8STypeConfig.ClusterId = "k8s-test"
 	ds, err := impl.UpdateDeployment(ctx, req)
+	if err != nil {
+		t.Fatal(err)
+	}
+	t.Log(tools.MustToYaml(ds))
+}
+
+func TestUpdateDeploymentStatus(t *testing.T) {
+	k8sConf := deploy.NewK8STypeConfig()
+	k8sConf.WorkloadConfig = tools.MustReadContentFile("test/deployment.yml")
+	req := deploy.NewUpdateDeploymentStatusRequest(conf.C.DEPLOY_ID)
+	req.Status = &deploy.Status{
+		Stage: deploy.STAGE_ERROR,
+	}
+	req.K8SConfig = k8sConf
+	ds, err := impl.UpdateDeploymentStatus(ctx, req)
 	if err != nil {
 		t.Fatal(err)
 	}

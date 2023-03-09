@@ -14,3 +14,7 @@ func (b *Client) ListCronJob(ctx context.Context, req *meta.ListRequest) (*v1.Cr
 func (b *Client) DeleteCronJob(ctx context.Context, req *meta.DeleteRequest) error {
 	return b.batchV1.CronJobs(req.Namespace).Delete(ctx, req.Name, req.Opts)
 }
+
+func GetCronJobStatus(*v1.CronJob) *WorklaodStatus {
+	return nil
+}

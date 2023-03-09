@@ -49,3 +49,7 @@ func InjectJobAnnotations(pod *v1.Job, annotations map[string]string) {
 		pod.Annotations[k] = v
 	}
 }
+
+func GetJobStatus(*v1.Job) *WorklaodStatus {
+	return nil
+}

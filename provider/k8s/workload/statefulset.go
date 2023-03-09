@@ -23,3 +23,7 @@ func (c *Client) GetStatefulSet(ctx context.Context, req *meta.GetRequest) (*app
 func (c *Client) DeleteStatefulSet(ctx context.Context, req *meta.DeleteRequest) error {
 	return c.appsv1.StatefulSets(req.Namespace).Delete(ctx, req.Name, req.Opts)
 }
+
+func GetStatefulSetStatus(*appsv1.StatefulSet) *WorklaodStatus {
+	return nil
+}

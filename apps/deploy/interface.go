@@ -121,3 +121,9 @@ func NewDeleteDeploymentRequest(id string) *DeleteDeploymentRequest {
 		Id: id,
 	}
 }
+
+func NewUpdateDeploymentStatusRequest(id string) *UpdateDeploymentStatusRequest {
+	return &UpdateDeploymentStatusRequest{
+		Id: id,
+	}
+}

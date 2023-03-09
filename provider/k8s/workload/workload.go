@@ -129,6 +129,24 @@ func (w *WorkLoad) SetDefaultNamespace(ns string) {
 	}
 }
 
+// 获取负载当前状态
+func (w *WorkLoad) Status() *WorklaodStatus {
+	switch w.WorkloadKind {
+	case WORKLOAD_KIND_DEPLOYMENT:
+		return GetDeploymentStatus(w.Deployment)
+	case WORKLOAD_KIND_STATEFULSET:
+		return GetStatefulSetStatus(w.StatefulSet)
+	case WORKLOAD_KIND_DAEMONSET:
+		return GetDaemonSetStatus(w.DaemonSet)
+	case WORKLOAD_KIND_CRONJOB:
+		return GetCronJobStatus(w.CronJob)
+	case WORKLOAD_KIND_JOB:
+		return GetJobStatus(w.Job)
+	}
+
+	return nil
+}
+
 func (w *WorkLoad) MustToYaml() string {
 	var (
 		err  error
@@ -186,3 +204,18 @@ var (
 		"CRONJOB":     4,
 	}
 )
+
+type WORKLOAD_STAGE int32
+
+const (
+	// 正常
+	WORKLOAD_STAGE_ACTIVE WORKLOAD_STAGE = 0
+	// 异常
+	WORKLOAD_STAGE_ERROR WORKLOAD_STAGE = 1
+)
+
+type WorklaodStatus struct {
+	Stage   WORKLOAD_STAGE
+	Reason  string
+	Message string
+}

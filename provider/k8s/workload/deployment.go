@@ -66,3 +66,7 @@ func (c *Client) ReDeploy(ctx context.Context, req *meta.GetRequest) (*appsv1.De
 func (c *Client) DeleteDeployment(ctx context.Context, req *meta.DeleteRequest) error {
 	return c.appsv1.Deployments(req.Namespace).Delete(ctx, req.Name, req.Opts)
 }
+
+func GetDeploymentStatus(*appsv1.Deployment) *WorklaodStatus {
+	return nil
+}

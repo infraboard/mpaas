@@ -240,16 +240,24 @@ func (i *impl) UpdateDeploymentStatus(ctx context.Context, in *deploy.UpdateDepl
 	}
 
 	// 更新状态
-	ins.Status.Update(in.Status)
+	err = ins.Status.Update(in.Status)
+	if err != nil {
+		return nil, err
+	}
 
 	switch ins.Spec.Type {
 	case deploy.TYPE_KUBERNETES:
+		if in.K8SConfig == nil {
+			return nil, fmt.Errorf("k8s config 不能为nil")
+		}
+
 		// k8s类型的服务
 		wc := ins.Spec.K8STypeConfig
 		err = wc.Merge(in.K8SConfig)
 		if err != nil {
 			return nil, err
 		}
+
 		wl, err := in.K8SConfig.GetWorkLoad()
 		if err != nil {
 			return nil, err

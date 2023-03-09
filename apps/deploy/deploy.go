@@ -110,9 +110,8 @@ func (c *K8STypeConfig) Merge(target *K8STypeConfig) error {
 		return nil
 	}
 
-	if c.ClusterId != target.ClusterId {
-		return fmt.Errorf("k8s cluster id can't update")
-	}
+	// 不能更新集群的clusterId
+	target.ClusterId = c.ClusterId
 
 	return mergo.MergeWithOverwrite(c, target)
 }
@@ -132,10 +131,17 @@ func (s *Status) MarkCreating() {
 	s.Stage = STAGE_CREATING
 }
 
-func (s *Status) Update(target *Status) {
+func (s *Status) Update(target *Status) error {
 	if target == nil {
-		return
+		return fmt.Errorf("Status为nil")
 	}
+
+	if target.Stage <= STAGE_CREATING {
+		return fmt.Errorf("更新的状态不合法, 不能更新为PENDDING或者CREATING")
+	}
+
 	target.UpdateAt = time.Now().Unix()
 	s = target
+
+	return nil
 }
