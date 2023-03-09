@@ -67,6 +67,6 @@ func (c *Client) DeleteDeployment(ctx context.Context, req *meta.DeleteRequest) 
 	return c.appsv1.Deployments(req.Namespace).Delete(ctx, req.Name, req.Opts)
 }
 
-func GetDeploymentStatus(*appsv1.Deployment) *WorklaodStatus {
+func GetDeploymentStatus(*appsv1.Deployment) *WorkloadStatus {
 	return nil
 }

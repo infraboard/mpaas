@@ -145,3 +145,19 @@ func (s *Status) Update(target *Status) error {
 
 	return nil
 }
+
+func (s *Status) UpdateK8sWorkloadStatus(status *workload.WorkloadStatus) {
+	if status == nil {
+		return
+	}
+
+	switch status.Stage {
+	case workload.WORKLOAD_STAGE_ACTIVE:
+		s.Stage = STAGE_ACTIVE
+	case workload.WORKLOAD_STAGE_ERROR:
+		s.Stage = STAGE_ERROR
+	}
+	s.Reason = status.Reason
+	s.Message = status.Message
+	s.UpdateAt = time.Now().Unix()
+}

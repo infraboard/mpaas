@@ -24,6 +24,6 @@ func (c *Client) DeleteStatefulSet(ctx context.Context, req *meta.DeleteRequest)
 	return c.appsv1.StatefulSets(req.Namespace).Delete(ctx, req.Name, req.Opts)
 }
 
-func GetStatefulSetStatus(*appsv1.StatefulSet) *WorklaodStatus {
+func GetStatefulSetStatus(*appsv1.StatefulSet) *WorkloadStatus {
 	return nil
 }

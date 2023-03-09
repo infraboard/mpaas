@@ -258,6 +258,8 @@ func (i *impl) UpdateDeploymentStatus(ctx context.Context, in *deploy.UpdateDepl
 		}
 		// 从镜像中获取部署的版本信息
 		ins.Spec.ServiceVersion = wl.GetServiceContainerVersion(ins.Spec.ServiceName)
+		// 更新部署状态
+		ins.Status.UpdateK8sWorkloadStatus(wl.Status())
 	}
 
 	// 更新
