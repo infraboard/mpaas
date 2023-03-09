@@ -28,18 +28,8 @@ message UpdateDeploymentStatusRequest {
     // @gotags: json:"status"
     Status status = 4;
     // k8s相关配置更新
-    // @gotags: json:"k8s_update_detail"
-    K8sUpdateDetail k8s_update_detail = 5;
-}
-
-// 实时更新k8s相关配置
-message K8sUpdateDetail {
-    // k8s yaml配置, 支持deploy/statfulset/daemonset/job/cronjob
-    // @gotags: bson:"workload_config" json:"workload_config" validate:"required"
-    string workload_config = 1;
-    // k8s service配置
-    // @gotags: bson:"service" json:"service"
-    string service = 2;
+    // @gotags: json:"k8s_config"
+    K8sTypeConfig k8s_config = 5;
 }
 
 message QueryDeploymentRequest {

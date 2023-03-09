@@ -4,7 +4,9 @@ import (
 	"encoding/json"
 	"fmt"
 	"strings"
+	"time"
 
+	"github.com/imdario/mergo"
 	"github.com/infraboard/mpaas/apps/job"
 	meta "github.com/infraboard/mpaas/common/meta"
 	"github.com/infraboard/mpaas/provider/k8s/network"
@@ -103,6 +105,18 @@ func (c *K8STypeConfig) GetWorkLoad() (*workload.WorkLoad, error) {
 	return workload.ParseWorkloadFromYaml(c.WorkloadKind, c.WorkloadConfig)
 }
 
+func (c *K8STypeConfig) Merge(target *K8STypeConfig) error {
+	if target == nil {
+		return nil
+	}
+
+	if c.ClusterId != target.ClusterId {
+		return fmt.Errorf("k8s cluster id can't update")
+	}
+
+	return mergo.MergeWithOverwrite(c, target)
+}
+
 func (c *K8STypeConfig) GetServiceObj() (*v1.Service, error) {
 	if c.Service == "" {
 		return nil, nil
@@ -116,4 +130,12 @@ func NewStatus() *Status {
 
 func (s *Status) MarkCreating() {
 	s.Stage = STAGE_CREATING
+}
+
+func (s *Status) Update(target *Status) {
+	if target == nil {
+		return
+	}
+	target.UpdateAt = time.Now().Unix()
+	s = target
 }

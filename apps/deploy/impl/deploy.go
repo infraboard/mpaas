@@ -229,5 +229,40 @@ func (i *impl) GetDeployK8sClient(ctx context.Context, k8sClusterId string) (*k8
 
 func (i *impl) UpdateDeploymentStatus(ctx context.Context, in *deploy.UpdateDeploymentStatusRequest) (
 	*deploy.Deployment, error) {
-	return nil, nil
+	req := deploy.NewDescribeDeploymentRequest(in.Id)
+	ins, err := i.DescribeDeployment(ctx, req)
+	if err != nil {
+		return nil, err
+	}
+
+	if err := ins.ValidateToken(in.UpdateToken); err != nil {
+		return nil, err
+	}
+
+	// 更新状态
+	ins.Status.Update(in.Status)
+
+	switch ins.Spec.Type {
+	case deploy.TYPE_KUBERNETES:
+		// k8s类型的服务
+		wc := ins.Spec.K8STypeConfig
+		err = wc.Merge(in.K8SConfig)
+		if err != nil {
+			return nil, err
+		}
+		wl, err := in.K8SConfig.GetWorkLoad()
+		if err != nil {
+			return nil, err
+		}
+		// 从镜像中获取部署的版本信息
+		ins.Spec.ServiceVersion = wl.GetServiceContainerVersion(ins.Spec.ServiceName)
+	}
+
+	// 更新
+	_, err = i.col.UpdateOne(ctx, bson.M{"_id": ins.Meta.Id}, bson.M{"$set": ins})
+	if err != nil {
+		return nil, exception.NewInternalServerError("update deploy status(%s) error, %s", ins.Meta.Id, err)
+	}
+
+	return ins, nil
 }
