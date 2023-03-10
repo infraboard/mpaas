@@ -208,14 +208,26 @@ var (
 type WORKLOAD_STAGE int32
 
 const (
-	// 正常
-	WORKLOAD_STAGE_ACTIVE WORKLOAD_STAGE = 0
 	// 异常
-	WORKLOAD_STAGE_ERROR WORKLOAD_STAGE = 1
+	WORKLOAD_STAGE_PENDDING WORKLOAD_STAGE = iota
+	// 异常
+	WORKLOAD_STAGE_PROGERESS
+	// 正常
+	WORKLOAD_STAGE_ACTIVE
+	// 异常
+	WORKLOAD_STAGE_ERROR
 )
+
+func NewWorklaodStatus() *WorklaodStatus {
+	return &WorklaodStatus{}
+}
 
 type WorklaodStatus struct {
 	Stage   WORKLOAD_STAGE
 	Reason  string
 	Message string
+}
+
+func (w *WorklaodStatus) UpdateDeploymentStatus(cond appsv1.DeploymentCondition) {
+
 }

@@ -16,5 +16,5 @@ func (b *Client) DeleteCronJob(ctx context.Context, req *meta.DeleteRequest) err
 }
 
 func GetCronJobStatus(*v1.CronJob) *WorklaodStatus {
-	return nil
+	return NewWorklaodStatus()
 }

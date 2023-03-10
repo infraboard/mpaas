@@ -5,6 +5,7 @@ import (
 
 	"github.com/infraboard/mpaas/provider/k8s/meta"
 	appsv1 "k8s.io/api/apps/v1"
+	corev1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
@@ -24,6 +25,29 @@ func (c *Client) DeleteStatefulSet(ctx context.Context, req *meta.DeleteRequest)
 	return c.appsv1.StatefulSets(req.Namespace).Delete(ctx, req.Name, req.Opts)
 }
 
-func GetStatefulSetStatus(*appsv1.StatefulSet) *WorklaodStatus {
-	return nil
+func GetStatefulSetStatus(obj *appsv1.StatefulSet) *WorklaodStatus {
+	status := NewWorklaodStatus()
+	for _, cond := range obj.Status.Conditions {
+		switch cond.Type {
+		case appsv1.StatefulSetConditionType(appsv1.DeploymentReplicaFailure):
+			if cond.Status == corev1.ConditionTrue {
+				status.Stage = WORKLOAD_STAGE_ERROR
+				status.Reason = cond.Reason
+				status.Message = cond.Message
+			}
+		case appsv1.StatefulSetConditionType(appsv1.DeploymentAvailable):
+			if cond.Status == corev1.ConditionTrue {
+				status.Stage = WORKLOAD_STAGE_ACTIVE
+				status.Reason = cond.Reason
+				status.Message = cond.Message
+			}
+		case appsv1.StatefulSetConditionType(appsv1.DeploymentProgressing):
+			if cond.Status == corev1.ConditionTrue {
+				status.Stage = WORKLOAD_STAGE_PROGERESS
+				status.Reason = cond.Reason
+				status.Message = cond.Message
+			}
+		}
+	}
+	return status
 }

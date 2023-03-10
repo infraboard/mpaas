@@ -21,5 +21,5 @@ func (c *Client) DeleteDaemonSet(ctx context.Context, req *meta.DeleteRequest) e
 }
 
 func GetDaemonSetStatus(*appsv1.DaemonSet) *WorklaodStatus {
-	return nil
+	return NewWorklaodStatus()
 }
