@@ -166,3 +166,22 @@ message CreateDeploymentRequest {
     // @gotags: bson:"labels" json:"labels"
     map<string,string> labels = 25;
 }
+
+// 部署的访问方式
+message Access {
+    // 访问地址
+    // @gotags: bson:"host" json:"host"
+    repeated Service services = 1;
+}
+
+// kubelet 为 Pod 添加环境变量 {SVCNAME}_SERVICE_HOST 和 {SVCNAME}_SERVICE_PORT。 
+// 这里 Service 的名称需大写，横线被转换成下划线。
+// 具体请参考: https://kubernetes.io/zh-cn/docs/concepts/services-networking/service/#environment-variables
+message Service {
+    // 访问地址
+    // @gotags: bson:"host" json:"host"
+    string host = 1;
+    // 访问端口
+    // @gotags: bson:"port" json:"port"
+    string port = 2;
+}
