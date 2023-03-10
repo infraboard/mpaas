@@ -26,7 +26,15 @@ func (s *DeploymentSet) Add(item *Deployment) {
 
 func NewDefaultDeploy() *Deployment {
 	return &Deployment{
-		Spec: NewCreateDeploymentRequest(),
+		Spec:       NewCreateDeploymentRequest(),
+		Credential: NewCredential(),
+		Status:     NewStatus(),
+	}
+}
+
+func (d *Deployment) SetDefault() {
+	if d.Status == nil {
+		d.Status = NewStatus()
 	}
 }
 
@@ -123,6 +131,10 @@ func (c *K8STypeConfig) GetServiceObj() (*v1.Service, error) {
 	return network.ParseServiceFromYaml(c.Service)
 }
 
+func NewCredential() *Credential {
+	return &Credential{}
+}
+
 func NewStatus() *Status {
 	return &Status{}
 }
@@ -152,6 +164,8 @@ func (s *Status) UpdateK8sWorkloadStatus(status *workload.WorkloadStatus) {
 	}
 
 	switch status.Stage {
+	case workload.WORKLOAD_STAGE_PROGERESS:
+		s.Stage = STAGE_UPGRADING
 	case workload.WORKLOAD_STAGE_ACTIVE:
 		s.Stage = STAGE_ACTIVE
 	case workload.WORKLOAD_STAGE_ERROR:

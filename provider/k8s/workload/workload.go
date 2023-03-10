@@ -208,9 +208,9 @@ var (
 type WORKLOAD_STAGE int32
 
 const (
-	// 异常
+	// 未处理
 	WORKLOAD_STAGE_PENDDING WORKLOAD_STAGE = iota
-	// 异常
+	// 处理中
 	WORKLOAD_STAGE_PROGERESS
 	// 正常
 	WORKLOAD_STAGE_ACTIVE

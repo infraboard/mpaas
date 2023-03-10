@@ -262,13 +262,15 @@ func (i *impl) UpdateK8sDeployStatus(ctx context.Context, ins *deploy.Deployment
 		return fmt.Errorf("k8s config 不能为nil")
 	}
 
+	ins.SetDefault()
+
 	wc := ins.Spec.K8STypeConfig
 	err := wc.Merge(in)
 	if err != nil {
 		return err
 	}
 
-	// 更新workload
+	// 根据workload信息 补充更新 部署的版本和状态
 	if in.WorkloadConfig != "" {
 		wl, err := in.GetWorkLoad()
 		if err != nil {
@@ -278,11 +280,6 @@ func (i *impl) UpdateK8sDeployStatus(ctx context.Context, ins *deploy.Deployment
 		ins.Spec.ServiceVersion = wl.GetServiceContainerVersion(ins.Spec.ServiceName)
 		// 更新部署状态
 		ins.Status.UpdateK8sWorkloadStatus(wl.Status())
-	}
-
-	// 更新service
-	if in.Service != "" {
-		wc.Service = in.Service
 	}
 	return nil
 }

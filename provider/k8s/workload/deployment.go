@@ -81,9 +81,11 @@ func GetDeploymentStatus(obj *appsv1.Deployment) *WorkloadStatus {
 		case appsv1.DeploymentAvailable:
 			if cond.Status == corev1.ConditionTrue {
 				status.Stage = WORKLOAD_STAGE_ACTIVE
-				status.Reason = cond.Reason
-				status.Message = cond.Message
+			} else {
+				status.Stage = WORKLOAD_STAGE_ERROR
 			}
+			status.Reason = cond.Reason
+			status.Message = cond.Message
 		case appsv1.DeploymentProgressing:
 			if cond.Status == corev1.ConditionTrue {
 				status.Stage = WORKLOAD_STAGE_PROGERESS
