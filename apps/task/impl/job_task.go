@@ -212,6 +212,8 @@ func (i *impl) UpdateJobTaskStatus(ctx context.Context, in *task.UpdateJobTaskSt
 	if err != nil {
 		return nil, err
 	}
+
+	// 状态更新
 	ins.Status.UpdateStatus(in)
 
 	// 任务状态变化处理
