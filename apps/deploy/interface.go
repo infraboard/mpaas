@@ -124,6 +124,7 @@ func NewDeleteDeploymentRequest(id string) *DeleteDeploymentRequest {
 
 func NewUpdateDeploymentStatusRequest(id string) *UpdateDeploymentStatusRequest {
 	return &UpdateDeploymentStatusRequest{
-		Id: id,
+		UpdatedK8SConfig: NewK8STypeConfig(),
+		Id:               id,
 	}
 }
