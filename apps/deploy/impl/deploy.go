@@ -241,25 +241,10 @@ func (i *impl) UpdateDeploymentStatus(ctx context.Context, in *deploy.UpdateDepl
 
 	switch ins.Spec.Type {
 	case deploy.TYPE_KUBERNETES:
-		if in.UpdatedK8SConfig == nil {
-			return nil, fmt.Errorf("k8s config 不能为nil")
-		}
-
-		// k8s类型的服务
-		wc := ins.Spec.K8STypeConfig
-		err = wc.Merge(in.UpdatedK8SConfig)
+		err := i.UpdateK8sDeployStatus(ctx, ins, in.UpdatedK8SConfig)
 		if err != nil {
 			return nil, err
 		}
-
-		wl, err := in.UpdatedK8SConfig.GetWorkLoad()
-		if err != nil {
-			return nil, err
-		}
-		// 从镜像中获取部署的版本信息
-		ins.Spec.ServiceVersion = wl.GetServiceContainerVersion(ins.Spec.ServiceName)
-		// 更新部署状态
-		ins.Status.UpdateK8sWorkloadStatus(wl.Status())
 	}
 
 	// 更新
@@ -269,4 +254,35 @@ func (i *impl) UpdateDeploymentStatus(ctx context.Context, in *deploy.UpdateDepl
 	}
 
 	return ins, nil
+}
+
+// k8s类型的服务
+func (i *impl) UpdateK8sDeployStatus(ctx context.Context, ins *deploy.Deployment, in *deploy.K8STypeConfig) error {
+	if in == nil {
+		return fmt.Errorf("k8s config 不能为nil")
+	}
+
+	wc := ins.Spec.K8STypeConfig
+	err := wc.Merge(in)
+	if err != nil {
+		return err
+	}
+
+	// 更新workload
+	if in.WorkloadConfig != "" {
+		wl, err := in.GetWorkLoad()
+		if err != nil {
+			return err
+		}
+		// 从镜像中获取部署的版本信息
+		ins.Spec.ServiceVersion = wl.GetServiceContainerVersion(ins.Spec.ServiceName)
+		// 更新部署状态
+		ins.Status.UpdateK8sWorkloadStatus(wl.Status())
+	}
+
+	// 更新service
+	if in.Service != "" {
+		wc.Service = in.Service
+	}
+	return nil
 }
