@@ -164,10 +164,10 @@ message CreateDeploymentRequest {
     bool is_approval = 15;
     // 内部访问地址
     // @gotags: bson:"internal_access" json:"internal_access"
-    Access internal_access = 16;
+    AccessAddress internal_access = 16;
     // 外部访问地址
     // @gotags: bson:"public_access" json:"public_access"
-    Access public_access = 17;
+    AccessAddress public_access = 17;
     // 部署标签
     // @gotags: bson:"labels" json:"labels"
     map<string,string> labels = 25;
@@ -179,19 +179,19 @@ enum ACCESS_TYPE {
 }
 
 // 部署的访问方式
-message Access {
+message AccessAddress {
     // 访问的方式
     // @gotags: bson:"type" json:"type"
     ACCESS_TYPE type = 1;
     // 访问地址
-    // @gotags: bson:"host" json:"host"
-    repeated ServiceInfo services = 2;
+    // @gotags: bson:"entrypoints" json:"entrypoints"
+    repeated EntryPoint entrypoints = 2;
 }
 
 // kubelet 为 Pod 添加环境变量 {SVCNAME}_SERVICE_HOST 和 {SVCNAME}_SERVICE_PORT。 
 // 这里 Service 的名称需大写，横线被转换成下划线。
 // 具体请参考: https://kubernetes.io/zh-cn/docs/concepts/services-networking/service/#environment-variables
-message ServiceInfo {
+message EntryPoint {
     // 访问地址
     // @gotags: bson:"host" json:"host"
     string host = 1;
