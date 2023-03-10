@@ -15,6 +15,6 @@ func (b *Client) DeleteCronJob(ctx context.Context, req *meta.DeleteRequest) err
 	return b.batchV1.CronJobs(req.Namespace).Delete(ctx, req.Name, req.Opts)
 }
 
-func GetCronJobStatus(*v1.CronJob) *WorklaodStatus {
+func GetCronJobStatus(*v1.CronJob) *WorkloadStatus {
 	return NewWorklaodStatus()
 }

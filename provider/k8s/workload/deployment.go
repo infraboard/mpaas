@@ -68,7 +68,7 @@ func (c *Client) DeleteDeployment(ctx context.Context, req *meta.DeleteRequest) 
 	return c.appsv1.Deployments(req.Namespace).Delete(ctx, req.Name, req.Opts)
 }
 
-func GetDeploymentStatus(obj *appsv1.Deployment) *WorklaodStatus {
+func GetDeploymentStatus(obj *appsv1.Deployment) *WorkloadStatus {
 	status := NewWorklaodStatus()
 	for _, cond := range obj.Status.Conditions {
 		switch cond.Type {

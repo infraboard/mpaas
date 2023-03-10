@@ -24,12 +24,9 @@ message UpdateDeploymentStatusRequest {
     // 更新人
     // @gotags: json:"update_by"
     string update_by = 3;
-    // 部署状态
-    // @gotags: json:"status"
-    Status status = 4;
-    // k8s相关配置更新
-    // @gotags: json:"k8s_config"
-    K8sTypeConfig k8s_config = 5;
+    // k8s相关配置更新, 当部署时k8s部署是有效
+    // @gotags: json:"updated_k8s_config"
+    K8sTypeConfig updated_k8s_config = 4;
 }
 
 message QueryDeploymentRequest {

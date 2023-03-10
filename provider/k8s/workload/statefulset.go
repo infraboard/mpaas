@@ -25,7 +25,7 @@ func (c *Client) DeleteStatefulSet(ctx context.Context, req *meta.DeleteRequest)
 	return c.appsv1.StatefulSets(req.Namespace).Delete(ctx, req.Name, req.Opts)
 }
 
-func GetStatefulSetStatus(obj *appsv1.StatefulSet) *WorklaodStatus {
+func GetStatefulSetStatus(obj *appsv1.StatefulSet) *WorkloadStatus {
 	status := NewWorklaodStatus()
 	for _, cond := range obj.Status.Conditions {
 		switch cond.Type {

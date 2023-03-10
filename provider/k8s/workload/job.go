@@ -50,6 +50,6 @@ func InjectJobAnnotations(pod *v1.Job, annotations map[string]string) {
 	}
 }
 
-func GetJobStatus(*v1.Job) *WorklaodStatus {
+func GetJobStatus(*v1.Job) *WorkloadStatus {
 	return NewWorklaodStatus()
 }

@@ -20,6 +20,6 @@ func (c *Client) DeleteDaemonSet(ctx context.Context, req *meta.DeleteRequest) e
 	return c.appsv1.DaemonSets(req.Namespace).Delete(ctx, req.Name, req.Opts)
 }
 
-func GetDaemonSetStatus(*appsv1.DaemonSet) *WorklaodStatus {
+func GetDaemonSetStatus(*appsv1.DaemonSet) *WorkloadStatus {
 	return NewWorklaodStatus()
 }

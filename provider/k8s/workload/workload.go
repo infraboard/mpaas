@@ -130,7 +130,7 @@ func (w *WorkLoad) SetDefaultNamespace(ns string) {
 }
 
 // 获取负载当前状态
-func (w *WorkLoad) Status() *WorklaodStatus {
+func (w *WorkLoad) Status() *WorkloadStatus {
 	switch w.WorkloadKind {
 	case WORKLOAD_KIND_DEPLOYMENT:
 		return GetDeploymentStatus(w.Deployment)
@@ -218,16 +218,16 @@ const (
 	WORKLOAD_STAGE_ERROR
 )
 
-func NewWorklaodStatus() *WorklaodStatus {
-	return &WorklaodStatus{}
+func NewWorklaodStatus() *WorkloadStatus {
+	return &WorkloadStatus{}
 }
 
-type WorklaodStatus struct {
+type WorkloadStatus struct {
 	Stage   WORKLOAD_STAGE
 	Reason  string
 	Message string
 }
 
-func (w *WorklaodStatus) UpdateDeploymentStatus(cond appsv1.DeploymentCondition) {
+func (w *WorkloadStatus) UpdateDeploymentStatus(cond appsv1.DeploymentCondition) {
 
 }

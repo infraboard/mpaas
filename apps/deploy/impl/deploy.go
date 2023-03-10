@@ -239,31 +239,27 @@ func (i *impl) UpdateDeploymentStatus(ctx context.Context, in *deploy.UpdateDepl
 		return nil, err
 	}
 
-	// 更新状态
-	err = ins.Status.Update(in.Status)
-	if err != nil {
-		return nil, err
-	}
-
 	switch ins.Spec.Type {
 	case deploy.TYPE_KUBERNETES:
-		if in.K8SConfig == nil {
+		if in.UpdatedK8SConfig == nil {
 			return nil, fmt.Errorf("k8s config 不能为nil")
 		}
 
 		// k8s类型的服务
 		wc := ins.Spec.K8STypeConfig
-		err = wc.Merge(in.K8SConfig)
+		err = wc.Merge(in.UpdatedK8SConfig)
 		if err != nil {
 			return nil, err
 		}
 
-		wl, err := in.K8SConfig.GetWorkLoad()
+		wl, err := in.UpdatedK8SConfig.GetWorkLoad()
 		if err != nil {
 			return nil, err
 		}
 		// 从镜像中获取部署的版本信息
 		ins.Spec.ServiceVersion = wl.GetServiceContainerVersion(ins.Spec.ServiceName)
+		// 更新部署状态
+		ins.Status.UpdateK8sWorkloadStatus(wl.Status())
 	}
 
 	// 更新

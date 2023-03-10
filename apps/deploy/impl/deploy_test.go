@@ -65,10 +65,7 @@ func TestUpdateDeploymentStatus(t *testing.T) {
 	k8sConf := deploy.NewK8STypeConfig()
 	k8sConf.WorkloadConfig = tools.MustReadContentFile("test/deployment.yml")
 	req := deploy.NewUpdateDeploymentStatusRequest(conf.C.DEPLOY_ID)
-	req.Status = &deploy.Status{
-		Stage: deploy.STAGE_ERROR,
-	}
-	req.K8SConfig = k8sConf
+	req.UpdatedK8SConfig = k8sConf
 	ds, err := impl.UpdateDeploymentStatus(ctx, req)
 	if err != nil {
 		t.Fatal(err)
