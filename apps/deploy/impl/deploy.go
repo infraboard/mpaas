@@ -39,7 +39,7 @@ func (i *impl) CreateDeployment(ctx context.Context, in *deploy.CreateDeployment
 	switch in.Type {
 	case deploy.TYPE_KUBERNETES:
 		// 如果服务是k8s服务则直接执行部署
-		err := i.DoK8sDeploy(ctx, ins)
+		err := i.RunK8sDeploy(ctx, ins)
 		if err != nil {
 			return nil, err
 		}
@@ -51,7 +51,7 @@ func (i *impl) CreateDeployment(ctx context.Context, in *deploy.CreateDeployment
 	return ins, nil
 }
 
-func (i *impl) DoK8sDeploy(ctx context.Context, ins *deploy.Deployment) error {
+func (i *impl) RunK8sDeploy(ctx context.Context, ins *deploy.Deployment) error {
 	wc := ins.Spec.K8STypeConfig
 
 	wl, err := wc.GetWorkLoad()
@@ -298,5 +298,6 @@ func (i *impl) UpdateK8sDeployStatus(ctx context.Context, ins *deploy.Deployment
 		// 更新部署状态
 		ins.Status.UpdateK8sWorkloadStatus(wl.Status())
 	}
+
 	return nil
 }
