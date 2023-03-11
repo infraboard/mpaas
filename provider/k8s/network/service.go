@@ -39,5 +39,8 @@ func ParseServiceFromYaml(yml string) (*v1.Service, error) {
 	if err != nil {
 		return nil, err
 	}
+	if obj.Annotations == nil {
+		obj.Annotations = make(map[string]string)
+	}
 	return obj, nil
 }

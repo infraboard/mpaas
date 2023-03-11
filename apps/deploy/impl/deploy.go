@@ -14,6 +14,7 @@ import (
 	"github.com/infraboard/mpaas/common/yaml"
 	"github.com/infraboard/mpaas/provider/k8s"
 	"github.com/infraboard/mpaas/provider/k8s/meta"
+	"github.com/infraboard/mpaas/provider/k8s/network"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
 )
@@ -35,45 +36,12 @@ func (i *impl) CreateDeployment(ctx context.Context, in *deploy.CreateDeployment
 	ins.Scope.Domain = svc.Spec.Namespace
 	ins.Scope.Namespace = svc.Spec.Namespace
 
-	// 如果服务是k8s服务则直接执行部署
 	switch in.Type {
 	case deploy.TYPE_KUBERNETES:
-		wc := ins.Spec.K8STypeConfig
-
-		wl, err := wc.GetWorkLoad()
+		// 如果服务是k8s服务则直接执行部署
+		err := i.DoK8sDeploy(ctx, ins)
 		if err != nil {
 			return nil, err
-		}
-		wl.SetDefaultNamespace(ins.Scope.Namespace)
-		wl.SetAnnotations(deploy.ANNOTATION_DEPLOY_ID, ins.Meta.Id)
-
-		// 检查主容器是否存在
-		serviceContainer := wl.GetServiceContainer(ins.Spec.ServiceName)
-		if serviceContainer == nil {
-			return nil, fmt.Errorf("部署配置必须包含一个服务名称同名的容器 作为主容器")
-		}
-		// 从镜像中获取部署的版本信息
-		ins.Spec.ServiceVersion = wl.GetServiceContainerVersion(ins.Spec.ServiceName)
-
-		// 查询部署的k8s集群
-		k8sClient, err := i.GetDeployK8sClient(ctx, wc.ClusterId)
-		if err != nil {
-			return nil, err
-		}
-		// 运行工作负载
-		ins.Status.MarkCreating()
-		wl, err = k8sClient.WorkLoad().Run(ctx, wl)
-		if err != nil {
-			return nil, err
-		}
-		wc.WorkloadConfig = wl.MustToYaml()
-		// 创建服务
-		if wc.Service != "" {
-			service, err := k8sClient.Network().Run(ctx, wc.Service)
-			if err != nil {
-				return nil, err
-			}
-			wc.Service = yaml.MustToYaml(service)
 		}
 	}
 
@@ -81,6 +49,55 @@ func (i *impl) CreateDeployment(ctx context.Context, in *deploy.CreateDeployment
 		return nil, exception.NewInternalServerError("inserted a deploy document error, %s", err)
 	}
 	return ins, nil
+}
+
+func (i *impl) DoK8sDeploy(ctx context.Context, ins *deploy.Deployment) error {
+	wc := ins.Spec.K8STypeConfig
+
+	wl, err := wc.GetWorkLoad()
+	if err != nil {
+		return err
+	}
+	wl.SetDefaultNamespace(ins.Scope.Namespace)
+	wl.SetAnnotations(deploy.ANNOTATION_DEPLOY_ID, ins.Meta.Id)
+
+	// 检查主容器是否存在
+	serviceContainer := wl.GetServiceContainer(ins.Spec.ServiceName)
+	if serviceContainer == nil {
+		return fmt.Errorf("部署配置必须包含一个服务名称同名的容器 作为主容器")
+	}
+	// 从镜像中获取部署的版本信息
+	ins.Spec.ServiceVersion = wl.GetServiceContainerVersion(ins.Spec.ServiceName)
+
+	// 查询部署的k8s集群
+	k8sClient, err := i.GetDeployK8sClient(ctx, wc.ClusterId)
+	if err != nil {
+		return err
+	}
+	// 运行工作负载
+	ins.Status.MarkCreating()
+	wl, err = k8sClient.WorkLoad().Run(ctx, wl)
+	if err != nil {
+		return err
+	}
+	wc.WorkloadConfig = wl.MustToYaml()
+	// 创建服务
+	if wc.Service != "" {
+		svc, err := network.ParseServiceFromYaml(wc.Service)
+		if err != nil {
+			return err
+		}
+		svc.Namespace = ins.Scope.Namespace
+		svc.Annotations[deploy.ANNOTATION_DEPLOY_ID] = ins.Meta.Id
+		service, err := k8sClient.Network().CreateService(ctx, svc)
+		if err != nil {
+			return err
+		}
+		wc.Service = yaml.MustToYaml(service)
+		ins.Spec.InternalAccess = deploy.NewAccessAddressFromK8sService(service)
+	}
+
+	return nil
 }
 
 func (i *impl) QueryDeployment(ctx context.Context, in *deploy.QueryDeploymentRequest) (

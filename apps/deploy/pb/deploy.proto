@@ -184,18 +184,18 @@ message AccessAddress {
     // @gotags: bson:"type" json:"type"
     ACCESS_TYPE type = 1;
     // 访问地址
-    // @gotags: bson:"entrypoints" json:"entrypoints"
-    repeated EntryPoint entrypoints = 2;
+    // @gotags: bson:"service_env" json:"service_env"
+    repeated ServiceEnv service_env = 2;
 }
 
 // kubelet 为 Pod 添加环境变量 {SVCNAME}_SERVICE_HOST 和 {SVCNAME}_SERVICE_PORT。 
 // 这里 Service 的名称需大写，横线被转换成下划线。
 // 具体请参考: https://kubernetes.io/zh-cn/docs/concepts/services-networking/service/#environment-variables
-message EntryPoint {
-    // 访问地址
-    // @gotags: bson:"host" json:"host"
-    string host = 1;
-    // 访问端口
-    // @gotags: bson:"port" json:"port"
-    string port = 2;
+message ServiceEnv {
+    // 服务访问地址变量的名称
+    // @gotags: bson:"name" json:"name"
+    string name = 1;
+    // 样例
+    // @gotags: bson:"example" json:"example"
+    string example = 2;
 }
