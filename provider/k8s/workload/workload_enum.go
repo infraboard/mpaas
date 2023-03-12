@@ -8,7 +8,7 @@ import (
 
 func ParseWorkloadKindFromString(str string) (WORKLOAD_KIND, error) {
 	key := strings.Trim(string(str), `"`)
-	v, ok := WORKLOAD_KIND_VALUE[strings.ToUpper(key)]
+	v, ok := WORKLOAD_KIND_VALUE[key]
 	if !ok {
 		return 0, fmt.Errorf("unknown WORKLOAD_KIND: %s", str)
 	}
@@ -39,7 +39,7 @@ func (t WORKLOAD_KIND) String() string {
 // MarshalJSON todo
 func (t WORKLOAD_KIND) MarshalJSON() ([]byte, error) {
 	b := bytes.NewBufferString(`"`)
-	b.WriteString(strings.ToUpper(t.String()))
+	b.WriteString(t.String())
 	b.WriteString(`"`)
 	return b.Bytes(), nil
 }

@@ -35,7 +35,6 @@ func New(req *CreateDeploymentRequest) (*Deployment, error) {
 
 	d := &Deployment{
 		Meta:   m,
-		Scope:  meta.NewScope(),
 		Spec:   req,
 		Status: NewStatus(),
 	}
@@ -45,6 +44,22 @@ func New(req *CreateDeploymentRequest) (*Deployment, error) {
 
 func (req *CreateDeploymentRequest) Validate() error {
 	return validate.Validate(req)
+}
+
+func (req *CreateDeploymentRequest) ValidateWorkLoad() error {
+	if req.ServiceId == "" {
+		return fmt.Errorf("when workload, service_id required")
+	}
+
+	return nil
+}
+
+func (req *CreateDeploymentRequest) ValidateMiddleware() error {
+	if req.ServiceName == "" {
+		return fmt.Errorf("when middleware, service_name required")
+	}
+
+	return nil
 }
 
 func NewQueryDeploymentRequestFromHttp(r *http.Request) *QueryDeploymentRequest {

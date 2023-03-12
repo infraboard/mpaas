@@ -57,10 +57,9 @@ func (d *Deployment) ValidateToken(token string) error {
 func (d *Deployment) MarshalJSON() ([]byte, error) {
 	return json.Marshal(struct {
 		*meta.Meta
-		*meta.Scope
 		*CreateDeploymentRequest
 		Status *Status `json:"status"`
-	}{d.Meta, d.Scope, d.Spec, d.Status})
+	}{d.Meta, d.Spec, d.Status})
 }
 
 func (d *Deployment) GetK8sClusterId() string {

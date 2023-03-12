@@ -21,20 +21,32 @@ import (
 
 func (i *impl) CreateDeployment(ctx context.Context, in *deploy.CreateDeploymentRequest) (
 	*deploy.Deployment, error) {
-	// 补充服务相关信息
 	ins, err := deploy.New(in)
 	if err != nil {
 		return nil, exception.NewBadRequest(err.Error())
 	}
 
-	// 查询服务
-	svc, err := i.mcenter.Service().DescribeService(ctx, service.NewDescribeServiceRequest(in.ServiceId))
-	if err != nil {
-		return nil, err
+	// 补充服务相关信息
+	switch in.Kind {
+	case deploy.KIND_WORKLOAD:
+		// 应用负载 需要关联服务
+		err := in.ValidateWorkLoad()
+		if err != nil {
+			return nil, exception.NewBadRequest(err.Error())
+		}
+		svc, err := i.mcenter.Service().DescribeService(ctx, service.NewDescribeServiceRequest(in.ServiceId))
+		if err != nil {
+			return nil, err
+		}
+		ins.Spec.ServiceName = svc.Spec.Name
+		ins.Spec.Domain = svc.Spec.Namespace
+		ins.Spec.Namespace = svc.Spec.Namespace
+	case deploy.KIND_MIDDLEWARE:
+		err := in.ValidateMiddleware()
+		if err != nil {
+			return nil, exception.NewBadRequest(err.Error())
+		}
 	}
-	ins.Spec.ServiceName = svc.Spec.Name
-	ins.Scope.Domain = svc.Spec.Namespace
-	ins.Scope.Namespace = svc.Spec.Namespace
 
 	switch in.Type {
 	case deploy.TYPE_KUBERNETES:
@@ -58,7 +70,7 @@ func (i *impl) RunK8sDeploy(ctx context.Context, ins *deploy.Deployment) error {
 	if err != nil {
 		return err
 	}
-	wl.SetDefaultNamespace(ins.Scope.Namespace)
+	wl.SetDefaultNamespace(ins.Spec.Namespace)
 	wl.SetAnnotations(deploy.ANNOTATION_DEPLOY_ID, ins.Meta.Id)
 
 	// 检查主容器是否存在
@@ -87,7 +99,7 @@ func (i *impl) RunK8sDeploy(ctx context.Context, ins *deploy.Deployment) error {
 		if err != nil {
 			return err
 		}
-		svc.Namespace = ins.Scope.Namespace
+		svc.Namespace = ins.Spec.Namespace
 		svc.Annotations[deploy.ANNOTATION_DEPLOY_ID] = ins.Meta.Id
 		service, err := k8sClient.Network().CreateService(ctx, svc)
 		if err != nil {

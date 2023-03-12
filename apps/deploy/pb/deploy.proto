@@ -16,9 +16,6 @@ message Deployment  {
     // 元信息
     // @gotags: bson:",inline" json:"meta"
     common.meta.Meta meta = 1;
-    // 范围信息
-    // @gotags: bson:",inline" json:"scope"
-    common.meta.Scope scope = 2;
     // 创建信息
     // @gotags: bson:",inline" json:"spec"
     CreateDeploymentRequest spec = 3;
@@ -119,12 +116,28 @@ message HostTypeConfig {
 
 }
 
+enum KIND {
+    // 应用工作负载, 需要关联应用
+    WORKLOAD = 0;
+    // 应用中间件, 无需关联应用, 直接部署
+    MIDDLEWARE = 1;
+}
+
 message CreateDeploymentRequest {
+	// 部署的类型
+	// @gotags: bson:"kind" json:"kind"
+    KIND kind = 18;
+    // 对象所在域
+    // @gotags: bson:"domain" json:"domain"
+    string domain = 19;
+    // 对象所在空间
+    // @gotags: bson:"namespace" json:"namespace"
+    string namespace = 20;
 	// 是否是模版
 	// @gotags: bson:"is_template" json:"is_template"
     bool is_template = 1;
     // 服务Id
-    // @gotags: bson:"service_id" json:"service_id" validate:"required"
+    // @gotags: bson:"service_id" json:"service_id"
     string service_id = 3;
     // 服务名称
     // @gotags: bson:"service_name" json:"service_name"

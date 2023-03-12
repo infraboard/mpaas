@@ -3,13 +3,11 @@ kind: Service
 metadata:
   name: mongodb
   namespace: default
+  labels:
+    name: mongo
 spec:
-  type: NodePort
   ports:
-    - name: mongo
-      port: 27017
-      targetPort: 27017
-      nodePort: 30017
-      protocol: TCP
+  - port: 27017
+    targetPort: 27017
   selector:
     app: mongodb
