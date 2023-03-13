@@ -230,7 +230,7 @@ func (i *impl) UpdateJobTaskStatus(ctx context.Context, in *task.UpdateJobTaskSt
 		// 如果状态未变化, 不触发流水线更新
 		if ins.Status.Stage.Equal(in.Stage) {
 			i.log.Debugf("task %w status not changed: %s, skip update pipeline", in.Id, in.Stage)
-			return nil, nil
+			return ins, nil
 		}
 		_, err := i.PipelineTaskStatusChanged(ctx, ins)
 		if err != nil {
