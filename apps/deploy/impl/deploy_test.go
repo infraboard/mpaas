@@ -33,7 +33,7 @@ func TestDescribeDeployment(t *testing.T) {
 
 func TestCreateDeployment(t *testing.T) {
 	k8sConf := deploy.NewK8STypeConfig()
-	k8sConf.WorkloadConfig = tools.MustReadContentFile("test/deployment.yml")
+	k8sConf.WorkloadConfig = tools.MustReadContentFile("test/mpaas_workload.yml")
 	k8sConf.ClusterId = "k8s-test"
 
 	req := deploy.NewCreateDeploymentRequest()
