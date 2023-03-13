@@ -126,6 +126,7 @@ func newDefaultMongoDB() *mongodb {
 		UserName:       "mpaas",
 		Password:       "123456",
 		Database:       "mpaas",
+		AuthDB:         "",
 		Endpoints:      []string{"127.0.0.1:27017"},
 		K8sServiceName: "MONGODB",
 	}
@@ -138,8 +139,17 @@ type mongodb struct {
 	UserName       string   `toml:"username" env:"MONGO_USERNAME"`
 	Password       string   `toml:"password" env:"MONGO_PASSWORD"`
 	Database       string   `toml:"database" env:"MONGO_DATABASE"`
+	AuthDB         string   `toml:"auth_db" env:"MONGO_AUTH_DB"`
 	K8sServiceName string   `toml:"k8s_service_name" env:"K8S_SERVICE_NAME"`
 	lock           sync.Mutex
+}
+
+func (m *mongodb) GetAuthDB() string {
+	if m.AuthDB != "" {
+		return m.AuthDB
+	}
+
+	return m.Database
 }
 
 // 当 Pod 运行在 Node 上，kubelet 会为每个活跃的 Service 添加一组环境变量。
@@ -182,11 +192,10 @@ func (m *mongodb) GetDB() (*mongo.Database, error) {
 func (m *mongodb) getClient() (*mongo.Client, error) {
 	opts := options.Client()
 
-	cred := options.Credential{
-		AuthSource: m.Database,
-	}
-
 	if m.UserName != "" && m.Password != "" {
+		cred := options.Credential{
+			AuthSource: m.GetAuthDB(),
+		}
 		cred.Username = m.UserName
 		cred.Password = m.Password
 		cred.PasswordSet = true

@@ -19,3 +19,8 @@ spec:
           imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 27017
+          env:
+            - name: MONGO_INITDB_ROOT_USERNAME
+              value: admin
+            - name: MONGO_INITDB_ROOT_PASSWORD
+              value: 123456
