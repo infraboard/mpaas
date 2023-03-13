@@ -14,7 +14,7 @@ BUILD_TIME := ${shell date '+%Y-%m-%d %H:%M:%S'}
 BUILD_GO_VERSION := $(shell go version | grep -o  'go[0-9].[0-9].*')
 VERSION_PATH := "${PKG}/version"
 
-IMAGE_BUILD_TIME := ${shell date '+%Y%m%d%H%M%S'}
+IMAGE_BUILD_TIME := ${shell date '+%Y%m%d'}
 IMAGE_BUILD_COMMIT :=  ${shell git rev-parse HEAD | cut -c 1-8}
 IMAGE_VERSION := "mpaas-api:${IMAGE_BUILD_TIME}-${BUILD_BRANCH}-${IMAGE_BUILD_COMMIT}"
 
