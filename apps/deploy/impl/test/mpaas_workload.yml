@@ -33,7 +33,7 @@ spec:
         app: mpaas
     spec:
       containers:
-        - image: registry.cn-hangzhou.aliyuncs.com/inforboard/mpaas:v0.0.6
+        - image: registry.cn-hangzhou.aliyuncs.com/inforboard/mpaas:v0.0.10
           imagePullPolicy: IfNotPresent
           name: mpaas
           ports:
