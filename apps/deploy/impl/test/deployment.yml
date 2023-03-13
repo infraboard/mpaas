@@ -33,15 +33,22 @@ spec:
         app: mpaas
     spec:
       containers:
-      - image: registry.cn-hangzhou.aliyuncs.com/inforboard/mpaas:v0.0.6
-        imagePullPolicy: IfNotPresent
-        name: mpaas
-        ports:
-        - containerPort: 8080
-          protocol: TCP
-        resources: {}
-        terminationMessagePath: /dev/termination-log
-        terminationMessagePolicy: File
+        - image: registry.cn-hangzhou.aliyuncs.com/inforboard/mpaas:v0.0.6
+          imagePullPolicy: IfNotPresent
+          name: mpaas
+          ports:
+            - containerPort: 8080
+              protocol: TCP
+          resources: {}
+          env:
+            - name: MONGO_USERNAME
+              value: admin
+            - name: MONGO_PASSWORD
+              value: 123456
+            - name: MONGO_AUTH_DB
+              value: admin
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
       dnsPolicy: ClusterFirst
       restartPolicy: Always
       schedulerName: default-scheduler
@@ -49,18 +56,18 @@ spec:
       terminationGracePeriodSeconds: 30
 status:
   conditions:
-  - lastTransitionTime: "2023-03-06T05:36:50Z"
-    lastUpdateTime: "2023-03-06T08:36:23Z"
-    message: ReplicaSet "mpaas-85d5644cc9" has successfully progressed.
-    reason: NewReplicaSetAvailable
-    status: "True"
-    type: Progressing
-  - lastTransitionTime: "2023-03-09T07:34:37Z"
-    lastUpdateTime: "2023-03-09T07:34:37Z"
-    message: Deployment does not have minimum availability.
-    reason: MinimumReplicasUnavailable
-    status: "False"
-    type: Available
+    - lastTransitionTime: "2023-03-06T05:36:50Z"
+      lastUpdateTime: "2023-03-06T08:36:23Z"
+      message: ReplicaSet "mpaas-85d5644cc9" has successfully progressed.
+      reason: NewReplicaSetAvailable
+      status: "True"
+      type: Progressing
+    - lastTransitionTime: "2023-03-09T07:34:37Z"
+      lastUpdateTime: "2023-03-09T07:34:37Z"
+      message: Deployment does not have minimum availability.
+      reason: MinimumReplicasUnavailable
+      status: "False"
+      type: Available
   observedGeneration: 3
   replicas: 1
   unavailableReplicas: 1
