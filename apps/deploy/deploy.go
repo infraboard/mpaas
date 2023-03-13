@@ -191,8 +191,8 @@ func NewAccessAddressFromK8sService(svc *v1.Service) *AccessAddress {
 	return &AccessAddress{}
 }
 
-func NewServiceEnv(name, example string) *ServiceEnv {
-	return &ServiceEnv{
+func NewServiceEnv(name, example string) *AccessEnv {
+	return &AccessEnv{
 		Name:    name,
 		Example: example,
 	}
@@ -200,10 +200,10 @@ func NewServiceEnv(name, example string) *ServiceEnv {
 
 func NewAccessAddress() *AccessAddress {
 	return &AccessAddress{
-		ServiceEnv: []*ServiceEnv{},
+		AccessEnvs: []*AccessEnv{},
 	}
 }
 
 func (a *AccessAddress) AddServiceEnv(name, example string) {
-	a.ServiceEnv = append(a.ServiceEnv, NewServiceEnv(name, example))
+	a.AccessEnvs = append(a.AccessEnvs, NewServiceEnv(name, example))
 }
