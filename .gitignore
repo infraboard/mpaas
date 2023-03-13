@@ -23,6 +23,7 @@ coverage.txt
 etc/mpaas.toml
 etc/mpaas.env
 etc/config.toml
+etc/config.env
 etc/ssl
 unit_test.env
 kube_config.yml
