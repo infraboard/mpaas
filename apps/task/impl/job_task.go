@@ -214,10 +214,8 @@ func (i *impl) UpdateJobTaskStatus(ctx context.Context, in *task.UpdateJobTaskSt
 	}
 
 	// 状态更新
+	preStatus := ins.Status.Stage
 	ins.Status.UpdateStatus(in)
-
-	// 任务状态变化处理
-	// i.StatusChangedHook(ctx, ins)
 
 	// 更新数据库
 	if _, err := i.jcol.UpdateByID(ctx, ins.Spec.TaskId, bson.M{"$set": ins}); err != nil {
@@ -228,7 +226,7 @@ func (i *impl) UpdateJobTaskStatus(ctx context.Context, in *task.UpdateJobTaskSt
 	// Pipeline Task 状态变更回调
 	if ins.Spec.PipelineTask != "" {
 		// 如果状态未变化, 不触发流水线更新
-		if ins.Status.Stage.Equal(in.Stage) {
+		if preStatus.Equal(in.Stage) {
 			i.log.Debugf("task %s status not changed: %s, skip update pipeline", in.Id, in.Stage)
 			return ins, nil
 		}
