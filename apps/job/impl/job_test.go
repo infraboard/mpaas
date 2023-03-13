@@ -49,7 +49,7 @@ func TestCreateBuildJob(t *testing.T) {
 	req := job.NewCreateJobRequest()
 	req.Name = "docker_build"
 	req.CreateBy = "test"
-	req.RunnerSpec = tools.MustReadContentFile("test/build.yml")
+	req.RunnerSpec = tools.MustReadContentFile("test/container_build.yml")
 
 	ins, err := impl.CreateJob(ctx, req)
 	if err != nil {
@@ -62,7 +62,7 @@ func TestCreateDeployJob(t *testing.T) {
 	req := job.NewCreateJobRequest()
 	req.Name = "docker_deploy"
 	req.CreateBy = "test"
-	req.RunnerSpec = tools.MustReadContentFile("test/deployment.yml")
+	req.RunnerSpec = tools.MustReadContentFile("test/container_deploy.yml")
 
 	ins, err := impl.CreateJob(ctx, req)
 	if err != nil {
@@ -73,7 +73,7 @@ func TestCreateDeployJob(t *testing.T) {
 
 func TestUpdateDeployJob(t *testing.T) {
 	req := job.NewPatchJobRequest(conf.C.DEPLOY_JOB_ID)
-	req.Spec.RunnerSpec = tools.MustReadContentFile("test/deployment.yml")
+	req.Spec.RunnerSpec = tools.MustReadContentFile("test/container_deploy.yml")
 
 	v1 := job.NewVersionedRunParam("v1")
 	v1.Add(&job.RunParam{
@@ -117,7 +117,7 @@ func TestUpdateDeployJob(t *testing.T) {
 
 func TestUpdateBuildJob(t *testing.T) {
 	req := job.NewPatchJobRequest(conf.C.BUILD_JOB_ID)
-	req.Spec.RunnerSpec = tools.MustReadContentFile("test/build.yml")
+	req.Spec.RunnerSpec = tools.MustReadContentFile("test/container_build.yml")
 	v1 := job.NewVersionedRunParam("v1")
 	v1.Add(&job.RunParam{
 		Required:    true,
