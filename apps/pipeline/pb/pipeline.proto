@@ -41,6 +41,9 @@ message CreatePipelineRequest {
 	// 描述
 	// @gotags: bson:"description" json:"description"
 	string description = 5;
+	// 图标
+	// @gotags: bson:"logo" json:"logo"
+	string logo = 10;
 	// 关联的审核单
 	// @gotags: bson:"approval_id" json:"approval_id"
 	string approval_id = 6;
