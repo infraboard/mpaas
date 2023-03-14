@@ -43,6 +43,30 @@ func (h *handler) Registry(ws *restful.WebService) {
 		Writes(approval.Approval{}).
 		Returns(200, "OK", approval.Approval{}).
 		Returns(404, "Not Found", nil))
+
+	ws.Route(ws.PUT("/{id}").To(h.EditApproval).
+		Doc("编辑审核").
+		Param(ws.PathParameter("id", "identifier of the secret").DataType("string")).
+		Metadata(restfulspec.KeyOpenAPITags, tags).
+		Metadata(label.Resource, h.Name()).
+		Metadata(label.Action, label.Get.Value()).
+		Metadata(label.Auth, label.Disable).
+		Metadata(label.Permission, label.Enable).
+		Writes(approval.Approval{}).
+		Returns(200, "OK", approval.Approval{}).
+		Returns(404, "Not Found", nil))
+
+	ws.Route(ws.POST("/{id}").To(h.EditApproval).
+		Doc("提交审核").
+		Param(ws.PathParameter("id", "identifier of the secret").DataType("string")).
+		Metadata(restfulspec.KeyOpenAPITags, tags).
+		Metadata(label.Resource, h.Name()).
+		Metadata(label.Action, label.Get.Value()).
+		Metadata(label.Auth, label.Disable).
+		Metadata(label.Permission, label.Enable).
+		Writes(approval.Approval{}).
+		Returns(200, "OK", approval.Approval{}).
+		Returns(404, "Not Found", nil))
 }
 
 func (h *handler) CreateApproval(r *restful.Request, w *restful.Response) {
@@ -76,6 +100,16 @@ func (h *handler) QueryApproval(r *restful.Request, w *restful.Response) {
 func (h *handler) DescribeApproval(r *restful.Request, w *restful.Response) {
 	req := approval.NewDescribeApprovalRequest(r.PathParameter("id"))
 	ins, err := h.service.DescribeApproval(r.Request.Context(), req)
+	if err != nil {
+		response.Failed(w, err)
+		return
+	}
+	response.Success(w, ins)
+}
+
+func (h *handler) EditApproval(r *restful.Request, w *restful.Response) {
+	req := approval.NewEditApprovalRequest(r.PathParameter("id"))
+	ins, err := h.service.EditApproval(r.Request.Context(), req)
 	if err != nil {
 		response.Failed(w, err)
 		return

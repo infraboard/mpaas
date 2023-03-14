@@ -65,7 +65,7 @@ func NewDeleteBuildConfigRequest(id string) *DeleteBuildConfigRequest {
 	}
 }
 
-func NewPutDeployRequest(id string) *UpdateBuildConfigRequest {
+func NewPutBuildConfigRequest(id string) *UpdateBuildConfigRequest {
 	return &UpdateBuildConfigRequest{
 		Id:         id,
 		UpdateMode: pb_request.UpdateMode_PUT,
@@ -73,7 +73,7 @@ func NewPutDeployRequest(id string) *UpdateBuildConfigRequest {
 	}
 }
 
-func NewPatchDeployRequest(id string) *UpdateBuildConfigRequest {
+func NewPatchBuildConfigRequest(id string) *UpdateBuildConfigRequest {
 	return &UpdateBuildConfigRequest{
 		Id:         id,
 		UpdateMode: pb_request.UpdateMode_PATCH,
