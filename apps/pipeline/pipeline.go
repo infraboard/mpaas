@@ -37,11 +37,25 @@ func New(req *CreatePipelineRequest) (*Pipeline, error) {
 		return nil, err
 	}
 
+	req.BuildNumber()
+
 	d := &Pipeline{
 		Meta: meta.NewMeta(),
 		Spec: req,
 	}
 	return d, nil
+}
+
+// 注入编号
+func (req *CreatePipelineRequest) BuildNumber() {
+	for m := range req.Stages {
+		stage := req.Stages[m]
+		stage.Number = int32(m) + 1
+		for n := range stage.Jobs {
+			j := stage.Jobs[n]
+			j.Number = int32(n) + 1
+		}
+	}
 }
 
 func (p *Pipeline) Update(req *UpdatePipelineRequest) {

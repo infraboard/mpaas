@@ -63,6 +63,9 @@ message CreatePipelineRequest {
 
 // Stage todo
 message Stage {
+    // 编号
+	// @gotags: bson:"number" json:"number"
+    int32 number = 3;
     // 名称
 	// @gotags: bson:"name" json:"name" validate:"required"
     string name = 1;
@@ -78,6 +81,9 @@ message Stage {
 }
 
 message RunJobRequest {
+    // 编号
+	// @gotags: bson:"number" json:"number"
+    int32 number = 15;
     // 任务唯一ID, 如果不传，则由系统自动生成
 	// @gotags: bson:"_id" json:"task_id,omitempty"
     string task_id = 1;
@@ -122,7 +128,7 @@ message RunJobRequest {
 	repeated WebHook webhooks = 13;
     // 任务标签
     // @gotags: bson:"labels" json:"labels"
-    map<string,string> labels = 15;
+    map<string,string> labels = 25;
 }
 
 message RunPipelineRequest {

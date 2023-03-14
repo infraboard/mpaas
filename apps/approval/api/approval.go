@@ -56,7 +56,7 @@ func (h *handler) Registry(ws *restful.WebService) {
 		Returns(200, "OK", approval.Approval{}).
 		Returns(404, "Not Found", nil))
 
-	ws.Route(ws.POST("/{id}").To(h.EditApproval).
+	ws.Route(ws.POST("/{id}").To(h.UpdateApprovalStatus).
 		Doc("提交审核").
 		Param(ws.PathParameter("id", "identifier of the secret").DataType("string")).
 		Metadata(restfulspec.KeyOpenAPITags, tags).
@@ -64,6 +64,7 @@ func (h *handler) Registry(ws *restful.WebService) {
 		Metadata(label.Action, label.Get.Value()).
 		Metadata(label.Auth, label.Disable).
 		Metadata(label.Permission, label.Enable).
+		Reads(approval.UpdateApprovalStatusRequest{}).
 		Writes(approval.Approval{}).
 		Returns(200, "OK", approval.Approval{}).
 		Returns(404, "Not Found", nil))
@@ -109,7 +110,29 @@ func (h *handler) DescribeApproval(r *restful.Request, w *restful.Response) {
 
 func (h *handler) EditApproval(r *restful.Request, w *restful.Response) {
 	req := approval.NewEditApprovalRequest(r.PathParameter("id"))
+
+	if err := r.ReadEntity(req.Spec); err != nil {
+		response.Failed(w, err)
+		return
+	}
+
 	ins, err := h.service.EditApproval(r.Request.Context(), req)
+	if err != nil {
+		response.Failed(w, err)
+		return
+	}
+	response.Success(w, ins)
+}
+
+func (h *handler) UpdateApprovalStatus(r *restful.Request, w *restful.Response) {
+	req := approval.NewUpdateApprovalStatusRequest(r.PathParameter("id"))
+
+	if err := r.ReadEntity(req.Status); err != nil {
+		response.Failed(w, err)
+		return
+	}
+
+	ins, err := h.service.UpdateApprovalStatus(r.Request.Context(), req)
 	if err != nil {
 		response.Failed(w, err)
 		return

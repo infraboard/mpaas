@@ -83,6 +83,9 @@ message CreateJobRequest {
 	// 图片
 	// @gotags: bson:"logo" json:"logo"
 	string logo = 11;
+	// 图标
+	// @gotags: bson:"icon" json:"icon"
+	string icon = 16;
 	// 名称, 不能包含特殊字符(. , #)
 	// @gotags: bson:"name" json:"name" validate:"required"
 	string name = 12;
