@@ -2,6 +2,7 @@ package job
 
 import (
 	"fmt"
+	"net/http"
 	"strings"
 	"time"
 
@@ -50,6 +51,12 @@ func (req *CreateJobRequest) Validate() error {
 
 func (req *CreateJobRequest) AddVersionParams(item *VersionedRunParam) {
 	req.RunParams = append(req.RunParams, item)
+}
+
+func NewQueryJobRequestFromHTTP(r *http.Request) *QueryJobRequest {
+	return &QueryJobRequest{
+		Page: request.NewPageRequestFromHTTP(r),
+	}
 }
 
 func NewQueryJobRequest() *QueryJobRequest {

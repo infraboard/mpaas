@@ -1,6 +1,8 @@
 package build
 
 import (
+	"net/http"
+
 	"github.com/infraboard/mcenter/common/validate"
 	"github.com/infraboard/mcube/http/request"
 	pb_request "github.com/infraboard/mcube/pb/request"
@@ -29,6 +31,12 @@ func (req *CreateBuildConfigRequest) PipielineId() string {
 		return req.PkgBuild.PipelineId
 	}
 	return ""
+}
+
+func NewQueryBuildConfigRequestFromHTTP(r *http.Request) *QueryBuildConfigRequest {
+	return &QueryBuildConfigRequest{
+		Page: request.NewPageRequestFromHTTP(r),
+	}
 }
 
 func NewQueryBuildConfigRequest() *QueryBuildConfigRequest {

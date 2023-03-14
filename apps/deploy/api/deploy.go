@@ -10,9 +10,9 @@ import (
 )
 
 func (h *handler) Registry(ws *restful.WebService) {
-	tags := []string{"部署配置管理"}
+	tags := []string{"部署管理"}
 	ws.Route(ws.POST("/").To(h.CreateDeployment).
-		Doc("部署配置").
+		Doc("创建部署").
 		Metadata(restfulspec.KeyOpenAPITags, tags).
 		Metadata(label.Resource, h.Name()).
 		Metadata(label.Action, label.Create.Value()).
@@ -22,7 +22,7 @@ func (h *handler) Registry(ws *restful.WebService) {
 		Writes(deploy.Deployment{}))
 
 	ws.Route(ws.GET("/").To(h.QueryDeployment).
-		Doc("查询部署配置列表").
+		Doc("查询部署列表").
 		Metadata(restfulspec.KeyOpenAPITags, tags).
 		Metadata(label.Resource, h.Name()).
 		Metadata(label.Action, label.List.Value()).
@@ -33,7 +33,7 @@ func (h *handler) Registry(ws *restful.WebService) {
 		Returns(200, "OK", deploy.DeploymentSet{}))
 
 	ws.Route(ws.GET("/{id}").To(h.DescribeDeployment).
-		Doc("部署配置详情").
+		Doc("部署详情").
 		Param(ws.PathParameter("id", "identifier of the deploy").DataType("string")).
 		Metadata(restfulspec.KeyOpenAPITags, tags).
 		Metadata(label.Resource, h.Name()).
@@ -45,7 +45,7 @@ func (h *handler) Registry(ws *restful.WebService) {
 		Returns(404, "Not Found", nil))
 
 	ws.Route(ws.PUT("/{id}").To(h.PutDeployment).
-		Doc("修改部署配置").
+		Doc("修改部署").
 		Param(ws.PathParameter("id", "identifier of the deploy").DataType("string")).
 		Metadata(restfulspec.KeyOpenAPITags, tags).
 		Metadata(label.Resource, h.Name()).
@@ -57,7 +57,7 @@ func (h *handler) Registry(ws *restful.WebService) {
 		Returns(404, "Not Found", nil))
 
 	ws.Route(ws.PATCH("/{id}").To(h.PatchDeployment).
-		Doc("修改部署配置").
+		Doc("修改部署").
 		Param(ws.PathParameter("id", "identifier of the deploy").DataType("string")).
 		Metadata(restfulspec.KeyOpenAPITags, tags).
 		Metadata(label.Resource, h.Name()).
@@ -69,7 +69,7 @@ func (h *handler) Registry(ws *restful.WebService) {
 		Returns(404, "Not Found", nil))
 
 	ws.Route(ws.DELETE("/{id}").To(h.DeleteDeployment).
-		Doc("删除部署配置").
+		Doc("删除部署").
 		Param(ws.PathParameter("id", "identifier of the deploy").DataType("string")).
 		Metadata(restfulspec.KeyOpenAPITags, tags).
 		Metadata(restfulspec.KeyOpenAPITags, tags).

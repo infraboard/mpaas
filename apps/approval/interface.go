@@ -2,6 +2,7 @@ package approval
 
 import (
 	"fmt"
+	"net/http"
 
 	"github.com/infraboard/mcenter/common/validate"
 	"github.com/infraboard/mcube/http/request"
@@ -73,5 +74,11 @@ func (req *UpdateApprovalStatusRequest) Validate() error {
 func NewDescribeApprovalRequest(id string) *DescribeApprovalRequest {
 	return &DescribeApprovalRequest{
 		Id: id,
+	}
+}
+
+func NewQueryApprovalRequestFromHTTP(r *http.Request) *QueryApprovalRequest {
+	return &QueryApprovalRequest{
+		Page: request.NewPageRequestFromHTTP(r),
 	}
 }

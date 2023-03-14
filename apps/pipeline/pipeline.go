@@ -3,6 +3,7 @@ package pipeline
 import (
 	"encoding/json"
 	"fmt"
+	"net/http"
 	"time"
 
 	"github.com/imdario/mergo"
@@ -154,6 +155,12 @@ func (r *RunJobRequest) SetDefault() {
 	}
 	if r.Labels == nil {
 		r.Labels = map[string]string{}
+	}
+}
+
+func NewQueryPipelineRequestFromHTTP(r *http.Request) *QueryPipelineRequest {
+	return &QueryPipelineRequest{
+		Page: request.NewPageRequestFromHTTP(r),
 	}
 }
 
