@@ -13,6 +13,7 @@ const (
 	GitlabEventTokenKey  = "X-Gitlab-Token"
 )
 
+// 处理来自gitlab的事件
 // 参考文档: https://docs.gitlab.com/ee/user/project/integrations/webhook_events.html
 func (h *handler) HandleGitlabEvent(r *restful.Request, w *restful.Response) {
 	eventType := r.HeaderParameter(GitlabEventHeaderKey)
@@ -45,4 +46,9 @@ func (h *handler) HandleGitlabEvent(r *restful.Request, w *restful.Response) {
 	case "Note Hook":
 	case "Issue Hook":
 	}
+}
+
+// 查询repo 的gitlab地址, 手动获取信息, 触发手动事件
+func (h *handler) MannulGitlabEvent(r *restful.Request, w *restful.Response) {
+
 }
