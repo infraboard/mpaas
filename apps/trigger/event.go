@@ -28,10 +28,17 @@ func (e *GitlabWebHookEvent) Validate() error {
 }
 
 // Event产生的参数, 作用于Pipeline运行
+// EVENT_PROVIDER: GITLAB
+// EVENT_TYPE: PUSH
 // GIT_REPOSITORY: git@github.com:infraboard/mpaas.git
 // GIT_BRANCH: master
 // GIT_COMMIT_ID: bfacd86c647935aea532f29421fe83c6a6111260
 func (e *GitlabWebHookEvent) GitRunParams() (params []*job.RunParam) {
+	// 补充Gitlab事件相关变量
+	eventProvider := job.NewRunParam(SYSTEM_VARIABLE_EVENT_PROVIDER, EVENT_PROVIDER_GITLAB.String())
+	eventType := job.NewRunParam(SYSTEM_VARIABLE_EVENT_TYPE, e.EventType.String())
+	params = append(params, eventProvider, eventType)
+
 	switch e.EventType {
 	case EVENT_TYPE_PUSH:
 		repo := job.NewRunParam(job.SYSTEM_VARIABLE_GIT_REPOSITORY, e.Project.GitSshUrl)

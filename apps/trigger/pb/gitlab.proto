@@ -57,6 +57,12 @@ message Project {
     // 名称
     // @gotags: bson:"name" json:"name"
     string name = 3;
+    // 项目的Web访问地址
+    // @gotags: bson:"web_url" json:"web_url"
+    string web_url = 7;
+    // 项目的Logo地址
+    // @gotags: bson:"avatar_url" json:"avatar_url"
+    string avatar_url = 8;
     // ssh 地址
     // @gotags: bson:"git_ssh_url" json:"git_ssh_url"
     string git_ssh_url = 4;
@@ -66,9 +72,6 @@ message Project {
     // namespace
     // @gotags: bson:"path_with_namespace" json:"path_with_namespace"
     string namespace_path = 6;
-    // 是否已经同步
-    // @gotags: bson:"has_synced" json:"has_synced"
-    bool has_synced = 7;
 }
 
 message Commit {

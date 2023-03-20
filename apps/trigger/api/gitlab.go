@@ -42,7 +42,9 @@ func (h *handler) HandleGitlabEvent(r *restful.Request, w *restful.Response) {
 
 		response.Success(w, ins)
 	case "Tag Push Hook":
+
 	case "Merge Request Hook":
+
 	case "Note Hook":
 	case "Issue Hook":
 	}
