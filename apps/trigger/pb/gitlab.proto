@@ -28,23 +28,26 @@ message GitlabWebHookEvent {
     // @gotags: bson:"event_name" json:"event_name" validate:"required"
     string event_name = 3;
     // 关联分支
-    // @gotags: bson:"ref" json:"ref" validate:"required"
+    // @gotags: bson:"ref" json:"ref,omitempty"
     string ref = 4;
     // 触发者用户ID
-    // @gotags: bson:"user_id" json:"user_id"
+    // @gotags: bson:"user_id" json:"user_id,omitempty"
     int64 user_id = 5;
     // 触发者用户名称
-    // @gotags: bson:"user_name" json:"user_name"
+    // @gotags: bson:"user_name" json:"user_name,omitempty"
     string user_name = 6; 
     // 用户头像
-    // @gotags: bson:"user_avatar" json:"user_avatar"
+    // @gotags: bson:"user_avatar" json:"user_avatar,omitempty"
     string user_avatar = 7;
-    // 用户头像
-    // @gotags: bson:"project" json:"project"
+    // 项目相关信息
+    // @gotags: bson:"project" json:"project,omitempty"
     Project project = 8;
     // Commit信息
-    // @gotags: bson:"commits" json:"commits"
+    // @gotags: bson:"commits" json:"commits,omitempty"
     repeated Commit commits = 9;
+    // MR是对象相关信息
+    // @gotags: bson:"object_attributes" json:"object_attributes,omitempty"
+    ObjectAttributes object_attributes = 10;
 }
 
 message Project {
