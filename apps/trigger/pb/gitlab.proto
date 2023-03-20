@@ -112,3 +112,8 @@ message Author {
     // @gotags: bson:"email" json:"email"
     string email = 2;
 }
+
+// Merge Request时相关数据
+message ObjectAttributes {
+
+}

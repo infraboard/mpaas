@@ -34,7 +34,7 @@ func (e *GitlabWebHookEvent) Validate() error {
 // GIT_BRANCH: master
 // GIT_COMMIT_ID: bfacd86c647935aea532f29421fe83c6a6111260
 func (e *GitlabWebHookEvent) GitRunParams() (params []*job.RunParam) {
-	// 补充Gitlab事件相关变量
+	// 补充gitlab事件相关变量
 	eventProvider := job.NewRunParam(SYSTEM_VARIABLE_EVENT_PROVIDER, EVENT_PROVIDER_GITLAB.String())
 	eventType := job.NewRunParam(SYSTEM_VARIABLE_EVENT_TYPE, e.EventType.String())
 	params = append(params, eventProvider, eventType)

@@ -10,7 +10,7 @@ import (
 
 func TestHandleEvent(t *testing.T) {
 	event := trigger.NewGitlabWebHookEvent()
-	err := tools.ReadJsonFile("test/webhook.json", event)
+	err := tools.ReadJsonFile("test/gitlab_push.json", event)
 	if err != nil {
 		t.Fatal(err)
 	}
