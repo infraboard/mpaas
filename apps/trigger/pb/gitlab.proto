@@ -113,7 +113,84 @@ message Author {
     string email = 2;
 }
 
+// "id": 99,
+// "iid": 1,
+// "target_branch": "master",
+// "source_branch": "ms-viewport",
+// "source_project_id": 14,
+// "author_id": 51,
+// "assignee_ids": [6],
+// "assignee_id": 6,
+// "reviewer_ids": [6],
+// "title": "MS-Viewport",
+// "created_at": "2013-12-03T17:23:34Z",
+// "updated_at": "2013-12-03T17:23:34Z",
+// "milestone_id": null,
+// "state": "opened",
+// "blocking_discussions_resolved": true,
+// "work_in_progress": false,
+// "first_contribution": true,
+// "merge_status": "unchecked",
+// "target_project_id": 14,
+// "description": "",
+// "url": "http://example.com/diaspora/merge_requests/1",
 // Merge Request时相关数据
 message ObjectAttributes {
-
+    // 项目id
+    // @gotags: bson:"id" json:"id"
+    int64 id = 1;
+    // 项目id
+    // @gotags: bson:"id" json:"id"
+    int64 iid = 2;
+    // 目标项目
+    // @gotags: bson:"target_project_id" json:"target_project_id"
+    int64 target_project_id = 3;
+    // 目标分支
+    // @gotags: bson:"target_branch" json:"target_branch"
+    string target_branch = 4;
+    // 源项目
+    // @gotags: bson:"source_project_id" json:"source_project_id"
+    int64 source_project_id = 5;
+    // 源分支
+    // @gotags: bson:"source_branch" json:"source_branch"
+    string source_branch = 6;
+    // 作者
+    // @gotags: bson:"author_id" json:"author_id"
+    int64 author_id = 7;
+    // 接收方
+    // @gotags: bson:"assignee_ids" json:"assignee_ids"
+    repeated int64 assignee_ids = 8;
+    // 作者
+    // @gotags: bson:"assignee_id" json:"assignee_id"
+    int64 assignee_id = 9;
+    // 接收方
+    // @gotags: bson:"reviewer_ids" json:"reviewer_ids"
+    repeated int64 reviewer_ids = 10;
+    // 标题
+    // @gotags: bson:"title" json:"title"
+    string title = 11;
+    // 具体描述
+    // @gotags: bson:"description" json:"description"
+    string description = 12;
+    // 创建时间
+    // @gotags: bson:"created_at" json:"created_at"
+    string created_at = 13;
+    // 更新时间
+    // @gotags: bson:"updated_at" json:"updated_at"
+    string updated_at = 14;
+    // 状态
+    // @gotags: bson:"state" json:"state"
+    string state = 15;
+    // 阻塞到解决
+    // @gotags: bson:"blocking_discussions_resolved" json:"blocking_discussions_resolved"
+    bool blocking_discussions_resolved = 16;
+    // 解决中
+    // @gotags: bson:"work_in_progress" json:"work_in_progress"
+    bool work_in_progress = 17;
+    // 第一次贡献
+    // @gotags: bson:"first_contribution" json:"first_contribution"
+    bool first_contribution = 18;
+    // merge状态
+    // @gotags: bson:"merge_status" json:"merge_status"
+    string merge_status = 19;
 }
