@@ -48,6 +48,16 @@ message GitlabWebHookEvent {
     // MR是对象相关信息
     // @gotags: bson:"object_attributes" json:"object_attributes,omitempty"
     ObjectAttributes object_attributes = 10;
+    // 合并请求的负责人或者责任人
+    // 他们被分配了任务去审查、测试、合并和关闭这个 Merge Request。
+    // 通常情况下，assignees 是一个或多个开发人员、测试人员或者代码评审人员。
+    // @gotags: bson:"assignees" json:"assignees,omitempty"
+    repeated User assignees = 11;
+    // 代码评审人员
+    // 他们被邀请来审查这个 Merge Request 中的代码变更，以确保代码质量、可读性和可维护性
+    // 在 GitLab 中，创建者可以通过设置 reviewers，来邀请相应的人员来审查这个 Merge Request
+    // @gotags: bson:"reviewers" json:"reviewers,omitempty"
+    repeated User reviewers = 12;
 }
 
 message Project {
@@ -187,4 +197,19 @@ message ObjectAttributes {
     // 状态的详细描述
     // @gotags: bson:"detailed_merge_status" json:"detailed_merge_status"
     string detailed_merge_status = 23;
+}
+
+message User {
+    // 用户Id
+    // @gotags: bson:"id" json:"id"
+    int64 id = 1;
+    // 用户名
+    // @gotags: bson:"name" json:"name"
+    string name = 2;
+    // username
+    // @gotags: bson:"username" json:"username"
+    string username = 3;
+    // 头像
+    // @gotags: bson:"avatar_url" json:"avatar_url"
+    string avatar_url = 4;
 }
