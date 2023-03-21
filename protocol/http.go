@@ -72,7 +72,7 @@ type HTTPService struct {
 }
 
 func (s *HTTPService) PathPrefix() string {
-	return fmt.Sprintf("/%s/api", s.c.App.Name)
+	return s.c.App.HTTPPrefix()
 }
 
 // Start 启动服务

@@ -58,9 +58,13 @@ type app struct {
 	GRPC       *grpc  `toml:"grpc"`
 }
 
+func (a *app) HTTPPrefix() string {
+	return fmt.Sprintf("/%s/api", a.Name)
+}
+
 func newDefaultAPP() *app {
 	return &app{
-		Name:       "cmdb",
+		Name:       "mpaas",
 		EncryptKey: "defualt app encrypt key",
 		HTTP:       newDefaultHTTP(),
 		GRPC:       newDefaultGRPC(),

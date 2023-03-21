@@ -26,7 +26,7 @@ func (h *Handler) HandleGitlabEvent(r *restful.Request, w *restful.Response) {
 		response.Failed(w, err)
 	}
 
-	h.log.Debugf("application %s accept event: %s", event)
+	h.log.Debugf("accept event: %s", event)
 	ins, err := h.svc.HandleEvent(r.Request.Context(), req)
 	if err != nil {
 		response.Failed(w, err)

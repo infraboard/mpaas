@@ -51,6 +51,13 @@ func ReadJsonFile(filepath string, v any) error {
 	return json.Unmarshal(content, v)
 }
 
+func MustReadJsonFile(filepath string, v any) {
+	err := ReadJsonFile(filepath, v)
+	if err != nil {
+		panic(err)
+	}
+}
+
 func ReadYamlFile(filepath string, v any) error {
 	content, err := ReadContentFile(filepath)
 	if err != nil {
