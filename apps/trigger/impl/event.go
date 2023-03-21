@@ -49,7 +49,7 @@ func (i *impl) HandleEvent(ctx context.Context, in *trigger.Event) (
 			runReq.RunBy = "gitlab_trigger"
 			runReq.DryRun = in.SkipRunPipeline
 			// 补充Git信息
-			runReq.AddRunParam(in.GitlabEvent.GitRunParams()...)
+			runReq.AddRunParam(in.GitlabEvent.GitRunParams().Params...)
 			// 补充版本信息
 			switch buildConf.Spec.VersionNamedRule {
 			case build.VERSION_NAMED_RULE_DATE_BRANCH_COMMIT:

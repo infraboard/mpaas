@@ -11,29 +11,29 @@ import (
 )
 
 var (
-	h = &handler{}
+	h = &Handler{}
 )
 
-type handler struct {
+type Handler struct {
 	log logger.Logger
 	svc trigger.Service
 }
 
-func (h *handler) Config() error {
+func (h *Handler) Config() error {
 	h.svc = app.GetInternalApp(trigger.AppName).(trigger.Service)
 	h.log = zap.L().Named(trigger.AppName)
 	return nil
 }
 
-func (h *handler) Name() string {
+func (h *Handler) Name() string {
 	return trigger.AppName
 }
 
-func (h *handler) Version() string {
+func (h *Handler) Version() string {
 	return "v1"
 }
 
-func (h *handler) Registry(ws *restful.WebService) {
+func (h *Handler) Registry(ws *restful.WebService) {
 	tags := []string{"事件处理"}
 
 	ws.Route(ws.GET("gitlab").To(h.HandleGitlabEvent).

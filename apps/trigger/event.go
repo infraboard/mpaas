@@ -32,7 +32,7 @@ func (e *GitlabWebHookEvent) ParseInfoFromHeader(r *restful.Request) {
 	e.ServiceId = r.HeaderParameter(GITLAB_HEADER_EVENT_TOKEN)
 	e.Instance = r.HeaderParameter(GITLAB_HEADER_INSTANCE)
 	e.UserAgent = r.HeaderParameter("User-Agent	")
-	e.ParseEventType(r.HeaderParameter(GITLAB_HEADER_EVENT))
+	e.ParseEventType(r.HeaderParameter(GITLAB_HEADER_EVENT_NAME))
 }
 
 func (e *GitlabWebHookEvent) ParseEventType(et string) {
@@ -51,28 +51,33 @@ func (e *GitlabWebHookEvent) ParseEventType(et string) {
 	}
 }
 
-// Event产生的参数, 作用于Pipeline运行
+// Event产生的事件参数, 作用于Pipeline运行
 // EVENT_PROVIDER: GITLAB
 // EVENT_TYPE: PUSH
 // GIT_REPOSITORY: git@github.com:infraboard/mpaas.git
 // GIT_BRANCH: master
 // GIT_COMMIT_ID: bfacd86c647935aea532f29421fe83c6a6111260
-func (e *GitlabWebHookEvent) GitRunParams() (params []*job.RunParam) {
+func (e *GitlabWebHookEvent) GitRunParams() *job.VersionedRunParam {
+	params := job.NewVersionedRunParam("v1")
+
 	// 补充gitlab事件相关变量
-	eventProvider := job.NewRunParam(SYSTEM_VARIABLE_EVENT_PROVIDER, EVENT_PROVIDER_GITLAB.String())
-	eventType := job.NewRunParam(SYSTEM_VARIABLE_EVENT_TYPE, e.EventType.String())
-	params = append(params, eventProvider, eventType)
+	params.Add(
+		job.NewRunParam(SYSTEM_VARIABLE_EVENT_PROVIDER, EVENT_PROVIDER_GITLAB.String()),
+		job.NewRunParam(SYSTEM_VARIABLE_EVENT_TYPE, e.EventType.String()),
+	)
 
 	switch e.EventType {
 	case EVENT_TYPE_PUSH:
-		repo := job.NewRunParam(job.SYSTEM_VARIABLE_GIT_REPOSITORY, e.Project.GitSshUrl)
-		branche := job.NewRunParam(job.SYSTEM_VARIABLE_GIT_BRANCH, e.GetBranche())
-		params = append(params, repo, branche)
+		params.Add(
+			job.NewRunParam(job.SYSTEM_VARIABLE_GIT_REPOSITORY, e.Project.GitSshUrl),
+			job.NewRunParam(job.SYSTEM_VARIABLE_GIT_BRANCH, e.GetBranche()),
+		)
 
 		cm := e.GetLatestCommit()
 		if cm != nil {
-			commit := job.NewRunParam(job.SYSTEM_VARIABLE_GIT_COMMIT_ID, cm.Id)
-			params = append(params, commit)
+			params.Add(
+				job.NewRunParam(job.SYSTEM_VARIABLE_GIT_COMMIT_ID, cm.Id),
+			)
 		}
 	case EVENT_TYPE_TAG:
 	case EVENT_TYPE_COMMENT:

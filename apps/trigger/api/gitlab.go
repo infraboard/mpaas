@@ -11,7 +11,7 @@ import (
 // 处理来自gitlab的事件
 // Hook Header参考文档: https://docs.gitlab.com/ee/user/project/integrations/webhooks.html#delivery-headers
 // 参考文档: https://docs.gitlab.com/ee/user/project/integrations/webhook_events.html
-func (h *handler) HandleGitlabEvent(r *restful.Request, w *restful.Response) {
+func (h *Handler) HandleGitlabEvent(r *restful.Request, w *restful.Response) {
 	event := trigger.NewGitlabWebHookEvent()
 	event.ParseInfoFromHeader(r)
 	err := r.ReadEntity(event)
@@ -37,6 +37,6 @@ func (h *handler) HandleGitlabEvent(r *restful.Request, w *restful.Response) {
 }
 
 // 查询repo 的gitlab地址, 手动获取信息, 触发手动事件
-func (h *handler) MannulGitlabEvent(r *restful.Request, w *restful.Response) {
+func (h *Handler) MannulGitlabEvent(r *restful.Request, w *restful.Response) {
 
 }
