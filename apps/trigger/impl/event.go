@@ -27,7 +27,7 @@ func (i *impl) HandleEvent(ctx context.Context, in *trigger.Event) (
 
 		// 获取该服务对应事件的构建配置
 		req := build.NewQueryBuildConfigRequest()
-		req.AddService(in.ServiceId)
+		req.AddService(in.GitlabEvent.ServiceId)
 		req.Event = in.GitlabEvent.EventName
 		set, err := i.build.QueryBuildConfig(ctx, req)
 		if err != nil {

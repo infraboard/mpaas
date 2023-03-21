@@ -46,9 +46,8 @@ func (e *GitlabWebHookEvent) GetLatestCommitShortId() string {
 	return ""
 }
 
-func NewGitlabEvent(serviceId string, event *GitlabWebHookEvent) *Event {
+func NewGitlabEvent(event *GitlabWebHookEvent) *Event {
 	return &Event{
-		ServiceId:   serviceId,
 		Provider:    EVENT_PROVIDER_GITLAB,
 		GitlabEvent: event,
 	}

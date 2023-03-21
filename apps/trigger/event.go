@@ -4,9 +4,10 @@ import (
 	"fmt"
 	"time"
 
+	"github.com/emicklei/go-restful/v3"
 	"github.com/infraboard/mcenter/common/validate"
 	"github.com/infraboard/mpaas/apps/job"
-	"github.com/infraboard/mpaas/common/meta"
+	"github.com/rs/xid"
 )
 
 func NewRecordSet() *RecordSet {
@@ -25,6 +26,29 @@ func (e *Event) Validate() error {
 
 func (e *GitlabWebHookEvent) Validate() error {
 	return validate.Validate(e)
+}
+
+func (e *GitlabWebHookEvent) ParseInfoFromHeader(r *restful.Request) {
+	e.ServiceId = r.HeaderParameter(GITLAB_HEADER_EVENT_TOKEN)
+	e.Instance = r.HeaderParameter(GITLAB_HEADER_INSTANCE)
+	e.UserAgent = r.HeaderParameter("User-Agent	")
+	e.ParseEventType(r.HeaderParameter(GITLAB_HEADER_EVENT))
+}
+
+func (e *GitlabWebHookEvent) ParseEventType(et string) {
+	e.EventDescribe = et
+	switch et {
+	case "Push Hook":
+		e.EventType = EVENT_TYPE_PUSH
+	case "Tag Push Hook":
+		e.EventType = EVENT_TYPE_TAG
+	case "Merge Request Hook":
+		e.EventType = EVENT_TYPE_MERGE_REQUEST
+	case "Note Hook":
+		e.EventType = EVENT_TYPE_COMMENT
+	case "Issue Hook":
+		e.EventType = EVENT_TYPE_ISSUE
+	}
 }
 
 // Event产生的参数, 作用于Pipeline运行
@@ -72,8 +96,10 @@ func (e *GitlabWebHookEvent) GenBuildVersion() string {
 }
 
 func NewRecord(e *Event) *Record {
+	if e.Id == "" {
+		e.Id = xid.New().String()
+	}
 	return &Record{
-		Meta:        meta.NewMeta(),
 		Event:       e,
 		BuildStatus: []*BuildStatus{},
 	}

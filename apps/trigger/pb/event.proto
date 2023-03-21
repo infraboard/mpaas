@@ -6,7 +6,6 @@ option go_package = "github.com/infraboard/mpaas/apps/trigger";
 import "apps/trigger/pb/gitlab.proto";
 import "apps/build/pb/build.proto";
 import "apps/task/pb/pipeline_task.proto";
-import "common/meta/meta.proto";
 
 message RecordSet {
     // 总数
@@ -19,9 +18,6 @@ message RecordSet {
 
 // 事件记录
 message Record {
-    // 元信息
-    // @gotags: bson:",inline" json:"meta"
-    common.meta.Meta meta = 1;
 	// event相关定义
 	// @gotags: bson:",inline" json:"event"
 	Event event = 2;
@@ -46,9 +42,9 @@ message BuildStatus {
 }
 
 message Event {
-    // 服务Id
-    // @gotags: json:"service_id" validate:"required"
-    string service_id = 1;
+    // 事件id
+    // @gotags: json:"id"
+    string id = 1;
     // 不执行Pipeline, 用于调试
     // @gotags: json:"skip_run_pipeline"
     bool skip_run_pipeline = 2;

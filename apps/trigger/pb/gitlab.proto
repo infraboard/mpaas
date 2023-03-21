@@ -18,9 +18,21 @@ enum EVENT_TYPE {
 }
 
 message GitlabWebHookEvent {
+    // 发送事件的gitlab服务地址, 比如 "https://gitlab.com"
+    // @gotags: bson:"instance" json:"instance"
+    string instance = 14;
+    // gitlab版本, 比如 "GitLab/15.5.0-pre"
+    // @gotags: bson:"user_agent" json:"user_agent"
+    string user_agent = 15;
+    // 服务Id
+    // @gotags: json:"service_id" validate:"required"
+    string service_id = 16;
     // 事件类型
     // @gotags: bson:"event_type" json:"event_type"
     EVENT_TYPE event_type = 1;
+    // 事件描述
+    // @gotags: bson:"event_describe" json:"event_describe"
+    string event_describe = 13;
     // 事件类型
     // @gotags: bson:"object_kind" json:"object_kind" validate:"required"
     string object_kind = 2;
