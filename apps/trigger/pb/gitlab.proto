@@ -63,16 +63,19 @@ message GitlabWebHookEvent {
     // MR是对象相关信息
     // @gotags: bson:"object_attributes" json:"object_attributes,omitempty"
     ObjectAttributes object_attributes = 10;
+    // MR是对象相关时，最新的commit信息
+    // @gotags: bson:"last_commit" json:"last_commit,omitempty"
+    Commit last_commit = 11;
     // 合并请求的负责人或者责任人
     // 他们被分配了任务去审查、测试、合并和关闭这个 Merge Request。
     // 通常情况下，assignees 是一个或多个开发人员、测试人员或者代码评审人员。
     // @gotags: bson:"assignees" json:"assignees,omitempty"
-    repeated User assignees = 11;
+    repeated User assignees = 12;
     // 代码评审人员
     // 他们被邀请来审查这个 Merge Request 中的代码变更，以确保代码质量、可读性和可维护性
     // 在 GitLab 中，创建者可以通过设置 reviewers，来邀请相应的人员来审查这个 Merge Request
     // @gotags: bson:"reviewers" json:"reviewers,omitempty"
-    repeated User reviewers = 12;
+    repeated User reviewers = 18;
 }
 
 message Project {

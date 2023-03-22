@@ -76,25 +76,25 @@ func (e *GitlabWebHookEvent) GitRunParams() *job.VersionedRunParam {
 		job.NewRunParam(SYSTEM_VARIABLE_EVENT_USER_AGENT, e.UserAgent),
 		job.NewRunParam(SYSTEM_VARIABLE_EVENT_CONTENT, e.EventRaw),
 		// 补充项目相关信息
-		job.NewRunParam(GITLAB_PROJECT_NAME, e.Project.Name),
-		job.NewRunParam(SYSTEM_VARIABLE_GIT_SSH_URL, e.Project.GitSshUrl),
-		job.NewRunParam(SYSTEM_VARIABLE_GIT_HTTP_URL, e.Project.GitHttpUrl),
+		job.NewRunParam(VARIABLE_GIT_PROJECT_NAME, e.Project.Name),
+		job.NewRunParam(VARIABLE_GIT_SSH_URL, e.Project.GitSshUrl),
+		job.NewRunParam(VARIABLE_GIT_HTTP_URL, e.Project.GitHttpUrl),
 	)
 
 	switch e.EventType {
 	case EVENT_TYPE_PUSH:
 		params.Add(
-			job.NewRunParam(SYSTEM_VARIABLE_GIT_BRANCH, e.GetBaseRef()),
+			job.NewRunParam(VARIABLE_GIT_BRANCH, e.GetBaseRef()),
 		)
 		cm := e.GetLatestCommit()
 		if cm != nil {
 			params.Add(
-				job.NewRunParam(SYSTEM_VARIABLE_GIT_COMMIT_ID, cm.Id),
+				job.NewRunParam(VARIABLE_GIT_COMMIT_ID, cm.Id),
 			)
 		}
 	case EVENT_TYPE_TAG:
 		params.Add(
-			job.NewRunParam(SYSTEM_VARIABLE_GIT_TAG, e.GetBaseRef()),
+			job.NewRunParam(VARIABLE_GIT_TAG, e.GetBaseRef()),
 		)
 	case EVENT_TYPE_COMMENT:
 	case EVENT_TYPE_MERGE_REQUEST:
