@@ -49,7 +49,7 @@ metadata:
                       .: {}
                       f:name: {}
                       f:value: {}
-                    k:{"name":"GIT_REPOSITORY"}:
+                    k:{"name":"GIT_SSH_URL"}:
                       .: {}
                       f:name: {}
                       f:value: {}
@@ -103,7 +103,7 @@ metadata:
                       .: {}
                       f:name: {}
                       f:value: {}
-                    k:{"name":"GIT_REPOSITORY"}:
+                    k:{"name":"GIT_SSH_URL"}:
                       .: {}
                       f:name: {}
                       f:value: {}
@@ -210,7 +210,7 @@ spec:
           command:
             - sh
           env:
-            - name: GIT_REPOSITORY
+            - name: GIT_SSH_URL
               value: git@github.com:infraboard/mpaas.git
             - name: GIT_BRANCH
               value: master
@@ -240,14 +240,14 @@ spec:
       initContainers:
         - args:
             - -c
-            - git clone ${GIT_REPOSITORY} workspace --branch=${GIT_BRANCH} --single-branch
+            - git clone ${GIT_SSH_URL} workspace --branch=${GIT_BRANCH} --single-branch
               && cd workspace && git reset --hard ${GIT_COMMIT_ID}
           command:
             - sh
           env:
             - name: GIT_SSH_COMMAND
               value: ssh -i /etc/secret-volume/id_rsa -o StrictHostKeyChecking=no
-            - name: GIT_REPOSITORY
+            - name: GIT_SSH_URL
               value: git@github.com:infraboard/mpaas.git
             - name: GIT_BRANCH
               value: master

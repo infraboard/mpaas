@@ -9,8 +9,8 @@ stages:
         run_params:
           version: v1
           params:
-            - name: GIT_REPOSITORY
-              value: ${GIT_REPOSITORY}
+            - name: GIT_SSH_URL
+              value: ${GIT_SSH_URL}
             - name: GIT_BRANCH
               value: ${GIT_BRANCH}
             - name: GIT_COMMIT_ID

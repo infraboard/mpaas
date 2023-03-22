@@ -61,7 +61,7 @@ func (e *GitlabWebHookEvent) ParseEventType(et string) {
 // EVENT_TOKEN
 //
 // PUSH事件变量:
-// GIT_REPOSITORY: git@github.com:infraboard/mpaas.git
+// GIT_SSH_URL: git@github.com:infraboard/mpaas.git
 // GIT_BRANCH: master
 // GIT_COMMIT_ID: bfacd86c647935aea532f29421fe83c6a6111260
 func (e *GitlabWebHookEvent) GitRunParams() *job.VersionedRunParam {
@@ -77,30 +77,31 @@ func (e *GitlabWebHookEvent) GitRunParams() *job.VersionedRunParam {
 		job.NewRunParam(SYSTEM_VARIABLE_EVENT_CONTENT, e.EventRaw),
 		// 补充项目相关信息
 		job.NewRunParam(GITLAB_PROJECT_NAME, e.Project.Name),
-		job.NewRunParam(job.SYSTEM_VARIABLE_GIT_REPOSITORY, e.Project.GitSshUrl),
+		job.NewRunParam(SYSTEM_VARIABLE_GIT_SSH_URL, e.Project.GitSshUrl),
+		job.NewRunParam(SYSTEM_VARIABLE_GIT_HTTP_URL, e.Project.GitHttpUrl),
 	)
 
 	switch e.EventType {
 	case EVENT_TYPE_PUSH:
 		params.Add(
-			job.NewRunParam(job.SYSTEM_VARIABLE_GIT_BRANCH, e.GetBaseRef()),
+			job.NewRunParam(SYSTEM_VARIABLE_GIT_BRANCH, e.GetBaseRef()),
 		)
 		cm := e.GetLatestCommit()
 		if cm != nil {
 			params.Add(
-				job.NewRunParam(job.SYSTEM_VARIABLE_GIT_COMMIT_ID, cm.Id),
+				job.NewRunParam(SYSTEM_VARIABLE_GIT_COMMIT_ID, cm.Id),
 			)
 		}
 	case EVENT_TYPE_TAG:
 		params.Add(
-			job.NewRunParam(job.SYSTEM_VARIABLE_GIT_TAG, e.GetBaseRef()),
+			job.NewRunParam(SYSTEM_VARIABLE_GIT_TAG, e.GetBaseRef()),
 		)
 	case EVENT_TYPE_COMMENT:
 
 	case EVENT_TYPE_MERGE_REQUEST:
 		params.Add(
-			job.NewRunParam(job.SYSTEM_VARIABLE_GIT_REPOSITORY, e.Project.GitSshUrl),
-			job.NewRunParam(job.SYSTEM_VARIABLE_GIT_BRANCH, e.GetBaseRef()),
+			job.NewRunParam(SYSTEM_VARIABLE_GIT_SSH_URL, e.Project.GitSshUrl),
+			job.NewRunParam(SYSTEM_VARIABLE_GIT_BRANCH, e.GetBaseRef()),
 		)
 	}
 

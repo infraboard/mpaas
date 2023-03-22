@@ -31,7 +31,7 @@ spec: # 详情描述
           args:
             [
               "-c",
-              "git clone ${GIT_REPOSITORY} workspace --branch=${GIT_BRANCH} --single-branch && cd workspace && git reset --hard ${GIT_COMMIT_ID}",
+              "git clone ${GIT_SSH_URL} workspace --branch=${GIT_BRANCH} --single-branch && cd workspace && git reset --hard ${GIT_COMMIT_ID}",
             ]
           env:
             - name: GIT_SSH_COMMAND
