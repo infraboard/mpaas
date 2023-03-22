@@ -28,6 +28,10 @@ func NewHTTPService() *HTTPService {
 		panic(err)
 	}
 
+	// 设置默认格式为Json
+	restful.DefaultResponseContentType(restful.MIME_JSON)
+	restful.DefaultRequestContentType(restful.MIME_JSON)
+
 	r := restful.DefaultContainer
 
 	// Optionally, you may need to enable CORS for the UI to work.

@@ -1,6 +1,7 @@
 package tools
 
 import (
+	"github.com/emicklei/go-restful/v3"
 	"github.com/infraboard/mcube/app"
 	"github.com/infraboard/mcube/logger/zap"
 	"github.com/infraboard/mpaas/conf"
@@ -13,6 +14,10 @@ import (
 func DevelopmentSetup() {
 	// 初始化日志实例
 	zap.DevelopmentSetup()
+
+	// 针对http handler的测试需要提前设置默认数据格式
+	restful.DefaultResponseContentType(restful.MIME_JSON)
+	restful.DefaultRequestContentType(restful.MIME_JSON)
 
 	// 初始化配置, 提前配置好/etc/unit_test.env
 	err := conf.LoadConfigFromEnv()

@@ -19,7 +19,7 @@ func TestHandleGitlabPushEvent(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	req := httptest.NewRequest("POST", impl.APIPrefix()+"/gitlab", bytes.NewReader(payload))
+	req := httptest.NewRequest(http.MethodPost, impl.APIPrefix()+"/gitlab", bytes.NewReader(payload))
 
 	// 补充query参数
 	qs := make(url.Values)
@@ -30,17 +30,21 @@ func TestHandleGitlabPushEvent(t *testing.T) {
 	// 添加Header头
 	req.Header.Set(trigger.GITLAB_HEADER_EVENT_NAME, "Push Hook")
 	req.Header.Set(trigger.GITLAB_HEADER_EVENT_UUID, "1234")
+	req.Header.Set(trigger.GITLAB_HEADER_EVENT_TOKEN, "my-secret")
+
 	resp := httptest.NewRecorder()
 
 	impl.HandleGitlabEvent(restful.NewRequest(req), restful.NewResponse(resp))
 
 	if resp.Code != http.StatusOK {
 		t.Errorf("Expected response code %d. Got %d.", http.StatusOK, resp.Code)
+		t.Log(resp)
 	}
 
-	ins := trigger.NewDefaultRecord()
 	respJson := resp.Body.Bytes()
-	t.Log(string(respJson))
+	t.Logf("response: %s", string(respJson))
+
+	ins := trigger.NewDefaultRecord()
 	err = json.Unmarshal(respJson, ins)
 	if err != nil {
 		t.Fatalf("Failed to unmarshal response body. Error: %v", err)

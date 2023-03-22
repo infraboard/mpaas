@@ -17,6 +17,7 @@ func (h *Handler) HandleGitlabEvent(r *restful.Request, w *restful.Response) {
 	err := r.ReadEntity(event)
 	if err != nil {
 		response.Failed(w, err)
+		return
 	}
 
 	req := trigger.NewGitlabEvent(event)
@@ -24,6 +25,7 @@ func (h *Handler) HandleGitlabEvent(r *restful.Request, w *restful.Response) {
 	req.SkipRunPipeline, err = strconv.ParseBool(r.QueryParameter("skip_run_pipeline"))
 	if err != nil {
 		response.Failed(w, err)
+		return
 	}
 
 	h.log.Debugf("accept event: %s", event)
