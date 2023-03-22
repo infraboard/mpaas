@@ -13,7 +13,7 @@ enum EVENT_TYPE {
     ISSUE = 2;
     // 评论事件
     COMMENT = 3;
-    // MR事件
+    // MR事件, 字段含义请参考: https://docs.gitlab.com/ee/api/merge_requests.html
     MERGE_REQUEST = 4;
 }
 
@@ -185,7 +185,8 @@ message ObjectAttributes {
     // 更新时间
     // @gotags: bson:"updated_at" json:"updated_at"
     string updated_at = 14;
-    // 状态
+    // 状态: opened, closed, locked, or merged
+    // 参考: https://docs.gitlab.com/ee/api/merge_requests.html#list-merge-requests
     // @gotags: bson:"state" json:"state"
     string state = 15;
     // 阻塞到解决
@@ -197,7 +198,8 @@ message ObjectAttributes {
     // 第一次贡献
     // @gotags: bson:"first_contribution" json:"first_contribution"
     bool first_contribution = 18;
-    // merge状态
+    // merge状态, blocked_status, broken_status, checking ...
+    // 参考: https://docs.gitlab.com/ee/api/merge_requests.html#merge-status
     // @gotags: bson:"merge_status" json:"merge_status"
     string merge_status = 19;
     // MR URL
@@ -206,7 +208,8 @@ message ObjectAttributes {
     // 最近一次commit
     // @gotags: bson:"last_commit" json:"last_commit"
     Commit last_commit = 21;
-    // 具体操作
+    // 具体操作: open, update, merge ...
+    // 参考: https://docs.gitlab.com/ee/user/project/integrations/webhook_events.html#merge-request-events
     // @gotags: bson:"action" json:"action"
     string action = 22;
     // 状态的详细描述

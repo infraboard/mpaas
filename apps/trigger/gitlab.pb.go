@@ -32,7 +32,7 @@ const (
 	EVENT_TYPE_ISSUE EVENT_TYPE = 2
 	// 评论事件
 	EVENT_TYPE_COMMENT EVENT_TYPE = 3
-	// MR事件
+	// MR事件, 字段含义请参考: https://docs.gitlab.com/ee/api/merge_requests.html
 	EVENT_TYPE_MERGE_REQUEST EVENT_TYPE = 4
 )
 
@@ -649,7 +649,8 @@ type ObjectAttributes struct {
 	// 更新时间
 	// @gotags: bson:"updated_at" json:"updated_at"
 	UpdatedAt string `protobuf:"bytes,14,opt,name=updated_at,json=updatedAt,proto3" json:"updated_at" bson:"updated_at"`
-	// 状态
+	// 状态: opened, closed, locked, or merged
+	// 参考: https://docs.gitlab.com/ee/api/merge_requests.html#list-merge-requests
 	// @gotags: bson:"state" json:"state"
 	State string `protobuf:"bytes,15,opt,name=state,proto3" json:"state" bson:"state"`
 	// 阻塞到解决
@@ -661,7 +662,8 @@ type ObjectAttributes struct {
 	// 第一次贡献
 	// @gotags: bson:"first_contribution" json:"first_contribution"
 	FirstContribution bool `protobuf:"varint,18,opt,name=first_contribution,json=firstContribution,proto3" json:"first_contribution" bson:"first_contribution"`
-	// merge状态
+	// merge状态, blocked_status, broken_status, checking ...
+	// 参考: https://docs.gitlab.com/ee/api/merge_requests.html#merge-status
 	// @gotags: bson:"merge_status" json:"merge_status"
 	MergeStatus string `protobuf:"bytes,19,opt,name=merge_status,json=mergeStatus,proto3" json:"merge_status" bson:"merge_status"`
 	// MR URL
@@ -670,7 +672,8 @@ type ObjectAttributes struct {
 	// 最近一次commit
 	// @gotags: bson:"last_commit" json:"last_commit"
 	LastCommit *Commit `protobuf:"bytes,21,opt,name=last_commit,json=lastCommit,proto3" json:"last_commit" bson:"last_commit"`
-	// 具体操作
+	// 具体操作: open, update, merge ...
+	// 参考: https://docs.gitlab.com/ee/user/project/integrations/webhook_events.html#merge-request-events
 	// @gotags: bson:"action" json:"action"
 	Action string `protobuf:"bytes,22,opt,name=action,proto3" json:"action" bson:"action"`
 	// 状态的详细描述

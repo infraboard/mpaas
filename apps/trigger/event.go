@@ -97,12 +97,7 @@ func (e *GitlabWebHookEvent) GitRunParams() *job.VersionedRunParam {
 			job.NewRunParam(SYSTEM_VARIABLE_GIT_TAG, e.GetBaseRef()),
 		)
 	case EVENT_TYPE_COMMENT:
-
 	case EVENT_TYPE_MERGE_REQUEST:
-		params.Add(
-			job.NewRunParam(SYSTEM_VARIABLE_GIT_SSH_URL, e.Project.GitSshUrl),
-			job.NewRunParam(SYSTEM_VARIABLE_GIT_BRANCH, e.GetBaseRef()),
-		)
 	}
 
 	return params
