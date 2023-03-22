@@ -41,11 +41,8 @@ func TestHandleGitlabPushEvent(t *testing.T) {
 		t.Log(resp)
 	}
 
-	respJson := resp.Body.Bytes()
-	t.Logf("response: %s", string(respJson))
-
 	ins := trigger.NewDefaultRecord()
-	err = json.Unmarshal(respJson, ins)
+	err = json.Unmarshal(resp.Body.Bytes(), ins)
 	if err != nil {
 		t.Fatalf("Failed to unmarshal response body. Error: %v", err)
 	}

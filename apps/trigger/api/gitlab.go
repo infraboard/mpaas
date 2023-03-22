@@ -1,6 +1,8 @@
 package api
 
 import (
+	"encoding/json"
+	"io"
 	"strconv"
 
 	"github.com/emicklei/go-restful/v3"
@@ -14,7 +16,18 @@ import (
 func (h *Handler) HandleGitlabEvent(r *restful.Request, w *restful.Response) {
 	event := trigger.NewGitlabWebHookEvent()
 	event.ParseInfoFromHeader(r)
-	err := r.ReadEntity(event)
+
+	// 读取body数据
+	body, err := io.ReadAll(r.Request.Body)
+	defer r.Request.Body.Close()
+	if err != nil {
+		response.Failed(w, err)
+		return
+	}
+	event.EventRaw = string(body)
+
+	// 反序列化
+	err = json.Unmarshal(body, event)
 	if err != nil {
 		response.Failed(w, err)
 		return

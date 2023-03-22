@@ -26,7 +26,7 @@ func (e *GitlabWebHookEvent) ShortDesc() string {
 	return fmt.Sprintf("%s %s [%s]", e.Ref, e.EventName, e.ObjectKind)
 }
 
-func (e *GitlabWebHookEvent) GetBranche() string {
+func (e *GitlabWebHookEvent) GetBaseRef() string {
 	return path.Base(e.GetRef())
 }
 

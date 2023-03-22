@@ -1,11 +1,23 @@
 package trigger
 
 const (
-	// GitLab相关事件变量
-	// 事件提供商
+	// 事件提供商, 比如 GITLAB
 	SYSTEM_VARIABLE_EVENT_PROVIDER = "EVENT_PROVIDER"
-	// 事件提供商
+	// 事件类型, 平台统一定义, 比如 PUSH
 	SYSTEM_VARIABLE_EVENT_TYPE = "EVENT_TYPE"
+	// 事件描述, 比如 Push Hook
+	SYSTEM_VARIABLE_EVENT_DESC = "EVENT_DESC"
+	// 提供事件的实例 比如 "https://gitlab.com"
+	SYSTEM_VARIABLE_EVENT_INSTANCE = "EVENT_INSTANCE"
+	// 事件发生者UA 比如: "GitLab/15.5.0-pre"
+	SYSTEM_VARIABLE_EVENT_USER_AGENT = "EVENT_USER_AGENT"
+	// 事件Token, 这里固定为service id
+	SYSTEM_VARIABLE_EVENT_TOKEN = "EVENT_TOKEN"
+	// 事件的具体内容
+	SYSTEM_VARIABLE_EVENT_CONTENT = "EVENT_CONTENT"
+
+	// GitLab相关事件变量
+	GITLAB_PROJECT_NAME = "PROJECT_NAME"
 )
 
 const (

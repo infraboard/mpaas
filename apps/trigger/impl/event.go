@@ -27,14 +27,14 @@ func (i *impl) HandleEvent(ctx context.Context, in *trigger.Event) (
 
 		// 获取该服务对应事件的构建配置
 		req := build.NewQueryBuildConfigRequest()
-		req.AddService(in.GitlabEvent.ServiceId)
+		req.AddService(in.GitlabEvent.EventToken)
 		req.Event = in.GitlabEvent.EventName
 		set, err := i.build.QueryBuildConfig(ctx, req)
 		if err != nil {
 			return nil, err
 		}
 
-		matched := set.MatchBranch(in.GitlabEvent.GetBranche())
+		matched := set.MatchBranch(in.GitlabEvent.GetBaseRef())
 		for index := range matched.Items {
 			// 执行构建配置匹配的流水线
 			buildConf := matched.Items[index]

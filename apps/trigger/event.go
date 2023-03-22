@@ -29,7 +29,7 @@ func (e *GitlabWebHookEvent) Validate() error {
 }
 
 func (e *GitlabWebHookEvent) ParseInfoFromHeader(r *restful.Request) {
-	e.ServiceId = r.HeaderParameter(GITLAB_HEADER_EVENT_TOKEN)
+	e.EventToken = r.HeaderParameter(GITLAB_HEADER_EVENT_TOKEN)
 	e.Instance = r.HeaderParameter(GITLAB_HEADER_INSTANCE)
 	e.UserAgent = r.HeaderParameter("User-Agent	")
 	e.ParseEventType(r.HeaderParameter(GITLAB_HEADER_EVENT_NAME))
@@ -52,27 +52,39 @@ func (e *GitlabWebHookEvent) ParseEventType(et string) {
 }
 
 // Event产生的事件参数, 作用于Pipeline运行
+// 事件通用变量:
 // EVENT_PROVIDER: GITLAB
 // EVENT_TYPE: PUSH
+// EVENT_DESC: Push Hook
+// EVENT_INSTANCE: "https://gitlab.com"
+// EVENT_USER_AGENT: "GitLab/15.5.0-pre"
+// EVENT_TOKEN
+//
+// PUSH事件变量:
 // GIT_REPOSITORY: git@github.com:infraboard/mpaas.git
 // GIT_BRANCH: master
 // GIT_COMMIT_ID: bfacd86c647935aea532f29421fe83c6a6111260
 func (e *GitlabWebHookEvent) GitRunParams() *job.VersionedRunParam {
 	params := job.NewVersionedRunParam("v1")
-
-	// 补充gitlab事件相关变量
 	params.Add(
+		// 补充gitlab事件相关变量
 		job.NewRunParam(SYSTEM_VARIABLE_EVENT_PROVIDER, EVENT_PROVIDER_GITLAB.String()),
 		job.NewRunParam(SYSTEM_VARIABLE_EVENT_TYPE, e.EventType.String()),
+		job.NewRunParam(SYSTEM_VARIABLE_EVENT_DESC, e.EventDescribe),
+		job.NewRunParam(SYSTEM_VARIABLE_EVENT_INSTANCE, e.Instance),
+		job.NewRunParam(SYSTEM_VARIABLE_EVENT_TOKEN, e.EventToken),
+		job.NewRunParam(SYSTEM_VARIABLE_EVENT_USER_AGENT, e.UserAgent),
+		job.NewRunParam(SYSTEM_VARIABLE_EVENT_CONTENT, e.EventRaw),
+		// 补充项目相关信息
+		job.NewRunParam(GITLAB_PROJECT_NAME, e.Project.Name),
+		job.NewRunParam(job.SYSTEM_VARIABLE_GIT_REPOSITORY, e.Project.GitSshUrl),
 	)
 
 	switch e.EventType {
 	case EVENT_TYPE_PUSH:
 		params.Add(
-			job.NewRunParam(job.SYSTEM_VARIABLE_GIT_REPOSITORY, e.Project.GitSshUrl),
-			job.NewRunParam(job.SYSTEM_VARIABLE_GIT_BRANCH, e.GetBranche()),
+			job.NewRunParam(job.SYSTEM_VARIABLE_GIT_BRANCH, e.GetBaseRef()),
 		)
-
 		cm := e.GetLatestCommit()
 		if cm != nil {
 			params.Add(
@@ -80,8 +92,16 @@ func (e *GitlabWebHookEvent) GitRunParams() *job.VersionedRunParam {
 			)
 		}
 	case EVENT_TYPE_TAG:
+		params.Add(
+			job.NewRunParam(job.SYSTEM_VARIABLE_GIT_BRANCH, e.GetBaseRef()),
+		)
 	case EVENT_TYPE_COMMENT:
+
 	case EVENT_TYPE_MERGE_REQUEST:
+		params.Add(
+			job.NewRunParam(job.SYSTEM_VARIABLE_GIT_REPOSITORY, e.Project.GitSshUrl),
+			job.NewRunParam(job.SYSTEM_VARIABLE_GIT_BRANCH, e.GetBaseRef()),
+		)
 	}
 
 	return params
@@ -95,7 +115,7 @@ func (e *GitlabWebHookEvent) VersionRunParam(prefix string) *job.RunParam {
 func (e *GitlabWebHookEvent) GenBuildVersion() string {
 	return fmt.Sprintf("%s-%s-%s",
 		time.Now().Format("20060102"),
-		e.GetBranche(),
+		e.GetBaseRef(),
 		e.GetLatestCommitShortId(),
 	)
 }

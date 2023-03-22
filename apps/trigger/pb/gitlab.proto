@@ -24,9 +24,12 @@ message GitlabWebHookEvent {
     // gitlab版本, 比如 "GitLab/15.5.0-pre"
     // @gotags: bson:"user_agent" json:"user_agent"
     string user_agent = 15;
-    // 服务Id
-    // @gotags: json:"service_id" validate:"required"
-    string service_id = 16;
+    // 事件Token, 一般固定为 服务Id
+    // @gotags: json:"event_token"
+    string event_token = 16;
+    // 事件原始数据
+    // @gotags: json:"event_raw"
+    string event_raw = 17;
     // 事件类型
     // @gotags: bson:"event_type" json:"event_type"
     EVENT_TYPE event_type = 1;
