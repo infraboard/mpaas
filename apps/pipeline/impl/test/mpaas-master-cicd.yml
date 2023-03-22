@@ -27,5 +27,5 @@ stages:
           params:
             - name: _DEPLOY_ID
               value: deploy01
-            - name: IMAGE_VERSION
-              value: ${IMAGE_VERSION}
+            - name: APP_VERSION
+              value: ${APP_VERSION}

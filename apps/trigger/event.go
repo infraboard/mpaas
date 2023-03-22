@@ -108,9 +108,14 @@ func (e *GitlabWebHookEvent) GitRunParams() *job.VersionedRunParam {
 	return params
 }
 
-func (e *GitlabWebHookEvent) VersionRunParam(prefix string) *job.RunParam {
+func (e *GitlabWebHookEvent) DateCommitVersion(prefix string) *job.RunParam {
 	version := prefix + e.GenBuildVersion()
-	return job.NewRunParam(job.SYSTEM_VARIABLE_IMAGE_VERSION, version)
+	return job.NewRunParam(job.SYSTEM_VARIABLE_APP_VERSION, version)
+}
+
+func (e *GitlabWebHookEvent) TagVersion(prefix string) *job.RunParam {
+	version := prefix + e.GetBaseRef()
+	return job.NewRunParam(job.SYSTEM_VARIABLE_APP_VERSION, version)
 }
 
 func (e *GitlabWebHookEvent) GenBuildVersion() string {

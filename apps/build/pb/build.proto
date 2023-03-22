@@ -58,6 +58,8 @@ message CreateBuildConfigRequest {
 enum VERSION_NAMED_RULE {
     // 比如v20230203-master-xxxx
     DATE_BRANCH_COMMIT = 0;
+    // 使用GIT tag来命名版本
+    GIT_TAG = 1;
 }
 
 // 触发执行的条件

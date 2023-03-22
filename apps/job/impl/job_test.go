@@ -101,7 +101,7 @@ func TestUpdateDeployJob(t *testing.T) {
 	})
 	v1.Add(&job.RunParam{
 		Required:    true,
-		Name:        job.SYSTEM_VARIABLE_IMAGE_VERSION,
+		Name:        job.SYSTEM_VARIABLE_APP_VERSION,
 		Desc:        "应用部署时的版本",
 		Example:     "v0.0.1",
 		SearchLabel: true,
@@ -170,7 +170,7 @@ func TestUpdateBuildJob(t *testing.T) {
 	})
 	v1.Add(&job.RunParam{
 		Required: true,
-		Name:     job.SYSTEM_VARIABLE_IMAGE_VERSION,
+		Name:     job.SYSTEM_VARIABLE_APP_VERSION,
 		Desc:     "镜像版本",
 		Example:  "v0.0.2",
 	})

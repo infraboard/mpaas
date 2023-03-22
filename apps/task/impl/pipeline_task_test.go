@@ -36,7 +36,7 @@ func TestRunMpaasPipeline(t *testing.T) {
 		"GIT_SSH_URL", "git@github.com:infraboard/mpaas.git",
 		"GIT_BRANCH", "master",
 		"GIT_COMMIT_ID", "57953a59e0ff5c93d0596696fbf6ffef6a90b446",
-		job.SYSTEM_VARIABLE_IMAGE_VERSION, "v0.0.10",
+		job.SYSTEM_VARIABLE_APP_VERSION, "v0.0.10",
 	)
 
 	ins, err := impl.RunPipeline(ctx, req)

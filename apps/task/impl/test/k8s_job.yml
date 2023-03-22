@@ -57,7 +57,7 @@ metadata:
                       .: {}
                       f:name: {}
                       f:value: {}
-                    k:{"name":"IMAGE_VERSION"}:
+                    k:{"name":"APP_VERSION"}:
                       .: {}
                       f:name: {}
                       f:value: {}
@@ -115,7 +115,7 @@ metadata:
                       .: {}
                       f:name: {}
                       f:value: {}
-                    k:{"name":"IMAGE_VERSION"}:
+                    k:{"name":"APP_VERSION"}:
                       .: {}
                       f:name: {}
                       f:value: {}
@@ -206,7 +206,7 @@ spec:
       containers:
         - args:
             - -c
-            - /kaniko/executor --destination=${IMAGE_REPOSITORY}:${IMAGE_VERSION}
+            - /kaniko/executor --destination=${IMAGE_REPOSITORY}:${APP_VERSION}
           command:
             - sh
           env:
@@ -218,7 +218,7 @@ spec:
               value: bfacd86c647935aea532f29421fe83c6a6111260
             - name: IMAGE_REPOSITORY
               value: registry.cn-hangzhou.aliyuncs.com/inforboard/mpaas
-            - name: IMAGE_VERSION
+            - name: APP_VERSION
               value: v0.0.6
             - name: _PIPELINE_TASK_ID
               value: cg2q5nma0brg23tlii10
@@ -255,7 +255,7 @@ spec:
               value: bfacd86c647935aea532f29421fe83c6a6111260
             - name: IMAGE_REPOSITORY
               value: registry.cn-hangzhou.aliyuncs.com/inforboard/mpaas
-            - name: IMAGE_VERSION
+            - name: APP_VERSION
               value: v0.0.6
             - name: _PIPELINE_TASK_ID
               value: cg2q5nma0brg23tlii10

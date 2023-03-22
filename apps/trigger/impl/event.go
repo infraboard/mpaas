@@ -53,7 +53,9 @@ func (i *impl) HandleEvent(ctx context.Context, in *trigger.Event) (
 			// 补充版本信息
 			switch buildConf.Spec.VersionNamedRule {
 			case build.VERSION_NAMED_RULE_DATE_BRANCH_COMMIT:
-				runReq.AddRunParam(in.GitlabEvent.VersionRunParam(buildConf.Spec.VersionPrefix))
+				runReq.AddRunParam(in.GitlabEvent.DateCommitVersion(buildConf.Spec.VersionPrefix))
+			case build.VERSION_NAMED_RULE_GIT_TAG:
+				runReq.AddRunParam(in.GitlabEvent.TagVersion(buildConf.Spec.VersionPrefix))
 			}
 
 			pt, err := i.task.RunPipeline(ctx, runReq)
