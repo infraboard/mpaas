@@ -93,7 +93,7 @@ func (e *GitlabWebHookEvent) GitRunParams() *job.VersionedRunParam {
 		}
 	case EVENT_TYPE_TAG:
 		params.Add(
-			job.NewRunParam(job.SYSTEM_VARIABLE_GIT_BRANCH, e.GetBaseRef()),
+			job.NewRunParam(job.SYSTEM_VARIABLE_GIT_TAG, e.GetBaseRef()),
 		)
 	case EVENT_TYPE_COMMENT:
 
