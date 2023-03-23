@@ -68,13 +68,13 @@ func (e *GitlabWebHookEvent) GitRunParams() *job.VersionedRunParam {
 	params := job.NewVersionedRunParam("v1")
 	params.Add(
 		// 补充gitlab事件相关变量
-		job.NewRunParam(SYSTEM_VARIABLE_EVENT_PROVIDER, EVENT_PROVIDER_GITLAB.String()),
-		job.NewRunParam(SYSTEM_VARIABLE_EVENT_TYPE, e.EventType.String()),
-		job.NewRunParam(SYSTEM_VARIABLE_EVENT_DESC, e.EventDescribe),
-		job.NewRunParam(SYSTEM_VARIABLE_EVENT_INSTANCE, e.Instance),
-		job.NewRunParam(SYSTEM_VARIABLE_EVENT_TOKEN, e.EventToken),
-		job.NewRunParam(SYSTEM_VARIABLE_EVENT_USER_AGENT, e.UserAgent),
-		job.NewRunParam(SYSTEM_VARIABLE_EVENT_CONTENT, e.EventRaw),
+		job.NewRunParam(VARIABLE_EVENT_PROVIDER, EVENT_PROVIDER_GITLAB.String()),
+		job.NewRunParam(VARIABLE_EVENT_TYPE, e.EventType.String()),
+		job.NewRunParam(VARIABLE_EVENT_DESC, e.EventDescribe),
+		job.NewRunParam(VARIABLE_EVENT_INSTANCE, e.Instance),
+		job.NewRunParam(VARIABLE_EVENT_TOKEN, e.EventToken),
+		job.NewRunParam(VARIABLE_EVENT_USER_AGENT, e.UserAgent),
+		job.NewRunParam(VARIABLE_EVENT_CONTENT, e.EventRaw),
 		// 补充项目相关信息
 		job.NewRunParam(VARIABLE_GIT_PROJECT_NAME, e.Project.Name),
 		job.NewRunParam(VARIABLE_GIT_SSH_URL, e.Project.GitSshUrl),
@@ -89,7 +89,7 @@ func (e *GitlabWebHookEvent) GitRunParams() *job.VersionedRunParam {
 		cm := e.GetLatestCommit()
 		if cm != nil {
 			params.Add(
-				job.NewRunParam(VARIABLE_GIT_COMMIT_ID, cm.Id),
+				job.NewRunParam(VARIABLE_GIT_COMMIT, cm.Id),
 			)
 		}
 	case EVENT_TYPE_TAG:
@@ -98,6 +98,14 @@ func (e *GitlabWebHookEvent) GitRunParams() *job.VersionedRunParam {
 		)
 	case EVENT_TYPE_COMMENT:
 	case EVENT_TYPE_MERGE_REQUEST:
+		oa := e.ObjectAttributes
+		params.Add(
+			job.NewRunParam(VARIABLE_GIT_COMMIT, e.LastCommit.Id),
+			job.NewRunParam(VARIABLE_GIT_MR_ACTION, oa.Action),
+			job.NewRunParam(VARIABLE_GIT_MR_STATUS, oa.MergeStatus),
+			job.NewRunParam(VARIABLE_GIT_MR_SOURCE_BRANCE, oa.SourceBranch),
+			job.NewRunParam(VARIABLE_GIT_MR_TARGET_BRANCE, oa.TargetBranch),
+		)
 	}
 
 	return params
