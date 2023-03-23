@@ -94,7 +94,6 @@ func (e *GitlabWebHookEvent) GitRunParams() *job.VersionedRunParam {
 		params.Add(
 			job.NewRunParam(VARIABLE_GIT_TAG, e.GetBaseRef()),
 		)
-	case EVENT_TYPE_COMMENT:
 	case EVENT_TYPE_MERGE_REQUEST:
 		oa := e.ObjectAttributes
 		params.Add(
@@ -106,6 +105,8 @@ func (e *GitlabWebHookEvent) GitRunParams() *job.VersionedRunParam {
 		if e.LastCommit != nil {
 			params.Add(job.NewRunParam(VARIABLE_GIT_COMMIT, e.LastCommit.Id))
 		}
+	case EVENT_TYPE_COMMENT:
+	case EVENT_TYPE_ISSUE:
 	}
 
 	return params
