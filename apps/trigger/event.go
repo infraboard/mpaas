@@ -88,9 +88,7 @@ func (e *GitlabWebHookEvent) GitRunParams() *job.VersionedRunParam {
 		)
 		cm := e.GetLatestCommit()
 		if cm != nil {
-			params.Add(
-				job.NewRunParam(VARIABLE_GIT_COMMIT, cm.Id),
-			)
+			params.Add(job.NewRunParam(VARIABLE_GIT_COMMIT, cm.Id))
 		}
 	case EVENT_TYPE_TAG:
 		params.Add(
@@ -100,12 +98,14 @@ func (e *GitlabWebHookEvent) GitRunParams() *job.VersionedRunParam {
 	case EVENT_TYPE_MERGE_REQUEST:
 		oa := e.ObjectAttributes
 		params.Add(
-			job.NewRunParam(VARIABLE_GIT_COMMIT, e.LastCommit.Id),
 			job.NewRunParam(VARIABLE_GIT_MR_ACTION, oa.Action),
 			job.NewRunParam(VARIABLE_GIT_MR_STATUS, oa.MergeStatus),
 			job.NewRunParam(VARIABLE_GIT_MR_SOURCE_BRANCE, oa.SourceBranch),
 			job.NewRunParam(VARIABLE_GIT_MR_TARGET_BRANCE, oa.TargetBranch),
 		)
+		if e.LastCommit != nil {
+			params.Add(job.NewRunParam(VARIABLE_GIT_COMMIT, e.LastCommit.Id))
+		}
 	}
 
 	return params
