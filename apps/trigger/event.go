@@ -2,6 +2,7 @@ package trigger
 
 import (
 	"fmt"
+	"strings"
 	"time"
 
 	"github.com/emicklei/go-restful/v3"
@@ -113,12 +114,18 @@ func (e *GitlabWebHookEvent) GitRunParams() *job.VersionedRunParam {
 }
 
 func (e *GitlabWebHookEvent) DateCommitVersion(prefix string) *job.RunParam {
-	version := prefix + e.GenBuildVersion()
+	version := e.GenBuildVersion()
+	if !strings.HasPrefix(version, prefix) {
+		version = prefix + version
+	}
 	return job.NewRunParam(job.SYSTEM_VARIABLE_APP_VERSION, version)
 }
 
 func (e *GitlabWebHookEvent) TagVersion(prefix string) *job.RunParam {
-	version := prefix + e.GetBaseRef()
+	version := e.GetBaseRef()
+	if !strings.HasPrefix(version, prefix) {
+		version = prefix + version
+	}
 	return job.NewRunParam(job.SYSTEM_VARIABLE_APP_VERSION, version)
 }
 
