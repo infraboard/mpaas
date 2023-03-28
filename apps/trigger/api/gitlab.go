@@ -3,7 +3,6 @@ package api
 import (
 	"context"
 	"encoding/json"
-	"fmt"
 	"io"
 	"strconv"
 
@@ -55,32 +54,21 @@ func (h *Handler) HandleGitlabEvent(r *restful.Request, w *restful.Response) {
 	response.Success(w, ins)
 }
 
-func NewMannulGitlabEventRequest() *MannulGitlabEventRequest {
-	return &MannulGitlabEventRequest{}
-}
-
-type MannulGitlabEventRequest struct {
-	// 服务Id
-	ServiceId string `json:"service_id"`
-	// 分支
-	Branch string `json:"branch"`
-	// 是否触发Pipeline执行
-	SkipRunPipeline bool `json:"skip_run_pipeline"`
-}
-
 // 查询repo 的gitlab地址, 手动获取信息, 触发手动事件
 func (h *Handler) MannulGitlabEvent(r *restful.Request, w *restful.Response) {
-	in := NewMannulGitlabEventRequest()
+	// 构造事件
+	gevent := trigger.NewGitlabWebHookEvent()
+	event := trigger.NewGitlabEvent(gevent)
 
 	// 反序列化
-	err := r.ReadEntity(in)
+	err := r.ReadEntity(event)
 	if err != nil {
 		response.Failed(w, err)
 		return
 	}
 
-	// 构造事件
-	event, err := h.MockEvent(r.Request.Context(), in)
+	// 事件关联信息填充
+	err = h.BuildEvent(r.Request.Context(), event)
 	if err != nil {
 		response.Failed(w, err)
 		return
@@ -96,35 +84,44 @@ func (h *Handler) MannulGitlabEvent(r *restful.Request, w *restful.Response) {
 	response.Success(w, ins)
 }
 
-func (h *Handler) MockEvent(ctx context.Context, in *MannulGitlabEventRequest) (*trigger.Event, error) {
+func (h *Handler) BuildEvent(ctx context.Context, in *trigger.Event) error {
+	in.IsMannul = true
+
 	// 查询服务仓库信息
-	descReq := service.NewDescribeServiceRequest(in.ServiceId)
+	descReq := service.NewDescribeServiceRequest(in.GitlabEvent.EventToken)
 	svc, err := h.mcenter.Service().DescribeService(ctx, descReq)
 	if err != nil {
-		return nil, err
+		return err
 	}
 	repo := svc.Spec.Repository
 
-	// 查询分支信息
+	// 补充Project相关信息
+	p := in.GitlabEvent.Project
+	p.Id = repo.ProjectIdToInt64()
+	p.GitHttpUrl = repo.HttpUrl
+	p.GitSshUrl = repo.SshUrl
+	p.NamespacePath = repo.Namespace
+	p.WebUrl = repo.WebUrl
+	p.Name = svc.Spec.Name
+
+	// 补充分支相关Commit信息
 	gc, err := repo.MakeGitlabConfig()
 	if err != nil {
-		return nil, err
+		return err
 	}
 	v4 := gitlab.NewGitlabV4(gc)
 	branchReq := gitlab.NewGetProjectBranchRequest()
 	branchReq.ProjectId = repo.ProjectId
-	branchReq.Branch = in.Branch
+	branchReq.Branch = in.GitlabEvent.Ref
 	b, err := v4.Project().GetProjectBranch(ctx, branchReq)
 	if err != nil {
-		return nil, err
+		return err
 	}
-	fmt.Println(b)
-
-	// 构造事件
-	gevent := trigger.NewGitlabWebHookEvent()
-	event := trigger.NewGitlabEvent(gevent)
-	event.IsMannul = true
-	event.SkipRunPipeline = in.SkipRunPipeline
-	event.Provider = trigger.EVENT_PROVIDER_GITLAB
-	return event, nil
+	in.GitlabEvent.Commits = append(in.GitlabEvent.Commits, &trigger.Commit{
+		Id:        b.Commit.Id,
+		Message:   b.Commit.Message,
+		Title:     b.Commit.Title,
+		Timestamp: b.Commit.CommittedDate,
+	})
+	return nil
 }
