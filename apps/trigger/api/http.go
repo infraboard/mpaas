@@ -9,6 +9,7 @@ import (
 	"github.com/infraboard/mcube/logger"
 	"github.com/infraboard/mcube/logger/zap"
 
+	"github.com/infraboard/mcenter/client/rpc"
 	"github.com/infraboard/mpaas/apps/trigger"
 	"github.com/infraboard/mpaas/conf"
 )
@@ -20,11 +21,14 @@ var (
 type Handler struct {
 	log logger.Logger
 	svc trigger.Service
+
+	mcenter *rpc.ClientSet
 }
 
 func (h *Handler) Config() error {
 	h.svc = app.GetInternalApp(trigger.AppName).(trigger.Service)
 	h.log = zap.L().Named(trigger.AppName)
+	h.mcenter = rpc.C()
 	return nil
 }
 

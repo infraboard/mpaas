@@ -48,12 +48,15 @@ message Event {
     // 不执行Pipeline, 用于调试
     // @gotags: json:"skip_run_pipeline"
     bool skip_run_pipeline = 2;
+    // 手动执行, 模拟的事件
+    // @gotags: json:"is_mannul"
+    bool is_mannul = 3;
     // 应用ID
     // @gotags: json:"provider"
-    EVENT_PROVIDER provider = 3;
+    EVENT_PROVIDER provider = 4;
     // gitlab webhook事件
     // @gotags: json:"gitlab_event" validate:"-"
-    GitlabWebHookEvent gitlab_event = 4;
+    GitlabWebHookEvent gitlab_event = 5;
 }
 
 enum EVENT_PROVIDER {
