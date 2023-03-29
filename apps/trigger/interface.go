@@ -18,6 +18,7 @@ type Service interface {
 
 func NewGitlabWebHookEvent() *GitlabWebHookEvent {
 	return &GitlabWebHookEvent{
+		Project: &Project{},
 		Commits: []*Commit{},
 	}
 }

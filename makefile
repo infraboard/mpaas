@@ -56,7 +56,7 @@ image: dep ## Build the docker image
 init: dep ## Inital project 
 	@go run main.go init
 
-run: install dep ## Run Server
+run: dep ## Run Server
 	@go run main.go start
 
 clean: ## Remove previous build

@@ -54,6 +54,9 @@ func (h *Handler) Registry(ws *restful.WebService) {
 	ws.Route(ws.POST("gitlab").To(h.HandleGitlabEvent).
 		Doc("处理Gitlab Webhook事件").
 		Metadata(restfulspec.KeyOpenAPITags, tags))
+	ws.Route(ws.POST("mannul").To(h.MannulGitlabEvent).
+		Doc("手动模拟Gitlab Webhook事件").
+		Metadata(restfulspec.KeyOpenAPITags, tags))
 }
 
 func init() {

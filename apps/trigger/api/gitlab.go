@@ -3,6 +3,7 @@ package api
 import (
 	"context"
 	"encoding/json"
+	"fmt"
 	"io"
 	"strconv"
 
@@ -94,6 +95,9 @@ func (h *Handler) BuildEvent(ctx context.Context, in *trigger.Event) error {
 		return err
 	}
 	repo := svc.Spec.Repository
+	if repo == nil {
+		return fmt.Errorf("service %s[%s] no repo info", svc.FullName(), svc.Id)
+	}
 
 	// 补充Project相关信息
 	p := in.GitlabEvent.Project
