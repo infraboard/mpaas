@@ -116,10 +116,10 @@ func (h *Handler) BuildEvent(ctx context.Context, in *trigger.Event) error {
 	v4 := gitlab.NewGitlabV4(gc)
 	branchReq := gitlab.NewGetProjectBranchRequest()
 	branchReq.ProjectId = repo.ProjectId
-	branchReq.Branch = in.GitlabEvent.Ref
+	branchReq.Branch = in.GitlabEvent.GetBaseRef()
 	b, err := v4.Project().GetProjectBranch(ctx, branchReq)
 	if err != nil {
-		return err
+		return fmt.Errorf("查询分支: %s 异常, %s", branchReq.Branch, err)
 	}
 	in.GitlabEvent.Commits = append(in.GitlabEvent.Commits, &trigger.Commit{
 		Id:        b.Commit.Id,

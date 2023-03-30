@@ -105,8 +105,8 @@ type GitlabWebHookEvent struct {
 	// @gotags: bson:"event_describe" json:"event_describe"
 	EventDescribe string `protobuf:"bytes,13,opt,name=event_describe,json=eventDescribe,proto3" json:"event_describe" bson:"event_describe"`
 	// 事件类型
-	// @gotags: bson:"object_kind" json:"object_kind" validate:"required"
-	ObjectKind string `protobuf:"bytes,2,opt,name=object_kind,json=objectKind,proto3" json:"object_kind" bson:"object_kind" validate:"required"`
+	// @gotags: bson:"object_kind" json:"object_kind"
+	ObjectKind string `protobuf:"bytes,2,opt,name=object_kind,json=objectKind,proto3" json:"object_kind" bson:"object_kind"`
 	// 事件名称
 	// @gotags: bson:"event_name" json:"event_name" validate:"required"
 	EventName string `protobuf:"bytes,3,opt,name=event_name,json=eventName,proto3" json:"event_name" bson:"event_name" validate:"required"`
