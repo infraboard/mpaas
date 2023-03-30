@@ -8,6 +8,7 @@ import (
 	"github.com/emicklei/go-restful/v3"
 	"github.com/infraboard/mcenter/common/validate"
 	"github.com/infraboard/mpaas/apps/job"
+	"github.com/infraboard/mpaas/common/format"
 	"github.com/rs/xid"
 )
 
@@ -27,6 +28,10 @@ func (e *Event) Validate() error {
 
 func (e *GitlabWebHookEvent) Validate() error {
 	return validate.Validate(e)
+}
+
+func (e *GitlabWebHookEvent) ToJson() string {
+	return format.Prettify(e)
 }
 
 func (e *GitlabWebHookEvent) ParseInfoFromHeader(r *restful.Request) {

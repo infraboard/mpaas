@@ -45,7 +45,7 @@ func (h *Handler) HandleGitlabEvent(r *restful.Request, w *restful.Response) {
 		return
 	}
 
-	h.log.Debugf("accept event: %s", event)
+	h.log.Debugf("accept event: %s", event.ToJson())
 	ins, err := h.svc.HandleEvent(r.Request.Context(), req)
 	if err != nil {
 		response.Failed(w, err)
@@ -95,8 +95,8 @@ func (h *Handler) BuildEvent(ctx context.Context, in *trigger.Event) error {
 		return err
 	}
 	repo := svc.Spec.Repository
-	if repo == nil {
-		return fmt.Errorf("service %s[%s] no repo info", svc.FullName(), svc.Id)
+	if repo == nil || repo.Token == "" {
+		return fmt.Errorf("service %s[%s] no repo or private token info", svc.FullName(), svc.Id)
 	}
 
 	// 补充Project相关信息
