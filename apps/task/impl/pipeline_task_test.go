@@ -20,7 +20,7 @@ func TestQueryPipelineTask(t *testing.T) {
 }
 
 func TestRunTestPipeline(t *testing.T) {
-	req := pipeline.NewRunPipelineRequest(conf.C.PIPELINE_ID)
+	req := pipeline.NewRunPipelineRequest(conf.C.CICD_PIPELINE_ID)
 	req.RunBy = "test"
 	ins, err := impl.RunPipeline(ctx, req)
 	if err != nil {

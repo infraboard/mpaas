@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"regexp"
 
+	"github.com/infraboard/mpaas/apps/job"
 	"github.com/infraboard/mpaas/common/meta"
 )
 
@@ -56,6 +57,21 @@ func (b *BuildConfig) MarshalJSON() ([]byte, error) {
 		*meta.Meta
 		*CreateBuildConfigRequest
 	}{b.Meta, b.Spec})
+}
+
+func (b *BuildConfig) BuildRunParams() *job.VersionedRunParam {
+	envs := map[string]string{}
+	switch b.Spec.TargetType {
+	case TARGET_TYPE_IMAGE:
+		envs = b.Spec.ImageBuild.BuildEnvVars
+	case TARGET_TYPE_PKG:
+	}
+
+	params := job.NewVersionedRunParam("build")
+	for k, v := range envs {
+		params.Add(job.NewRunParam(k, v))
+	}
+	return params
 }
 
 func NewCreateBuildConfigRequest() *CreateBuildConfigRequest {

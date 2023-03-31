@@ -10,7 +10,7 @@ import (
 
 func TestQueryBuildConfig(t *testing.T) {
 	req := build.NewQueryBuildConfigRequest()
-	req.AddService(conf.C.SERVICE_ID)
+	req.AddService(conf.C.MCENTER_SERVICE_ID)
 	req.Event = "push"
 	set, err := impl.QueryBuildConfig(ctx, req)
 	if err != nil {
@@ -51,10 +51,11 @@ func TestDeleteBuildConfig(t *testing.T) {
 
 func TestCreateBuildConfig(t *testing.T) {
 	req := build.NewCreateBuildConfigRequest()
-	req.Name = "测试构建"
-	req.ServiceId = conf.C.SERVICE_ID
+	req.Name = "mcenter服务构建"
+	req.ServiceId = conf.C.MCENTER_SERVICE_ID
 	req.Condition.AddEvent("push")
 	req.Condition.AddBranche("master")
+	req.ImageBuild.PipelineId = conf.C.CICD_PIPELINE_ID
 	ins, err := impl.CreateBuildConfig(ctx, req)
 	if err != nil {
 		t.Fatal(err)

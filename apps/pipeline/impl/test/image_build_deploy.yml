@@ -1,5 +1,5 @@
-name: mpaas-master-cicd
-description: mpaas项目 master分支 cicd流水线
+name: image_build_deploy
+description: 基于容器镜像的构建部署流水线
 stages:
   - name: 容器镜像构建
     jobs:

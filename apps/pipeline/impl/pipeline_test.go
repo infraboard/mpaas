@@ -11,7 +11,7 @@ import (
 
 func TestCreateMpaasPipeline(t *testing.T) {
 	req := pipeline.NewCreatePipelineRequest()
-	tools.MustReadYamlFile("test/mpaas-master-cicd.yml", req)
+	tools.MustReadYamlFile("test/image_build_deploy.yml", req)
 	ins, err := impl.CreatePipeline(ctx, req)
 	if err != nil {
 		t.Fatal(err)
@@ -29,7 +29,7 @@ func TestQueryPipeline(t *testing.T) {
 }
 
 func TestDescribePipeline(t *testing.T) {
-	req := pipeline.NewDescribePipelineRequest(conf.C.PIPELINE_ID)
+	req := pipeline.NewDescribePipelineRequest(conf.C.CICD_PIPELINE_ID)
 	ins, err := impl.DescribePipeline(ctx, req)
 	if err != nil {
 		t.Fatal(err)
@@ -38,8 +38,8 @@ func TestDescribePipeline(t *testing.T) {
 }
 
 func TestUpdateTestPipeline(t *testing.T) {
-	req := pipeline.NewPutPipelineRequest(conf.C.PIPELINE_ID)
-	tools.MustReadYamlFile("test/mpaas-master-cicd.yml", req.Spec)
+	req := pipeline.NewPutPipelineRequest(conf.C.CICD_PIPELINE_ID)
+	tools.MustReadYamlFile("test/image_build_deploy.yml", req.Spec)
 	ins, err := impl.UpdatePipeline(ctx, req)
 	if err != nil {
 		t.Fatal(err)
@@ -48,7 +48,7 @@ func TestUpdateTestPipeline(t *testing.T) {
 }
 
 func TestDeletePipeline(t *testing.T) {
-	req := pipeline.NewDeletePipelineRequest(conf.C.PIPELINE_ID)
+	req := pipeline.NewDeletePipelineRequest(conf.C.CICD_PIPELINE_ID)
 	ins, err := impl.DeletePipeline(ctx, req)
 	if err != nil {
 		t.Fatal(err)
