@@ -73,6 +73,7 @@ func (i *impl) HandleEvent(ctx context.Context, in *trigger.Event) (
 				runReq.AddRunParam(in.GitlabEvent.TagVersion(buildConf.Spec.VersionPrefix))
 			}
 
+			i.log.Debugf("run pipeline req: %s", runReq.ToJson())
 			pt, err := i.task.RunPipeline(ctx, runReq)
 			if err != nil {
 				bs.ErrorMessage = err.Error()

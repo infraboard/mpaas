@@ -150,13 +150,6 @@ func TestUpdateBuildJob(t *testing.T) {
 		Example:  "Dockerfile",
 	})
 	v1.Add(&job.RunParam{
-		Required:    true,
-		Name:        "GIT_SSH_URL",
-		Desc:        "应用git代码仓库地址",
-		Example:     "git@github.com:infraboard/mpaas.git",
-		SearchLabel: true,
-	})
-	v1.Add(&job.RunParam{
 		Required: true,
 		Name:     "GIT_BRANCH",
 		Desc:     "需要拉去的代码分支",
