@@ -7,6 +7,7 @@ import (
 
 	"github.com/emicklei/go-restful/v3"
 	"github.com/infraboard/mcenter/common/validate"
+	build "github.com/infraboard/mpaas/apps/build"
 	"github.com/infraboard/mpaas/apps/job"
 	"github.com/infraboard/mpaas/common/format"
 	"github.com/rs/xid"
@@ -123,7 +124,7 @@ func (e *GitlabWebHookEvent) DateCommitVersion(prefix string) *job.RunParam {
 	if !strings.HasPrefix(version, prefix) {
 		version = prefix + version
 	}
-	return job.NewRunParam(job.SYSTEM_VARIABLE_APP_VERSION, version)
+	return job.NewRunParam(build.SYSTEM_VARIABLE_APP_VERSION, version)
 }
 
 func (e *GitlabWebHookEvent) TagVersion(prefix string) *job.RunParam {
@@ -131,7 +132,7 @@ func (e *GitlabWebHookEvent) TagVersion(prefix string) *job.RunParam {
 	if !strings.HasPrefix(version, prefix) {
 		version = prefix + version
 	}
-	return job.NewRunParam(job.SYSTEM_VARIABLE_APP_VERSION, version)
+	return job.NewRunParam(build.SYSTEM_VARIABLE_APP_VERSION, version)
 }
 
 func (e *GitlabWebHookEvent) GenBuildVersion() string {

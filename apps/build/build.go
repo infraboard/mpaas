@@ -91,6 +91,22 @@ func NewImageBuild() *ImageBuildConfig {
 	}
 }
 
+// 如果没有配置，则使用默认配置
+func (c *ImageBuildConfig) GetDockerFileWithDefault(defaulDockerFile string) string {
+	if c.DockerFile == "" {
+		return defaulDockerFile
+	}
+	return c.DockerFile
+}
+
+// 如果没有配置，则使用默认配置
+func (c *ImageBuildConfig) GetImageRepositoryWithDefault(defaultImageRepository string) string {
+	if c.ImageRepository == "" {
+		return defaultImageRepository
+	}
+	return c.ImageRepository
+}
+
 func NewPkgBuildConfig() *PkgBuildConfig {
 	return &PkgBuildConfig{
 		Extra: make(map[string]string),

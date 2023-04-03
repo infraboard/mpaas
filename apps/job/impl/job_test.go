@@ -3,6 +3,7 @@ package impl_test
 import (
 	"testing"
 
+	"github.com/infraboard/mpaas/apps/build"
 	"github.com/infraboard/mpaas/apps/job"
 	"github.com/infraboard/mpaas/test/conf"
 	"github.com/infraboard/mpaas/test/tools"
@@ -101,7 +102,7 @@ func TestUpdateDeployJob(t *testing.T) {
 	})
 	v1.Add(&job.RunParam{
 		Required:    true,
-		Name:        job.SYSTEM_VARIABLE_APP_VERSION,
+		Name:        build.SYSTEM_VARIABLE_APP_VERSION,
 		Desc:        "应用部署时的版本",
 		Example:     "v0.0.1",
 		SearchLabel: true,
@@ -171,13 +172,13 @@ func TestUpdateBuildJob(t *testing.T) {
 	// docker push registry.cn-hangzhou.aliyuncs.com/inforboard/mpaas:[镜像版本号]
 	v1.Add(&job.RunParam{
 		Required: true,
-		Name:     job.SYSTEM_VARIABLE_IMAGE_REPOSITORY,
+		Name:     build.SYSTEM_VARIABLE_IMAGE_REPOSITORY,
 		Desc:     "镜像推送地址",
 		Example:  "registry.cn-hangzhou.aliyuncs.com/inforboard/mpaas",
 	})
 	v1.Add(&job.RunParam{
 		Required: true,
-		Name:     job.SYSTEM_VARIABLE_APP_VERSION,
+		Name:     build.SYSTEM_VARIABLE_APP_VERSION,
 		Desc:     "镜像版本",
 		Example:  "v0.0.2",
 	})

@@ -56,10 +56,16 @@ func (i *impl) HandleEvent(ctx context.Context, in *trigger.Event) (
 			// 补充构建时系统变量
 			switch buildConf.Spec.TargetType {
 			case build.TARGET_TYPE_IMAGE:
+				ib := buildConf.Spec.ImageBuild
 				// 注入Dockerfile位置信息
 				runReq.AddRunParam(job.NewRunParam(
 					build.SYSTEM_VARIABLE_APP_DOCKERFILE,
-					build.NewImageBuild().DockerFile,
+					ib.GetDockerFileWithDefault(build.DEFAULT_DOCKER_FILE_PATH),
+				))
+				// 注入推送代码仓库相关信息
+				runReq.AddRunParam(job.NewRunParam(
+					build.SYSTEM_VARIABLE_IMAGE_REPOSITORY,
+					ib.GetImageRepositoryWithDefault(""),
 				))
 			}
 

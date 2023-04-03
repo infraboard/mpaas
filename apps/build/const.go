@@ -3,4 +3,13 @@ package build
 const (
 	// 服务部署镜像版本
 	SYSTEM_VARIABLE_APP_DOCKERFILE = "APP_DOCKERFILE"
+
+	// 服务部署镜像地址
+	SYSTEM_VARIABLE_IMAGE_REPOSITORY = "IMAGE_REPOSITORY"
+	// 服务部署镜像版本
+	SYSTEM_VARIABLE_APP_VERSION = "APP_VERSION"
+)
+
+const (
+	DEFAULT_DOCKER_FILE_PATH = "Dockerfile"
 )
