@@ -2,7 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   annotations:
-    deploy.mpaas.inforboard.io/id: deploy01
+    deploy.mpaas.infraboard.io/id: deploy01
     deployment.kubernetes.io/revision: "2"
     task.mpaas.inforboar.io/id: cg2q5nma0brg23tlii2g
   creationTimestamp: "2023-03-06T05:36:50Z"
@@ -33,7 +33,7 @@ spec:
         app: mpaas
     spec:
       containers:
-        - image: registry.cn-hangzhou.aliyuncs.com/inforboard/mpaas:v0.0.10
+        - image: registry.cn-hangzhou.aliyuncs.com/infraboard/mpaas:v0.0.10
           imagePullPolicy: IfNotPresent
           name: mpaas
           ports:

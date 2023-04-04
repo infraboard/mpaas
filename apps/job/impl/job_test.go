@@ -169,12 +169,12 @@ func TestUpdateBuildJob(t *testing.T) {
 		Example:   "git-ssh-key",
 		Value:     "git-ssh-key",
 	})
-	// docker push registry.cn-hangzhou.aliyuncs.com/inforboard/mpaas:[镜像版本号]
+	// docker push registry.cn-hangzhou.aliyuncs.com/infraboard/mpaas:[镜像版本号]
 	v1.Add(&job.RunParam{
 		Required: true,
 		Name:     build.SYSTEM_VARIABLE_IMAGE_REPOSITORY,
 		Desc:     "镜像推送地址",
-		Example:  "registry.cn-hangzhou.aliyuncs.com/inforboard/mpaas",
+		Example:  "registry.cn-hangzhou.aliyuncs.com/infraboard/mpaas",
 	})
 	v1.Add(&job.RunParam{
 		Required: true,

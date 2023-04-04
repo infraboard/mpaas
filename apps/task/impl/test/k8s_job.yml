@@ -217,7 +217,7 @@ spec:
             - name: GIT_COMMIT_ID
               value: bfacd86c647935aea532f29421fe83c6a6111260
             - name: IMAGE_REPOSITORY
-              value: registry.cn-hangzhou.aliyuncs.com/inforboard/mpaas
+              value: registry.cn-hangzhou.aliyuncs.com/infraboard/mpaas
             - name: APP_VERSION
               value: v0.0.6
             - name: _PIPELINE_TASK_ID
@@ -254,7 +254,7 @@ spec:
             - name: GIT_COMMIT_ID
               value: bfacd86c647935aea532f29421fe83c6a6111260
             - name: IMAGE_REPOSITORY
-              value: registry.cn-hangzhou.aliyuncs.com/inforboard/mpaas
+              value: registry.cn-hangzhou.aliyuncs.com/infraboard/mpaas
             - name: APP_VERSION
               value: v0.0.6
             - name: _PIPELINE_TASK_ID

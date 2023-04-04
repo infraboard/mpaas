@@ -46,8 +46,8 @@ func InjectPodEnvVars(pod *v1.PodSpec, envs []v1.EnvVar) {
 }
 
 const (
-	ANNOTATION_SECRET_MOUNT    = "secret.mpaas.inforboard.io/mountpath"
-	ANNOTATION_CONFIGMAP_MOUNT = "configmap.mpaas.inforboard.io/mountpath"
+	ANNOTATION_SECRET_MOUNT    = "secret.mpaas.infraboard.io/mountpath"
+	ANNOTATION_CONFIGMAP_MOUNT = "configmap.mpaas.infraboard.io/mountpath"
 )
 
 // 把secret注入到Pod中 挂载成卷使用
