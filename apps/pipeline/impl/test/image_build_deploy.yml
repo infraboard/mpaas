@@ -16,7 +16,7 @@ stages:
             - name: GIT_COMMIT_ID
               value: ${GIT_COMMIT_ID}
             - name: IMAGE_REPOSITORY
-              value: registry.cn-hangzhou.aliyuncs.com/inforboard/mpaas
+              value: ${IMAGE_REPOSITORY}
   - name: 容器镜像部署
     jobs:
       - task_name: 容器镜像部署

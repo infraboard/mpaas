@@ -29,6 +29,7 @@ func newConfig() *Config {
 		Mongo:   newDefaultMongoDB(),
 		Mcenter: rpc.NewDefaultConfig(),
 		Cache:   newDefaultCache(),
+		Image:   newDefaultImage(),
 	}
 }
 
@@ -39,6 +40,7 @@ type Config struct {
 	Mongo   *mongodb    `toml:"mongodb"`
 	Mcenter *rpc.Config `toml:"mcenter"`
 	Cache   *_cache     `toml:"cache"`
+	Image   *image      `toml:"image"`
 }
 
 // InitGloabl 注入全局变量
@@ -233,4 +235,15 @@ type _cache struct {
 	Type   string         `toml:"type" json:"type" yaml:"type" env:"MCENTER_CACHE_TYPE"`
 	Memory *memory.Config `toml:"memory" json:"memory" yaml:"memory"`
 	Redis  *redis.Config  `toml:"redis" json:"redis" yaml:"redis"`
+}
+
+func newDefaultImage() *image {
+	return &image{
+		DefaultRegistry: "registry.cn-hangzhou.aliyuncs.com",
+	}
+}
+
+type image struct {
+	// 镜像默认推送仓库地址
+	DefaultRegistry string `toml:"default_registry" json:"default_registry" yaml:"default_registry" env:"DEFAULT_REGISTRY"`
 }

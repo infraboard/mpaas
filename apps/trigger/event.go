@@ -10,6 +10,7 @@ import (
 	build "github.com/infraboard/mpaas/apps/build"
 	"github.com/infraboard/mpaas/apps/job"
 	"github.com/infraboard/mpaas/common/format"
+	"github.com/infraboard/mpaas/conf"
 	"github.com/rs/xid"
 )
 
@@ -25,6 +26,13 @@ func (s *RecordSet) Add(items ...*Record) {
 
 func (e *Event) Validate() error {
 	return validate.Validate(e)
+}
+
+func (e *GitlabWebHookEvent) DefaultRepository() string {
+	return fmt.Sprintf("%s/%s",
+		conf.C().Image.DefaultRegistry,
+		e.Project.NamespacePath,
+	)
 }
 
 func (e *GitlabWebHookEvent) Validate() error {
