@@ -10,6 +10,7 @@ import (
 	"github.com/infraboard/mcenter/common/validate"
 	"github.com/infraboard/mcube/http/request"
 	job "github.com/infraboard/mpaas/apps/job"
+	"github.com/infraboard/mpaas/common/format"
 	"github.com/infraboard/mpaas/common/meta"
 	"github.com/rs/xid"
 	"sigs.k8s.io/yaml"
@@ -230,4 +231,8 @@ func (req *RunPipelineRequest) AddRunParam(params ...*job.RunParam) {
 
 func (req *RunPipelineRequest) Validate() error {
 	return validate.Validate(req)
+}
+
+func (req *RunPipelineRequest) ToJson() string {
+	return format.Prettify(req)
 }

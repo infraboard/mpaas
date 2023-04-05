@@ -3,6 +3,7 @@ package impl_test
 import (
 	"testing"
 
+	"github.com/infraboard/mpaas/apps/build"
 	"github.com/infraboard/mpaas/apps/job"
 	"github.com/infraboard/mpaas/apps/pipeline"
 	"github.com/infraboard/mpaas/apps/task"
@@ -20,7 +21,7 @@ func TestQueryPipelineTask(t *testing.T) {
 }
 
 func TestRunTestPipeline(t *testing.T) {
-	req := pipeline.NewRunPipelineRequest(conf.C.PIPELINE_ID)
+	req := pipeline.NewRunPipelineRequest(conf.C.CICD_PIPELINE_ID)
 	req.RunBy = "test"
 	ins, err := impl.RunPipeline(ctx, req)
 	if err != nil {
@@ -36,7 +37,7 @@ func TestRunMpaasPipeline(t *testing.T) {
 		"GIT_SSH_URL", "git@github.com:infraboard/mpaas.git",
 		"GIT_BRANCH", "master",
 		"GIT_COMMIT_ID", "57953a59e0ff5c93d0596696fbf6ffef6a90b446",
-		job.SYSTEM_VARIABLE_APP_VERSION, "v0.0.10",
+		build.SYSTEM_VARIABLE_APP_VERSION, "v0.0.10",
 	)
 
 	ins, err := impl.RunPipeline(ctx, req)

@@ -45,7 +45,7 @@ func (h *Handler) HandleGitlabEvent(r *restful.Request, w *restful.Response) {
 		return
 	}
 
-	h.log.Debugf("accept event: %s", event)
+	h.log.Debugf("accept event: %s", event.ToJson())
 	ins, err := h.svc.HandleEvent(r.Request.Context(), req)
 	if err != nil {
 		response.Failed(w, err)
@@ -97,7 +97,7 @@ func (h *Handler) BuildEvent(ctx context.Context, in *trigger.Event) error {
 	h.log.Debugf("service: %s", svc)
 	repo := svc.Spec.Repository
 	if repo == nil || repo.Token == "" {
-		return fmt.Errorf("service %s[%s] no repo info", svc.FullName(), svc.Id)
+		return fmt.Errorf("service %s[%s] no repo or private token info", svc.FullName(), svc.Id)
 	}
 
 	// 补充Project相关信息
@@ -117,10 +117,10 @@ func (h *Handler) BuildEvent(ctx context.Context, in *trigger.Event) error {
 	v4 := gitlab.NewGitlabV4(gc)
 	branchReq := gitlab.NewGetProjectBranchRequest()
 	branchReq.ProjectId = repo.ProjectId
-	branchReq.Branch = in.GitlabEvent.Ref
+	branchReq.Branch = in.GitlabEvent.GetBaseRef()
 	b, err := v4.Project().GetProjectBranch(ctx, branchReq)
 	if err != nil {
-		return err
+		return fmt.Errorf("查询分支: %s 异常, %s", branchReq.Branch, err)
 	}
 	in.GitlabEvent.Commits = append(in.GitlabEvent.Commits, &trigger.Commit{
 		Id:        b.Commit.Id,

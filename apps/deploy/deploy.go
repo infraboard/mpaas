@@ -7,6 +7,7 @@ import (
 	"time"
 
 	"github.com/imdario/mergo"
+	"github.com/infraboard/mpaas/apps/build"
 	"github.com/infraboard/mpaas/apps/job"
 	meta "github.com/infraboard/mpaas/common/meta"
 	"github.com/infraboard/mpaas/provider/k8s/network"
@@ -99,7 +100,7 @@ func (d *Deployment) SystemVariable() ([]v1.EnvVar, error) {
 				d.Spec.ServiceName,
 			).SetReadOnly(true).SetSearchLabel(true),
 			job.NewRunParam(
-				job.SYSTEM_VARIABLE_IMAGE_REPOSITORY,
+				build.SYSTEM_VARIABLE_IMAGE_REPOSITORY,
 				addr,
 			),
 		)

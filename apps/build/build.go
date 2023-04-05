@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"regexp"
 
+	"github.com/infraboard/mpaas/apps/job"
 	"github.com/infraboard/mpaas/common/meta"
 )
 
@@ -58,6 +59,21 @@ func (b *BuildConfig) MarshalJSON() ([]byte, error) {
 	}{b.Meta, b.Spec})
 }
 
+func (b *BuildConfig) BuildRunParams() *job.VersionedRunParam {
+	envs := map[string]string{}
+	switch b.Spec.TargetType {
+	case TARGET_TYPE_IMAGE:
+		envs = b.Spec.ImageBuild.BuildEnvVars
+	case TARGET_TYPE_PKG:
+	}
+
+	params := job.NewVersionedRunParam("build")
+	for k, v := range envs {
+		params.Add(job.NewRunParam(k, v))
+	}
+	return params
+}
+
 func NewCreateBuildConfigRequest() *CreateBuildConfigRequest {
 	return &CreateBuildConfigRequest{
 		VersionPrefix: "v",
@@ -73,6 +89,22 @@ func NewImageBuild() *ImageBuildConfig {
 		BuildEnvVars: make(map[string]string),
 		Extra:        make(map[string]string),
 	}
+}
+
+// 如果没有配置，则使用默认配置
+func (c *ImageBuildConfig) GetDockerFileWithDefault(defaulDockerFile string) string {
+	if c.DockerFile == "" {
+		return defaulDockerFile
+	}
+	return c.DockerFile
+}
+
+// 如果没有配置，则使用默认配置
+func (c *ImageBuildConfig) GetImageRepositoryWithDefault(defaultImageRepository string) string {
+	if c.ImageRepository == "" {
+		return defaultImageRepository
+	}
+	return c.ImageRepository
 }
 
 func NewPkgBuildConfig() *PkgBuildConfig {

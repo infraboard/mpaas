@@ -5,6 +5,7 @@ import (
 
 	"github.com/infraboard/mcube/exception"
 	"github.com/infraboard/mpaas/apps/build"
+	"github.com/infraboard/mpaas/apps/job"
 	"github.com/infraboard/mpaas/apps/pipeline"
 	"github.com/infraboard/mpaas/apps/trigger"
 )
@@ -48,6 +49,26 @@ func (i *impl) HandleEvent(ctx context.Context, in *trigger.Event) (
 			runReq := pipeline.NewRunPipelineRequest(pipelineId)
 			runReq.RunBy = "gitlab_trigger"
 			runReq.DryRun = in.SkipRunPipeline
+
+			// 补充Build用户自定义变量
+			runReq.AddRunParam(buildConf.BuildRunParams().Params...)
+
+			// 补充构建时系统变量
+			switch buildConf.Spec.TargetType {
+			case build.TARGET_TYPE_IMAGE:
+				ib := buildConf.Spec.ImageBuild
+				// 注入Dockerfile位置信息
+				runReq.AddRunParam(job.NewRunParam(
+					build.SYSTEM_VARIABLE_APP_DOCKERFILE,
+					ib.GetDockerFileWithDefault(build.DEFAULT_DOCKER_FILE_PATH),
+				))
+				// 注入推送代码仓库相关信息
+				runReq.AddRunParam(job.NewRunParam(
+					build.SYSTEM_VARIABLE_IMAGE_REPOSITORY,
+					ib.GetImageRepositoryWithDefault(ins.Event.GitlabEvent.DefaultRepository()),
+				))
+			}
+
 			// 补充Git信息
 			runReq.AddRunParam(in.GitlabEvent.GitRunParams().Params...)
 			// 补充版本信息
@@ -58,6 +79,7 @@ func (i *impl) HandleEvent(ctx context.Context, in *trigger.Event) (
 				runReq.AddRunParam(in.GitlabEvent.TagVersion(buildConf.Spec.VersionPrefix))
 			}
 
+			i.log.Debugf("run pipeline req: %s", runReq.ToJson())
 			pt, err := i.task.RunPipeline(ctx, runReq)
 			if err != nil {
 				bs.ErrorMessage = err.Error()

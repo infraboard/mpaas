@@ -37,7 +37,7 @@ message GitlabWebHookEvent {
     // @gotags: bson:"event_describe" json:"event_describe"
     string event_describe = 13;
     // 事件类型
-    // @gotags: bson:"object_kind" json:"object_kind" validate:"required"
+    // @gotags: bson:"object_kind" json:"object_kind"
     string object_kind = 2;
     // 事件名称
     // @gotags: bson:"event_name" json:"event_name" validate:"required"

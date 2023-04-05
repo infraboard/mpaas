@@ -114,7 +114,33 @@ func (r *VersionedRunParam) Add(items ...*RunParam) {
 	r.Params = append(r.Params, items...)
 }
 
+// 检查是否有重复的参数
+func (r *VersionedRunParam) CheckDuplicate() error {
+	kc := map[string]int{}
+	for i := range r.Params {
+		p := r.Params[i]
+		kc[p.Name]++
+	}
+
+	duplicates := []string{}
+	for k, v := range kc {
+		if v > 1 {
+			duplicates = append(duplicates, k)
+		}
+	}
+
+	if len(duplicates) > 0 {
+		return fmt.Errorf("params %s duplicate", duplicates)
+	}
+	return nil
+}
+
 func (r *VersionedRunParam) Validate() error {
+	err := r.CheckDuplicate()
+	if err != nil {
+		return err
+	}
+
 	for i := range r.Params {
 		p := r.Params[i]
 		if p.Required && p.Value == "" {

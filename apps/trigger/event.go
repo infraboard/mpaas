@@ -7,7 +7,10 @@ import (
 
 	"github.com/emicklei/go-restful/v3"
 	"github.com/infraboard/mcenter/common/validate"
+	build "github.com/infraboard/mpaas/apps/build"
 	"github.com/infraboard/mpaas/apps/job"
+	"github.com/infraboard/mpaas/common/format"
+	"github.com/infraboard/mpaas/conf"
 	"github.com/rs/xid"
 )
 
@@ -25,8 +28,19 @@ func (e *Event) Validate() error {
 	return validate.Validate(e)
 }
 
+func (e *GitlabWebHookEvent) DefaultRepository() string {
+	return fmt.Sprintf("%s/%s",
+		conf.C().Image.DefaultRegistry,
+		e.Project.NamespacePath,
+	)
+}
+
 func (e *GitlabWebHookEvent) Validate() error {
 	return validate.Validate(e)
+}
+
+func (e *GitlabWebHookEvent) ToJson() string {
+	return format.Prettify(e)
 }
 
 func (e *GitlabWebHookEvent) ParseInfoFromHeader(r *restful.Request) {
@@ -118,7 +132,7 @@ func (e *GitlabWebHookEvent) DateCommitVersion(prefix string) *job.RunParam {
 	if !strings.HasPrefix(version, prefix) {
 		version = prefix + version
 	}
-	return job.NewRunParam(job.SYSTEM_VARIABLE_APP_VERSION, version)
+	return job.NewRunParam(build.SYSTEM_VARIABLE_APP_VERSION, version)
 }
 
 func (e *GitlabWebHookEvent) TagVersion(prefix string) *job.RunParam {
@@ -126,7 +140,7 @@ func (e *GitlabWebHookEvent) TagVersion(prefix string) *job.RunParam {
 	if !strings.HasPrefix(version, prefix) {
 		version = prefix + version
 	}
-	return job.NewRunParam(job.SYSTEM_VARIABLE_APP_VERSION, version)
+	return job.NewRunParam(build.SYSTEM_VARIABLE_APP_VERSION, version)
 }
 
 func (e *GitlabWebHookEvent) GenBuildVersion() string {

@@ -52,7 +52,7 @@ spec: # 详情描述
           args:
             [
               "-c",
-              "/kaniko/executor --destination=${IMAGE_REPOSITORY}:${APP_VERSION}",
+              "/kaniko/executor --destination=${IMAGE_REPOSITORY}:${APP_VERSION} --dockerfile=${APP_DOCKERFILE}",
             ]
           volumeMounts:
             - name: workspace
