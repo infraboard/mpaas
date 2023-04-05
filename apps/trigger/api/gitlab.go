@@ -94,8 +94,9 @@ func (h *Handler) BuildEvent(ctx context.Context, in *trigger.Event) error {
 	if err != nil {
 		return err
 	}
+	h.log.Debugf("service: %s", svc)
 	repo := svc.Spec.Repository
-	if repo == nil {
+	if repo == nil || repo.Token == "" {
 		return fmt.Errorf("service %s[%s] no repo info", svc.FullName(), svc.Id)
 	}
 
