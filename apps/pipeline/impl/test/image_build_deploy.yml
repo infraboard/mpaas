@@ -26,6 +26,6 @@ stages:
           version: v1
           params:
             - name: _DEPLOY_ID
-              value: deploy01
+              value: ${_DEPLOY_ID}
             - name: APP_VERSION
               value: ${APP_VERSION}

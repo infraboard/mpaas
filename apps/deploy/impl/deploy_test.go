@@ -31,26 +31,6 @@ func TestDescribeDeployment(t *testing.T) {
 	t.Log(tools.MustToYaml(ds))
 }
 
-func TestCreateDeployment(t *testing.T) {
-	k8sConf := deploy.NewK8STypeConfig()
-	k8sConf.WorkloadConfig = tools.MustReadContentFile("test/mpaas_workload.yml")
-	k8sConf.ClusterId = "k8s-test"
-
-	req := deploy.NewCreateDeploymentRequest()
-	req.K8STypeConfig = k8sConf
-	req.Provider = "腾讯云"
-	req.Region = "上海"
-	req.Environment = "生产"
-	req.ServiceId = conf.C.SERVICE_ID
-	req.DeployId = "deploy01"
-
-	ds, err := impl.CreateDeployment(ctx, req)
-	if err != nil {
-		t.Fatal(err)
-	}
-	t.Log(ds)
-}
-
 func TestCreateMongoDeployment(t *testing.T) {
 	k8sConf := deploy.NewK8STypeConfig()
 	k8sConf.WorkloadConfig = tools.MustReadContentFile("test/mongodb_workload.yml")
@@ -67,6 +47,26 @@ func TestCreateMongoDeployment(t *testing.T) {
 	req.DeployId = "mongodb"
 	req.Domain = domain.DEFAULT_DOMAIN
 	req.Namespace = namespace.DEFAULT_NAMESPACE
+
+	ds, err := impl.CreateDeployment(ctx, req)
+	if err != nil {
+		t.Fatal(err)
+	}
+	t.Log(ds)
+}
+
+func TestCreateMcenterDeployment(t *testing.T) {
+	k8sConf := deploy.NewK8STypeConfig()
+	k8sConf.WorkloadConfig = tools.MustReadContentFile("test/mcenter_workload.yml")
+	k8sConf.ClusterId = "k8s-test"
+
+	req := deploy.NewCreateDeploymentRequest()
+	req.K8STypeConfig = k8sConf
+	req.Provider = "腾讯云"
+	req.Region = "上海"
+	req.Environment = "生产"
+	req.ServiceId = conf.C.SERVICE_ID
+	req.DeployId = "deploy01"
 
 	ds, err := impl.CreateDeployment(ctx, req)
 	if err != nil {

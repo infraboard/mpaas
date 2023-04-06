@@ -60,17 +60,26 @@ func (b *BuildConfig) MarshalJSON() ([]byte, error) {
 }
 
 func (b *BuildConfig) BuildRunParams() *job.VersionedRunParam {
+	params := job.NewVersionedRunParam("build")
+	// 补充部署Id
+	if b.Spec.DeployId != "" {
+		params.Merge(job.NewRunParam(
+			job.SYSTEM_VARIABLE_DEPLOY_ID,
+			b.Spec.DeployId,
+		))
+	}
+
+	// 补充自定义变量
 	envs := map[string]string{}
 	switch b.Spec.TargetType {
 	case TARGET_TYPE_IMAGE:
 		envs = b.Spec.ImageBuild.BuildEnvVars
 	case TARGET_TYPE_PKG:
 	}
-
-	params := job.NewVersionedRunParam("build")
 	for k, v := range envs {
 		params.Merge(job.NewRunParam(k, v))
 	}
+
 	return params
 }
 

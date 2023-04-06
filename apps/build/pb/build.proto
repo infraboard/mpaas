@@ -49,6 +49,9 @@ message CreateBuildConfigRequest {
     // 版本前缀
     // @gotags: bson:"version_prefix" json:"version_prefix"
     string version_prefix = 9;
+    // 构建完成后执行部署的Id
+    // @gotags: bson:"deploy_id" json:"deploy_id"
+    string deploy_id = 10;
 
     // 构建配置标签
     // @gotags: bson:"labels" json:"labels"
