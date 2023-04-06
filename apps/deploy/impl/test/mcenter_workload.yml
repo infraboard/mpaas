@@ -24,11 +24,11 @@ spec:
         app: mcenter
     spec:
       containers:
-        - image: registry.cn-hangzhou.aliyuncs.com/infraboard/mcenter:v0.0.10
+        - image: registry.cn-hangzhou.aliyuncs.com/infraboard/mcenter:v20230404-master-20658a8f
           imagePullPolicy: IfNotPresent
           name: mcenter
           ports:
-            - containerPort: 8080
+            - containerPort: 8010
               protocol: TCP
           resources: {}
           env:

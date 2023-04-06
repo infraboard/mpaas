@@ -28,11 +28,13 @@ func TestDescribeBuildConfig(t *testing.T) {
 	t.Log(tools.MustToJson(ins))
 }
 
-func TestUpdateBuildConfig(t *testing.T) {
+func TestUpdateMcenterBuildConfig(t *testing.T) {
 	req := build.NewPatchBuildConfigRequest(conf.C.BUILD_ID)
 	req.Spec.Condition.AddEvent("push")
 	req.Spec.Condition.AddBranche("master")
+	req.Spec.ImageBuild.ImageRepository = "registry.cn-hangzhou.aliyuncs.com/infraboard/mcenter"
 	req.Spec.ImageBuild.PipelineId = conf.C.MPAAS_PIPELINE_ID
+	req.Spec.DeployId = "mcenter_v1"
 	ins, err := impl.UpdateBuildConfig(ctx, req)
 	if err != nil {
 		t.Fatal(err)

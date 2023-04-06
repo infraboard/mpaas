@@ -95,6 +95,7 @@ func NewCreateBuildConfigRequest() *CreateBuildConfigRequest {
 
 func NewImageBuild() *ImageBuildConfig {
 	return &ImageBuildConfig{
+		DockerFile:   "Dockerfile",
 		BuildEnvVars: make(map[string]string),
 		Extra:        make(map[string]string),
 	}

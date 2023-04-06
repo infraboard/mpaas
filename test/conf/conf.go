@@ -22,6 +22,7 @@ type Config struct {
 	MPAAS_PIPELINE_ID string `env:"MPAAS_PIPELINE_ID"`
 	APPROVAL_ID       string `env:"APPROVAL_ID"`
 
+	MCENTER_DEPLOY_ID     string `env:"MCENTER_DEPLOY_ID"`
 	MCENTER_SERVICE_ID    string `env:"MCENTER_SERVICE_ID"`
 	MCENTER_GRPC_ADDRESS  string `env:"MCENTER_GRPC_ADDRESS"`
 	MCENTER_CLINET_ID     string `env:"MCENTER_CLINET_ID"`

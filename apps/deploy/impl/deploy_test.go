@@ -20,14 +20,13 @@ func TestQueryDeploy(t *testing.T) {
 }
 
 func TestDescribeDeployment(t *testing.T) {
-	req := deploy.NewDescribeDeploymentRequest(conf.C.DEPLOY_ID)
+	req := deploy.NewDescribeDeploymentRequest(conf.C.MCENTER_DEPLOY_ID)
 	ds, err := impl.DescribeDeployment(ctx, req)
 	if err != nil {
 		t.Fatal(err)
 	}
 
 	t.Log(ds.SystemVariable())
-
 	t.Log(tools.MustToYaml(ds))
 }
 
@@ -65,8 +64,8 @@ func TestCreateMcenterDeployment(t *testing.T) {
 	req.Provider = "腾讯云"
 	req.Region = "上海"
 	req.Environment = "生产"
-	req.ServiceId = conf.C.SERVICE_ID
-	req.DeployId = "deploy01"
+	req.ServiceId = conf.C.MCENTER_SERVICE_ID
+	req.DeployId = "mcenter_v1"
 
 	ds, err := impl.CreateDeployment(ctx, req)
 	if err != nil {
