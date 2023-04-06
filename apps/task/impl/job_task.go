@@ -35,57 +35,60 @@ func (i *impl) RunJob(ctx context.Context, in *pipeline.RunJobRequest) (
 	}
 	ins := task.NewJobTask(in)
 
-	// 查询需要执行的Job
-	req := job.NewDescribeJobRequest(in.JobName)
-	j, err := i.job.DescribeJob(ctx, req)
-	if err != nil {
-		return nil, err
-	}
-	ins.Job = j
-	i.log.Infof("describe job success, %s[%s]", j.Spec.Name, j.Meta.Id)
+	// 忽略执行
+	if in.Enabled() {
+		// 查询需要执行的Job
+		req := job.NewDescribeJobRequest(in.JobName)
+		j, err := i.job.DescribeJob(ctx, req)
+		if err != nil {
+			return nil, err
+		}
+		ins.Job = j
+		i.log.Infof("describe job success, %s[%s]", j.Spec.Name, j.Meta.Id)
 
-	// 合并允许参数(Job里面有默认值), 并检查参数合法性
-	// 注意Param的合并是有顺序的，也就是参数优先级(低-->高):
-	// 1. job默认变量
-	// 2. 系统变量(默认禁止修改)
-	// 3. task变量
-	// 4. pipeline变量
-	params := j.GetVersionedRunParam(in.GetRunParamsVersion())
-	if params == nil {
-		return nil, fmt.Errorf("job %s version: %s not found, allow version: %s",
-			j.Spec.Name,
-			in.GetRunParamsVersion(),
-			j.AllowVersions(),
-		)
-	}
-	params.Add(ins.SystemRunParam()...)
-	params.Merge(in.RunParams.Params)
-	err = i.LoadPipelineRunParam(ctx, params)
-	if err != nil {
-		return nil, err
-	}
+		// 合并允许参数(Job里面有默认值), 并检查参数合法性
+		// 注意Param的合并是有顺序的，也就是参数优先级(低-->高):
+		// 1. job默认变量
+		// 2. 系统变量(默认禁止修改)
+		// 3. task变量
+		// 4. pipeline变量
+		params := j.GetVersionedRunParam(in.GetRunParamsVersion())
+		if params == nil {
+			return nil, fmt.Errorf("job %s version: %s not found, allow version: %s",
+				j.Spec.Name,
+				in.GetRunParamsVersion(),
+				j.AllowVersions(),
+			)
+		}
+		params.Add(ins.SystemRunParam()...)
+		params.Merge(in.RunParams.Params...)
+		err = i.LoadPipelineRunParam(ctx, params)
+		if err != nil {
+			return nil, err
+		}
 
-	// 校验参数合法性
-	err = params.Validate()
-	if err != nil {
-		return nil, fmt.Errorf("校验任务【%s】参数错误, %s", j.Spec.Name, err)
-	}
-	i.log.Infof("params check ok, %s", params)
+		// 校验参数合法性
+		err = params.Validate()
+		if err != nil {
+			return nil, fmt.Errorf("校验任务【%s】参数错误, %s", j.Spec.Name, err)
+		}
+		i.log.Infof("params check ok, %s", params)
 
-	// 获取执行器执行
-	r := runner.GetRunner(j.Spec.RunnerType)
-	runReq := task.NewRunTaskRequest(ins.Spec.TaskId, j.Spec.RunnerSpec, params)
-	runReq.DryRun = in.DryRun
-	runReq.Labels = in.Labels
-	runReq.ManualUpdateStatus = j.Spec.ManualUpdateStatus
-	status, err := r.Run(ctx, runReq)
-	if err != nil {
-		return nil, err
-	}
-	ins.Status = status
+		// 获取执行器执行
+		r := runner.GetRunner(j.Spec.RunnerType)
+		runReq := task.NewRunTaskRequest(ins.Spec.TaskId, j.Spec.RunnerSpec, params)
+		runReq.DryRun = in.DryRun
+		runReq.Labels = in.Labels
+		runReq.ManualUpdateStatus = j.Spec.ManualUpdateStatus
+		status, err := r.Run(ctx, runReq)
+		if err != nil {
+			return nil, err
+		}
+		ins.Status = status
 
-	// 添加搜索标签
-	ins.BuildSearchLabel()
+		// 添加搜索标签
+		ins.BuildSearchLabel()
+	}
 
 	// 保存任务
 	updateOpt := options.Update()
@@ -109,9 +112,9 @@ func (i *impl) LoadPipelineRunParam(ctx context.Context, params *job.VersionedRu
 	}
 
 	// 合并PipelineTask传入的变量参数
-	params.Merge(pt.Params.RunParams)
+	params.Merge(pt.Params.RunParams...)
 	// 合并PipelineTask的运行时参数, Task运行时更新的
-	params.Merge(pt.RuntimeRunParams())
+	params.Merge(pt.RuntimeRunParams()...)
 	return nil
 }
 

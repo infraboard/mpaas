@@ -66,12 +66,17 @@ func NewMeta() *Meta {
 
 func NewJobTask(req *pipeline.RunJobRequest) *JobTask {
 	req.SetDefault()
-	return &JobTask{
+	t := &JobTask{
 		Meta:   NewMeta(),
 		Spec:   req,
 		Job:    nil,
 		Status: NewJobTaskStatus(),
 	}
+	if t.Spec.SkipRun {
+		t.Status.Stage = STAGE_SKIPPED
+		t.Status.Message = "skip run"
+	}
+	return t
 }
 
 func (p *JobTask) BuildSearchLabel() {

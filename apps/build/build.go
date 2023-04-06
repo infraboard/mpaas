@@ -69,7 +69,7 @@ func (b *BuildConfig) BuildRunParams() *job.VersionedRunParam {
 
 	params := job.NewVersionedRunParam("build")
 	for k, v := range envs {
-		params.Add(job.NewRunParam(k, v))
+		params.Merge(job.NewRunParam(k, v))
 	}
 	return params
 }

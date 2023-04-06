@@ -256,11 +256,7 @@ func (r *VersionedRunParam) SetParamValue(key, value string) {
 	zap.L().Warnf("set param %s value failed, job no param or readonly", key)
 }
 
-func (r *VersionedRunParam) Merge(targets []*RunParam) {
-	if targets == nil {
-		return
-	}
-
+func (r *VersionedRunParam) Merge(targets ...*RunParam) {
 	for i := range targets {
 		t := targets[i]
 		r.SetParamValue(t.Name, t.Value)

@@ -57,6 +57,8 @@ enum STAGE {
 	FAILED = 11;
 	// 运行成功
 	SUCCEEDED = 12;
+	// 跳过执行, 比如Pipeline中的一些可选流程
+	SKIPPED = 13;
 }
 
 message JobTaskStatus {

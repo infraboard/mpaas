@@ -84,6 +84,9 @@ message Stage {
 }
 
 message RunJobRequest {
+    // 忽略执行
+	// @gotags: bson:"skip_run" json:"skip_run"
+    bool skip_run = 16;
     // 编号
 	// @gotags: bson:"number" json:"number"
     int32 number = 15;

@@ -130,6 +130,10 @@ func NewRunJobRequest(jobName string) *RunJobRequest {
 	}
 }
 
+func (r *RunJobRequest) Enabled() bool {
+	return !r.SkipRun
+}
+
 func (r *RunJobRequest) GetRunParamsVersion() string {
 	if r.RunParams != nil {
 		return r.RunParams.Version
