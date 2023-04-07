@@ -128,12 +128,24 @@ func (i *impl) PipelineTaskStatusChanged(ctx context.Context, in *task.JobTask) 
 		return nil, exception.NewBadRequest("Pipeline Id参数缺失")
 	}
 
+	nextErrors := []*task.UpdateJobTaskStatusRequest{}
 	// 获取Pipeline Task, 因为Job Task是先保存在触发的回调, 这里获取的Pipeline Task是最新的
 	descReq := task.NewDescribePipelineTaskRequest(in.Spec.PipelineTask)
 	p, err := i.DescribePipelineTask(ctx, descReq)
 	if err != nil {
 		return nil, err
 	}
+	// 更新pipeline task状态
+	defer func() {
+		i.mustUpdatePipelineStatus(ctx, p)
+		for index := range nextErrors {
+			_, err = i.UpdateJobTaskStatus(ctx, nextErrors[index])
+			if err != nil {
+				p.MarkedFailed(err)
+				i.mustUpdatePipelineStatus(ctx, p)
+			}
+		}
+	}()
 
 	// 更新Pipeline Task 运行时环境变量
 	p.Status.UpdateRuntimeEnv(in.Spec.TaskId, in.Status.RuntimeEnvs)
@@ -145,12 +157,12 @@ func (i *impl) PipelineTaskStatusChanged(ctx context.Context, in *task.JobTask) 
 	case task.STAGE_CANCELED:
 		// 任务取消, pipeline 取消执行
 		p.MarkedCanceled()
-		return i.updatePipelineStatus(ctx, p)
+		return p, nil
 	case task.STAGE_FAILED:
 		// 任务执行失败, 更新Pipeline状态为失败
 		if !in.Spec.IgnoreFailed {
-			p.MarkedFailed()
-			return i.updatePipelineStatus(ctx, p)
+			p.MarkedFailed(in.Status.MessageToError())
+			return p, nil
 		}
 	case task.STAGE_SUCCEEDED:
 		// 任务运行成功, pipeline继续执行
@@ -159,24 +171,31 @@ func (i *impl) PipelineTaskStatusChanged(ctx context.Context, in *task.JobTask) 
 	// task执行成功或者忽略执行失败, 此时pipeline 仍然处于运行中, 需要获取下一个任务执行
 	nexts, err := p.NextRun()
 	if err != nil {
-		return nil, err
+		p.MarkedFailed(err)
+		return p, nil
 	}
 
 	// 如果没有需要执行的任务, Pipeline执行结束, 更新Pipeline状态为成功
 	if nexts == nil || nexts.Len() == 0 {
 		p.MarkedSuccess()
-		return i.updatePipelineStatus(ctx, p)
+		return p, nil
 	}
 
 	// 如果有需要执行的JobTask, 继续执行
 	for index := range nexts.Items {
 		item := nexts.Items[index]
+		// 如果任务执行成功则等待任务的回调更新任务状态
+		// 如果任务允许失败, 直接更新任务状态
 		t, err := i.RunJob(ctx, item.Spec)
 		if err != nil {
-			return nil, err
+			updateT := task.NewUpdateJobTaskStatusRequest(item.Spec.TaskId)
+			updateT.UpdateToken = item.Spec.UpdateToken
+			updateT.MarkError(err)
+			nextErrors = append(nextErrors, updateT)
+		} else {
+			item.Status = t.Status
+			item.Job = t.Job
 		}
-		item.Status = t.Status
-		item.Job = t.Job
 	}
 
 	return p, nil
@@ -193,6 +212,14 @@ func (i *impl) updatePipelineStatus(ctx context.Context, in *task.PipelineTask) 
 			in.Meta.Id, err)
 	}
 	return in, nil
+}
+
+// 更新Pipeline状态
+func (i *impl) mustUpdatePipelineStatus(ctx context.Context, in *task.PipelineTask) {
+	_, err := i.updatePipelineStatus(ctx, in)
+	if err != nil {
+		i.log.Error(err)
+	}
 }
 
 func (i *impl) updateCallback(ctx context.Context, in *task.PipelineTask) {

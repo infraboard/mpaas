@@ -170,6 +170,16 @@ func NewJobTaskStatus() *JobTaskStatus {
 	}
 }
 
+func (t *JobTaskStatus) MessageToError() error {
+	return fmt.Errorf(t.Message)
+}
+
+func (t *JobTaskStatus) MarkedError(err error) {
+	t.EndAt = time.Now().Unix()
+	t.Stage = STAGE_FAILED
+	t.Message = err.Error()
+}
+
 func (t *JobTaskStatus) MarkedRunning() {
 	t.StartAt = time.Now().Unix()
 	t.Stage = STAGE_ACTIVE

@@ -125,6 +125,11 @@ func NewUpdateJobTaskStatusRequest(id string) *UpdateJobTaskStatusRequest {
 	}
 }
 
+func (r *UpdateJobTaskStatusRequest) MarkError(err error) {
+	r.Stage = STAGE_FAILED
+	r.Message = err.Error()
+}
+
 func NewQueryPipelineTaskRequest() *QueryPipelineTaskRequest {
 	return &QueryPipelineTaskRequest{
 		Page: request.NewDefaultPageRequest(),

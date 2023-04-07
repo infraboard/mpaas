@@ -1,6 +1,9 @@
 package impl
 
 import (
+	"context"
+
+	"github.com/infraboard/mcube/exception"
 	"github.com/infraboard/mpaas/apps/task"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo/options"
@@ -53,4 +56,13 @@ func (r *queryRequest) FindFilter() bson.M {
 	}
 
 	return filter
+}
+
+func (i *impl) updateJobTask(ctx context.Context, ins *task.JobTask) error {
+	// 更新数据库
+	if _, err := i.jcol.UpdateByID(ctx, ins.Spec.TaskId, bson.M{"$set": ins}); err != nil {
+		return exception.NewInternalServerError("update task(%s) document error, %s",
+			ins.Spec.TaskId, err)
+	}
+	return nil
 }

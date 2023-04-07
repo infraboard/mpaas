@@ -221,9 +221,8 @@ func (i *impl) UpdateJobTaskStatus(ctx context.Context, in *task.UpdateJobTaskSt
 	ins.Status.UpdateStatus(in)
 
 	// 更新数据库
-	if _, err := i.jcol.UpdateByID(ctx, ins.Spec.TaskId, bson.M{"$set": ins}); err != nil {
-		return nil, exception.NewInternalServerError("update task(%s) document error, %s",
-			in.Id, err)
+	if err := i.updateJobTask(ctx, ins); err != nil {
+		return nil, err
 	}
 
 	// Pipeline Task 状态变更回调

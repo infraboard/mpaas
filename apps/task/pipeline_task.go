@@ -178,9 +178,10 @@ func (p *PipelineTask) MarkedSuccess() {
 }
 
 // Pipeline执行失败
-func (p *PipelineTask) MarkedFailed() {
+func (p *PipelineTask) MarkedFailed(err error) {
 	p.Status.Stage = STAGE_FAILED
 	p.Status.EndAt = time.Now().Unix()
+	p.Status.Message = err.Error()
 }
 
 // Pipeline执行取消

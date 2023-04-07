@@ -75,6 +75,7 @@ func TestUpdateJobTaskStatus(t *testing.T) {
 	req.Stage = task.STAGE_SUCCEEDED
 	req.Message = "执行成功"
 	req.ForceUpdateStatus = true
+	req.ForceTriggerPipeline = true
 	req.UpdateToken = conf.C.MCENTER_BUILD_TASK_TOKEN
 	req.Detail = tools.MustReadContentFile("test/k8s_build_job.yml")
 	ins, err := impl.UpdateJobTaskStatus(ctx, req)
