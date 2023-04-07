@@ -128,18 +128,21 @@ func (i *impl) PipelineTaskStatusChanged(ctx context.Context, in *task.JobTask) 
 		return nil, exception.NewBadRequest("Pipeline Id参数缺失")
 	}
 
-	nextErrors := []*task.UpdateJobTaskStatusRequest{}
+	runErrorJobTasks := []*task.UpdateJobTaskStatusRequest{}
 	// 获取Pipeline Task, 因为Job Task是先保存在触发的回调, 这里获取的Pipeline Task是最新的
 	descReq := task.NewDescribePipelineTaskRequest(in.Spec.PipelineTask)
 	p, err := i.DescribePipelineTask(ctx, descReq)
 	if err != nil {
 		return nil, err
 	}
-	// 更新pipeline task状态
+
 	defer func() {
+		// 更新当前任务的pipeline task状态
 		i.mustUpdatePipelineStatus(ctx, p)
-		for index := range nextErrors {
-			_, err = i.UpdateJobTaskStatus(ctx, nextErrors[index])
+
+		// 如果有异常触发异常Job的更新
+		for index := range runErrorJobTasks {
+			_, err = i.UpdateJobTaskStatus(ctx, runErrorJobTasks[index])
 			if err != nil {
 				p.MarkedFailed(err)
 				i.mustUpdatePipelineStatus(ctx, p)
@@ -191,7 +194,7 @@ func (i *impl) PipelineTaskStatusChanged(ctx context.Context, in *task.JobTask) 
 			updateT := task.NewUpdateJobTaskStatusRequest(item.Spec.TaskId)
 			updateT.UpdateToken = item.Spec.UpdateToken
 			updateT.MarkError(err)
-			nextErrors = append(nextErrors, updateT)
+			runErrorJobTasks = append(runErrorJobTasks, updateT)
 		} else {
 			item.Status = t.Status
 			item.Job = t.Job

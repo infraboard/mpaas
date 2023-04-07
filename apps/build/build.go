@@ -63,7 +63,7 @@ func (b *BuildConfig) BuildRunParams() *job.VersionedRunParam {
 	params := job.NewVersionedRunParam("build")
 	// 补充部署Id
 	if b.Spec.DeployId != "" {
-		params.Merge(job.NewRunParam(
+		params.Add(job.NewRunParam(
 			job.SYSTEM_VARIABLE_DEPLOY_ID,
 			b.Spec.DeployId,
 		))
@@ -77,7 +77,7 @@ func (b *BuildConfig) BuildRunParams() *job.VersionedRunParam {
 	case TARGET_TYPE_PKG:
 	}
 	for k, v := range envs {
-		params.Merge(job.NewRunParam(k, v))
+		params.Add(job.NewRunParam(k, v))
 	}
 
 	return params

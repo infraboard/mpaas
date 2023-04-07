@@ -91,9 +91,9 @@ func (e *GitlabWebHookEvent) GitRunParams() *job.VersionedRunParam {
 		job.NewRunParam(VARIABLE_EVENT_USER_AGENT, e.UserAgent),
 		job.NewRunParam(VARIABLE_EVENT_CONTENT, e.EventRaw),
 		// 补充项目相关信息
-		job.NewRunParam(VARIABLE_GIT_PROJECT_NAME, e.Project.Name),
-		job.NewRunParam(VARIABLE_GIT_SSH_URL, e.Project.GitSshUrl),
-		job.NewRunParam(VARIABLE_GIT_HTTP_URL, e.Project.GitHttpUrl),
+		job.NewRunParam(VARIABLE_GIT_PROJECT_NAME, e.Project.Name).SetSearchLabel(true),
+		job.NewRunParam(VARIABLE_GIT_SSH_URL, e.Project.GitSshUrl).SetSearchLabel(true),
+		job.NewRunParam(VARIABLE_GIT_HTTP_URL, e.Project.GitHttpUrl).SetSearchLabel(true),
 	)
 
 	switch e.EventType {
