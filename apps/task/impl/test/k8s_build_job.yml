@@ -1,0 +1,128 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  annotations:
+    task.mpaas.inforboar.io/id: cgnn8uua0brj5fbj3cvg
+  creationTimestamp: "2023-04-07T01:40:12Z"
+  labels:
+    app: app01
+  name: cgnn8uua0brj5fbj3cvg
+  namespace: default
+  resourceVersion: "512606472"
+  selfLink: /apis/batch/v1/namespaces/default/jobs/cgnn8uua0brj5fbj3cvg
+  uid: 1e61adc6-ee8d-49d3-bf74-ef2b23ebb246
+spec:
+  activeDeadlineSeconds: 1800
+  backoffLimit: 3
+  completions: 1
+  parallelism: 1
+  selector:
+    matchLabels:
+      controller-uid: 1e61adc6-ee8d-49d3-bf74-ef2b23ebb246
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        app: build-pod
+        controller-uid: 1e61adc6-ee8d-49d3-bf74-ef2b23ebb246
+        job-name: cgnn8uua0brj5fbj3cvg
+    spec:
+      containers:
+      - args:
+        - -c
+        - /kaniko/executor --destination=${IMAGE_REPOSITORY}:${APP_VERSION} --dockerfile=${APP_DOCKERFILE}
+        command:
+        - sh
+        env:
+        - name: GIT_SSH_URL
+          value: git@gitlab.com:infraboard/mcenter.git
+        - name: APP_DOCKERFILE
+          value: Dockerfile
+        - name: GIT_BRANCH
+          value: master
+        - name: GIT_COMMIT_ID
+          value: 20658a8f21978a8cafb9d7ba6e081098d13d03c2
+        - name: IMAGE_REPOSITORY
+          value: registry.cn-hangzhou.aliyuncs.com/infraboard/mcenter
+        - name: APP_VERSION
+          value: v20230407-master-20658a8f
+        - name: _PIPELINE_TASK_ID
+          value: cgnn8uua0brj5fbj3cv0
+        - name: _JOB_TASK_ID
+          value: cgnn8uua0brj5fbj3cvg
+        image: registry.cn-hangzhou.aliyuncs.com/godev/kaniko-project.executor:v1.9.1-debug
+        imagePullPolicy: IfNotPresent
+        name: build-and-push
+        resources: {}
+        terminationMessagePath: /dev/termination-log
+        terminationMessagePolicy: File
+        volumeMounts:
+        - mountPath: /workspace
+          name: workspace
+        - mountPath: /kaniko/.docker
+          name: kaniko-secret
+        workingDir: /workspace
+      dnsPolicy: ClusterFirst
+      initContainers:
+      - args:
+        - -c
+        - git clone ${GIT_SSH_URL} workspace --branch=${GIT_BRANCH} --single-branch
+          && cd workspace && git reset --hard ${GIT_COMMIT_ID}
+        command:
+        - sh
+        env:
+        - name: GIT_SSH_COMMAND
+          value: ssh -i /etc/secret-volume/id_rsa -o StrictHostKeyChecking=no
+        - name: GIT_SSH_URL
+          value: git@gitlab.com:infraboard/mcenter.git
+        - name: APP_DOCKERFILE
+          value: Dockerfile
+        - name: GIT_BRANCH
+          value: master
+        - name: GIT_COMMIT_ID
+          value: 20658a8f21978a8cafb9d7ba6e081098d13d03c2
+        - name: IMAGE_REPOSITORY
+          value: registry.cn-hangzhou.aliyuncs.com/infraboard/mcenter
+        - name: APP_VERSION
+          value: v20230407-master-20658a8f
+        - name: _PIPELINE_TASK_ID
+          value: cgnn8uua0brj5fbj3cv0
+        - name: _JOB_TASK_ID
+          value: cgnn8uua0brj5fbj3cvg
+        image: registry.cn-hangzhou.aliyuncs.com/godev/git:2.39.2
+        imagePullPolicy: IfNotPresent
+        name: download
+        resources: {}
+        terminationMessagePath: /dev/termination-log
+        terminationMessagePolicy: File
+        volumeMounts:
+        - mountPath: /workspace
+          name: workspace
+        - mountPath: /etc/secret-volume
+          name: secret-volume
+          readOnly: true
+        workingDir: /
+      restartPolicy: Never
+      schedulerName: default-scheduler
+      securityContext: {}
+      terminationGracePeriodSeconds: 30
+      volumes:
+      - emptyDir: {}
+        name: workspace
+      - name: secret-volume
+        secret:
+          defaultMode: 384
+          secretName: git-ssh-key
+      - name: kaniko-secret
+        secret:
+          defaultMode: 420
+          secretName: kaniko-secret
+status:
+  completionTime: "2023-04-07T01:42:48Z"
+  conditions:
+  - lastProbeTime: "2023-04-07T01:42:48Z"
+    lastTransitionTime: "2023-04-07T01:42:48Z"
+    status: "True"
+    type: Complete
+  startTime: "2023-04-07T01:40:13Z"
+  succeeded: 1

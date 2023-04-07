@@ -29,7 +29,7 @@ func TestDescribeBuildConfig(t *testing.T) {
 }
 
 func TestUpdateMcenterBuildConfig(t *testing.T) {
-	req := build.NewPatchBuildConfigRequest(conf.C.BUILD_ID)
+	req := build.NewPatchBuildConfigRequest(conf.C.MCENTER_BUILD_ID)
 	req.Spec.Condition.AddEvent("push")
 	req.Spec.Condition.AddBranche("master")
 	req.Spec.ImageBuild.ImageRepository = "registry.cn-hangzhou.aliyuncs.com/infraboard/mcenter"

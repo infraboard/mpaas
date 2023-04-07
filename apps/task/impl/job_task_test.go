@@ -59,8 +59,8 @@ func TestRunDeployJob(t *testing.T) {
 }
 
 func TestUpdateJobTaskOutput(t *testing.T) {
-	req := task.NewUpdateJobTaskOutputRequest(conf.C.JOB_TASK_ID)
-	req.UpdateToken = conf.C.JOB_TASK_TOKEN
+	req := task.NewUpdateJobTaskOutputRequest(conf.C.MCENTER_BUILD_TASK_ID)
+	req.UpdateToken = conf.C.MCENTER_BUILD_TASK_ID
 	req.AddRuntimeEnv(build.SYSTEM_VARIABLE_APP_VERSION, "v0.0.5")
 	req.MarkdownOutput = "构建产物描述信息"
 	ins, err := impl.UpdateJobTaskOutput(ctx, req)
@@ -71,12 +71,12 @@ func TestUpdateJobTaskOutput(t *testing.T) {
 }
 
 func TestUpdateJobTaskStatus(t *testing.T) {
-	req := task.NewUpdateJobTaskStatusRequest(conf.C.JOB_TASK_ID)
+	req := task.NewUpdateJobTaskStatusRequest(conf.C.MCENTER_BUILD_TASK_ID)
 	req.Stage = task.STAGE_SUCCEEDED
 	req.Message = "执行成功"
-	req.Force = true
-	req.UpdateToken = conf.C.JOB_TASK_TOKEN
-	req.Detail = tools.MustReadContentFile("test/k8s_job.yml")
+	req.ForceUpdateStatus = true
+	req.UpdateToken = conf.C.MCENTER_BUILD_TASK_TOKEN
+	req.Detail = tools.MustReadContentFile("test/k8s_build_job.yml")
 	ins, err := impl.UpdateJobTaskStatus(ctx, req)
 	if err != nil {
 		t.Fatal(err)
@@ -85,7 +85,7 @@ func TestUpdateJobTaskStatus(t *testing.T) {
 }
 
 func TestDescribeJobTask(t *testing.T) {
-	req := task.NewDescribeJobTaskRequest(conf.C.JOB_TASK_ID)
+	req := task.NewDescribeJobTaskRequest(conf.C.MCENTER_BUILD_TASK_ID)
 	ins, err := impl.DescribeJobTask(ctx, req)
 	if err != nil {
 		t.Fatal(err)
@@ -94,7 +94,7 @@ func TestDescribeJobTask(t *testing.T) {
 }
 
 func TestDeleteJobTask(t *testing.T) {
-	req := task.NewDeleteJobTaskRequest(conf.C.JOB_TASK_ID)
+	req := task.NewDeleteJobTaskRequest(conf.C.MCENTER_BUILD_TASK_ID)
 	req.Force = true
 	set, err := impl.DeleteJobTask(ctx, req)
 	if err != nil {

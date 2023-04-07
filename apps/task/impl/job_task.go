@@ -211,7 +211,7 @@ func (i *impl) UpdateJobTaskStatus(ctx context.Context, in *task.UpdateJobTaskSt
 	}
 
 	// 校验更新合法性
-	err = i.CheckAllowUpdate(ctx, ins, in.UpdateToken, in.Force)
+	err = i.CheckAllowUpdate(ctx, ins, in.UpdateToken, in.ForceUpdateStatus)
 	if err != nil {
 		return nil, err
 	}
@@ -229,7 +229,7 @@ func (i *impl) UpdateJobTaskStatus(ctx context.Context, in *task.UpdateJobTaskSt
 	// Pipeline Task 状态变更回调
 	if ins.Spec.PipelineTask != "" {
 		// 如果状态未变化, 不触发流水线更新
-		if preStatus.Equal(in.Stage) {
+		if !in.ForceTriggerPipeline && preStatus.Equal(in.Stage) {
 			i.log.Debugf("task %s status not changed: %s, skip update pipeline", in.Id, in.Stage)
 			return ins, nil
 		}

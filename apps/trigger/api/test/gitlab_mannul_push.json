@@ -1,5 +1,5 @@
 {
-    "skip_run_pipeline": false,
+    "skip_run_pipeline": true,
     "provider": "GITLAB",
     "gitlab_event": {
         "event_token": "11fdd50a",

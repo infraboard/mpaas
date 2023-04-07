@@ -45,8 +45,12 @@ message UpdateJobTaskStatusRequest {
     string update_token = 2;
     // 强制更新任务状态, 默认已经完成的任务状态不能再修改
     // 用于任务重新运行
-	// @gotags: bson:"force" json:"force"
-    bool force = 3;
+	// @gotags: bson:"force_update_status" json:"force_update_status"
+    bool force_update_status = 3;
+    // 强制触发流水线执行, 默认如果状态未变化不触发流水线执行
+    // 用于任务重新运行
+	// @gotags: bson:"force_trigger_pipeline" json:"force_trigger_pipeline"
+    bool force_trigger_pipeline = 7;
 	// 任务当前状态
 	// @gotags: bson:"stage" json:"stage"
     STAGE stage = 4;

@@ -24,7 +24,7 @@ func TestListJob(t *testing.T) {
 }
 
 func TestGetJob(t *testing.T) {
-	req := meta.NewGetRequest(conf.C.JOB_TASK_ID)
+	req := meta.NewGetRequest(conf.C.MCENTER_BUILD_TASK_ID)
 	req.Namespace = "default"
 	ins, err := impl.GetJob(ctx, req)
 	if err != nil {
