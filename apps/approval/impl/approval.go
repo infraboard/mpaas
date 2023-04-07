@@ -204,12 +204,40 @@ func (i *impl) UpdateApprovalStatus(ctx context.Context, in *approval.UpdateAppr
 	// 5. 如果允许自动执行, 则审核通过后执行
 	if ins.Spec.AutoPublish && ins.Status.Stage.Equal(approval.STAGE_PASSED) {
 		runReq := pipeline.NewRunPipelineRequest(ins.Spec.PipelineId)
-		runReq.RunBy = "@auto"
+		runReq.RunBy = "@" + ins.UUID()
 		pt, err := i.task.RunPipeline(ctx, runReq)
 		if err != nil {
 			return nil, err
 		}
 		i.log.Debugf("auto publish pipeline task: %s", pt.Meta.Id)
 	}
+	return ins, nil
+}
+
+// 删除发布申请
+func (i *impl) DeleteApproval(ctx context.Context, in *approval.DeleteApprovalRequest) (
+	*approval.Approval, error) {
+	ins, err := i.DescribeApproval(ctx, approval.NewDescribeApprovalRequest(in.Id))
+	if err != nil {
+		return nil, err
+	}
+
+	// 未关闭的申请不允许删除
+	if !ins.Status.Stage.Equal(approval.STAGE_CLOSED) {
+		return nil, exception.NewBadRequest("申请单未关闭")
+	}
+
+	// 删除Pipeline
+	_, err = i.pipeline.DeletePipeline(ctx, pipeline.NewDeletePipelineRequest(ins.Spec.PipelineId))
+	if err != nil {
+		return nil, err
+	}
+
+	// 删除Pipeline
+	_, err = i.col.DeleteOne(ctx, bson.M{"_id": in.Id})
+	if err != nil {
+		return nil, exception.NewInternalServerError("delete approval(%s) error, %s", in.Id, err)
+	}
+
 	return ins, nil
 }

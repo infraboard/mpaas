@@ -2,6 +2,7 @@ package approval
 
 import (
 	"encoding/json"
+	"fmt"
 	"time"
 
 	pipeline "github.com/infraboard/mpaas/apps/pipeline"
@@ -60,6 +61,10 @@ func NewDefaultApproval() *Approval {
 		Meta: meta.NewMeta(),
 		Spec: &CreateApprovalRequest{},
 	}
+}
+
+func (i *Approval) UUID() string {
+	return fmt.Sprintf("approval-%s", i.Meta.Id)
 }
 
 func (i *Approval) MarshalJSON() ([]byte, error) {

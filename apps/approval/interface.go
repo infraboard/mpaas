@@ -1,6 +1,7 @@
 package approval
 
 import (
+	context "context"
 	"fmt"
 	"net/http"
 
@@ -14,7 +15,19 @@ const (
 )
 
 type Service interface {
+	// 删除发布申请
+	DeleteApproval(context.Context, *DeleteApprovalRequest) (*Approval, error)
 	RPCServer
+}
+
+func NewDeleteApprovalRequest(id string) *DeleteApprovalRequest {
+	return &DeleteApprovalRequest{
+		Id: id,
+	}
+}
+
+type DeleteApprovalRequest struct {
+	Id string
 }
 
 func NewQueryApprovalRequest() *QueryApprovalRequest {

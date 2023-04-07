@@ -37,18 +37,6 @@ func TestEditApproval(t *testing.T) {
 	t.Log(tools.MustToJson(ins))
 }
 
-func TestUpdateApprovalStatus(t *testing.T) {
-	req := approval.NewUpdateApprovalStatusRequest(conf.C.DEVCLOUD_DEPLOY_APPROVAL_ID)
-	req.Status.Stage = approval.STAGE_PASSED
-	req.UpdateBy = "test"
-	req.Status.AuditComment = "好好干，日子会越来越甜"
-	ins, err := impl.UpdateApprovalStatus(ctx, req)
-	if err != nil {
-		t.Fatal(err)
-	}
-	t.Log(tools.MustToJson(ins))
-}
-
 func TestCreateApproval(t *testing.T) {
 	req := approval.NewCreateApprovalRequest()
 	req.Domain = domain.DEFAULT_DOMAIN
@@ -65,4 +53,37 @@ func TestCreateApproval(t *testing.T) {
 		t.Fatal(err)
 	}
 	t.Log(tools.MustToJson(set))
+}
+
+func TestUpdateApprovalStatus(t *testing.T) {
+	req := approval.NewUpdateApprovalStatusRequest(conf.C.DEVCLOUD_DEPLOY_APPROVAL_ID)
+	req.Status.Stage = approval.STAGE_PASSED
+	req.UpdateBy = "test"
+	req.Status.AuditComment = "好好干，日子会越来越甜"
+	ins, err := impl.UpdateApprovalStatus(ctx, req)
+	if err != nil {
+		t.Fatal(err)
+	}
+	t.Log(tools.MustToJson(ins))
+}
+
+func TestCloseApproval(t *testing.T) {
+	req := approval.NewUpdateApprovalStatusRequest(conf.C.DEVCLOUD_DEPLOY_APPROVAL_ID)
+	req.Status.Stage = approval.STAGE_CLOSED
+	req.UpdateBy = "test"
+	req.Status.CloseComment = "好好干，日子会越来越甜"
+	ins, err := impl.UpdateApprovalStatus(ctx, req)
+	if err != nil {
+		t.Fatal(err)
+	}
+	t.Log(tools.MustToJson(ins))
+}
+
+func TestDeleteApproval(t *testing.T) {
+	req := approval.NewDeleteApprovalRequest(conf.C.DEVCLOUD_DEPLOY_APPROVAL_ID)
+	ins, err := impl.DeleteApproval(ctx, req)
+	if err != nil {
+		t.Fatal(err)
+	}
+	t.Log(tools.MustToJson(ins))
 }
