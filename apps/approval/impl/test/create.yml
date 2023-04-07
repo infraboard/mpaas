@@ -1,25 +1,31 @@
-name: devcloud 部署申请
-description: 部署样例
+name: devcloud产品发布流水线
+description: 分组发布
 stages:
-  - name: group01
+  - name: 后端API
     jobs:
-      - job_name: docker_deploy@default.default
+      - task_name: 容器镜像部署
+        job_name: docker_deploy@default.default
         ignore_failed: false
-        params:
-          version: v0.1
+        run_params:
+          version: v1
           params:
             - name: _DEPLOY_ID
               value: mcenter_v1
+            - name: IMAGE_REPOSITORY
+              value: registry.cn-hangzhou.aliyuncs.com/infraboard/mcenter     
             - name: APP_VERSION
               value: v20230407-master-20658a8f
-  - name: group02
+  - name: 前端UI
     jobs:
-      - job_name: docker_deploy@default.default
+      - task_name: 容器镜像部署
+        job_name: docker_deploy@default.default
         ignore_failed: false
-        params:
-          version: v0.1
+        run_params:
+          version: v1
           params:
             - name: _DEPLOY_ID
               value: mcenter_v1
+            - name: IMAGE_REPOSITORY
+              value: registry.cn-hangzhou.aliyuncs.com/infraboard/mcenter 
             - name: APP_VERSION
               value: v20230407-master-20658a8f

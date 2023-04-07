@@ -102,6 +102,13 @@ func TestUpdateDeployJob(t *testing.T) {
 	})
 	v1.Add(&job.RunParam{
 		Required:    true,
+		Name:        build.SYSTEM_VARIABLE_IMAGE_REPOSITORY,
+		Desc:        "应用部署的镜像仓库地址",
+		Example:     "registry.cn-hangzhou.aliyuncs.com/infraboard/mcenter",
+		SearchLabel: true,
+	})
+	v1.Add(&job.RunParam{
+		Required:    true,
 		Name:        build.SYSTEM_VARIABLE_APP_VERSION,
 		Desc:        "应用部署时的版本",
 		Example:     "v0.0.1",
