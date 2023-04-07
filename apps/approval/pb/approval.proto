@@ -33,30 +33,36 @@ message Approval  {
 
 // 创建发布申请
 message CreateApprovalRequest {
+    // 发布号
+    // @gotags: bson:"domain" json:"domain" validate:"required"
+    string domain = 1;
+    // 发布号
+    // @gotags: bson:"namespace" json:"namespace" validate:"required"
+    string namespace = 2;
     // 是否是模版
     // @gotags: bson:"is_template" json:"is_template"
-    bool is_template = 1;
+    bool is_template = 3;
     // 申请人列表, 申请通过后, 由申请人执行发布
     // @gotags: bson:"proposers" json:"proposers"
-    repeated string proposers = 2;
+    repeated string proposers = 4;
     // 审核人列表
     // @gotags: bson:"auditors" json:"auditors"
-    repeated string auditors = 3;
+    repeated string auditors = 5;
     // 发布号
     // @gotags: bson:"version" json:"version" validate:"required"
-    string version = 4;
+    string version = 6;
     // 发布说明
     // @gotags: bson:"describe" json:"describe" validate:"required"
-    string describe = 5;
-    // 审核通过后, 是否自动执行发布
+    string describe = 7;
+    // 审核通过后, 是否自动执行发布, 默认审核通过后手动发布
     // @gotags: bson:"auto_publish" json:"auto_publish"
-    bool auto_publish = 6;
+    bool auto_publish = 8;
     // 流水线配置
     // @gotags: bson:"-" json:"pipeline_spec,omitempty"
-    pipeline.CreatePipelineRequest pipeline_spec = 7;
+    pipeline.CreatePipelineRequest pipeline_spec = 9;
     // 流水线Id
     // @gotags: bson:"pipeline_id" json:"pipeline_id"
-    string pipeline_id = 8;
+    string pipeline_id = 10;
 	// 申请单标签
 	// @gotags: bson:"labels" json:"labels"
 	map<string, string> labels = 15;

@@ -1,7 +1,11 @@
 package impl
 
 import (
+	"context"
+
 	"go.mongodb.org/mongo-driver/mongo"
+	"go.mongodb.org/mongo-driver/mongo/options"
+	"go.mongodb.org/mongo-driver/x/bsonx"
 
 	"github.com/infraboard/mcenter/client/rpc"
 	"github.com/infraboard/mcube/app"
@@ -37,6 +41,25 @@ func (s *impl) Config() error {
 	}
 
 	s.col = db.Collection(s.Name())
+	indexs := []mongo.IndexModel{
+		{
+			Keys: bsonx.Doc{{Key: "create_at", Value: bsonx.Int32(-1)}},
+		},
+		{
+			Keys: bsonx.Doc{
+				{Key: "domain", Value: bsonx.Int32(-1)},
+				{Key: "namespace", Value: bsonx.Int32(-1)},
+				{Key: "version", Value: bsonx.Int32(-1)},
+			},
+			Options: options.Index().SetUnique(true),
+		},
+	}
+
+	_, err = s.col.Indexes().CreateMany(context.Background(), indexs)
+	if err != nil {
+		return err
+	}
+
 	s.log = zap.L().Named(s.Name())
 	s.pipeline = app.GetInternalApp(pipeline.AppName).(pipeline.Service)
 	s.task = app.GetInternalApp(task.AppName).(task.Service)

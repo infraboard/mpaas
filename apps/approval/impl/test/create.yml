@@ -1,29 +1,25 @@
-name: pipeline_example
-description: example
+name: devcloud 部署申请
+description: 部署样例
 stages:
-  - name: stage_01
+  - name: group01
     jobs:
-      - job_name: docker_build@default.default
+      - job_name: docker_deploy@default.default
         ignore_failed: false
         params:
           version: v0.1
           params:
-            - name: cluster_id
-              value: k8s-test
-              desc: "k8s集群Id"
-            - name: DB_PASS
-              value: test
-              desc: "job运行时的参数(大写开头的环境变量)"
-  - name: stage_02
+            - name: _DEPLOY_ID
+              value: mcenter_v1
+            - name: APP_VERSION
+              value: v20230407-master-20658a8f
+  - name: group02
     jobs:
-      - job_name: docker_build@default.default
+      - job_name: docker_deploy@default.default
         ignore_failed: false
         params:
           version: v0.1
           params:
-            - name: cluster_id
-              value: k8s-test
-              desc: "k8s集群Id"
-            - name: DB_PASS
-              value: test
-              desc: "job运行时的参数(大写开头的环境变量)"
+            - name: _DEPLOY_ID
+              value: mcenter_v1
+            - name: APP_VERSION
+              value: v20230407-master-20658a8f
