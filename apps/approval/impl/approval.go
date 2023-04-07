@@ -39,6 +39,7 @@ func (i *impl) CreateApproval(ctx context.Context, in *approval.CreateApprovalRe
 		ins.Spec.PipelineId = p.Meta.Id
 	}
 
+	// 保存申请单
 	if _, err := i.col.InsertOne(ctx, ins); err != nil {
 		return nil, exception.NewInternalServerError("inserted a approval document error, %s", err)
 	}
@@ -105,6 +106,12 @@ func (i *impl) DescribeApproval(ctx context.Context, in *approval.DescribeApprov
 
 		return nil, exception.NewInternalServerError("find approval %s error, %s", in.Id, err)
 	}
+
+	p, err := i.pipeline.DescribePipeline(ctx, pipeline.NewDescribePipelineRequest(ins.Spec.PipelineId))
+	if err != nil {
+		return nil, err
+	}
+	ins.Pipeline = p
 
 	return ins, nil
 }
@@ -178,8 +185,8 @@ func (i *impl) UpdateApprovalStatus(ctx context.Context, in *approval.UpdateAppr
 	}
 
 	// 2. 修改的状态不能回退, 比如你不能把发布中的状态 修改为审核中
-	if in.Status.Stage <= ins.Status.Stage {
-		return nil, exception.NewBadRequest("不能回退状态或者保持不变")
+	if in.Status.Stage < ins.Status.Stage {
+		return nil, exception.NewBadRequest("不能回退状态, 当前状态: %s", ins.Status.Stage)
 	}
 
 	// 3. 只有审核人能修改审核状态
@@ -196,7 +203,9 @@ func (i *impl) UpdateApprovalStatus(ctx context.Context, in *approval.UpdateAppr
 
 	// 5. 如果允许自动执行, 则审核通过后执行
 	if ins.Spec.AutoPublish && ins.Status.Stage.Equal(approval.STAGE_PASSED) {
-		pt, err := i.task.RunPipeline(ctx, pipeline.NewRunPipelineRequest(ins.Spec.PipelineId))
+		runReq := pipeline.NewRunPipelineRequest(ins.Spec.PipelineId)
+		runReq.RunBy = "@auto"
+		pt, err := i.task.RunPipeline(ctx, runReq)
 		if err != nil {
 			return nil, err
 		}

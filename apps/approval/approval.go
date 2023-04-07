@@ -68,11 +68,11 @@ func (i *Approval) MarshalJSON() ([]byte, error) {
 		*CreateApprovalRequest
 		*Status
 		DeployPipeline *pipeline.Pipeline
-	}{i.Meta, i.Spec, i.Status, i.DeployPipeline})
+	}{i.Meta, i.Spec, i.Status, i.Pipeline})
 }
 
 func (s *Status) IsAllowPublish() bool {
-	if s.Stage > STAGE_PASSED && s.Stage < STAGE_CLOSED {
+	if s.Stage >= STAGE_PASSED && s.Stage < STAGE_CLOSED {
 		return true
 	}
 

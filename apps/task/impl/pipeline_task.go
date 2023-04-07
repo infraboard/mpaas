@@ -16,7 +16,7 @@ import (
 // 执行Pipeline
 func (i *impl) RunPipeline(ctx context.Context, in *pipeline.RunPipelineRequest) (
 	*task.PipelineTask, error) {
-	// 检查请求
+	// 检查Pipeline请求参数
 	if err := in.Validate(); err != nil {
 		return nil, exception.NewBadRequest(err.Error())
 	}
@@ -230,6 +230,7 @@ func (i *impl) updateCallback(ctx context.Context, in *task.PipelineTask) {
 	approvalId := in.Pipeline.Spec.ApprovalId
 	if approvalId != "" && in.IsComplete() {
 		req := approval.NewUpdateApprovalStatusRequest(approvalId)
+		req.UpdateBy = "@" + in.UUID()
 		switch in.Status.Stage {
 		case task.STAGE_FAILED:
 			req.Status.Update(approval.STAGE_FAILED)

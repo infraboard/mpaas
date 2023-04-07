@@ -2,6 +2,7 @@ package task
 
 import (
 	"encoding/json"
+	"fmt"
 	"time"
 
 	"github.com/infraboard/mcube/exception"
@@ -169,6 +170,11 @@ func (p *PipelineTask) GetStage(name string) *StageStatus {
 
 func (p *PipelineTask) GetJobTask(id string) *JobTask {
 	return p.Status.GetJobTask(id)
+}
+
+// Pipeline执行成功
+func (p *PipelineTask) UUID() string {
+	return fmt.Sprintf("jobtask-%s", p.Meta.Id)
 }
 
 // Pipeline执行成功

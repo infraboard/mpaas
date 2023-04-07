@@ -14,7 +14,7 @@ stages:
             - name: IMAGE_REPOSITORY
               value: registry.cn-hangzhou.aliyuncs.com/infraboard/mcenter     
             - name: APP_VERSION
-              value: v20230407-master-20658a8f
+              value: v20230404-master-20658a8f
   - name: 前端UI
     jobs:
       - task_name: 容器镜像部署
