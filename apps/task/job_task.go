@@ -111,14 +111,19 @@ func (p *JobTask) GetVersionedRunParam() (*job.VersionedRunParam, error) {
 func (p *JobTask) SystemRunParam() (items []*job.RunParam) {
 	items = append(items,
 		job.NewRunParam(
-			job.SYSTEM_VARIABLE_PIPELINE_TASK_ID,
-			p.Spec.PipelineTask,
-		).SetReadOnly(true).SetRequired(true),
-		job.NewRunParam(
 			job.SYSTEM_VARIABLE_JOB_TASK_ID,
 			p.Spec.TaskId,
 		).SetReadOnly(true).SetRequired(true),
 	)
+
+	if p.Spec.PipelineTask != "" {
+		items = append(items,
+			job.NewRunParam(
+				job.SYSTEM_VARIABLE_PIPELINE_TASK_ID,
+				p.Spec.PipelineTask,
+			).SetReadOnly(true).SetRequired(true),
+		)
+	}
 	return
 }
 
