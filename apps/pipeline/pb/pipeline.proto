@@ -155,6 +155,9 @@ message AttentionUser {
 	// 那些状态下触发通知, 默认任务执行成功后触发
 	// @gotags: bson:"events" json:"events"
 	repeated string events = 3;
+	// 备注信息, 比如发布任务执行成功, 可以备注: 请及时测试
+	// @gotags: bson:"comment" json:"comment"
+    string comment = 4;
 }
 
 message RunPipelineRequest {
