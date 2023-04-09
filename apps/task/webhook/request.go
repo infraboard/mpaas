@@ -155,9 +155,9 @@ func (r *request) NewFeishuMessage() *feishu.Message {
 
 	msg := &feishu.NotifyMessage{
 		Title:    s.ShowTitle(),
-		Content:  s.String(),
+		Content:  s.MarkdownContent(),
 		RobotURL: r.hook.Url,
-		Note:     []string{"💡 该消息由即刻微服务开发平台提供"},
+		Note:     []string{"💡 该消息由即刻云微服务开发平台提供"},
 		Color:    color,
 	}
 	return feishu.NewCardMessage(msg)

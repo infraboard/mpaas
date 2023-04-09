@@ -4,6 +4,7 @@ import (
 	"context"
 	"testing"
 
+	"github.com/infraboard/mpaas/apps/job"
 	"github.com/infraboard/mpaas/apps/pipeline"
 	"github.com/infraboard/mpaas/apps/task"
 	"github.com/infraboard/mpaas/test/conf"
@@ -47,7 +48,11 @@ func testPipelineWebHook(url string) []*pipeline.WebHook {
 
 func testPipelineStep() *task.JobTask {
 	t := task.NewJobTask(pipeline.NewRunJobRequest("test"))
+	t.Spec.RunParams.Add(
+		job.NewRunParam("ENV1", "VALUE1"),
+	)
 	t.Status.MarkedSuccess()
+
 	return t
 }
 

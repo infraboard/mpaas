@@ -1,8 +1,10 @@
 package task
 
 import (
+	"bytes"
 	"encoding/json"
 	"fmt"
+	"html/template"
 	"strings"
 	"time"
 	"unicode"
@@ -80,12 +82,40 @@ func NewJobTask(req *pipeline.RunJobRequest) *JobTask {
 	return t
 }
 
+var (
+	// 关于Go模版语法可以参考: https://www.tizi365.com/archives/85.html
+	JOB_TASK_MARKDOWN_TEMPLATE = `
+**开始时间: **
+{{ .Status.StartAtFormat }}
+**结束时间: **
+{{ .Status.EndAtAtFormat }}
+**任务参数: **
+{{ range .Spec.RunParams.Params -}}
+▫ *{{.Name}}: * {{.Value}}
+{{end}}
+`
+)
+
+func (p *JobTask) MarkdownContent() string {
+	buf := bytes.NewBuffer([]byte{})
+	t := template.New("job task")
+	tmpl, err := t.Parse(JOB_TASK_MARKDOWN_TEMPLATE)
+	if err != nil {
+		return err.Error()
+	}
+
+	err = tmpl.Execute(buf, p)
+	if err != nil {
+		return err.Error()
+	}
+	return buf.String()
+}
+
 func (p *JobTask) BuildSearchLabel() {
 	if p.Job != nil && p.Job.Spec != nil {
 		if p.Job.Spec.Labels == nil {
 			p.Job.Spec.Labels = map[string]string{}
 		}
-
 		for k, v := range p.Job.Spec.Labels {
 			p.Spec.Labels[k] = v
 		}
@@ -198,6 +228,16 @@ func (t *JobTaskStatus) MarkedRunning() {
 func (t *JobTaskStatus) MarkedSuccess() {
 	t.Stage = STAGE_SUCCEEDED
 	t.EndAt = time.Now().Unix()
+}
+
+func (t *JobTaskStatus) StartAtFormat() string {
+	start := time.Unix(t.StartAt, 0)
+	return start.Format("2006-01-02 03:04:05")
+}
+
+func (t *JobTaskStatus) EndAtAtFormat() string {
+	start := time.Unix(t.EndAt, 0)
+	return start.Format("2006-01-02 03:04:05")
 }
 
 func (t *JobTaskStatus) IsComplete() bool {
