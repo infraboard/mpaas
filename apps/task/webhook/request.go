@@ -142,12 +142,23 @@ func (r *request) BotType() string {
 
 func (r *request) NewFeishuMessage() *feishu.Message {
 	s := r.task
+
+	color := feishu.COLOR_PURPLE
+	switch s.Status.Stage {
+	case task.STAGE_FAILED:
+		color = feishu.COLOR_RED
+	case task.STAGE_SUCCEEDED:
+		color = feishu.COLOR_GREEN
+	case task.STAGE_CANCELED, task.STAGE_SKIPPED:
+		color = feishu.COLOR_GREY
+	}
+
 	msg := &feishu.NotifyMessage{
 		Title:    s.ShowTitle(),
 		Content:  s.String(),
 		RobotURL: r.hook.Url,
-		Note:     []string{"💡 该消息由极乐研发云提供"},
-		Color:    feishu.COLOR_PURPLE,
+		Note:     []string{"💡 该消息由即刻微服务开发平台提供"},
+		Color:    color,
 	}
 	return feishu.NewCardMessage(msg)
 }

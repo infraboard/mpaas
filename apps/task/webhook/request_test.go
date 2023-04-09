@@ -47,6 +47,7 @@ func testPipelineWebHook(url string) []*pipeline.WebHook {
 
 func testPipelineStep() *task.JobTask {
 	t := task.NewJobTask(pipeline.NewRunJobRequest("test"))
+	t.Status.MarkedSuccess()
 	return t
 }
 

@@ -195,6 +195,9 @@ message RunParam {
 	// 是否加入到过滤标签中, 方便过滤搜索, 默认不会加入到搜索标签中
 	// @gotags: bson:"search_label" json:"search_label"
 	bool search_label = 12;
+	// 是否是敏感信息, 比如密码之类的, 如果是，显示的时候需要做脱敏处理
+	// @gotags: bson:"is_sensitive" json:"is_sensitive"
+	bool is_sensitive = 13;
 
 	// 扩展属性
 	// @gotags: bson:"extensions" json:"extensions"
