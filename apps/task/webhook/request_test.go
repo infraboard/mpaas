@@ -2,47 +2,38 @@ package webhook_test
 
 import (
 	"context"
-	"os"
 	"testing"
 
 	"github.com/infraboard/mpaas/apps/pipeline"
 	"github.com/infraboard/mpaas/apps/task"
+	"github.com/infraboard/mpaas/test/conf"
+	"github.com/infraboard/mpaas/test/tools"
 
-	"github.com/infraboard/mcube/logger/zap"
 	"github.com/infraboard/mpaas/apps/task/webhook"
 )
 
+var (
+	ctx    = context.Background()
+	sender = webhook.NewWebHook()
+	jt     = testPipelineStep()
+)
+
 func TestFeishuWebHook(t *testing.T) {
-	hooks := testPipelineWebHook(os.Getenv("FEISHU_BOT_URL"))
-	sender := webhook.NewWebHook()
-	sender.Send(
-		context.Background(),
-		hooks,
-		testPipelineStep(),
-	)
-	t.Log(hooks[0])
+	hooks := testPipelineWebHook(conf.C.FEISHU_BOT_URL)
+	sender.Send(ctx, hooks, jt)
+	t.Log(jt.ToJson())
 }
 
 func TestDingDingWebHook(t *testing.T) {
-	hooks := testPipelineWebHook(os.Getenv("DINGDING_BOT_URL"))
-	sender := webhook.NewWebHook()
-	sender.Send(
-		context.Background(),
-		hooks,
-		testPipelineStep(),
-	)
-	t.Log(hooks[0])
+	hooks := testPipelineWebHook(conf.C.DINGDING_BOT_URL)
+	sender.Send(ctx, hooks, jt)
+	t.Log(jt)
 }
 
 func TestWechatWebHook(t *testing.T) {
-	hooks := testPipelineWebHook(os.Getenv("WECHAT_BOT_URL"))
-	sender := webhook.NewWebHook()
-	sender.Send(
-		context.Background(),
-		hooks,
-		testPipelineStep(),
-	)
-	t.Log(hooks[0])
+	hooks := testPipelineWebHook(conf.C.WECHAT_BOT_URL)
+	sender.Send(ctx, hooks, jt)
+	t.Log(jt)
 }
 
 func testPipelineWebHook(url string) []*pipeline.WebHook {
@@ -60,5 +51,5 @@ func testPipelineStep() *task.JobTask {
 }
 
 func init() {
-	zap.DevelopmentSetup()
+	tools.DevelopmentSetup()
 }

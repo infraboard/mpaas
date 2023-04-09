@@ -251,6 +251,8 @@ func (i *impl) JobTaskStatusChanged(ctx context.Context, in *task.JobTask) {
 	// WebHook回调
 	i.hook.Send(ctx, in.Spec.Webhooks, in)
 
+	// 关注人通知回调
+	// in.Spec.AttentionUsers
 }
 
 // 任务执行详情

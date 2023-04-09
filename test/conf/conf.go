@@ -5,13 +5,14 @@ func newConfig() *Config {
 }
 
 type Config struct {
+	FEISHU_BOT_URL   string `env:"FEISHU_BOT_URL"`
+	DINGDING_BOT_URL string `env:"DINGDING_BOT_URL"`
+	WECHAT_BOT_URL   string `env:"WECHAT_BOT_URL"`
+
 	DEPLOY_ID        string `env:"DEPLOY_ID"`
 	BUILD_ID         string `env:"BUILD_ID"`
 	MCENTER_BUILD_ID string `env:"MCENTER_BUILD_ID"`
 	SERVICE_ID       string `env:"SERVICE_ID"`
-	FEISHU_BOT_URL   string `env:"FEISHU_BOT_URL"`
-	DINGDING_BOT_URL string `env:"DINGDING_BOT_URL"`
-	WECHAT_BOT_URL   string `env:"WECHAT_BOT_URL"`
 	PIPELINE_TASK_ID string `env:"PIPELINE_TASK_ID"`
 
 	DEPLOY_JOB_ID     string `env:"DEPLOY_JOB_ID"`

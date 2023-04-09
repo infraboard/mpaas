@@ -2,6 +2,7 @@ package webhook
 
 import (
 	"context"
+	"sync"
 
 	"github.com/infraboard/mcube/logger"
 	"github.com/infraboard/mcube/logger/zap"
@@ -34,8 +35,10 @@ func (h *WebHook) Send(ctx context.Context, hooks []*pipeline.WebHook, t *task.J
 	}
 
 	h.log.Debugf("start send task[%s] webhook, total %d", t.Spec.JobName, len(hooks))
+	wg := &sync.WaitGroup{}
 	for i := range hooks {
-		req := newRequest(hooks[i], t)
-		go req.Push()
+		req := newRequest(hooks[i], t, wg)
+		go req.Push(ctx)
 	}
+	wg.Wait()
 }

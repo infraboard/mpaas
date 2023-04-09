@@ -9,6 +9,7 @@ import (
 
 	"github.com/infraboard/mpaas/apps/job"
 	pipeline "github.com/infraboard/mpaas/apps/pipeline"
+	"github.com/infraboard/mpaas/common/format"
 )
 
 func NewJobTaskSet() *JobTaskSet {
@@ -155,6 +156,10 @@ func (s *JobTask) HasJobSpec() bool {
 func (t *JobTask) Update(job *job.Job, status *JobTaskStatus) {
 	t.Job = job
 	t.Status = status
+}
+
+func (t *JobTask) ToJson() string {
+	return format.Prettify(t)
 }
 
 func (t *JobTask) ValidateToken(token string) error {

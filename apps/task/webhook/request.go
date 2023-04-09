@@ -2,10 +2,12 @@ package webhook
 
 import (
 	"bytes"
+	"context"
 	"encoding/json"
 	"io"
 	"net/http"
 	"strings"
+	"sync"
 	"time"
 
 	"github.com/infraboard/mpaas/apps/pipeline"
@@ -31,15 +33,17 @@ var (
 	}
 )
 
-func newRequest(hook *pipeline.WebHook, t *task.JobTask) *request {
+func newRequest(hook *pipeline.WebHook, t *task.JobTask, wg *sync.WaitGroup) *request {
 	// 因为AddWebhookStatus是非并非安全的， 因此不能放到Push(Push 是并发的)里面跑
 	status := task.NewCallbackStatus(hook.ShowName())
 	t.Status.AddWebhookStatus(status)
+	wg.Add(1)
 
 	return &request{
 		hook:   hook,
 		task:   t,
 		status: status,
+		wg:     wg,
 	}
 }
 
@@ -49,9 +53,13 @@ type request struct {
 	matchRes string
 
 	status *task.CallbackStatus
+	wg     *sync.WaitGroup
 }
 
-func (r *request) Push() {
+func (r *request) Push(ctx context.Context) {
+	defer r.wg.Done()
+	r.status.StartAt = time.Now().UnixMilli()
+
 	// 准备请求,适配主流机器人
 	var messageObj interface{}
 	switch r.BotType() {
@@ -74,7 +82,7 @@ func (r *request) Push() {
 		return
 	}
 
-	req, err := http.NewRequest("POST", r.hook.Url, bytes.NewReader(body))
+	req, err := http.NewRequestWithContext(ctx, "POST", r.hook.Url, bytes.NewReader(body))
 	if err != nil {
 		r.status.SendFailed("new post request error, %s", err)
 		return
