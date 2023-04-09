@@ -24,11 +24,14 @@ func TestQueryJobTask(t *testing.T) {
 
 func TestRunBuildJob(t *testing.T) {
 	req := pipeline.NewRunJobRequest("docker_build@default.default")
+	// 添加飞书通知的Webhook
+	req.AddWebhook(pipeline.NewWebHook(conf.C.FEISHU_BOT_URL))
+	// 添加参数
 	version := job.NewVersionedRunParam("v1")
 	version.Params = job.NewRunParamWithKVPaire(
 		"GIT_SSH_URL", "git@github.com:infraboard/mcenter.git",
 		"GIT_BRANCH", "master",
-		"GIT_COMMIT_ID", "57612b40df7fc9619ddc537e3dc117ab335ed294",
+		"GIT_COMMIT_ID", "c134d29324dc559a0d5c6191e79584b8529eef65",
 		build.SYSTEM_VARIABLE_IMAGE_REPOSITORY, "registry.cn-hangzhou.aliyuncs.com/infraboard/mcenter",
 		build.SYSTEM_VARIABLE_APP_VERSION, "v0.0.5",
 	)

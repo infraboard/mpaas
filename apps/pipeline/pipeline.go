@@ -134,6 +134,10 @@ func (r *RunJobRequest) Enabled() bool {
 	return !r.SkipRun
 }
 
+func (r *RunJobRequest) AddWebhook(items ...*WebHook) {
+	r.Webhooks = append(r.Webhooks, items...)
+}
+
 func (r *RunJobRequest) GetRunParamsVersion() string {
 	if r.RunParams != nil {
 		return r.RunParams.Version
@@ -222,4 +226,12 @@ func (req *RunPipelineRequest) Validate() error {
 
 func (req *RunPipelineRequest) ToJson() string {
 	return format.Prettify(req)
+}
+
+func NewWebHook(url string) *WebHook {
+	return &WebHook{
+		Url:    url,
+		Header: map[string]string{},
+		Events: []string{},
+	}
 }

@@ -91,7 +91,7 @@ var (
 {{ .Status.EndAtAtFormat }}
 **任务参数: **
 {{ range .Spec.RunParams.Params -}}
-▫ *{{.Name}}: * {{.Value}}
+▫ *{{.Name}}:  {{.Value}}*
 {{end}}
 `
 )
