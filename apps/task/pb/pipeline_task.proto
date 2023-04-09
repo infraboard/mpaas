@@ -50,6 +50,9 @@ message PipelineTaskStatus {
 	// 任务状态详细描述, 用于Debug
 	// @gotags: bson:"stage_status" json:"stage_status"
 	repeated StageStatus stage_status = 6;
+	// Pipline 关注人通知状态
+	// @gotags: bson:"notify_status" json:"notify_status"
+	repeated CallbackStatus notify_status = 11;
 }
 
 message StageStatus {

@@ -5,6 +5,7 @@ option go_package = "github.com/infraboard/mpaas/apps/pipeline";
 
 import "common/meta/meta.proto";
 import "apps/job/pb/job.proto";
+import "github.com/infraboard/mcenter/apps/notify/pb/notify.proto";
 
 message PipelineSet {
 	// 总数量
@@ -59,6 +60,9 @@ message CreatePipelineRequest {
 	// 具体编排阶段
 	// @gotags: bson:"stages" json:"stages"
 	repeated Stage stages = 12;
+	// Pipeline的关注人, 关注后会及时把任务运行状态通知给他们
+	// @gotags: bson:"attention_users" json:"attention_users"
+	repeated AttentionUser attention_users = 11;
 	// 标签
 	// @gotags: bson:"labels" json:"labels"
 	map<string, string> labels = 15;
@@ -129,12 +133,28 @@ message RunJobRequest {
 	// 试运行
 	// @gotags: bson:"dry_run" json:"dry_run"
 	bool dry_run = 12;
-	// WebHook配置, 及时把job执行状态推送给外部, 比如各种机器人
+	// WebHook配置, 及时把job执行状态推送给外部, 常用于外部系统的集成，比如飞书机器人
 	// @gotags: bson:"webhooks" json:"webhooks"
 	repeated WebHook webhooks = 13;
+	// 任务的关注人, 关注后会及时把任务运行状态通知给他们
+	// @gotags: bson:"attention_users" json:"attention_users"
+	repeated AttentionUser attention_users = 17;
     // 任务标签
     // @gotags: bson:"labels" json:"labels"
     map<string,string> labels = 25;
+}
+
+// 关注人
+message AttentionUser {
+	// 关注的人
+	// @gotags: bson:"user_name" json:"user_name" validate:"required"
+    string user_name = 1;
+	// 通知方式
+	// @gotags: bson:"notify_type" json:"notify_type"
+	repeated infraboard.mcenter.notify.NOTIFY_TYPE notify_types = 2;
+	// 那些状态下触发通知, 默认任务执行成功后触发
+	// @gotags: bson:"events" json:"events"
+	repeated string events = 3;
 }
 
 message RunPipelineRequest {
@@ -171,22 +191,4 @@ message WebHook {
 	// 简单的描述信息
 	// @gotags: bson:"description" json:"description"
 	string description = 4;
-	// 推送结果
-	// @gotags: bson:"status" json:"status"
-	WebHookStatus status = 5;
-}
-
-message WebHookStatus {
-	// 开始时间
-	// @gotags: bson:"start_at" json:"start_at"
-	int64 start_at = 1;
-	// 耗时多久，单位毫秒
-	// @gotags: bson:"cost" json:"cost"
-	int64 cost = 2;
-	// 是否推送成功
-	// @gotags: bson:"success" json:"success"
-	bool success = 3;
-	// 异常时的错误信息
-	// @gotags: bson:"message" json:"message"
-	string message = 4;
 }

@@ -79,6 +79,14 @@ func NewJobTask(req *pipeline.RunJobRequest) *JobTask {
 	return t
 }
 
+func (p *JobTask) AddWebhookStatus(items ...*CallbackStatus) {
+	p.Status.WebhookStatus = append(p.Status.WebhookStatus, items...)
+}
+
+func (p *JobTask) AddNotifyStatus(items ...*CallbackStatus) {
+	p.Status.NotifyStatus = append(p.Status.NotifyStatus, items...)
+}
+
 func (p *JobTask) BuildSearchLabel() {
 	if p.Job != nil && p.Job.Spec != nil {
 		if p.Job.Spec.Labels == nil {

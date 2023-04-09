@@ -90,6 +90,33 @@ message JobTaskStatus {
 	// 任务事件
 	// @gotags: bson:"events" json:"events"
 	repeated Event events = 9;
+	// 事件回调状态
+	// @gotags: bson:"webhook_status" json:"webhook_status"
+	repeated CallbackStatus webhook_status = 10;
+	// Jot Task 关注人通知状态
+	// @gotags: bson:"notify_status" json:"notify_status"
+	repeated CallbackStatus notify_status = 11;
+}
+
+message CallbackStatus {
+	// POST URL
+	// @gotags: bson:"description" json:"description" validate:"required"
+	string description = 5;
+	// 开始时间
+	// @gotags: bson:"start_at" json:"start_at"
+	int64 start_at = 1;
+	// 耗时多久，单位毫秒
+	// @gotags: bson:"cost" json:"cost"
+	int64 cost = 2;
+	// 是否推送成功
+	// @gotags: bson:"success" json:"success"
+	bool success = 3;
+	// 异常时的错误信息
+	// @gotags: bson:"message" json:"message"
+	string message = 4;
+	// 异常时的详细信息描述
+	// @gotags: bson:"detail" json:"detail"
+	string detail = 6;
 }
 
 enum EVENT_LEVEL {

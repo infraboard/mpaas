@@ -189,28 +189,6 @@ func NewQueryPipelineRequest() *QueryPipelineRequest {
 	}
 }
 
-func (h *WebHook) StartSend() {
-	if h.Status == nil {
-		h.Status = &WebHookStatus{}
-	}
-	h.Status.StartAt = time.Now().UnixMilli()
-}
-
-func (h *WebHook) SendFailed(format string, a ...interface{}) {
-	if h.Status.StartAt != 0 {
-		h.Status.Cost = time.Now().UnixMilli() - h.Status.StartAt
-	}
-	h.Status.Message = fmt.Sprintf(format, a...)
-}
-
-func (h *WebHook) Success(message string) {
-	if h.Status.StartAt != 0 {
-		h.Status.Cost = time.Now().UnixMilli() - h.Status.StartAt
-	}
-	h.Status.Success = true
-	h.Status.Message = message
-}
-
 func (h *WebHook) IsMatch(t string) bool {
 	for _, e := range h.Events {
 		if e == t {
@@ -219,6 +197,11 @@ func (h *WebHook) IsMatch(t string) bool {
 	}
 
 	return false
+}
+
+// 显示名称
+func (h *WebHook) ShowName() string {
+	return fmt.Sprintf("%s[%s]", h.Description, h.Url)
 }
 
 func NewRunPipelineRequest(pipelineId string) *RunPipelineRequest {

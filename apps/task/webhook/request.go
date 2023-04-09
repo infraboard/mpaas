@@ -45,7 +45,8 @@ type request struct {
 }
 
 func (r *request) Push() {
-	r.hook.StartSend()
+	status := task.NewCallbackStatus(r.hook.ShowName())
+	r.task.AddWebhookStatus(status)
 
 	// 准备请求,适配主流机器人
 	var messageObj interface{}
@@ -65,13 +66,13 @@ func (r *request) Push() {
 
 	body, err := json.Marshal(messageObj)
 	if err != nil {
-		r.hook.SendFailed("marshal step to json error, %s", err)
+		status.SendFailed("marshal step to json error, %s", err)
 		return
 	}
 
 	req, err := http.NewRequest("POST", r.hook.Url, bytes.NewReader(body))
 	if err != nil {
-		r.hook.SendFailed("new post request error, %s", err)
+		status.SendFailed("new post request error, %s", err)
 		return
 	}
 
@@ -83,7 +84,7 @@ func (r *request) Push() {
 	// 发起请求
 	resp, err := client.Do(req)
 	if err != nil {
-		r.hook.SendFailed("send request error, %s", err)
+		status.SendFailed("send request error, %s", err)
 		return
 	}
 	defer resp.Body.Close()
@@ -91,26 +92,26 @@ func (r *request) Push() {
 	// 读取body
 	bytesB, err := io.ReadAll(resp.Body)
 	if err != nil {
-		r.hook.SendFailed("read response error, %s", err)
+		status.SendFailed("read response error, %s", err)
 		return
 	}
 	respString := string(bytesB)
 
 	if (resp.StatusCode / 100) != 2 {
-		r.hook.SendFailed("status code[%d] is not 200, response %s", resp.StatusCode, respString)
+		status.SendFailed("status code[%d] is not 200, response %s", resp.StatusCode, respString)
 		return
 	}
 
 	// 通过返回匹配字符串来判断通知是否成功
 	if r.matchRes != "" {
 		if !strings.Contains(respString, r.matchRes) {
-			r.hook.SendFailed("reponse not match string %s, response: %s",
+			status.SendFailed("reponse not match string %s, response: %s",
 				r.matchRes, respString)
 			return
 		}
 	}
 
-	r.hook.Success(respString)
+	status.SendSuccess(respString)
 }
 
 func (r *request) BotType() string {
