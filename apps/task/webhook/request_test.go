@@ -7,52 +7,41 @@ import (
 
 	"github.com/infraboard/mpaas/apps/pipeline"
 	"github.com/infraboard/mpaas/apps/task"
-	"github.com/stretchr/testify/assert"
 
 	"github.com/infraboard/mcube/logger/zap"
 	"github.com/infraboard/mpaas/apps/task/webhook"
 )
 
 func TestFeishuWebHook(t *testing.T) {
-	should := assert.New(t)
-
 	hooks := testPipelineWebHook(os.Getenv("FEISHU_BOT_URL"))
 	sender := webhook.NewWebHook()
-	err := sender.Send(
+	sender.Send(
 		context.Background(),
 		hooks,
 		testPipelineStep(),
 	)
-	should.NoError(err)
 	t.Log(hooks[0])
 }
 
 func TestDingDingWebHook(t *testing.T) {
-	should := assert.New(t)
-
 	hooks := testPipelineWebHook(os.Getenv("DINGDING_BOT_URL"))
 	sender := webhook.NewWebHook()
-	err := sender.Send(
+	sender.Send(
 		context.Background(),
 		hooks,
 		testPipelineStep(),
 	)
-	should.NoError(err)
-
 	t.Log(hooks[0])
 }
 
 func TestWechatWebHook(t *testing.T) {
-	should := assert.New(t)
-
 	hooks := testPipelineWebHook(os.Getenv("WECHAT_BOT_URL"))
 	sender := webhook.NewWebHook()
-	err := sender.Send(
+	sender.Send(
 		context.Background(),
 		hooks,
 		testPipelineStep(),
 	)
-	should.NoError(err)
 	t.Log(hooks[0])
 }
 

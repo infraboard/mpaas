@@ -18,6 +18,7 @@ import (
 	// 加载并初始化Runner
 	"github.com/infraboard/mpaas/apps/task/runner"
 	_ "github.com/infraboard/mpaas/apps/task/runner/k8s"
+	"github.com/infraboard/mpaas/apps/task/webhook"
 )
 
 var (
@@ -36,6 +37,7 @@ type impl struct {
 	pipeline pipeline.Service
 	cluster  cluster.Service
 	approval approval.Service
+	hook     *webhook.WebHook
 }
 
 func (i *impl) Config() error {
@@ -53,6 +55,8 @@ func (i *impl) Config() error {
 	if err := runner.Init(); err != nil {
 		return err
 	}
+
+	i.hook = webhook.NewWebHook()
 	return nil
 }
 
