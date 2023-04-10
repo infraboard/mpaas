@@ -252,3 +252,17 @@ func (h *WebHook) IsMatch(event string) bool {
 func (h *WebHook) ShowName() string {
 	return fmt.Sprintf("%s[%s]", h.Description, h.Url)
 }
+
+func (m *MentionUser) IsMatch(event string) bool {
+	if len(m.Events) == 0 {
+		return true
+	}
+
+	for _, e := range m.Events {
+		if strings.EqualFold(e, event) {
+			return true
+		}
+	}
+
+	return false
+}

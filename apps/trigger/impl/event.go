@@ -40,55 +40,7 @@ func (i *impl) HandleEvent(ctx context.Context, in *trigger.Event) (
 		for index := range matched.Items {
 			// 执行构建配置匹配的流水线
 			buildConf := matched.Items[index]
-			pipelineId := buildConf.Spec.PipielineId()
-			if pipelineId == "" {
-				i.log.Debugf("构建配置: %s, 未配置流水线", buildConf.Spec.Name)
-				continue
-			}
-
-			bs := trigger.NewBuildStatus(buildConf)
-			runReq := pipeline.NewRunPipelineRequest(pipelineId)
-			runReq.RunBy = "gitlab_trigger"
-			runReq.DryRun = in.SkipRunPipeline
-
-			// 补充Build用户自定义变量
-			runReq.AddRunParam(buildConf.BuildRunParams().Params...)
-
-			// 补充构建时系统变量
-			switch buildConf.Spec.TargetType {
-			case build.TARGET_TYPE_IMAGE:
-				ib := buildConf.Spec.ImageBuild
-				// 注入Dockerfile位置信息
-				runReq.AddRunParam(job.NewRunParam(
-					build.SYSTEM_VARIABLE_APP_DOCKERFILE,
-					ib.GetDockerFileWithDefault(build.DEFAULT_DOCKER_FILE_PATH),
-				))
-				// 注入推送代码仓库相关信息
-				runReq.AddRunParam(job.NewRunParam(
-					build.SYSTEM_VARIABLE_IMAGE_REPOSITORY,
-					ib.GetImageRepositoryWithDefault(ins.Event.GitlabEvent.DefaultRepository()),
-				))
-			}
-
-			// 补充Git信息
-			runReq.AddRunParam(in.GitlabEvent.GitRunParams().Params...)
-			// 补充版本信息
-			switch buildConf.Spec.VersionNamedRule {
-			case build.VERSION_NAMED_RULE_DATE_BRANCH_COMMIT:
-				runReq.AddRunParam(in.GitlabEvent.DateCommitVersion(buildConf.Spec.VersionPrefix))
-			case build.VERSION_NAMED_RULE_GIT_TAG:
-				runReq.AddRunParam(in.GitlabEvent.TagVersion(buildConf.Spec.VersionPrefix))
-			}
-
-			i.log.Debugf("run pipeline req: %s", runReq.ToJson())
-			pt, err := i.task.RunPipeline(ctx, runReq)
-			if err != nil {
-				bs.ErrorMessage = err.Error()
-			} else {
-				bs.PiplineTaskId = pt.Meta.Id
-				bs.PiplineTask = pt
-			}
-
+			bs := i.RunBuildConf(ctx, in, buildConf)
 			ins.AddBuildStatus(bs)
 		}
 	}
@@ -98,6 +50,60 @@ func (i *impl) HandleEvent(ctx context.Context, in *trigger.Event) (
 		return nil, exception.NewInternalServerError("inserted a deploy document error, %s", err)
 	}
 	return ins, nil
+}
+
+func (i *impl) RunBuildConf(ctx context.Context, in *trigger.Event, buildConf *build.BuildConfig) *trigger.BuildStatus {
+	bs := trigger.NewBuildStatus(buildConf)
+
+	pipelineId := buildConf.Spec.PipielineId()
+	if pipelineId == "" {
+		i.log.Debugf("构建配置: %s, 未配置流水线", buildConf.Spec.Name)
+		return bs
+	}
+
+	runReq := pipeline.NewRunPipelineRequest(pipelineId)
+	runReq.RunBy = "gitlab_trigger"
+	runReq.DryRun = in.SkipRunPipeline
+
+	// 补充Build用户自定义变量
+	runReq.AddRunParam(buildConf.BuildRunParams().Params...)
+
+	// 补充构建时系统变量
+	switch buildConf.Spec.TargetType {
+	case build.TARGET_TYPE_IMAGE:
+		ib := buildConf.Spec.ImageBuild
+		// 注入Dockerfile位置信息
+		runReq.AddRunParam(job.NewRunParam(
+			build.SYSTEM_VARIABLE_APP_DOCKERFILE,
+			ib.GetDockerFileWithDefault(build.DEFAULT_DOCKER_FILE_PATH),
+		))
+		// 注入推送代码仓库相关信息
+		runReq.AddRunParam(job.NewRunParam(
+			build.SYSTEM_VARIABLE_IMAGE_REPOSITORY,
+			ib.GetImageRepositoryWithDefault(in.GitlabEvent.DefaultRepository()),
+		))
+	}
+
+	// 补充Git信息
+	runReq.AddRunParam(in.GitlabEvent.GitRunParams().Params...)
+	// 补充版本信息
+	switch buildConf.Spec.VersionNamedRule {
+	case build.VERSION_NAMED_RULE_DATE_BRANCH_COMMIT:
+		runReq.AddRunParam(in.GitlabEvent.DateCommitVersion(buildConf.Spec.VersionPrefix))
+	case build.VERSION_NAMED_RULE_GIT_TAG:
+		runReq.AddRunParam(in.GitlabEvent.TagVersion(buildConf.Spec.VersionPrefix))
+	}
+
+	i.log.Debugf("run pipeline req: %s", runReq.ToJson())
+	pt, err := i.task.RunPipeline(ctx, runReq)
+	if err != nil {
+		bs.ErrorMessage = err.Error()
+	} else {
+		bs.PiplineTaskId = pt.Meta.Id
+		bs.PiplineTask = pt
+	}
+
+	return bs
 }
 
 // 查询事件

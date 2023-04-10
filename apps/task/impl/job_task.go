@@ -253,10 +253,14 @@ func (i *impl) JobTaskStatusChanged(ctx context.Context, in *task.JobTask) {
 	}
 
 	// WebHook回调
-	i.hook.Send(ctx, in.Spec.MatchedWebHooks(in.Status.Stage.String()), in)
+	webhooks := in.Spec.MatchedWebHooks(in.Status.Stage.String())
+	i.hook.Send(ctx, webhooks, in)
 
 	// 关注人通知回调
-	// in.Spec.AttentionUsers
+	for index := range in.Spec.MentionUsers {
+		mu := in.Spec.MentionUsers[index]
+		i.JotTaskMention(ctx, mu, in)
+	}
 }
 
 // 任务执行详情

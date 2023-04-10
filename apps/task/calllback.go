@@ -8,6 +8,7 @@ import (
 func NewCallbackStatus(describe string) *CallbackStatus {
 	return &CallbackStatus{
 		Description: describe,
+		Details:     []*Event{},
 	}
 }
 

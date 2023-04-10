@@ -115,8 +115,8 @@ message CallbackStatus {
 	// @gotags: bson:"message" json:"message"
 	string message = 4;
 	// 异常时的详细信息描述
-	// @gotags: bson:"detail" json:"detail"
-	string detail = 6;
+	// @gotags: bson:"details" json:"details"
+	repeated Event details = 6;
 }
 
 enum EVENT_LEVEL {
