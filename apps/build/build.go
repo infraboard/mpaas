@@ -85,6 +85,7 @@ func (b *BuildConfig) BuildRunParams() *job.VersionedRunParam {
 
 func NewCreateBuildConfigRequest() *CreateBuildConfigRequest {
 	return &CreateBuildConfigRequest{
+		Enabled:       true,
 		VersionPrefix: "v",
 		Condition:     NewTrigger(),
 		ImageBuild:    NewImageBuild(),
@@ -138,6 +139,7 @@ func (t *Trigger) AddBranche(branche string) {
 	t.Branches = append(t.Branches, branche)
 }
 
+// 关于Go语言正则表达式: http://c.biancheng.net/view/5124.html
 func (t *Trigger) MatchBranch(branchRegExp string) bool {
 	for _, b := range t.Branches {
 		ok, _ := regexp.MatchString(branchRegExp, b)

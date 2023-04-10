@@ -49,6 +49,10 @@ func (req *QueryBuildConfigRequest) AddService(serviceId string) {
 	req.ServiceIds = append(req.ServiceIds, serviceId)
 }
 
+func (req *QueryBuildConfigRequest) SetEnabled(v bool) {
+	req.Enabled = &v
+}
+
 func NewDescribeBuildConfigRequst(id string) *DescribeBuildConfigRequst {
 	return &DescribeBuildConfigRequst{
 		Id: id,

@@ -30,6 +30,7 @@ func (i *impl) HandleEvent(ctx context.Context, in *trigger.Event) (
 		req := build.NewQueryBuildConfigRequest()
 		req.AddService(in.GitlabEvent.EventToken)
 		req.Event = in.GitlabEvent.EventName
+		req.SetEnabled(true)
 		set, err := i.build.QueryBuildConfig(ctx, req)
 		if err != nil {
 			return nil, err

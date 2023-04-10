@@ -810,7 +810,7 @@ type WebHook struct {
 	// 需要自定义添加的头, 用于身份认证
 	// @gotags: bson:"header" json:"header"
 	Header map[string]string `protobuf:"bytes,2,rep,name=header,proto3" json:"header" protobuf_key:"bytes,1,opt,name=key,proto3" protobuf_val:"bytes,2,opt,name=value,proto3" bson:"header"`
-	// 那些状态下触发
+	// 那些状态下触发, 默认所有状态变更都触发, 不区分大小写
 	// @gotags: bson:"events" json:"events"
 	Events []string `protobuf:"bytes,3,rep,name=events,proto3" json:"events" bson:"events"`
 	// 简单的描述信息

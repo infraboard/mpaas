@@ -51,5 +51,9 @@ func (r *queryRequest) FindFilter() bson.M {
 		filter["condition.branches"] = r.Branche
 	}
 
+	if r.Enabled != nil {
+		filter["enabled"] = *r.Enabled
+	}
+
 	return filter
 }

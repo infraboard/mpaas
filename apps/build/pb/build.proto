@@ -22,6 +22,9 @@ message BuildConfig  {
 }
 
 message CreateBuildConfigRequest {
+    // 是否启用该构建配置
+    // @gotags: bson:"enabled" json:"enabled"
+    bool enabled = 11;
     // 那个服务的构建
     // @gotags: bson:"service_id" json:"service_id" validate:"required"
     string service_id = 1;

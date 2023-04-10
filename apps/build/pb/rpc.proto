@@ -54,6 +54,9 @@ message QueryBuildConfigRequest {
 	// 分支名称
 	// @gotags: json:"branche"
 	string branche = 6;
+	// 是否启用
+	// @gotags: json:"enabled"
+	optional bool enabled = 7;
 }
 
 message UpdateBuildConfigRequest {
