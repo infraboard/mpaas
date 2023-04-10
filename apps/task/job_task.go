@@ -111,6 +111,35 @@ func (p *JobTask) MarkdownContent() string {
 	return buf.String()
 }
 
+var (
+	// 关于Go模版语法可以参考: https://www.tizi365.com/archives/85.html
+	JOB_TASK_HTML_TEMPLATE = `
+开始时间: 
+{{ .Status.StartAtFormat }}
+结束时间: 
+{{ .Status.EndAtAtFormat }}
+任务参数: 
+{{ range .Spec.RunParams.Params -}}
+▫ *{{.Name}}:  {{.Value}}*
+{{end}}
+`
+)
+
+func (p *JobTask) HTMLContent() string {
+	buf := bytes.NewBuffer([]byte{})
+	t := template.New("job task")
+	tmpl, err := t.Parse(JOB_TASK_HTML_TEMPLATE)
+	if err != nil {
+		return err.Error()
+	}
+
+	err = tmpl.Execute(buf, p)
+	if err != nil {
+		return err.Error()
+	}
+	return buf.String()
+}
+
 func (p *JobTask) BuildSearchLabel() {
 	if p.Job != nil && p.Job.Spec != nil {
 		if p.Job.Spec.Labels == nil {

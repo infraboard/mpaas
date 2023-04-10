@@ -21,9 +21,15 @@ func (i *impl) JotTaskMention(ctx context.Context, mu *pipeline.MentionUser, in 
 	for _, nt := range mu.NotifyTypes {
 		switch nt {
 		case notify.NOTIFY_TYPE_MAIL:
-			i.mcenter.Notify().SendMail(ctx, nil)
+			req := notify.NewSendMailRequest(
+				[]string{mu.UserName},
+				in.ShowTitle(),
+				in.HTMLContent(),
+			)
+			i.mcenter.Notify().SendMail(ctx, req)
 		case notify.NOTIFY_TYPE_SMS:
-			i.mcenter.Notify().SendSMS(ctx, nil)
+			req := notify.NewSendSMSRequest()
+			i.mcenter.Notify().SendSMS(ctx, req)
 		case notify.NOTIFY_TYPE_VOICE:
 			i.mcenter.Notify().SendVoice(ctx, nil)
 		case notify.NOTIFY_TYPE_IM:
