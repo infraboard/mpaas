@@ -46,6 +46,10 @@ func (r *queryPipelineTaskRequest) FindFilter() bson.M {
 		filter["pipeline._id"] = r.PipelineId
 	}
 
+	if len(r.Stages) > 0 {
+		filter["status.stage"] = bson.M{"$in": r.Stages}
+	}
+
 	return filter
 }
 

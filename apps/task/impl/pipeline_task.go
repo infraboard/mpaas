@@ -72,10 +72,6 @@ func (i *impl) RunPipeline(ctx context.Context, in *pipeline.RunPipelineRequest)
 	return ins, nil
 }
 
-// Pipeline Task运行结束时的一些清理工作, 比如删除中间生成的共享卷
-func (i *impl) CleanPipelinTask(ctx context.Context, in *task.PipelineTask) {
-}
-
 func (i *impl) CheckPipelineAllowRun(ctx context.Context, ins *pipeline.Pipeline) error {
 	// 1. 检查审核状态
 	if ins.Spec.ApprovalId != "" {

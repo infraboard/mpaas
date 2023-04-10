@@ -5,6 +5,7 @@ option go_package = "github.com/infraboard/mpaas/apps/task";
 
 import "apps/pipeline/pb/pipeline.proto";
 import "apps/task/pb/pipeline_task.proto";
+import "apps/task/pb/job_task.proto";
 import "github.com/infraboard/mcube/pb/page/page.proto";
 
 // RPC 执行Pipeline
@@ -48,6 +49,9 @@ message QueryPipelineTaskRequest {
     // 触发方式
     // @gotags: json:"trigger_mode"
     optional pipeline.TRIGGER_MODE trigger_mode = 6;
+	// 任务状态
+	// @gotags: json:"stages"
+    repeated STAGE stages = 7;
 }
 
 message DescribePipelineTaskRequest {
