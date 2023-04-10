@@ -205,6 +205,7 @@ func (i *impl) UpdateApprovalStatus(ctx context.Context, in *approval.UpdateAppr
 	if ins.Spec.AutoPublish && ins.Status.Stage.Equal(approval.STAGE_PASSED) {
 		runReq := pipeline.NewRunPipelineRequest(ins.Spec.PipelineId)
 		runReq.RunBy = "@" + ins.UUID()
+		runReq.TriggerMode = pipeline.TRIGGER_MODE_APPROVAL
 		pt, err := i.task.RunPipeline(ctx, runReq)
 		if err != nil {
 			return nil, err

@@ -45,6 +45,9 @@ message QueryPipelineTaskRequest {
     // 范围查找的结束时间
     // @gotags: json:"end_start_at"
     int64 end_start_at = 5;
+    // 触发方式
+    // @gotags: json:"trigger_mode"
+    optional pipeline.TRIGGER_MODE trigger_mode = 6;
 }
 
 message DescribePipelineTaskRequest {

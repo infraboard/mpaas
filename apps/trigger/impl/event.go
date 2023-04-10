@@ -62,7 +62,8 @@ func (i *impl) RunBuildConf(ctx context.Context, in *trigger.Event, buildConf *b
 	}
 
 	runReq := pipeline.NewRunPipelineRequest(pipelineId)
-	runReq.RunBy = "gitlab_trigger"
+	runReq.RunBy = "@" + in.UUID()
+	runReq.TriggerMode = pipeline.TRIGGER_MODE_EVENT
 	runReq.DryRun = in.SkipRunPipeline
 
 	// 补充Build用户自定义变量

@@ -28,6 +28,10 @@ func (e *Event) Validate() error {
 	return validate.Validate(e)
 }
 
+func (e *Event) UUID() string {
+	return fmt.Sprintf("event-%s", e.Id)
+}
+
 func (e *GitlabWebHookEvent) DefaultRepository() string {
 	return fmt.Sprintf("%s/%s",
 		conf.C().Image.DefaultRegistry,

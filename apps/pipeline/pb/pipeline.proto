@@ -160,6 +160,16 @@ message MentionUser {
     string comment = 4;
 }
 
+
+enum TRIGGER_MODE  {
+	// 人工手动触发
+	MANUAL = 0;
+	// 基于事件触发, 比如Gitlab事件
+	EVENT = 1;
+	// 基于申请单触发
+	APPROVAL = 2;
+}
+
 message RunPipelineRequest {
     // pipeline id
 	// @gotags: bson:"pipeline_id" json:"pipeline_id" validate:"required"
@@ -170,6 +180,9 @@ message RunPipelineRequest {
 	// 试运行
 	// @gotags: bson:"dry_run" json:"dry_run"
 	bool dry_run = 3;
+	// 触发方式, 默认手工触发
+	// @gotags: bson:"trigger_mode" json:"trigger_mode" 
+	TRIGGER_MODE  trigger_mode = 6;
 	// 执行人
 	// @gotags: bson:"run_by" json:"run_by" validate:"required"
 	string run_by = 4;
