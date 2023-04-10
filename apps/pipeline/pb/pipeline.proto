@@ -188,7 +188,7 @@ message WebHook {
 	// 需要自定义添加的头, 用于身份认证
 	// @gotags: bson:"header" json:"header"
 	map<string, string> header = 2;
-	// 那些状态下触发
+	// 那些状态下触发, 默认所有状态变更都触发, 不区分大小写
 	// @gotags: bson:"events" json:"events"
 	repeated string events = 3;
 	// 简单的描述信息

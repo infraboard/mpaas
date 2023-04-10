@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+	"strings"
 	"time"
 
 	"github.com/imdario/mergo"
@@ -134,6 +135,18 @@ func (r *RunJobRequest) Enabled() bool {
 	return !r.SkipRun
 }
 
+func (r *RunJobRequest) MatchedWebHooks(event string) []*WebHook {
+	hooks := []*WebHook{}
+	for i := range r.Webhooks {
+		h := r.Webhooks[i]
+		if h.IsMatch(event) {
+			hooks = append(hooks, h)
+		}
+	}
+
+	return hooks
+}
+
 func (r *RunJobRequest) AddWebhook(items ...*WebHook) {
 	r.Webhooks = append(r.Webhooks, items...)
 }
@@ -193,21 +206,6 @@ func NewQueryPipelineRequest() *QueryPipelineRequest {
 	}
 }
 
-func (h *WebHook) IsMatch(t string) bool {
-	for _, e := range h.Events {
-		if e == t {
-			return true
-		}
-	}
-
-	return false
-}
-
-// 显示名称
-func (h *WebHook) ShowName() string {
-	return fmt.Sprintf("%s[%s]", h.Description, h.Url)
-}
-
 func NewRunPipelineRequest(pipelineId string) *RunPipelineRequest {
 	return &RunPipelineRequest{
 		PipelineId: pipelineId,
@@ -234,4 +232,23 @@ func NewWebHook(url string) *WebHook {
 		Header: map[string]string{},
 		Events: []string{},
 	}
+}
+
+func (h *WebHook) IsMatch(event string) bool {
+	if len(h.Events) == 0 {
+		return true
+	}
+
+	for _, e := range h.Events {
+		if strings.EqualFold(e, event) {
+			return true
+		}
+	}
+
+	return false
+}
+
+// 显示名称
+func (h *WebHook) ShowName() string {
+	return fmt.Sprintf("%s[%s]", h.Description, h.Url)
 }
