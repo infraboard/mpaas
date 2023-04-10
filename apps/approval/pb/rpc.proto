@@ -28,6 +28,12 @@ message QueryApprovalRequest {
     // Id列表
     // @gotags: json:"ids"
     repeated string ids = 2;
+    // 创建开始时间
+    // @gotags: json:"begin_create_at"
+    int64 begin_create_at = 3;
+    // 创建结束时间
+    // @gotags: json:"end_create_at"
+    int64 end_create_at = 4;
 }
 
 message DescribeApprovalRequest {

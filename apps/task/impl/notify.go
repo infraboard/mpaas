@@ -28,10 +28,9 @@ func (i *impl) JotTaskMention(ctx context.Context, mu *pipeline.MentionUser, in 
 			)
 			i.mcenter.Notify().SendMail(ctx, req)
 		case notify.NOTIFY_TYPE_SMS:
-			req := notify.NewSendSMSRequest()
-			i.mcenter.Notify().SendSMS(ctx, req)
+			status.SendFailed("sms not impl")
 		case notify.NOTIFY_TYPE_VOICE:
-			i.mcenter.Notify().SendVoice(ctx, nil)
+			status.SendFailed("voice not impl")
 		case notify.NOTIFY_TYPE_IM:
 			i.mcenter.Notify().SendIM(ctx, nil)
 		}

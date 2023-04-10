@@ -83,27 +83,8 @@ enum STAGE {
 	// 审核通过
 	PASSED = 4;
 
-	// 执行中, 关联的流水线正在执行
-	RUNNING = 10;
-	// 发布取消
-	CANCELED = 11;
-	// 发布失败
-	FAILED = 12;
-	// 发布成功
-	SUCCEEDED = 13;
-
-    // 无论发布成功或者失败都可以执行回滚
-    // 回滚中
-    ROLLBACKING = 20;
-	// 回滚取消
-	ROLLBACK_CANCELED = 21;
-	// 回滚失败
-	ROLLBACK_FAILED = 22;
-	// 回滚成功
-	ROLLBACK_SUCCEEDED = 23;
-
 	// 发布关闭, 发布成功后,验证没问题, 发布结束
-	CLOSED = 55;
+	CLOSED = 15;
 }
 
 message Status {
@@ -116,18 +97,6 @@ message Status {
     // 审核意见
     // @gotags: bson:"audit_comment" json:"audit_comment"
     string audit_comment = 3;
-    // 开始发布的时间
-    // @gotags: bson:"publish_at" json:"publish_at"
-    int64 publish_at = 4;
-    // 开始发布的时间
-    // @gotags: bson:"cancel_at" json:"cancel_at"
-    int64 cancel_at = 5;
-    // 取消原因
-    // @gotags: bson:"cancel_comment" json:"cancel_comment"
-    int64 cancel_comment = 6;
-    // 发布结束的时间
-    // @gotags: bson:"end_at" json:"end_at"
-    int64 end_at = 7;
     // 发布关闭的时间
     // @gotags: bson:"close_at" json:"close_at"
     int64 close_at = 8;

@@ -39,6 +39,12 @@ message QueryPipelineTaskRequest {
     // 任务所属的pipeline id
     // @gotags: json:"pipeline_id"
     string pipeline_id = 3;
+    // 范围查找的开始时间
+    // @gotags: json:"begin_start_at"
+    int64 begin_start_at = 4;
+    // 范围查找的结束时间
+    // @gotags: json:"end_start_at"
+    int64 end_start_at = 5;
 }
 
 message DescribePipelineTaskRequest {
