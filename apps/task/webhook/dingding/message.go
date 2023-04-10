@@ -31,7 +31,7 @@ type Message struct {
 func newActionCard(s *task.JobTask) *ActionCard {
 	return &ActionCard{
 		Title:              s.ShowTitle(),
-		Text:               s.Status.String(),
+		Text:               s.MarkdownContent(),
 		ButtonsOrientation: "0",
 		SingleTitle:        "详情",
 		SingleURL:          "https://www.dingtalk.com/",

@@ -61,8 +61,8 @@ message CreatePipelineRequest {
 	// @gotags: bson:"stages" json:"stages"
 	repeated Stage stages = 12;
 	// Pipeline的关注人, 关注后会及时把任务运行状态通知给他们
-	// @gotags: bson:"attention_users" json:"attention_users"
-	repeated AttentionUser attention_users = 11;
+	// @gotags: bson:"mention_users" json:"mention_users"
+	repeated MentionUser mention_users = 11;
 	// 标签
 	// @gotags: bson:"labels" json:"labels"
 	map<string, string> labels = 15;
@@ -137,15 +137,15 @@ message RunJobRequest {
 	// @gotags: bson:"webhooks" json:"webhooks"
 	repeated WebHook webhooks = 13;
 	// 任务的关注人, 关注后会及时把任务运行状态通知给他们
-	// @gotags: bson:"attention_users" json:"attention_users"
-	repeated AttentionUser attention_users = 17;
+	// @gotags: bson:"mention_users" json:"mention_users"
+	repeated MentionUser mention_users = 17;
     // 任务标签
     // @gotags: bson:"labels" json:"labels"
     map<string,string> labels = 25;
 }
 
 // 关注人
-message AttentionUser {
+message MentionUser {
 	// 关注的人
 	// @gotags: bson:"user_name" json:"user_name" validate:"required"
     string user_name = 1;

@@ -16,7 +16,7 @@ func NewStepMarkdownMessage(s *task.JobTask) *Message {
 	return &Message{
 		MsgType: MarkdownMessage,
 		Markdown: &MarkDownContent{
-			Content: s.ShowTitle(),
+			Content: s.ShowTitle() + "\n" + s.MarkdownContent(),
 		},
 	}
 }
