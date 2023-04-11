@@ -54,7 +54,7 @@ func (e *GitlabWebHookEvent) ToJson() string {
 func (e *GitlabWebHookEvent) ParseInfoFromHeader(r *restful.Request) {
 	e.EventToken = r.HeaderParameter(GITLAB_HEADER_EVENT_TOKEN)
 	e.Instance = r.HeaderParameter(GITLAB_HEADER_INSTANCE)
-	e.UserAgent = r.HeaderParameter("User-Agent	")
+	e.UserAgent = r.HeaderParameter("User-Agent")
 	e.ParseEventType(r.HeaderParameter(GITLAB_HEADER_EVENT_NAME))
 }
 
