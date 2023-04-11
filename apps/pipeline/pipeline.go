@@ -175,7 +175,7 @@ func (r *RunJobRequest) BuildSearchLabel() {
 
 func (r *RunJobRequest) SetDefault() {
 	if r.TaskId == "" {
-		r.TaskId = xid.New().String()
+		r.TaskId = "task-" + xid.New().String()
 	}
 	if r.UpdateToken == "" {
 		r.UpdateToken = xid.New().String()
@@ -192,6 +192,15 @@ func (r *RunJobRequest) SetDefault() {
 	if r.Labels == nil {
 		r.Labels = map[string]string{}
 	}
+}
+
+func (r *RunJobRequest) GetJobShortName() string {
+	nl := strings.Split(r.JobName, "@")
+	if len(nl) > 0 && nl[0] != "" {
+		return nl[0]
+	}
+
+	return r.JobName
 }
 
 func NewQueryPipelineRequestFromHTTP(r *http.Request) *QueryPipelineRequest {

@@ -36,7 +36,6 @@ func TestRunBuildJob(t *testing.T) {
 		build.SYSTEM_VARIABLE_APP_VERSION, "v0.0.5",
 	)
 	req.RunParams = version
-
 	ins, err := impl.RunJob(ctx, req)
 	if err != nil {
 		t.Fatal(err)

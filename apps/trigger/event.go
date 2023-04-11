@@ -24,6 +24,10 @@ func (s *RecordSet) Add(items ...*Record) {
 	s.Items = append(s.Items, items...)
 }
 
+func (e *Event) ToJson() string {
+	return format.Prettify(e)
+}
+
 func (e *Event) Validate() error {
 	return validate.Validate(e)
 }

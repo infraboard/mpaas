@@ -464,7 +464,7 @@ type RunJobRequest struct {
 	// 编号
 	// @gotags: bson:"number" json:"number"
 	Number int32 `protobuf:"varint,15,opt,name=number,proto3" json:"number" bson:"number"`
-	// 任务唯一ID, 如果不传，则由系统自动生成
+	// 任务唯一ID, 如果不传，则由系统自动生成, 注意该Id会做为k8s job运行时Id, 如果自定义请注意命名规范
 	// @gotags: bson:"_id" json:"task_id,omitempty"
 	TaskId string `protobuf:"bytes,1,opt,name=task_id,json=taskId,proto3" json:"task_id,omitempty" bson:"_id"`
 	// 任务状态需要手动更新时的Token

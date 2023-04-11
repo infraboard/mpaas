@@ -75,6 +75,7 @@ func NewJobTask(req *pipeline.RunJobRequest) *JobTask {
 		Job:    nil,
 		Status: NewJobTaskStatus(),
 	}
+
 	if t.Spec.SkipRun {
 		t.Status.Stage = STAGE_SKIPPED
 		t.Status.Message = "skip run"
