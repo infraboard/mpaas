@@ -176,6 +176,10 @@ func (p *JobTask) SystemRunParam() (items []*job.RunParam) {
 			job.SYSTEM_VARIABLE_JOB_TASK_ID,
 			p.Spec.TaskId,
 		).SetReadOnly(true).SetRequired(true),
+		job.NewRunParam(
+			job.SYSTEM_VARIABLE_JOB_TASK_UPDATE_TOKEN,
+			p.Spec.UpdateToken,
+		).SetReadOnly(true).SetRequired(true),
 	)
 
 	if p.Spec.PipelineTask != "" {

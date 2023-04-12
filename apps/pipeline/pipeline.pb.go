@@ -220,7 +220,7 @@ type CreatePipelineRequest struct {
 	// 关联的审核单
 	// @gotags: bson:"approval_id" json:"approval_id"
 	ApprovalId string `protobuf:"bytes,6,opt,name=approval_id,json=approvalId,proto3" json:"approval_id" bson:"approval_id"`
-	// 允不允许并行允许, 默认为false, 当该不允许 多个Pipeline Task同时执行
+	// 是否允许并行允许, 默认为false, 同一时间只能有一个运行中的任务
 	// @gotags: bson:"is_parallel" json:"is_parallel"
 	IsParallel bool `protobuf:"varint,7,opt,name=is_parallel,json=isParallel,proto3" json:"is_parallel" bson:"is_parallel"`
 	// 是否是模版, 用于快速继承模版参数进行修改, 模版不能用于执行
