@@ -58,9 +58,9 @@ func (e *GitlabWebHookEvent) ParseInfoFromHeader(r *restful.Request) {
 	e.ParseEventType(r.HeaderParameter(GITLAB_HEADER_EVENT_NAME))
 }
 
-func (e *GitlabWebHookEvent) ParseEventType(et string) {
-	e.EventDescribe = et
-	switch et {
+func (e *GitlabWebHookEvent) ParseEventType(eventHeaderName string) {
+	e.EventDescribe = eventHeaderName
+	switch eventHeaderName {
 	case "Push Hook":
 		e.EventType = EVENT_TYPE_PUSH
 	case "Tag Push Hook":
