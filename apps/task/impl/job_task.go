@@ -220,13 +220,13 @@ func (i *impl) UpdateJobTaskStatus(ctx context.Context, in *task.UpdateJobTaskSt
 	preStatus := ins.Status.Stage
 	ins.Status.UpdateStatus(in)
 
+	// Job Task状态变更回调
+	i.JobTaskStatusChanged(ctx, ins)
+
 	// 更新数据库
 	if err := i.updateJobTask(ctx, ins); err != nil {
 		return nil, err
 	}
-
-	// Job Task状态变更回调
-	i.JobTaskStatusChanged(ctx, ins)
 
 	// Pipeline Task 状态变更回调
 	if ins.Spec.PipelineTask != "" {
