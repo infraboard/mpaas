@@ -107,7 +107,7 @@ func (e *GitlabWebHookEvent) GitRunParams() *job.VersionedRunParam {
 	switch e.EventType {
 	case EVENT_TYPE_PUSH:
 		params.Add(
-			job.NewRunParam(VARIABLE_GIT_BRANCH, e.GetBaseRef()),
+			job.NewRunParam(VARIABLE_GIT_BRANCH, e.GetBranch()),
 		)
 		cm := e.GetLatestCommit()
 		if cm != nil {
@@ -115,7 +115,7 @@ func (e *GitlabWebHookEvent) GitRunParams() *job.VersionedRunParam {
 		}
 	case EVENT_TYPE_TAG:
 		params.Add(
-			job.NewRunParam(VARIABLE_GIT_TAG, e.GetBaseRef()),
+			job.NewRunParam(VARIABLE_GIT_TAG, e.GetTag()),
 		)
 	case EVENT_TYPE_MERGE_REQUEST:
 		oa := e.ObjectAttributes
@@ -144,7 +144,7 @@ func (e *GitlabWebHookEvent) DateCommitVersion(prefix string) *job.RunParam {
 }
 
 func (e *GitlabWebHookEvent) TagVersion(prefix string) *job.RunParam {
-	version := e.GetBaseRef()
+	version := e.GetTag()
 	if !strings.HasPrefix(version, prefix) {
 		version = prefix + version
 	}
@@ -154,7 +154,7 @@ func (e *GitlabWebHookEvent) TagVersion(prefix string) *job.RunParam {
 func (e *GitlabWebHookEvent) GenBuildVersion() string {
 	return fmt.Sprintf("%s-%s-%s",
 		time.Now().Format("20060102"),
-		e.GetBaseRef(),
+		e.GetBranch(),
 		e.GetLatestCommitShortId(),
 	)
 }

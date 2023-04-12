@@ -2,7 +2,7 @@ package trigger
 
 import (
 	"fmt"
-	"path"
+	"strings"
 
 	"github.com/infraboard/mcube/http/request"
 	"github.com/infraboard/mpaas/apps/build"
@@ -27,8 +27,21 @@ func (e *GitlabWebHookEvent) ShortDesc() string {
 	return fmt.Sprintf("%s %s [%s]", e.Ref, e.EventName, e.ObjectKind)
 }
 
-func (e *GitlabWebHookEvent) GetBaseRef() string {
-	return path.Base(e.GetRef())
+func (e *GitlabWebHookEvent) GetBranch() string {
+	switch e.EventType {
+	case EVENT_TYPE_MERGE_REQUEST:
+		return e.ObjectAttributes.TargetBranch
+	case EVENT_TYPE_PUSH:
+		return strings.TrimPrefix(e.Ref, "refs/heads/")
+	case EVENT_TYPE_TAG:
+		return e.GetTag()
+	default:
+		return e.Ref
+	}
+}
+
+func (e *GitlabWebHookEvent) GetTag() string {
+	return strings.TrimPrefix(e.Ref, "refs/tags/")
 }
 
 func (e *GitlabWebHookEvent) GetLatestCommit() *Commit {

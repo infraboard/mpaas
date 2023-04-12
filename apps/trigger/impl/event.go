@@ -36,7 +36,7 @@ func (i *impl) HandleEvent(ctx context.Context, in *trigger.Event) (
 			return nil, err
 		}
 
-		matched := set.MatchBranch(in.GitlabEvent.GetBaseRef())
+		matched := set.MatchBranch(in.GitlabEvent.GetBranch())
 		for index := range matched.Items {
 			// 执行构建配置匹配的流水线
 			buildConf := matched.Items[index]
