@@ -15,26 +15,51 @@ func (i *impl) JotTaskMention(ctx context.Context, mu *pipeline.MentionUser, in 
 	}
 
 	status := task.NewCallbackStatus(mu.UserName)
-	in.Status.AddNotifyStatus(status)
-
 	// 调用mcenter api 通知用户
 	for _, nt := range mu.NotifyTypes {
 		switch nt {
 		case notify.NOTIFY_TYPE_MAIL:
 			req := notify.NewSendMailRequest(
-				[]string{mu.UserName},
 				in.ShowTitle(),
 				in.HTMLContent(),
+				mu.UserName,
 			)
-			i.mcenter.Notify().SendMail(ctx, req)
+			resp, err := i.mcenter.Notify().SendNotify(ctx, req)
+			if err != nil {
+				status.AddEvent(task.NewErrorEvent(err.Error()))
+			} else {
+				status.AddEvent(task.NewDebugEvent(resp.ToJson()))
+				message := resp.FailedResponseToMessage()
+				if message != "" {
+					status.AddEvent(task.NewErrorEvent(message))
+				}
+			}
 		case notify.NOTIFY_TYPE_SMS:
-			status.SendFailed("sms not impl")
+			status.AddEvent(task.NewErrorEvent("sms not impl"))
 		case notify.NOTIFY_TYPE_VOICE:
-			status.SendFailed("voice not impl")
+			status.AddEvent(task.NewErrorEvent("voice not impl"))
 		case notify.NOTIFY_TYPE_IM:
-			i.mcenter.Notify().SendIM(ctx, nil)
+			req := notify.NewSendNotifyRequest()
+			req.Domain = in.Spec.Domain
+			req.Namespace = in.Spec.Namespace
+			req.NotifyTye = notify.NOTIFY_TYPE_IM
+			req.AddUser(mu.UserName)
+			req.Title = in.ShowTitle()
+			req.Content = in.MarkdownContent()
+			resp, err := i.mcenter.Notify().SendNotify(ctx, req)
+			if err != nil {
+				status.AddEvent(task.NewErrorEvent(err.Error()))
+			} else {
+				status.AddEvent(task.NewDebugEvent(resp.ToJson()))
+				message := resp.FailedResponseToMessage()
+				if message != "" {
+					status.AddEvent(task.NewErrorEvent(message))
+				}
+			}
 		}
 	}
+	status.MakeStatusUseEvent()
+	in.Status.AddNotifyStatus(status)
 }
 
 // 调用mcenter api 通知用户Pipeline Task执行状态

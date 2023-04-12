@@ -381,6 +381,14 @@ func (r *RuntimeEnv) IsExport() bool {
 	return false
 }
 
+func NewErrorEvent(message string) *Event {
+	return NewEvent(EVENT_LEVEL_ERROR, message)
+}
+
+func NewDebugEvent(message string) *Event {
+	return NewEvent(EVENT_LEVEL_DEBUG, message)
+}
+
 func NewEvent(level EVENT_LEVEL, message string) *Event {
 	return &Event{
 		Time:    time.Now().Unix(),

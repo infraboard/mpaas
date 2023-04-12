@@ -12,15 +12,15 @@ require (
 	github.com/go-playground/validator/v10 v10.11.1
 	github.com/gorilla/websocket v1.5.0
 	github.com/imdario/mergo v0.3.13
-	github.com/infraboard/mcenter v0.0.9-0.20230328074028-dcb992f8beb0
-	github.com/infraboard/mcube v1.9.9-0.20230327064606-9ebe4c14c598
+	github.com/infraboard/mcenter v0.0.10-0.20230412025050-05e488807150
+	github.com/infraboard/mcube v1.9.11
 	github.com/kvtools/valkeyrie v1.0.0
 	github.com/rs/xid v1.4.0
 	github.com/spf13/cobra v1.6.1
 	github.com/stretchr/testify v1.8.1
 	github.com/traefik/paerser v0.2.0
 	go.etcd.io/etcd/client/v3 v3.5.7
-	go.mongodb.org/mongo-driver v1.11.1
+	go.mongodb.org/mongo-driver v1.11.2
 	google.golang.org/grpc v1.52.3
 	google.golang.org/protobuf v1.28.1
 	k8s.io/api v0.26.1
