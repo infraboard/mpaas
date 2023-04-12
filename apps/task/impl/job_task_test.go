@@ -3,6 +3,7 @@ package impl_test
 import (
 	"testing"
 
+	"github.com/infraboard/mcenter/apps/notify"
 	"github.com/infraboard/mpaas/apps/build"
 	"github.com/infraboard/mpaas/apps/job"
 	"github.com/infraboard/mpaas/apps/pipeline"
@@ -26,6 +27,8 @@ func TestRunBuildJob(t *testing.T) {
 	req := pipeline.NewRunJobRequest("docker_build@default.default")
 	// 添加飞书通知的Webhook
 	req.AddWebhook(pipeline.NewWebHook(conf.C.FEISHU_BOT_URL))
+	// 添加任务执行成功提醒
+	req.AddMentionUser(task.NewMentionUser("admin", notify.NOTIFY_TYPE_IM))
 	// 添加参数
 	version := job.NewVersionedRunParam("v1")
 	version.Params = job.NewRunParamWithKVPaire(

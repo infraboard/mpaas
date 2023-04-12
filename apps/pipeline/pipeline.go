@@ -8,6 +8,7 @@ import (
 	"time"
 
 	"github.com/imdario/mergo"
+	"github.com/infraboard/mcenter/apps/notify"
 	"github.com/infraboard/mcenter/common/validate"
 	"github.com/infraboard/mcube/http/request"
 	job "github.com/infraboard/mpaas/apps/job"
@@ -151,6 +152,10 @@ func (r *RunJobRequest) AddWebhook(items ...*WebHook) {
 	r.Webhooks = append(r.Webhooks, items...)
 }
 
+func (r *RunJobRequest) AddMentionUser(items ...*MentionUser) {
+	r.MentionUsers = append(r.MentionUsers, items...)
+}
+
 func (r *RunJobRequest) GetRunParamsVersion() string {
 	if r.RunParams != nil {
 		return r.RunParams.Version
@@ -260,6 +265,22 @@ func (h *WebHook) IsMatch(event string) bool {
 // 显示名称
 func (h *WebHook) ShowName() string {
 	return fmt.Sprintf("%s[%s]", h.Description, h.Url)
+}
+
+func NewMentionUser(username string) *MentionUser {
+	return &MentionUser{
+		UserName:    username,
+		Events:      []string{},
+		NotifyTypes: []notify.NOTIFY_TYPE{},
+	}
+}
+
+func (m *MentionUser) AddEvent(events ...string) {
+	m.Events = append(m.Events, events...)
+}
+
+func (m *MentionUser) AddNotifyType(nts ...notify.NOTIFY_TYPE) {
+	m.NotifyTypes = append(m.NotifyTypes, nts...)
 }
 
 func (m *MentionUser) IsMatch(event string) bool {

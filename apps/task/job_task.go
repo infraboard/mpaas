@@ -9,6 +9,7 @@ import (
 	"time"
 	"unicode"
 
+	"github.com/infraboard/mcenter/apps/notify"
 	"github.com/infraboard/mpaas/apps/job"
 	pipeline "github.com/infraboard/mpaas/apps/pipeline"
 	"github.com/infraboard/mpaas/common/format"
@@ -379,6 +380,13 @@ func (r *RuntimeEnv) IsExport() bool {
 		return true
 	}
 	return false
+}
+
+func NewMentionUser(username string, nt notify.NOTIFY_TYPE) *pipeline.MentionUser {
+	m := pipeline.NewMentionUser(username)
+	m.AddEvent(STAGE_SUCCEEDED.String())
+	m.AddNotifyType(nt)
+	return m
 }
 
 func NewErrorEvent(message string) *Event {
