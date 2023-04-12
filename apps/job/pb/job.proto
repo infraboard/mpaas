@@ -100,7 +100,10 @@ message CreateJobRequest {
 	string description = 15;
 	// 标签
 	// @gotags: bson:"labels" json:"labels"
-	map<string, string> labels = 25;
+	map<string, string> labels = 24;
+	// 扩展属性
+	// @gotags: bson:"extra" json:"extra"
+	map<string, string> extra = 25;
 
 }
 

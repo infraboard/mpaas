@@ -28,6 +28,7 @@ func NewCreateJobRequest() *CreateJobRequest {
 		RunParams:      []*VersionedRunParam{},
 		RollbackParams: []*VersionedRunParam{},
 		Labels:         make(map[string]string),
+		Extra:          make(map[string]string),
 	}
 }
 
