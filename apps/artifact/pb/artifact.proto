@@ -2,3 +2,13 @@ syntax = "proto3";
 
 package infraboard.mpaas.artifact;
 option go_package = "github.com/infraboard/mpaas/apps/artifact";
+
+
+message Artifact {
+	// 那个服务的制品
+	// @gotags: bson:"service_id" json:"service_id" validate:"required"
+    string service_id = 1;
+	// 那个任务构建出的产物
+	// @gotags: bson:"task_id" json:"task_id"
+    string task_id = 2;
+}
