@@ -3,26 +3,69 @@ syntax = "proto3";
 package infraboard.mpaas.artifact;
 option go_package = "github.com/infraboard/mpaas/apps/artifact";
 
+import "common/meta/meta.proto";
 
 enum TYPE {
 	// 容器镜像
 	IMAGE = 0;
+	// 安装包
+	PKG = 1;
 }
 
-// 平台
-enum PLATFORM {
-	// X86平台
-	X86_64 = 0;
+// 架构
+enum ARCH {
+	AMD64 = 0;
+	ARM64 = 1;
+}
+
+// 系统
+enum OS {
+    LINUX = 0;
+    WINDOWS = 1;
+    MACOS = 2;
 }
 
 message Artifact {
+    // 元信息
+    // @gotags: bson:",inline" json:"meta"
+    common.meta.Meta meta = 1;
+    // 创建信息
+    // @gotags: bson:",inline" json:"spec"
+    CreateArtifactRequest spec = 6;
+}
+
+message CreateArtifactRequest {
 	// 那个服务的制品
 	// @gotags: bson:"service_id" json:"service_id" validate:"required"
     string service_id = 1;
+
+	// 产物地址
+	// @gotags: bson:"address" json:"address"
+    string address = 2;
+	// 产物版本
+	// @gotags: bson:"version" json:"version"
+    string version = 3;
+
 	// 那个任务构建出的产物
 	// @gotags: bson:"task_id" json:"task_id"
-    string task_id = 2;
+    string task_id = 4;
 	// 产物类型
 	// @gotags: bson:"type" json:"type"
-    TYPE type = 3;
+    TYPE type = 5;
+	// 产物运行的cpu架构
+	// @gotags: bson:"architecture" json:"architecture"
+    ARCH architecture = 6;
+	// 产物运行的操作系统
+	// @gotags: bson:"os" json:"os"
+    OS os = 7;
+	// 产物内容Hash
+	// @gotags: bson:"digest" json:"digest"
+    string digest = 8;
+	// 产物大小
+	// @gotags: bson:"size" json:"size"
+    int64 size = 9;
+
+    // 标签
+    // @gotags: bson:"labels" json:"labels"
+    map<string,string> labels = 15;
 }
