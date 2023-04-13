@@ -9,24 +9,24 @@ import (
 	"strings"
 )
 
-// ParseEVENT_TYPEFromString Parse EVENT_TYPE from string
-func ParseEVENT_TYPEFromString(str string) (EVENT_TYPE, error) {
+// ParseGITLAB_EVENT_TYPEFromString Parse GITLAB_EVENT_TYPE from string
+func ParseGITLAB_EVENT_TYPEFromString(str string) (GITLAB_EVENT_TYPE, error) {
 	key := strings.Trim(string(str), `"`)
-	v, ok := EVENT_TYPE_value[strings.ToUpper(key)]
+	v, ok := GITLAB_EVENT_TYPE_value[strings.ToUpper(key)]
 	if !ok {
-		return 0, fmt.Errorf("unknown EVENT_TYPE: %s", str)
+		return 0, fmt.Errorf("unknown GITLAB_EVENT_TYPE: %s", str)
 	}
 
-	return EVENT_TYPE(v), nil
+	return GITLAB_EVENT_TYPE(v), nil
 }
 
 // Equal type compare
-func (t EVENT_TYPE) Equal(target EVENT_TYPE) bool {
+func (t GITLAB_EVENT_TYPE) Equal(target GITLAB_EVENT_TYPE) bool {
 	return t == target
 }
 
 // IsIn todo
-func (t EVENT_TYPE) IsIn(targets ...EVENT_TYPE) bool {
+func (t GITLAB_EVENT_TYPE) IsIn(targets ...GITLAB_EVENT_TYPE) bool {
 	for _, target := range targets {
 		if t.Equal(target) {
 			return true
@@ -37,7 +37,7 @@ func (t EVENT_TYPE) IsIn(targets ...EVENT_TYPE) bool {
 }
 
 // MarshalJSON todo
-func (t EVENT_TYPE) MarshalJSON() ([]byte, error) {
+func (t GITLAB_EVENT_TYPE) MarshalJSON() ([]byte, error) {
 	b := bytes.NewBufferString(`"`)
 	b.WriteString(strings.ToUpper(t.String()))
 	b.WriteString(`"`)
@@ -45,8 +45,8 @@ func (t EVENT_TYPE) MarshalJSON() ([]byte, error) {
 }
 
 // UnmarshalJSON todo
-func (t *EVENT_TYPE) UnmarshalJSON(b []byte) error {
-	ins, err := ParseEVENT_TYPEFromString(string(b))
+func (t *GITLAB_EVENT_TYPE) UnmarshalJSON(b []byte) error {
+	ins, err := ParseGITLAB_EVENT_TYPEFromString(string(b))
 	if err != nil {
 		return err
 	}

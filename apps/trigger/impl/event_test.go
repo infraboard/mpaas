@@ -8,13 +8,14 @@ import (
 )
 
 func TestHandleEvent(t *testing.T) {
-	event := trigger.NewGitlabWebHookEvent()
-	err := tools.ReadJsonFile("test/gitlab_push.json", event)
+	data := trigger.NewGitlabWebHookEvent()
+	err := tools.ReadJsonFile("test/gitlab_push.json", data)
 	if err != nil {
 		t.Fatal(err)
 	}
 
-	req := trigger.NewGitlabEvent(event)
+	req := trigger.NewGitlabEvent()
+	req.GitlabEvent = data
 	req.SkipRunPipeline = false
 	ps, err := impl.HandleEvent(ctx, req)
 	if err != nil {

@@ -2,10 +2,7 @@ package api
 
 import (
 	"context"
-	"encoding/json"
 	"fmt"
-	"io"
-	"strconv"
 
 	"github.com/emicklei/go-restful/v3"
 	"github.com/infraboard/mcenter/apps/service"
@@ -18,35 +15,14 @@ import (
 // Hook Header参考文档: https://docs.gitlab.com/ee/user/project/integrations/webhooks.html#delivery-headers
 // 参考文档: https://docs.gitlab.com/ee/user/project/integrations/webhook_events.html
 func (h *Handler) HandleGitlabEvent(r *restful.Request, w *restful.Response) {
-	event := trigger.NewGitlabWebHookEvent()
-	event.ParseInfoFromHeader(r)
-
-	// 读取body数据
-	body, err := io.ReadAll(r.Request.Body)
-	defer r.Request.Body.Close()
-	if err != nil {
-		response.Failed(w, err)
-		return
-	}
-	event.EventRaw = string(body)
-
-	// 反序列化
-	err = json.Unmarshal(body, event)
-	if err != nil {
-		response.Failed(w, err)
-		return
-	}
-
-	req := trigger.NewGitlabEvent(event)
-	req.Id = r.PathParameter(trigger.GITLAB_HEADER_EVENT_UUID)
-	req.SkipRunPipeline, err = strconv.ParseBool(r.QueryParameter("skip_run_pipeline"))
+	event, err := trigger.ParseGitLabEventFromRequest(r)
 	if err != nil {
 		response.Failed(w, err)
 		return
 	}
 
 	h.log.Debugf("accept event: %s", event.ToJson())
-	ins, err := h.svc.HandleEvent(r.Request.Context(), req)
+	ins, err := h.svc.HandleEvent(r.Request.Context(), event)
 	if err != nil {
 		response.Failed(w, err)
 		return
@@ -58,10 +34,9 @@ func (h *Handler) HandleGitlabEvent(r *restful.Request, w *restful.Response) {
 // 查询repo 的gitlab地址, 手动获取信息, 触发手动事件
 func (h *Handler) MannulGitlabEvent(r *restful.Request, w *restful.Response) {
 	// 构造事件
-	gevent := trigger.NewGitlabWebHookEvent()
-	event := trigger.NewGitlabEvent(gevent)
+	event := trigger.NewGitlabEvent()
 
-	// 反序列化
+	// 读取模拟事件
 	err := r.ReadEntity(event)
 	if err != nil {
 		response.Failed(w, err)
@@ -86,10 +61,10 @@ func (h *Handler) MannulGitlabEvent(r *restful.Request, w *restful.Response) {
 }
 
 func (h *Handler) BuildEvent(ctx context.Context, in *trigger.Event) error {
-	in.IsMannul = true
+	in.IsMock = true
 
 	// 查询服务仓库信息
-	descReq := service.NewDescribeServiceRequest(in.GitlabEvent.EventToken)
+	descReq := service.NewDescribeServiceRequest(in.Token)
 	svc, err := h.mcenter.Service().DescribeService(ctx, descReq)
 	if err != nil {
 		return err

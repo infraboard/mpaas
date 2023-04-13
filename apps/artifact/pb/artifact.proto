@@ -75,7 +75,45 @@ message CreateArtifactRequest {
 
 // 制品质量
 message Quality {
+    // 单元测试质量
+    // @gotags: bson:"unit_test" json:"unit_test"
+	UnitTest unit_test = 1;
+    // 接口测试质量
+    // @gotags: bson:"api_test" json:"api_test"
+	ApiTest api_test = 2;
+    // 场景测试质量
+    // @gotags: bson:"scenario_test" json:"scenario_test"
+	ScenarioTest scenario_test = 3;
+    // 安全测试
+    // @gotags: bson:"security_test" json:"security_test"
+	SecurityTest security_test = 4;
+    // 性能测试
+    // @gotags: bson:"benchmark_test" json:"benchmark_test"
+	BarchmarkTest benchmark_test = 5;
+}
+
+message UnitTest {
     // 代码覆盖率
     // @gotags: bson:"coverage" json:"coverage"
 	float coverage  = 1;
+}
+
+message ApiTest {
+    // 代码覆盖率
+    // @gotags: bson:"coverage" json:"coverage"
+	float coverage  = 1;
+}
+
+message ScenarioTest {
+    // 代码覆盖率
+    // @gotags: bson:"coverage" json:"coverage"
+	float coverage  = 1;
+}
+
+message SecurityTest {
+
+}
+
+message BarchmarkTest {
+
 }

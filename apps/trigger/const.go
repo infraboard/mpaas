@@ -4,10 +4,8 @@ package trigger
 const (
 	// 事件提供商, 比如 GITLAB
 	VARIABLE_EVENT_PROVIDER = "EVENT_PROVIDER"
-	// 事件类型, 平台统一定义, 比如 PUSH
-	VARIABLE_EVENT_TYPE = "EVENT_TYPE"
 	// 事件描述, 比如 Push Hook
-	VARIABLE_EVENT_DESC = "EVENT_DESC"
+	VARIABLE_EVENT_NAME = "EVENT_NAME"
 	// 提供事件的实例 比如 "https://gitlab.com"
 	VARIABLE_EVENT_INSTANCE = "EVENT_INSTANCE"
 	// 事件发生者UA 比如: "GitLab/15.5.0-pre"

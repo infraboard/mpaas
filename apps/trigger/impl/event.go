@@ -28,7 +28,7 @@ func (i *impl) HandleEvent(ctx context.Context, in *trigger.Event) (
 
 		// 获取该服务对应事件的构建配置
 		req := build.NewQueryBuildConfigRequest()
-		req.AddService(in.GitlabEvent.EventToken)
+		req.AddService(in.Token)
 		req.Event = in.GitlabEvent.EventName
 		req.SetEnabled(true)
 		set, err := i.build.QueryBuildConfig(ctx, req)
@@ -86,7 +86,7 @@ func (i *impl) RunBuildConf(ctx context.Context, in *trigger.Event, buildConf *b
 	}
 
 	// 补充Git信息
-	runReq.AddRunParam(in.GitlabEvent.GitRunParams().Params...)
+	runReq.AddRunParam(in.GitRunParams().Params...)
 	// 补充版本信息
 	switch buildConf.Spec.VersionNamedRule {
 	case build.VERSION_NAMED_RULE_DATE_BRANCH_COMMIT:

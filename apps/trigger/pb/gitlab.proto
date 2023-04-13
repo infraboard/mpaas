@@ -4,7 +4,7 @@ package infraboard.mpaas.trigger;
 option go_package = "github.com/infraboard/mpaas/apps/trigger";
 
 // https://docs.gitlab.com/ee/user/project/integrations/webhook_events.html
-enum EVENT_TYPE {
+enum GITLAB_EVENT_TYPE {
     // 推送事件
     PUSH = 0;
     // 打标事件
@@ -18,21 +18,9 @@ enum EVENT_TYPE {
 }
 
 message GitlabWebHookEvent {
-    // 发送事件的gitlab服务地址, 比如 "https://gitlab.com"
-    // @gotags: bson:"instance" json:"instance"
-    string instance = 14;
-    // gitlab版本, 比如 "GitLab/15.5.0-pre"
-    // @gotags: bson:"user_agent" json:"user_agent"
-    string user_agent = 15;
-    // 事件Token, 一般固定为 服务Id
-    // @gotags: json:"event_token"
-    string event_token = 16;
-    // 事件原始数据
-    // @gotags: json:"event_raw"
-    string event_raw = 17;
-    // 事件类型
-    // @gotags: bson:"event_type" json:"event_type"
-    EVENT_TYPE event_type = 1;
+    // 事件类型, 根据Hook名字判断生成
+    // @gotags: bson:"event_type" json:"-"
+    GITLAB_EVENT_TYPE event_type = 1;
     // 事件描述
     // @gotags: bson:"event_describe" json:"event_describe"
     string event_describe = 13;

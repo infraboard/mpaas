@@ -29,11 +29,11 @@ func (e *GitlabWebHookEvent) ShortDesc() string {
 
 func (e *GitlabWebHookEvent) GetBranch() string {
 	switch e.EventType {
-	case EVENT_TYPE_MERGE_REQUEST:
+	case GITLAB_EVENT_TYPE_MERGE_REQUEST:
 		return e.ObjectAttributes.TargetBranch
-	case EVENT_TYPE_PUSH:
+	case GITLAB_EVENT_TYPE_PUSH:
 		return strings.TrimPrefix(e.Ref, "refs/heads/")
-	case EVENT_TYPE_TAG:
+	case GITLAB_EVENT_TYPE_TAG:
 		return e.GetTag()
 	default:
 		return e.Ref
@@ -60,10 +60,9 @@ func (e *GitlabWebHookEvent) GetLatestCommitShortId() string {
 	return ""
 }
 
-func NewGitlabEvent(event *GitlabWebHookEvent) *Event {
+func NewGitlabEvent() *Event {
 	return &Event{
-		Provider:    EVENT_PROVIDER_GITLAB,
-		GitlabEvent: event,
+		Provider: EVENT_PROVIDER_GITLAB,
 	}
 }
 

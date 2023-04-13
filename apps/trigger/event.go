@@ -1,7 +1,9 @@
 package trigger
 
 import (
+	"encoding/json"
 	"fmt"
+	"io"
 	"strings"
 	"time"
 
@@ -36,6 +38,35 @@ func (e *Event) UUID() string {
 	return fmt.Sprintf("event-%s", e.Id)
 }
 
+func ParseGitLabEventFromRequest(r *restful.Request) (*Event, error) {
+	e := NewGitlabEvent()
+	e.Name = r.HeaderParameter(GITLAB_HEADER_EVENT_NAME)
+	e.Id = r.PathParameter(GITLAB_HEADER_EVENT_UUID)
+	e.Token = r.PathParameter(GITLAB_HEADER_EVENT_TOKEN)
+	e.From = r.PathParameter(GITLAB_HEADER_INSTANCE)
+	e.UserAgent = r.Request.UserAgent()
+
+	// 处理URL参数
+	e.SkipRunPipeline = r.QueryParameter("skip_run_pipeline") == "true"
+
+	// 读取body数据
+	data := NewGitlabWebHookEvent()
+	body, err := io.ReadAll(r.Request.Body)
+	defer r.Request.Body.Close()
+	if err != nil {
+		return nil, err
+	}
+
+	// 反序列化
+	err = json.Unmarshal(body, data)
+	if err != nil {
+		return nil, err
+	}
+	data.ParseEventType(e.From)
+	e.GitlabEvent = data
+	return e, nil
+}
+
 func (e *GitlabWebHookEvent) DefaultRepository() string {
 	return fmt.Sprintf("%s/%s",
 		conf.C().Image.DefaultRegistry,
@@ -51,26 +82,19 @@ func (e *GitlabWebHookEvent) ToJson() string {
 	return format.Prettify(e)
 }
 
-func (e *GitlabWebHookEvent) ParseInfoFromHeader(r *restful.Request) {
-	e.EventToken = r.HeaderParameter(GITLAB_HEADER_EVENT_TOKEN)
-	e.Instance = r.HeaderParameter(GITLAB_HEADER_INSTANCE)
-	e.UserAgent = r.HeaderParameter("User-Agent")
-	e.ParseEventType(r.HeaderParameter(GITLAB_HEADER_EVENT_NAME))
-}
-
 func (e *GitlabWebHookEvent) ParseEventType(eventHeaderName string) {
 	e.EventDescribe = eventHeaderName
 	switch eventHeaderName {
 	case "Push Hook":
-		e.EventType = EVENT_TYPE_PUSH
+		e.EventType = GITLAB_EVENT_TYPE_PUSH
 	case "Tag Push Hook":
-		e.EventType = EVENT_TYPE_TAG
+		e.EventType = GITLAB_EVENT_TYPE_TAG
 	case "Merge Request Hook":
-		e.EventType = EVENT_TYPE_MERGE_REQUEST
+		e.EventType = GITLAB_EVENT_TYPE_MERGE_REQUEST
 	case "Note Hook":
-		e.EventType = EVENT_TYPE_COMMENT
+		e.EventType = GITLAB_EVENT_TYPE_COMMENT
 	case "Issue Hook":
-		e.EventType = EVENT_TYPE_ISSUE
+		e.EventType = GITLAB_EVENT_TYPE_ISSUE
 	}
 }
 
@@ -87,25 +111,36 @@ func (e *GitlabWebHookEvent) ParseEventType(eventHeaderName string) {
 // GIT_SSH_URL: git@github.com:infraboard/mpaas.git
 // GIT_BRANCH: master
 // GIT_COMMIT_ID: bfacd86c647935aea532f29421fe83c6a6111260
-func (e *GitlabWebHookEvent) GitRunParams() *job.VersionedRunParam {
+func (e *Event) GitRunParams() *job.VersionedRunParam {
 	params := job.NewVersionedRunParam("v1")
 	params.Add(
 		// 补充gitlab事件相关变量
 		job.NewRunParam(VARIABLE_EVENT_PROVIDER, EVENT_PROVIDER_GITLAB.String()),
-		job.NewRunParam(VARIABLE_EVENT_TYPE, e.EventType.String()),
-		job.NewRunParam(VARIABLE_EVENT_DESC, e.EventDescribe),
-		job.NewRunParam(VARIABLE_EVENT_INSTANCE, e.Instance),
-		job.NewRunParam(VARIABLE_EVENT_TOKEN, e.EventToken),
+		job.NewRunParam(VARIABLE_EVENT_NAME, e.Name),
+		job.NewRunParam(VARIABLE_EVENT_INSTANCE, e.From),
+		job.NewRunParam(VARIABLE_EVENT_TOKEN, e.Token),
 		job.NewRunParam(VARIABLE_EVENT_USER_AGENT, e.UserAgent),
-		job.NewRunParam(VARIABLE_EVENT_CONTENT, e.EventRaw),
-		// 补充项目相关信息
+		job.NewRunParam(VARIABLE_EVENT_CONTENT, e.Raw),
+	)
+
+	// 补充GITLAB事件相关变量
+	if e.GitlabEvent != nil {
+		e.GitlabEvent.GitRunParams(params)
+	}
+
+	return params
+}
+
+func (e *GitlabWebHookEvent) GitRunParams(params *job.VersionedRunParam) {
+	// 补充项目相关信息
+	params.Add(
 		job.NewRunParam(VARIABLE_GIT_PROJECT_NAME, e.Project.Name).SetSearchLabel(true),
 		job.NewRunParam(VARIABLE_GIT_SSH_URL, e.Project.GitSshUrl).SetSearchLabel(true),
 		job.NewRunParam(VARIABLE_GIT_HTTP_URL, e.Project.GitHttpUrl).SetSearchLabel(true),
 	)
 
 	switch e.EventType {
-	case EVENT_TYPE_PUSH:
+	case GITLAB_EVENT_TYPE_PUSH:
 		params.Add(
 			job.NewRunParam(VARIABLE_GIT_BRANCH, e.GetBranch()),
 		)
@@ -113,11 +148,11 @@ func (e *GitlabWebHookEvent) GitRunParams() *job.VersionedRunParam {
 		if cm != nil {
 			params.Add(job.NewRunParam(VARIABLE_GIT_COMMIT, cm.Id))
 		}
-	case EVENT_TYPE_TAG:
+	case GITLAB_EVENT_TYPE_TAG:
 		params.Add(
 			job.NewRunParam(VARIABLE_GIT_TAG, e.GetTag()),
 		)
-	case EVENT_TYPE_MERGE_REQUEST:
+	case GITLAB_EVENT_TYPE_MERGE_REQUEST:
 		oa := e.ObjectAttributes
 		params.Add(
 			job.NewRunParam(VARIABLE_GIT_MR_ACTION, oa.Action),
@@ -128,11 +163,9 @@ func (e *GitlabWebHookEvent) GitRunParams() *job.VersionedRunParam {
 		if e.LastCommit != nil {
 			params.Add(job.NewRunParam(VARIABLE_GIT_COMMIT, e.LastCommit.Id))
 		}
-	case EVENT_TYPE_COMMENT:
-	case EVENT_TYPE_ISSUE:
+	case GITLAB_EVENT_TYPE_COMMENT:
+	case GITLAB_EVENT_TYPE_ISSUE:
 	}
-
-	return params
 }
 
 func (e *GitlabWebHookEvent) DateCommitVersion(prefix string) *job.RunParam {

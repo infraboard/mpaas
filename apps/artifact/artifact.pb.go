@@ -380,9 +380,21 @@ type Quality struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	// 代码覆盖率
-	// @gotags: bson:"coverage" json:"coverage"
-	Coverage float32 `protobuf:"fixed32,1,opt,name=coverage,proto3" json:"coverage" bson:"coverage"`
+	// 单元测试质量
+	// @gotags: bson:"unit_test" json:"unit_test"
+	UnitTest *UnitTest `protobuf:"bytes,1,opt,name=unit_test,json=unitTest,proto3" json:"unit_test" bson:"unit_test"`
+	// 接口测试质量
+	// @gotags: bson:"api_test" json:"api_test"
+	ApiTest *ApiTest `protobuf:"bytes,2,opt,name=api_test,json=apiTest,proto3" json:"api_test" bson:"api_test"`
+	// 场景测试质量
+	// @gotags: bson:"scenario_test" json:"scenario_test"
+	ScenarioTest *ScenarioTest `protobuf:"bytes,3,opt,name=scenario_test,json=scenarioTest,proto3" json:"scenario_test" bson:"scenario_test"`
+	// 安全测试
+	// @gotags: bson:"security_test" json:"security_test"
+	SecurityTest *SecurityTest `protobuf:"bytes,4,opt,name=security_test,json=securityTest,proto3" json:"security_test" bson:"security_test"`
+	// 性能测试
+	// @gotags: bson:"benchmark_test" json:"benchmark_test"
+	BenchmarkTest *BarchmarkTest `protobuf:"bytes,5,opt,name=benchmark_test,json=benchmarkTest,proto3" json:"benchmark_test" bson:"benchmark_test"`
 }
 
 func (x *Quality) Reset() {
@@ -417,11 +429,262 @@ func (*Quality) Descriptor() ([]byte, []int) {
 	return file_apps_artifact_pb_artifact_proto_rawDescGZIP(), []int{2}
 }
 
-func (x *Quality) GetCoverage() float32 {
+func (x *Quality) GetUnitTest() *UnitTest {
+	if x != nil {
+		return x.UnitTest
+	}
+	return nil
+}
+
+func (x *Quality) GetApiTest() *ApiTest {
+	if x != nil {
+		return x.ApiTest
+	}
+	return nil
+}
+
+func (x *Quality) GetScenarioTest() *ScenarioTest {
+	if x != nil {
+		return x.ScenarioTest
+	}
+	return nil
+}
+
+func (x *Quality) GetSecurityTest() *SecurityTest {
+	if x != nil {
+		return x.SecurityTest
+	}
+	return nil
+}
+
+func (x *Quality) GetBenchmarkTest() *BarchmarkTest {
+	if x != nil {
+		return x.BenchmarkTest
+	}
+	return nil
+}
+
+type UnitTest struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	// 代码覆盖率
+	// @gotags: bson:"coverage" json:"coverage"
+	Coverage float32 `protobuf:"fixed32,1,opt,name=coverage,proto3" json:"coverage" bson:"coverage"`
+}
+
+func (x *UnitTest) Reset() {
+	*x = UnitTest{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_apps_artifact_pb_artifact_proto_msgTypes[3]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *UnitTest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*UnitTest) ProtoMessage() {}
+
+func (x *UnitTest) ProtoReflect() protoreflect.Message {
+	mi := &file_apps_artifact_pb_artifact_proto_msgTypes[3]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use UnitTest.ProtoReflect.Descriptor instead.
+func (*UnitTest) Descriptor() ([]byte, []int) {
+	return file_apps_artifact_pb_artifact_proto_rawDescGZIP(), []int{3}
+}
+
+func (x *UnitTest) GetCoverage() float32 {
 	if x != nil {
 		return x.Coverage
 	}
 	return 0
+}
+
+type ApiTest struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	// 代码覆盖率
+	// @gotags: bson:"coverage" json:"coverage"
+	Coverage float32 `protobuf:"fixed32,1,opt,name=coverage,proto3" json:"coverage" bson:"coverage"`
+}
+
+func (x *ApiTest) Reset() {
+	*x = ApiTest{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_apps_artifact_pb_artifact_proto_msgTypes[4]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *ApiTest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ApiTest) ProtoMessage() {}
+
+func (x *ApiTest) ProtoReflect() protoreflect.Message {
+	mi := &file_apps_artifact_pb_artifact_proto_msgTypes[4]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use ApiTest.ProtoReflect.Descriptor instead.
+func (*ApiTest) Descriptor() ([]byte, []int) {
+	return file_apps_artifact_pb_artifact_proto_rawDescGZIP(), []int{4}
+}
+
+func (x *ApiTest) GetCoverage() float32 {
+	if x != nil {
+		return x.Coverage
+	}
+	return 0
+}
+
+type ScenarioTest struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	// 代码覆盖率
+	// @gotags: bson:"coverage" json:"coverage"
+	Coverage float32 `protobuf:"fixed32,1,opt,name=coverage,proto3" json:"coverage" bson:"coverage"`
+}
+
+func (x *ScenarioTest) Reset() {
+	*x = ScenarioTest{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_apps_artifact_pb_artifact_proto_msgTypes[5]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *ScenarioTest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ScenarioTest) ProtoMessage() {}
+
+func (x *ScenarioTest) ProtoReflect() protoreflect.Message {
+	mi := &file_apps_artifact_pb_artifact_proto_msgTypes[5]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use ScenarioTest.ProtoReflect.Descriptor instead.
+func (*ScenarioTest) Descriptor() ([]byte, []int) {
+	return file_apps_artifact_pb_artifact_proto_rawDescGZIP(), []int{5}
+}
+
+func (x *ScenarioTest) GetCoverage() float32 {
+	if x != nil {
+		return x.Coverage
+	}
+	return 0
+}
+
+type SecurityTest struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+}
+
+func (x *SecurityTest) Reset() {
+	*x = SecurityTest{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_apps_artifact_pb_artifact_proto_msgTypes[6]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *SecurityTest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*SecurityTest) ProtoMessage() {}
+
+func (x *SecurityTest) ProtoReflect() protoreflect.Message {
+	mi := &file_apps_artifact_pb_artifact_proto_msgTypes[6]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use SecurityTest.ProtoReflect.Descriptor instead.
+func (*SecurityTest) Descriptor() ([]byte, []int) {
+	return file_apps_artifact_pb_artifact_proto_rawDescGZIP(), []int{6}
+}
+
+type BarchmarkTest struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+}
+
+func (x *BarchmarkTest) Reset() {
+	*x = BarchmarkTest{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_apps_artifact_pb_artifact_proto_msgTypes[7]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *BarchmarkTest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*BarchmarkTest) ProtoMessage() {}
+
+func (x *BarchmarkTest) ProtoReflect() protoreflect.Message {
+	mi := &file_apps_artifact_pb_artifact_proto_msgTypes[7]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use BarchmarkTest.ProtoReflect.Descriptor instead.
+func (*BarchmarkTest) Descriptor() ([]byte, []int) {
+	return file_apps_artifact_pb_artifact_proto_rawDescGZIP(), []int{7}
 }
 
 var File_apps_artifact_pb_artifact_proto protoreflect.FileDescriptor
@@ -475,19 +738,50 @@ var file_apps_artifact_pb_artifact_proto_rawDesc = []byte{
 	0x0a, 0x0b, 0x4c, 0x61, 0x62, 0x65, 0x6c, 0x73, 0x45, 0x6e, 0x74, 0x72, 0x79, 0x12, 0x10, 0x0a,
 	0x03, 0x6b, 0x65, 0x79, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x03, 0x6b, 0x65, 0x79, 0x12,
 	0x14, 0x0a, 0x05, 0x76, 0x61, 0x6c, 0x75, 0x65, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x05,
-	0x76, 0x61, 0x6c, 0x75, 0x65, 0x3a, 0x02, 0x38, 0x01, 0x22, 0x25, 0x0a, 0x07, 0x51, 0x75, 0x61,
-	0x6c, 0x69, 0x74, 0x79, 0x12, 0x1a, 0x0a, 0x08, 0x63, 0x6f, 0x76, 0x65, 0x72, 0x61, 0x67, 0x65,
-	0x18, 0x01, 0x20, 0x01, 0x28, 0x02, 0x52, 0x08, 0x63, 0x6f, 0x76, 0x65, 0x72, 0x61, 0x67, 0x65,
-	0x2a, 0x1a, 0x0a, 0x04, 0x54, 0x59, 0x50, 0x45, 0x12, 0x09, 0x0a, 0x05, 0x49, 0x4d, 0x41, 0x47,
-	0x45, 0x10, 0x00, 0x12, 0x07, 0x0a, 0x03, 0x50, 0x4b, 0x47, 0x10, 0x01, 0x2a, 0x1c, 0x0a, 0x04,
-	0x41, 0x52, 0x43, 0x48, 0x12, 0x09, 0x0a, 0x05, 0x41, 0x4d, 0x44, 0x36, 0x34, 0x10, 0x00, 0x12,
-	0x09, 0x0a, 0x05, 0x41, 0x52, 0x4d, 0x36, 0x34, 0x10, 0x01, 0x2a, 0x27, 0x0a, 0x02, 0x4f, 0x53,
-	0x12, 0x09, 0x0a, 0x05, 0x4c, 0x49, 0x4e, 0x55, 0x58, 0x10, 0x00, 0x12, 0x0b, 0x0a, 0x07, 0x57,
-	0x49, 0x4e, 0x44, 0x4f, 0x57, 0x53, 0x10, 0x01, 0x12, 0x09, 0x0a, 0x05, 0x4d, 0x41, 0x43, 0x4f,
-	0x53, 0x10, 0x02, 0x42, 0x2b, 0x5a, 0x29, 0x67, 0x69, 0x74, 0x68, 0x75, 0x62, 0x2e, 0x63, 0x6f,
-	0x6d, 0x2f, 0x69, 0x6e, 0x66, 0x72, 0x61, 0x62, 0x6f, 0x61, 0x72, 0x64, 0x2f, 0x6d, 0x70, 0x61,
-	0x61, 0x73, 0x2f, 0x61, 0x70, 0x70, 0x73, 0x2f, 0x61, 0x72, 0x74, 0x69, 0x66, 0x61, 0x63, 0x74,
-	0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
+	0x76, 0x61, 0x6c, 0x75, 0x65, 0x3a, 0x02, 0x38, 0x01, 0x22, 0xf7, 0x02, 0x0a, 0x07, 0x51, 0x75,
+	0x61, 0x6c, 0x69, 0x74, 0x79, 0x12, 0x40, 0x0a, 0x09, 0x75, 0x6e, 0x69, 0x74, 0x5f, 0x74, 0x65,
+	0x73, 0x74, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x23, 0x2e, 0x69, 0x6e, 0x66, 0x72, 0x61,
+	0x62, 0x6f, 0x61, 0x72, 0x64, 0x2e, 0x6d, 0x70, 0x61, 0x61, 0x73, 0x2e, 0x61, 0x72, 0x74, 0x69,
+	0x66, 0x61, 0x63, 0x74, 0x2e, 0x55, 0x6e, 0x69, 0x74, 0x54, 0x65, 0x73, 0x74, 0x52, 0x08, 0x75,
+	0x6e, 0x69, 0x74, 0x54, 0x65, 0x73, 0x74, 0x12, 0x3d, 0x0a, 0x08, 0x61, 0x70, 0x69, 0x5f, 0x74,
+	0x65, 0x73, 0x74, 0x18, 0x02, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x22, 0x2e, 0x69, 0x6e, 0x66, 0x72,
+	0x61, 0x62, 0x6f, 0x61, 0x72, 0x64, 0x2e, 0x6d, 0x70, 0x61, 0x61, 0x73, 0x2e, 0x61, 0x72, 0x74,
+	0x69, 0x66, 0x61, 0x63, 0x74, 0x2e, 0x41, 0x70, 0x69, 0x54, 0x65, 0x73, 0x74, 0x52, 0x07, 0x61,
+	0x70, 0x69, 0x54, 0x65, 0x73, 0x74, 0x12, 0x4c, 0x0a, 0x0d, 0x73, 0x63, 0x65, 0x6e, 0x61, 0x72,
+	0x69, 0x6f, 0x5f, 0x74, 0x65, 0x73, 0x74, 0x18, 0x03, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x27, 0x2e,
+	0x69, 0x6e, 0x66, 0x72, 0x61, 0x62, 0x6f, 0x61, 0x72, 0x64, 0x2e, 0x6d, 0x70, 0x61, 0x61, 0x73,
+	0x2e, 0x61, 0x72, 0x74, 0x69, 0x66, 0x61, 0x63, 0x74, 0x2e, 0x53, 0x63, 0x65, 0x6e, 0x61, 0x72,
+	0x69, 0x6f, 0x54, 0x65, 0x73, 0x74, 0x52, 0x0c, 0x73, 0x63, 0x65, 0x6e, 0x61, 0x72, 0x69, 0x6f,
+	0x54, 0x65, 0x73, 0x74, 0x12, 0x4c, 0x0a, 0x0d, 0x73, 0x65, 0x63, 0x75, 0x72, 0x69, 0x74, 0x79,
+	0x5f, 0x74, 0x65, 0x73, 0x74, 0x18, 0x04, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x27, 0x2e, 0x69, 0x6e,
+	0x66, 0x72, 0x61, 0x62, 0x6f, 0x61, 0x72, 0x64, 0x2e, 0x6d, 0x70, 0x61, 0x61, 0x73, 0x2e, 0x61,
+	0x72, 0x74, 0x69, 0x66, 0x61, 0x63, 0x74, 0x2e, 0x53, 0x65, 0x63, 0x75, 0x72, 0x69, 0x74, 0x79,
+	0x54, 0x65, 0x73, 0x74, 0x52, 0x0c, 0x73, 0x65, 0x63, 0x75, 0x72, 0x69, 0x74, 0x79, 0x54, 0x65,
+	0x73, 0x74, 0x12, 0x4f, 0x0a, 0x0e, 0x62, 0x65, 0x6e, 0x63, 0x68, 0x6d, 0x61, 0x72, 0x6b, 0x5f,
+	0x74, 0x65, 0x73, 0x74, 0x18, 0x05, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x28, 0x2e, 0x69, 0x6e, 0x66,
+	0x72, 0x61, 0x62, 0x6f, 0x61, 0x72, 0x64, 0x2e, 0x6d, 0x70, 0x61, 0x61, 0x73, 0x2e, 0x61, 0x72,
+	0x74, 0x69, 0x66, 0x61, 0x63, 0x74, 0x2e, 0x42, 0x61, 0x72, 0x63, 0x68, 0x6d, 0x61, 0x72, 0x6b,
+	0x54, 0x65, 0x73, 0x74, 0x52, 0x0d, 0x62, 0x65, 0x6e, 0x63, 0x68, 0x6d, 0x61, 0x72, 0x6b, 0x54,
+	0x65, 0x73, 0x74, 0x22, 0x26, 0x0a, 0x08, 0x55, 0x6e, 0x69, 0x74, 0x54, 0x65, 0x73, 0x74, 0x12,
+	0x1a, 0x0a, 0x08, 0x63, 0x6f, 0x76, 0x65, 0x72, 0x61, 0x67, 0x65, 0x18, 0x01, 0x20, 0x01, 0x28,
+	0x02, 0x52, 0x08, 0x63, 0x6f, 0x76, 0x65, 0x72, 0x61, 0x67, 0x65, 0x22, 0x25, 0x0a, 0x07, 0x41,
+	0x70, 0x69, 0x54, 0x65, 0x73, 0x74, 0x12, 0x1a, 0x0a, 0x08, 0x63, 0x6f, 0x76, 0x65, 0x72, 0x61,
+	0x67, 0x65, 0x18, 0x01, 0x20, 0x01, 0x28, 0x02, 0x52, 0x08, 0x63, 0x6f, 0x76, 0x65, 0x72, 0x61,
+	0x67, 0x65, 0x22, 0x2a, 0x0a, 0x0c, 0x53, 0x63, 0x65, 0x6e, 0x61, 0x72, 0x69, 0x6f, 0x54, 0x65,
+	0x73, 0x74, 0x12, 0x1a, 0x0a, 0x08, 0x63, 0x6f, 0x76, 0x65, 0x72, 0x61, 0x67, 0x65, 0x18, 0x01,
+	0x20, 0x01, 0x28, 0x02, 0x52, 0x08, 0x63, 0x6f, 0x76, 0x65, 0x72, 0x61, 0x67, 0x65, 0x22, 0x0e,
+	0x0a, 0x0c, 0x53, 0x65, 0x63, 0x75, 0x72, 0x69, 0x74, 0x79, 0x54, 0x65, 0x73, 0x74, 0x22, 0x0f,
+	0x0a, 0x0d, 0x42, 0x61, 0x72, 0x63, 0x68, 0x6d, 0x61, 0x72, 0x6b, 0x54, 0x65, 0x73, 0x74, 0x2a,
+	0x1a, 0x0a, 0x04, 0x54, 0x59, 0x50, 0x45, 0x12, 0x09, 0x0a, 0x05, 0x49, 0x4d, 0x41, 0x47, 0x45,
+	0x10, 0x00, 0x12, 0x07, 0x0a, 0x03, 0x50, 0x4b, 0x47, 0x10, 0x01, 0x2a, 0x1c, 0x0a, 0x04, 0x41,
+	0x52, 0x43, 0x48, 0x12, 0x09, 0x0a, 0x05, 0x41, 0x4d, 0x44, 0x36, 0x34, 0x10, 0x00, 0x12, 0x09,
+	0x0a, 0x05, 0x41, 0x52, 0x4d, 0x36, 0x34, 0x10, 0x01, 0x2a, 0x27, 0x0a, 0x02, 0x4f, 0x53, 0x12,
+	0x09, 0x0a, 0x05, 0x4c, 0x49, 0x4e, 0x55, 0x58, 0x10, 0x00, 0x12, 0x0b, 0x0a, 0x07, 0x57, 0x49,
+	0x4e, 0x44, 0x4f, 0x57, 0x53, 0x10, 0x01, 0x12, 0x09, 0x0a, 0x05, 0x4d, 0x41, 0x43, 0x4f, 0x53,
+	0x10, 0x02, 0x42, 0x2b, 0x5a, 0x29, 0x67, 0x69, 0x74, 0x68, 0x75, 0x62, 0x2e, 0x63, 0x6f, 0x6d,
+	0x2f, 0x69, 0x6e, 0x66, 0x72, 0x61, 0x62, 0x6f, 0x61, 0x72, 0x64, 0x2f, 0x6d, 0x70, 0x61, 0x61,
+	0x73, 0x2f, 0x61, 0x70, 0x70, 0x73, 0x2f, 0x61, 0x72, 0x74, 0x69, 0x66, 0x61, 0x63, 0x74, 0x62,
+	0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
 }
 
 var (
@@ -503,7 +797,7 @@ func file_apps_artifact_pb_artifact_proto_rawDescGZIP() []byte {
 }
 
 var file_apps_artifact_pb_artifact_proto_enumTypes = make([]protoimpl.EnumInfo, 3)
-var file_apps_artifact_pb_artifact_proto_msgTypes = make([]protoimpl.MessageInfo, 4)
+var file_apps_artifact_pb_artifact_proto_msgTypes = make([]protoimpl.MessageInfo, 9)
 var file_apps_artifact_pb_artifact_proto_goTypes = []interface{}{
 	(TYPE)(0),                     // 0: infraboard.mpaas.artifact.TYPE
 	(ARCH)(0),                     // 1: infraboard.mpaas.artifact.ARCH
@@ -511,22 +805,32 @@ var file_apps_artifact_pb_artifact_proto_goTypes = []interface{}{
 	(*Artifact)(nil),              // 3: infraboard.mpaas.artifact.Artifact
 	(*CreateArtifactRequest)(nil), // 4: infraboard.mpaas.artifact.CreateArtifactRequest
 	(*Quality)(nil),               // 5: infraboard.mpaas.artifact.Quality
-	nil,                           // 6: infraboard.mpaas.artifact.CreateArtifactRequest.LabelsEntry
-	(*meta.Meta)(nil),             // 7: infraboard.mpaas.common.meta.Meta
+	(*UnitTest)(nil),              // 6: infraboard.mpaas.artifact.UnitTest
+	(*ApiTest)(nil),               // 7: infraboard.mpaas.artifact.ApiTest
+	(*ScenarioTest)(nil),          // 8: infraboard.mpaas.artifact.ScenarioTest
+	(*SecurityTest)(nil),          // 9: infraboard.mpaas.artifact.SecurityTest
+	(*BarchmarkTest)(nil),         // 10: infraboard.mpaas.artifact.BarchmarkTest
+	nil,                           // 11: infraboard.mpaas.artifact.CreateArtifactRequest.LabelsEntry
+	(*meta.Meta)(nil),             // 12: infraboard.mpaas.common.meta.Meta
 }
 var file_apps_artifact_pb_artifact_proto_depIdxs = []int32{
-	7, // 0: infraboard.mpaas.artifact.Artifact.meta:type_name -> infraboard.mpaas.common.meta.Meta
-	4, // 1: infraboard.mpaas.artifact.Artifact.spec:type_name -> infraboard.mpaas.artifact.CreateArtifactRequest
-	5, // 2: infraboard.mpaas.artifact.Artifact.quality:type_name -> infraboard.mpaas.artifact.Quality
-	0, // 3: infraboard.mpaas.artifact.CreateArtifactRequest.type:type_name -> infraboard.mpaas.artifact.TYPE
-	1, // 4: infraboard.mpaas.artifact.CreateArtifactRequest.architecture:type_name -> infraboard.mpaas.artifact.ARCH
-	2, // 5: infraboard.mpaas.artifact.CreateArtifactRequest.os:type_name -> infraboard.mpaas.artifact.OS
-	6, // 6: infraboard.mpaas.artifact.CreateArtifactRequest.labels:type_name -> infraboard.mpaas.artifact.CreateArtifactRequest.LabelsEntry
-	7, // [7:7] is the sub-list for method output_type
-	7, // [7:7] is the sub-list for method input_type
-	7, // [7:7] is the sub-list for extension type_name
-	7, // [7:7] is the sub-list for extension extendee
-	0, // [0:7] is the sub-list for field type_name
+	12, // 0: infraboard.mpaas.artifact.Artifact.meta:type_name -> infraboard.mpaas.common.meta.Meta
+	4,  // 1: infraboard.mpaas.artifact.Artifact.spec:type_name -> infraboard.mpaas.artifact.CreateArtifactRequest
+	5,  // 2: infraboard.mpaas.artifact.Artifact.quality:type_name -> infraboard.mpaas.artifact.Quality
+	0,  // 3: infraboard.mpaas.artifact.CreateArtifactRequest.type:type_name -> infraboard.mpaas.artifact.TYPE
+	1,  // 4: infraboard.mpaas.artifact.CreateArtifactRequest.architecture:type_name -> infraboard.mpaas.artifact.ARCH
+	2,  // 5: infraboard.mpaas.artifact.CreateArtifactRequest.os:type_name -> infraboard.mpaas.artifact.OS
+	11, // 6: infraboard.mpaas.artifact.CreateArtifactRequest.labels:type_name -> infraboard.mpaas.artifact.CreateArtifactRequest.LabelsEntry
+	6,  // 7: infraboard.mpaas.artifact.Quality.unit_test:type_name -> infraboard.mpaas.artifact.UnitTest
+	7,  // 8: infraboard.mpaas.artifact.Quality.api_test:type_name -> infraboard.mpaas.artifact.ApiTest
+	8,  // 9: infraboard.mpaas.artifact.Quality.scenario_test:type_name -> infraboard.mpaas.artifact.ScenarioTest
+	9,  // 10: infraboard.mpaas.artifact.Quality.security_test:type_name -> infraboard.mpaas.artifact.SecurityTest
+	10, // 11: infraboard.mpaas.artifact.Quality.benchmark_test:type_name -> infraboard.mpaas.artifact.BarchmarkTest
+	12, // [12:12] is the sub-list for method output_type
+	12, // [12:12] is the sub-list for method input_type
+	12, // [12:12] is the sub-list for extension type_name
+	12, // [12:12] is the sub-list for extension extendee
+	0,  // [0:12] is the sub-list for field type_name
 }
 
 func init() { file_apps_artifact_pb_artifact_proto_init() }
@@ -571,6 +875,66 @@ func file_apps_artifact_pb_artifact_proto_init() {
 				return nil
 			}
 		}
+		file_apps_artifact_pb_artifact_proto_msgTypes[3].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*UnitTest); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_apps_artifact_pb_artifact_proto_msgTypes[4].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*ApiTest); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_apps_artifact_pb_artifact_proto_msgTypes[5].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*ScenarioTest); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_apps_artifact_pb_artifact_proto_msgTypes[6].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*SecurityTest); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_apps_artifact_pb_artifact_proto_msgTypes[7].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*BarchmarkTest); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
 	}
 	type x struct{}
 	out := protoimpl.TypeBuilder{
@@ -578,7 +942,7 @@ func file_apps_artifact_pb_artifact_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: file_apps_artifact_pb_artifact_proto_rawDesc,
 			NumEnums:      3,
-			NumMessages:   4,
+			NumMessages:   9,
 			NumExtensions: 0,
 			NumServices:   0,
 		},
