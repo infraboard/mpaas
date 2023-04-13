@@ -23,16 +23,6 @@ func (req *CreateBuildConfigRequest) Validate() error {
 	return validate.Validate(req)
 }
 
-func (req *CreateBuildConfigRequest) PipielineId() string {
-	switch req.TargetType {
-	case TARGET_TYPE_IMAGE:
-		return req.ImageBuild.PipelineId
-	case TARGET_TYPE_PKG:
-		return req.PkgBuild.PipelineId
-	}
-	return ""
-}
-
 func NewQueryBuildConfigRequestFromHTTP(r *http.Request) *QueryBuildConfigRequest {
 	return &QueryBuildConfigRequest{
 		Page: request.NewPageRequestFromHTTP(r),

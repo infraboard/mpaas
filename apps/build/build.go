@@ -70,13 +70,7 @@ func (b *BuildConfig) BuildRunParams() *job.VersionedRunParam {
 	}
 
 	// 补充自定义变量
-	envs := map[string]string{}
-	switch b.Spec.TargetType {
-	case TARGET_TYPE_IMAGE:
-		envs = b.Spec.ImageBuild.BuildEnvVars
-	case TARGET_TYPE_PKG:
-	}
-	for k, v := range envs {
+	for k, v := range b.Spec.EnvVars {
 		params.Add(job.NewRunParam(k, v))
 	}
 
@@ -91,14 +85,14 @@ func NewCreateBuildConfigRequest() *CreateBuildConfigRequest {
 		ImageBuild:    NewImageBuild(),
 		PkgBuild:      NewPkgBuildConfig(),
 		Labels:        make(map[string]string),
+		EnvVars:       make(map[string]string),
 	}
 }
 
 func NewImageBuild() *ImageBuildConfig {
 	return &ImageBuildConfig{
-		DockerFile:   "Dockerfile",
-		BuildEnvVars: make(map[string]string),
-		Extra:        make(map[string]string),
+		DockerFile: "Dockerfile",
+		Extra:      make(map[string]string),
 	}
 }
 

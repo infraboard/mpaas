@@ -18,7 +18,6 @@ func (i *impl) HandleEvent(ctx context.Context, in *trigger.Event) (
 	}
 
 	ins := trigger.NewRecord(in)
-
 	switch in.Provider {
 	case trigger.EVENT_PROVIDER_GITLAB:
 		// 校验请求
@@ -55,7 +54,7 @@ func (i *impl) HandleEvent(ctx context.Context, in *trigger.Event) (
 func (i *impl) RunBuildConf(ctx context.Context, in *trigger.Event, buildConf *build.BuildConfig) *trigger.BuildStatus {
 	bs := trigger.NewBuildStatus(buildConf)
 
-	pipelineId := buildConf.Spec.PipielineId()
+	pipelineId := buildConf.Spec.PipelineId
 	if pipelineId == "" {
 		bs.ErrorMessage = "未配置流水线"
 		return bs
