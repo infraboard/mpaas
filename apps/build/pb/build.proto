@@ -81,9 +81,9 @@ message Trigger {
 	// 事件名称,那些事件可以触发
 	// @gotags: bson:"events" json:"events"
 	repeated string events = 1;
-	// 分支名称, 那些分支可以触发, 支持正则
-	// @gotags: bson:"branches" json:"branches"
-	repeated string branches = 2;
+	// 子事件, 支持正则 比如分支名称, 那些分支可以触发
+	// @gotags: bson:"sub_events" json:"sub_events"
+	repeated string sub_events = 2;
 }
 
 // 构建目标的类型

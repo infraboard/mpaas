@@ -33,12 +33,12 @@ func (s *BuildConfigSet) Add(item *BuildConfig) {
 }
 
 // 比如: "foo.*"
-func (s *BuildConfigSet) MatchBranch(branchRegExp string) *BuildConfigSet {
+func (s *BuildConfigSet) MatchSubEvent(branchRegExp string) *BuildConfigSet {
 	set := NewBuildConfigSet()
 
 	for i := range s.Items {
 		item := s.Items[i]
-		if item.Spec.Condition.MatchBranch(branchRegExp) {
+		if item.Spec.Condition.MatchSubEvent(branchRegExp) {
 			set.Add(item)
 		}
 	}
@@ -120,8 +120,8 @@ func NewPkgBuildConfig() *PkgBuildConfig {
 
 func NewTrigger() *Trigger {
 	return &Trigger{
-		Events:   []string{},
-		Branches: []string{},
+		Events:    []string{},
+		SubEvents: []string{},
 	}
 }
 
@@ -129,13 +129,17 @@ func (t *Trigger) AddEvent(event string) {
 	t.Events = append(t.Events, event)
 }
 
-func (t *Trigger) AddBranche(branche string) {
-	t.Branches = append(t.Branches, branche)
+func (t *Trigger) AddSubEvents(sub string) {
+	t.SubEvents = append(t.SubEvents, sub)
 }
 
 // 关于Go语言正则表达式: http://c.biancheng.net/view/5124.html
-func (t *Trigger) MatchBranch(branchRegExp string) bool {
-	for _, b := range t.Branches {
+func (t *Trigger) MatchSubEvent(branchRegExp string) bool {
+	if len(t.SubEvents) == 0 {
+		return true
+	}
+
+	for _, b := range t.SubEvents {
 		ok, _ := regexp.MatchString(branchRegExp, b)
 		if ok {
 			return true

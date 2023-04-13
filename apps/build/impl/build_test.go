@@ -31,7 +31,7 @@ func TestDescribeBuildConfig(t *testing.T) {
 func TestUpdateMcenterBuildConfig(t *testing.T) {
 	req := build.NewPatchBuildConfigRequest(conf.C.MCENTER_BUILD_ID)
 	req.Spec.Condition.AddEvent("push")
-	req.Spec.Condition.AddBranche("master")
+	req.Spec.Condition.AddSubEvents("master")
 	req.Spec.ImageBuild.ImageRepository = "registry.cn-hangzhou.aliyuncs.com/infraboard/mcenter"
 	req.Spec.PipelineId = conf.C.MPAAS_PIPELINE_ID
 	req.Spec.DeployId = "mcenter_v1"
@@ -56,7 +56,7 @@ func TestCreateBuildConfig(t *testing.T) {
 	req.Name = "mcenter服务构建"
 	req.ServiceId = conf.C.MCENTER_SERVICE_ID
 	req.Condition.AddEvent("push")
-	req.Condition.AddBranche("master")
+	req.Condition.AddSubEvents("master")
 	req.PipelineId = conf.C.CICD_PIPELINE_ID
 	ins, err := impl.CreateBuildConfig(ctx, req)
 	if err != nil {

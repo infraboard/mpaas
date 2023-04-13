@@ -18,6 +18,18 @@ func (i *impl) HandleEvent(ctx context.Context, in *trigger.Event) (
 	}
 
 	ins := trigger.NewRecord(in)
+
+	// 获取该服务对应事件的触发配置
+	req := build.NewQueryBuildConfigRequest()
+	req.AddService(in.Token)
+	req.Event = in.Name
+	req.SetEnabled(true)
+	set, err := i.build.QueryBuildConfig(ctx, req)
+	if err != nil {
+		return nil, err
+	}
+
+	// 针对Gitlab的事件，独立提取分支作为子名称
 	switch in.Provider {
 	case trigger.EVENT_PROVIDER_GITLAB:
 		event, err := in.GetGitlabEvent()
@@ -25,24 +37,16 @@ func (i *impl) HandleEvent(ctx context.Context, in *trigger.Event) (
 			ins.Event.ParseError = err.Error()
 			return ins, nil
 		}
+		in.SubName = event.GetBranch()
+	}
 
-		// 获取该服务对应事件的构建配置
-		req := build.NewQueryBuildConfigRequest()
-		req.AddService(in.Token)
-		req.Event = in.Name
-		req.SetEnabled(true)
-		set, err := i.build.QueryBuildConfig(ctx, req)
-		if err != nil {
-			return nil, err
-		}
-
-		matched := set.MatchBranch(event.GetBranch())
-		for index := range matched.Items {
-			// 执行构建配置匹配的流水线
-			buildConf := matched.Items[index]
-			bs := i.RunBuildConf(ctx, in, buildConf)
-			ins.AddBuildStatus(bs)
-		}
+	// 子事件匹配
+	matched := set.MatchSubEvent(in.SubName)
+	for index := range matched.Items {
+		// 执行构建配置匹配的流水线
+		buildConf := matched.Items[index]
+		bs := i.RunBuildConf(ctx, in, buildConf)
+		ins.AddBuildStatus(bs)
 	}
 
 	// 保存
@@ -72,6 +76,7 @@ func (i *impl) RunBuildConf(ctx context.Context, in *trigger.Event, buildConf *b
 	// 补充Gitlab事件特有的变量
 	switch in.Provider {
 	case trigger.EVENT_PROVIDER_GITLAB:
+
 		event, err := in.GetGitlabEvent()
 		if err != nil {
 			bs.ErrorMessage = err.Error()

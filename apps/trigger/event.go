@@ -46,7 +46,6 @@ func ParseGitLabEventFromRequest(r *restful.Request) (*Event, error) {
 	if err != nil {
 		return nil, err
 	}
-
 	e := NewGitlabEvent(string(body))
 
 	// 读取Header中的数据
@@ -58,7 +57,6 @@ func ParseGitLabEventFromRequest(r *restful.Request) (*Event, error) {
 
 	// 读取URL参数
 	e.SkipRunPipeline = r.QueryParameter("skip_run_pipeline") == "true"
-
 	return e, nil
 }
 
