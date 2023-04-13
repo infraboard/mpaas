@@ -248,7 +248,7 @@ type CreateBuildConfigRequest struct {
 	// 触发条件
 	// @gotags: bson:"condition" json:"condition"
 	Condition *Trigger `protobuf:"bytes,3,opt,name=condition,proto3" json:"condition" bson:"condition"`
-	// 配置用于运行构建的流水线
+	// 满足条件后需要触发的流水线
 	// @gotags: bson:"pipeline_id" json:"pipeline_id"
 	PipelineId string `protobuf:"bytes,4,opt,name=pipeline_id,json=pipelineId,proto3" json:"pipeline_id" bson:"pipeline_id"`
 	// pipeline运行时注入的变量

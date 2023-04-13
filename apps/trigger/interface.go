@@ -60,9 +60,10 @@ func (e *GitlabWebHookEvent) GetLatestCommitShortId() string {
 	return ""
 }
 
-func NewGitlabEvent() *Event {
+func NewGitlabEvent(raw string) *Event {
 	return &Event{
 		Provider: EVENT_PROVIDER_GITLAB,
+		Raw:      raw,
 	}
 }
 

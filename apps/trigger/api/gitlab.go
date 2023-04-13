@@ -34,7 +34,7 @@ func (h *Handler) HandleGitlabEvent(r *restful.Request, w *restful.Response) {
 // 查询repo 的gitlab地址, 手动获取信息, 触发手动事件
 func (h *Handler) MannulGitlabEvent(r *restful.Request, w *restful.Response) {
 	// 构造事件
-	event := trigger.NewGitlabEvent()
+	event := trigger.NewGitlabEvent("")
 
 	// 读取模拟事件
 	err := r.ReadEntity(event)
@@ -75,8 +75,13 @@ func (h *Handler) BuildEvent(ctx context.Context, in *trigger.Event) error {
 		return fmt.Errorf("service %s[%s] no repo or private token info", svc.FullName(), svc.Id)
 	}
 
+	event, err := in.GetGitlabEvent()
+	if err != nil {
+		return err
+	}
+
 	// 补充Project相关信息
-	p := in.GitlabEvent.Project
+	p := event.Project
 	p.Id = repo.ProjectIdToInt64()
 	p.GitHttpUrl = repo.HttpUrl
 	p.GitSshUrl = repo.SshUrl
@@ -92,12 +97,12 @@ func (h *Handler) BuildEvent(ctx context.Context, in *trigger.Event) error {
 	v4 := gitlab.NewGitlabV4(gc)
 	branchReq := gitlab.NewGetProjectBranchRequest()
 	branchReq.ProjectId = repo.ProjectId
-	branchReq.Branch = in.GitlabEvent.GetBranch()
+	branchReq.Branch = event.GetBranch()
 	b, err := v4.Project().GetProjectBranch(ctx, branchReq)
 	if err != nil {
 		return fmt.Errorf("查询分支: %s 异常, %s", branchReq.Branch, err)
 	}
-	in.GitlabEvent.Commits = append(in.GitlabEvent.Commits, &trigger.Commit{
+	event.Commits = append(event.Commits, &trigger.Commit{
 		Id:        b.Commit.Id,
 		Message:   b.Commit.Message,
 		Title:     b.Commit.Title,

@@ -20,22 +20,23 @@ func (i *impl) HandleEvent(ctx context.Context, in *trigger.Event) (
 	ins := trigger.NewRecord(in)
 	switch in.Provider {
 	case trigger.EVENT_PROVIDER_GITLAB:
-		// 校验请求
-		if err := in.GitlabEvent.Validate(); err != nil {
-			return nil, exception.NewBadRequest(err.Error())
+		event, err := in.GetGitlabEvent()
+		if err != nil {
+			ins.Event.ParseError = err.Error()
+			return ins, nil
 		}
 
 		// 获取该服务对应事件的构建配置
 		req := build.NewQueryBuildConfigRequest()
 		req.AddService(in.Token)
-		req.Event = in.GitlabEvent.EventName
+		req.Event = in.Name
 		req.SetEnabled(true)
 		set, err := i.build.QueryBuildConfig(ctx, req)
 		if err != nil {
 			return nil, err
 		}
 
-		matched := set.MatchBranch(in.GitlabEvent.GetBranch())
+		matched := set.MatchBranch(event.GetBranch())
 		for index := range matched.Items {
 			// 执行构建配置匹配的流水线
 			buildConf := matched.Items[index]
@@ -68,30 +69,40 @@ func (i *impl) RunBuildConf(ctx context.Context, in *trigger.Event, buildConf *b
 	// 补充Build用户自定义变量
 	runReq.AddRunParam(buildConf.BuildRunParams().Params...)
 
-	// 补充构建时系统变量
-	switch buildConf.Spec.TargetType {
-	case build.TARGET_TYPE_IMAGE:
-		ib := buildConf.Spec.ImageBuild
-		// 注入Dockerfile位置信息
-		runReq.AddRunParam(job.NewRunParam(
-			build.SYSTEM_VARIABLE_APP_DOCKERFILE,
-			ib.GetDockerFileWithDefault(build.DEFAULT_DOCKER_FILE_PATH),
-		))
-		// 注入推送代码仓库相关信息
-		runReq.AddRunParam(job.NewRunParam(
-			build.SYSTEM_VARIABLE_IMAGE_REPOSITORY,
-			ib.GetImageRepositoryWithDefault(in.GitlabEvent.DefaultRepository()),
-		))
-	}
+	// 补充Gitlab事件特有的变量
+	switch in.Provider {
+	case trigger.EVENT_PROVIDER_GITLAB:
+		event, err := in.GetGitlabEvent()
+		if err != nil {
+			bs.ErrorMessage = err.Error()
+			return bs
+		}
 
-	// 补充Git信息
-	runReq.AddRunParam(in.GitRunParams().Params...)
-	// 补充版本信息
-	switch buildConf.Spec.VersionNamedRule {
-	case build.VERSION_NAMED_RULE_DATE_BRANCH_COMMIT:
-		runReq.AddRunParam(in.GitlabEvent.DateCommitVersion(buildConf.Spec.VersionPrefix))
-	case build.VERSION_NAMED_RULE_GIT_TAG:
-		runReq.AddRunParam(in.GitlabEvent.TagVersion(buildConf.Spec.VersionPrefix))
+		// 补充Git信息
+		runReq.AddRunParam(in.GitRunParams().Params...)
+		// 补充版本信息
+		switch buildConf.Spec.VersionNamedRule {
+		case build.VERSION_NAMED_RULE_DATE_BRANCH_COMMIT:
+			runReq.AddRunParam(event.DateCommitVersion(buildConf.Spec.VersionPrefix))
+		case build.VERSION_NAMED_RULE_GIT_TAG:
+			runReq.AddRunParam(event.TagVersion(buildConf.Spec.VersionPrefix))
+		}
+
+		// 补充构建时系统变量
+		switch buildConf.Spec.TargetType {
+		case build.TARGET_TYPE_IMAGE:
+			ib := buildConf.Spec.ImageBuild
+			// 注入Dockerfile位置信息
+			runReq.AddRunParam(job.NewRunParam(
+				build.SYSTEM_VARIABLE_APP_DOCKERFILE,
+				ib.GetDockerFileWithDefault(build.DEFAULT_DOCKER_FILE_PATH),
+			))
+			// 注入推送代码仓库相关信息
+			runReq.AddRunParam(job.NewRunParam(
+				build.SYSTEM_VARIABLE_IMAGE_REPOSITORY,
+				ib.GetImageRepositoryWithDefault(event.DefaultRepository()),
+			))
+		}
 	}
 
 	i.log.Debugf("run pipeline req: %s", runReq.ToJson())

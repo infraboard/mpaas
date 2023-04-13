@@ -31,7 +31,7 @@ message CreateBuildConfigRequest {
 	// 触发条件
 	// @gotags: bson:"condition" json:"condition"
 	Trigger condition = 3;
-    // 配置用于运行构建的流水线
+    // 满足条件后需要触发的流水线
     // @gotags: bson:"pipeline_id" json:"pipeline_id"
     string pipeline_id = 4;
     // pipeline运行时注入的变量

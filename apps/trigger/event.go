@@ -9,6 +9,7 @@ import (
 
 	"github.com/emicklei/go-restful/v3"
 	"github.com/infraboard/mcenter/common/validate"
+	"github.com/infraboard/mcube/logger/zap"
 	build "github.com/infraboard/mpaas/apps/build"
 	"github.com/infraboard/mpaas/apps/job"
 	"github.com/infraboard/mpaas/common/format"
@@ -39,31 +40,25 @@ func (e *Event) UUID() string {
 }
 
 func ParseGitLabEventFromRequest(r *restful.Request) (*Event, error) {
-	e := NewGitlabEvent()
-	e.Name = r.HeaderParameter(GITLAB_HEADER_EVENT_NAME)
-	e.Id = r.PathParameter(GITLAB_HEADER_EVENT_UUID)
-	e.Token = r.PathParameter(GITLAB_HEADER_EVENT_TOKEN)
-	e.From = r.PathParameter(GITLAB_HEADER_INSTANCE)
-	e.UserAgent = r.Request.UserAgent()
-
-	// 处理URL参数
-	e.SkipRunPipeline = r.QueryParameter("skip_run_pipeline") == "true"
-
 	// 读取body数据
-	data := NewGitlabWebHookEvent()
 	body, err := io.ReadAll(r.Request.Body)
 	defer r.Request.Body.Close()
 	if err != nil {
 		return nil, err
 	}
 
-	// 反序列化
-	err = json.Unmarshal(body, data)
-	if err != nil {
-		return nil, err
-	}
-	data.ParseEventType(e.From)
-	e.GitlabEvent = data
+	e := NewGitlabEvent(string(body))
+
+	// 读取Header中的数据
+	e.Name = r.HeaderParameter(GITLAB_HEADER_EVENT_NAME)
+	e.Id = r.PathParameter(GITLAB_HEADER_EVENT_UUID)
+	e.Token = r.PathParameter(GITLAB_HEADER_EVENT_TOKEN)
+	e.From = r.PathParameter(GITLAB_HEADER_INSTANCE)
+	e.UserAgent = r.Request.UserAgent()
+
+	// 读取URL参数
+	e.SkipRunPipeline = r.QueryParameter("skip_run_pipeline") == "true"
+
 	return e, nil
 }
 
@@ -124,11 +119,31 @@ func (e *Event) GitRunParams() *job.VersionedRunParam {
 	)
 
 	// 补充GITLAB事件相关变量
-	if e.GitlabEvent != nil {
-		e.GitlabEvent.GitRunParams(params)
+	switch e.Provider {
+	case EVENT_PROVIDER_GITLAB:
+		ge, err := e.GetGitlabEvent()
+		if err != nil {
+			zap.L().Errorf("parse gitlab event error, %s", err)
+		} else {
+			ge.GitRunParams(params)
+		}
 	}
 
 	return params
+}
+
+func (e *Event) GetGitlabEvent() (*GitlabWebHookEvent, error) {
+	if !e.Provider.Equal(EVENT_PROVIDER_GITLAB) {
+		return nil, fmt.Errorf("not gitlab")
+	}
+
+	event := NewGitlabWebHookEvent()
+	err := json.Unmarshal([]byte(e.Raw), event)
+	if err != nil {
+		return nil, err
+	}
+	event.ParseEventType(e.From)
+	return event, nil
 }
 
 func (e *GitlabWebHookEvent) GitRunParams(params *job.VersionedRunParam) {
