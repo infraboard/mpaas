@@ -57,7 +57,7 @@ func (i *impl) RunBuildConf(ctx context.Context, in *trigger.Event, buildConf *b
 
 	pipelineId := buildConf.Spec.PipielineId()
 	if pipelineId == "" {
-		i.log.Debugf("构建配置: %s, 未配置流水线", buildConf.Spec.Name)
+		bs.ErrorMessage = "未配置流水线"
 		return bs
 	}
 
@@ -103,7 +103,6 @@ func (i *impl) RunBuildConf(ctx context.Context, in *trigger.Event, buildConf *b
 		bs.PiplineTaskId = pt.Meta.Id
 		bs.PiplineTask = pt
 	}
-
 	return bs
 }
 
