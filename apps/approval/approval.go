@@ -59,7 +59,7 @@ func (s *ApprovalSet) Add(item *Approval) {
 func NewDefaultApproval() *Approval {
 	return &Approval{
 		Meta: meta.NewMeta(),
-		Spec: &CreateApprovalRequest{},
+		Spec: NewCreateApprovalRequest(),
 	}
 }
 

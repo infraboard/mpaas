@@ -5,6 +5,7 @@ option go_package = "github.com/infraboard/mpaas/apps/approval";
 
 import "common/meta/meta.proto";
 import "apps/pipeline/pb/pipeline.proto";
+import "apps/job/pb/job.proto";
 
 message ApprovalSet {
     // 总数
@@ -66,6 +67,9 @@ message CreateApprovalRequest {
     // 流水线Id
     // @gotags: bson:"pipeline_id" json:"pipeline_id"
     string pipeline_id = 11;
+	// 运行时需要传递的参数
+	// @gotags: bson:"run_params" json:"run_params"
+	repeated job.RunParam run_params = 12;
 	// 申请单标签
 	// @gotags: bson:"labels" json:"labels"
 	map<string, string> labels = 15;

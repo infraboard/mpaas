@@ -76,7 +76,6 @@ func (i *impl) RunBuildConf(ctx context.Context, in *trigger.Event, buildConf *b
 	// 补充Gitlab事件特有的变量
 	switch in.Provider {
 	case trigger.EVENT_PROVIDER_GITLAB:
-
 		event, err := in.GetGitlabEvent()
 		if err != nil {
 			bs.ErrorMessage = err.Error()

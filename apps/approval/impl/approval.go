@@ -206,6 +206,7 @@ func (i *impl) UpdateApprovalStatus(ctx context.Context, in *approval.UpdateAppr
 		runReq := pipeline.NewRunPipelineRequest(ins.Spec.PipelineId)
 		runReq.RunBy = "@" + ins.UUID()
 		runReq.TriggerMode = pipeline.TRIGGER_MODE_APPROVAL
+		runReq.AddRunParam(ins.Spec.RunParams...)
 		pt, err := i.task.RunPipeline(ctx, runReq)
 		if err != nil {
 			return nil, err
