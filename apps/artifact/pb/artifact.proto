@@ -4,6 +4,17 @@ package infraboard.mpaas.artifact;
 option go_package = "github.com/infraboard/mpaas/apps/artifact";
 
 
+enum TYPE {
+	// 容器镜像
+	IMAGE = 0;
+}
+
+// 平台
+enum PLATFORM {
+	// X86平台
+	X86_64 = 0;
+}
+
 message Artifact {
 	// 那个服务的制品
 	// @gotags: bson:"service_id" json:"service_id" validate:"required"
@@ -11,4 +22,7 @@ message Artifact {
 	// 那个任务构建出的产物
 	// @gotags: bson:"task_id" json:"task_id"
     string task_id = 2;
+	// 产物类型
+	// @gotags: bson:"type" json:"type"
+    TYPE type = 3;
 }

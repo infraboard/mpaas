@@ -10,6 +10,7 @@ import (
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
 	reflect "reflect"
+	sync "sync"
 )
 
 const (
@@ -19,26 +20,213 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
+type TYPE int32
+
+const (
+	// 容器镜像
+	TYPE_IMAGE TYPE = 0
+)
+
+// Enum value maps for TYPE.
+var (
+	TYPE_name = map[int32]string{
+		0: "IMAGE",
+	}
+	TYPE_value = map[string]int32{
+		"IMAGE": 0,
+	}
+)
+
+func (x TYPE) Enum() *TYPE {
+	p := new(TYPE)
+	*p = x
+	return p
+}
+
+func (x TYPE) String() string {
+	return protoimpl.X.EnumStringOf(x.Descriptor(), protoreflect.EnumNumber(x))
+}
+
+func (TYPE) Descriptor() protoreflect.EnumDescriptor {
+	return file_apps_artifact_pb_artifact_proto_enumTypes[0].Descriptor()
+}
+
+func (TYPE) Type() protoreflect.EnumType {
+	return &file_apps_artifact_pb_artifact_proto_enumTypes[0]
+}
+
+func (x TYPE) Number() protoreflect.EnumNumber {
+	return protoreflect.EnumNumber(x)
+}
+
+// Deprecated: Use TYPE.Descriptor instead.
+func (TYPE) EnumDescriptor() ([]byte, []int) {
+	return file_apps_artifact_pb_artifact_proto_rawDescGZIP(), []int{0}
+}
+
+// 平台
+type PLATFORM int32
+
+const (
+	// X86平台
+	PLATFORM_X86_64 PLATFORM = 0
+)
+
+// Enum value maps for PLATFORM.
+var (
+	PLATFORM_name = map[int32]string{
+		0: "X86_64",
+	}
+	PLATFORM_value = map[string]int32{
+		"X86_64": 0,
+	}
+)
+
+func (x PLATFORM) Enum() *PLATFORM {
+	p := new(PLATFORM)
+	*p = x
+	return p
+}
+
+func (x PLATFORM) String() string {
+	return protoimpl.X.EnumStringOf(x.Descriptor(), protoreflect.EnumNumber(x))
+}
+
+func (PLATFORM) Descriptor() protoreflect.EnumDescriptor {
+	return file_apps_artifact_pb_artifact_proto_enumTypes[1].Descriptor()
+}
+
+func (PLATFORM) Type() protoreflect.EnumType {
+	return &file_apps_artifact_pb_artifact_proto_enumTypes[1]
+}
+
+func (x PLATFORM) Number() protoreflect.EnumNumber {
+	return protoreflect.EnumNumber(x)
+}
+
+// Deprecated: Use PLATFORM.Descriptor instead.
+func (PLATFORM) EnumDescriptor() ([]byte, []int) {
+	return file_apps_artifact_pb_artifact_proto_rawDescGZIP(), []int{1}
+}
+
+type Artifact struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	// 那个服务的制品
+	// @gotags: bson:"service_id" json:"service_id" validate:"required"
+	ServiceId string `protobuf:"bytes,1,opt,name=service_id,json=serviceId,proto3" json:"service_id" bson:"service_id" validate:"required"`
+	// 那个任务构建出的产物
+	// @gotags: bson:"task_id" json:"task_id"
+	TaskId string `protobuf:"bytes,2,opt,name=task_id,json=taskId,proto3" json:"task_id" bson:"task_id"`
+	// 产物类型
+	// @gotags: bson:"type" json:"type"
+	Type TYPE `protobuf:"varint,3,opt,name=type,proto3,enum=infraboard.mpaas.artifact.TYPE" json:"type" bson:"type"`
+}
+
+func (x *Artifact) Reset() {
+	*x = Artifact{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_apps_artifact_pb_artifact_proto_msgTypes[0]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *Artifact) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*Artifact) ProtoMessage() {}
+
+func (x *Artifact) ProtoReflect() protoreflect.Message {
+	mi := &file_apps_artifact_pb_artifact_proto_msgTypes[0]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use Artifact.ProtoReflect.Descriptor instead.
+func (*Artifact) Descriptor() ([]byte, []int) {
+	return file_apps_artifact_pb_artifact_proto_rawDescGZIP(), []int{0}
+}
+
+func (x *Artifact) GetServiceId() string {
+	if x != nil {
+		return x.ServiceId
+	}
+	return ""
+}
+
+func (x *Artifact) GetTaskId() string {
+	if x != nil {
+		return x.TaskId
+	}
+	return ""
+}
+
+func (x *Artifact) GetType() TYPE {
+	if x != nil {
+		return x.Type
+	}
+	return TYPE_IMAGE
+}
+
 var File_apps_artifact_pb_artifact_proto protoreflect.FileDescriptor
 
 var file_apps_artifact_pb_artifact_proto_rawDesc = []byte{
 	0x0a, 0x1f, 0x61, 0x70, 0x70, 0x73, 0x2f, 0x61, 0x72, 0x74, 0x69, 0x66, 0x61, 0x63, 0x74, 0x2f,
 	0x70, 0x62, 0x2f, 0x61, 0x72, 0x74, 0x69, 0x66, 0x61, 0x63, 0x74, 0x2e, 0x70, 0x72, 0x6f, 0x74,
 	0x6f, 0x12, 0x19, 0x69, 0x6e, 0x66, 0x72, 0x61, 0x62, 0x6f, 0x61, 0x72, 0x64, 0x2e, 0x6d, 0x70,
-	0x61, 0x61, 0x73, 0x2e, 0x61, 0x72, 0x74, 0x69, 0x66, 0x61, 0x63, 0x74, 0x42, 0x2b, 0x5a, 0x29,
-	0x67, 0x69, 0x74, 0x68, 0x75, 0x62, 0x2e, 0x63, 0x6f, 0x6d, 0x2f, 0x69, 0x6e, 0x66, 0x72, 0x61,
-	0x62, 0x6f, 0x61, 0x72, 0x64, 0x2f, 0x6d, 0x70, 0x61, 0x61, 0x73, 0x2f, 0x61, 0x70, 0x70, 0x73,
-	0x2f, 0x61, 0x72, 0x74, 0x69, 0x66, 0x61, 0x63, 0x74, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f,
-	0x33,
+	0x61, 0x61, 0x73, 0x2e, 0x61, 0x72, 0x74, 0x69, 0x66, 0x61, 0x63, 0x74, 0x22, 0x77, 0x0a, 0x08,
+	0x41, 0x72, 0x74, 0x69, 0x66, 0x61, 0x63, 0x74, 0x12, 0x1d, 0x0a, 0x0a, 0x73, 0x65, 0x72, 0x76,
+	0x69, 0x63, 0x65, 0x5f, 0x69, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x09, 0x73, 0x65,
+	0x72, 0x76, 0x69, 0x63, 0x65, 0x49, 0x64, 0x12, 0x17, 0x0a, 0x07, 0x74, 0x61, 0x73, 0x6b, 0x5f,
+	0x69, 0x64, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x06, 0x74, 0x61, 0x73, 0x6b, 0x49, 0x64,
+	0x12, 0x33, 0x0a, 0x04, 0x74, 0x79, 0x70, 0x65, 0x18, 0x03, 0x20, 0x01, 0x28, 0x0e, 0x32, 0x1f,
+	0x2e, 0x69, 0x6e, 0x66, 0x72, 0x61, 0x62, 0x6f, 0x61, 0x72, 0x64, 0x2e, 0x6d, 0x70, 0x61, 0x61,
+	0x73, 0x2e, 0x61, 0x72, 0x74, 0x69, 0x66, 0x61, 0x63, 0x74, 0x2e, 0x54, 0x59, 0x50, 0x45, 0x52,
+	0x04, 0x74, 0x79, 0x70, 0x65, 0x2a, 0x11, 0x0a, 0x04, 0x54, 0x59, 0x50, 0x45, 0x12, 0x09, 0x0a,
+	0x05, 0x49, 0x4d, 0x41, 0x47, 0x45, 0x10, 0x00, 0x2a, 0x16, 0x0a, 0x08, 0x50, 0x4c, 0x41, 0x54,
+	0x46, 0x4f, 0x52, 0x4d, 0x12, 0x0a, 0x0a, 0x06, 0x58, 0x38, 0x36, 0x5f, 0x36, 0x34, 0x10, 0x00,
+	0x42, 0x2b, 0x5a, 0x29, 0x67, 0x69, 0x74, 0x68, 0x75, 0x62, 0x2e, 0x63, 0x6f, 0x6d, 0x2f, 0x69,
+	0x6e, 0x66, 0x72, 0x61, 0x62, 0x6f, 0x61, 0x72, 0x64, 0x2f, 0x6d, 0x70, 0x61, 0x61, 0x73, 0x2f,
+	0x61, 0x70, 0x70, 0x73, 0x2f, 0x61, 0x72, 0x74, 0x69, 0x66, 0x61, 0x63, 0x74, 0x62, 0x06, 0x70,
+	0x72, 0x6f, 0x74, 0x6f, 0x33,
 }
 
-var file_apps_artifact_pb_artifact_proto_goTypes = []interface{}{}
+var (
+	file_apps_artifact_pb_artifact_proto_rawDescOnce sync.Once
+	file_apps_artifact_pb_artifact_proto_rawDescData = file_apps_artifact_pb_artifact_proto_rawDesc
+)
+
+func file_apps_artifact_pb_artifact_proto_rawDescGZIP() []byte {
+	file_apps_artifact_pb_artifact_proto_rawDescOnce.Do(func() {
+		file_apps_artifact_pb_artifact_proto_rawDescData = protoimpl.X.CompressGZIP(file_apps_artifact_pb_artifact_proto_rawDescData)
+	})
+	return file_apps_artifact_pb_artifact_proto_rawDescData
+}
+
+var file_apps_artifact_pb_artifact_proto_enumTypes = make([]protoimpl.EnumInfo, 2)
+var file_apps_artifact_pb_artifact_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
+var file_apps_artifact_pb_artifact_proto_goTypes = []interface{}{
+	(TYPE)(0),        // 0: infraboard.mpaas.artifact.TYPE
+	(PLATFORM)(0),    // 1: infraboard.mpaas.artifact.PLATFORM
+	(*Artifact)(nil), // 2: infraboard.mpaas.artifact.Artifact
+}
 var file_apps_artifact_pb_artifact_proto_depIdxs = []int32{
-	0, // [0:0] is the sub-list for method output_type
-	0, // [0:0] is the sub-list for method input_type
-	0, // [0:0] is the sub-list for extension type_name
-	0, // [0:0] is the sub-list for extension extendee
-	0, // [0:0] is the sub-list for field type_name
+	0, // 0: infraboard.mpaas.artifact.Artifact.type:type_name -> infraboard.mpaas.artifact.TYPE
+	1, // [1:1] is the sub-list for method output_type
+	1, // [1:1] is the sub-list for method input_type
+	1, // [1:1] is the sub-list for extension type_name
+	1, // [1:1] is the sub-list for extension extendee
+	0, // [0:1] is the sub-list for field type_name
 }
 
 func init() { file_apps_artifact_pb_artifact_proto_init() }
@@ -46,18 +234,34 @@ func file_apps_artifact_pb_artifact_proto_init() {
 	if File_apps_artifact_pb_artifact_proto != nil {
 		return
 	}
+	if !protoimpl.UnsafeEnabled {
+		file_apps_artifact_pb_artifact_proto_msgTypes[0].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*Artifact); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+	}
 	type x struct{}
 	out := protoimpl.TypeBuilder{
 		File: protoimpl.DescBuilder{
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: file_apps_artifact_pb_artifact_proto_rawDesc,
-			NumEnums:      0,
-			NumMessages:   0,
+			NumEnums:      2,
+			NumMessages:   1,
 			NumExtensions: 0,
 			NumServices:   0,
 		},
 		GoTypes:           file_apps_artifact_pb_artifact_proto_goTypes,
 		DependencyIndexes: file_apps_artifact_pb_artifact_proto_depIdxs,
+		EnumInfos:         file_apps_artifact_pb_artifact_proto_enumTypes,
+		MessageInfos:      file_apps_artifact_pb_artifact_proto_msgTypes,
 	}.Build()
 	File_apps_artifact_pb_artifact_proto = out.File
 	file_apps_artifact_pb_artifact_proto_rawDesc = nil
