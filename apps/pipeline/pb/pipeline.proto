@@ -171,6 +171,9 @@ enum TRIGGER_MODE  {
 }
 
 message RunPipelineRequest {
+    // pipeline运行任务id, 如果没传 会自动生成
+	// @gotags: bson:"pipeline_task_id" json:"pipeline_task_id,omitempty"
+    string pipeline_task_id = 7;
     // pipeline id
 	// @gotags: bson:"pipeline_id" json:"pipeline_id" validate:"required"
     string pipeline_id = 1;

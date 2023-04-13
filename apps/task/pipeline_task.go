@@ -30,6 +30,12 @@ func NewPipelineTask(p *pipeline.Pipeline, in *pipeline.RunPipelineRequest) *Pip
 	pt.Pipeline = p
 	pt.Params = in
 
+	// 如果传入了id 则使用传入的id
+	if in.PipelineTaskId != "" {
+		pt.Meta.Id = in.PipelineTaskId
+		in.PipelineTaskId = ""
+	}
+
 	// 初始化所有的JobTask
 	for i := range p.Spec.Stages {
 		spec := p.Spec.Stages[i]

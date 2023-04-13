@@ -76,7 +76,6 @@ func (e *GitlabWebHookEvent) ToJson() string {
 }
 
 func (e *GitlabWebHookEvent) ParseEventType(eventHeaderName string) {
-	e.EventDescribe = eventHeaderName
 	switch eventHeaderName {
 	case "Push Hook":
 		e.EventType = GITLAB_EVENT_TYPE_PUSH
@@ -173,8 +172,8 @@ func (e *GitlabWebHookEvent) GitRunParams(params *job.VersionedRunParam) {
 			job.NewRunParam(VARIABLE_GIT_MR_SOURCE_BRANCE, oa.SourceBranch),
 			job.NewRunParam(VARIABLE_GIT_MR_TARGET_BRANCE, oa.TargetBranch),
 		)
-		if e.LastCommit != nil {
-			params.Add(job.NewRunParam(VARIABLE_GIT_COMMIT, e.LastCommit.Id))
+		if oa.LastCommit != nil {
+			params.Add(job.NewRunParam(VARIABLE_GIT_COMMIT, oa.LastCommit.Id))
 		}
 	case GITLAB_EVENT_TYPE_COMMENT:
 	case GITLAB_EVENT_TYPE_ISSUE:

@@ -21,9 +21,6 @@ message GitlabWebHookEvent {
     // 事件类型, 根据Hook名字判断生成
     // @gotags: bson:"event_type" json:"-"
     GITLAB_EVENT_TYPE event_type = 1;
-    // 事件描述
-    // @gotags: bson:"event_describe" json:"event_describe"
-    string event_describe = 13;
     // 事件类型
     // @gotags: bson:"object_kind" json:"object_kind"
     string object_kind = 2;
@@ -51,9 +48,9 @@ message GitlabWebHookEvent {
     // MR是对象相关信息
     // @gotags: bson:"object_attributes" json:"object_attributes,omitempty"
     ObjectAttributes object_attributes = 10;
-    // MR是对象相关时，最新的commit信息
-    // @gotags: bson:"last_commit" json:"last_commit,omitempty"
-    Commit last_commit = 11;
+    // comment时的 commit信息
+    // @gotags: bson:"commit" json:"commit,omitempty"
+    Commit commit = 11;
     // 合并请求的负责人或者责任人
     // 他们被分配了任务去审查、测试、合并和关闭这个 Merge Request。
     // 通常情况下，assignees 是一个或多个开发人员、测试人员或者代码评审人员。
