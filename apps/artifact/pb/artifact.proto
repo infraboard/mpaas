@@ -31,7 +31,10 @@ message Artifact {
     common.meta.Meta meta = 1;
     // 创建信息
     // @gotags: bson:",inline" json:"spec"
-    CreateArtifactRequest spec = 6;
+    CreateArtifactRequest spec = 2;
+    // 产物质量
+    // @gotags: bson:"quality" json:"quality"
+	Quality quality = 3;
 }
 
 message CreateArtifactRequest {
@@ -68,4 +71,11 @@ message CreateArtifactRequest {
     // 标签
     // @gotags: bson:"labels" json:"labels"
     map<string,string> labels = 15;
+}
+
+// 制品质量
+message Quality {
+    // 代码覆盖率
+    // @gotags: bson:"coverage" json:"coverage"
+	float coverage  = 1;
 }
