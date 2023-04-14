@@ -98,6 +98,9 @@ func (h *Handler) BuildEvent(ctx context.Context, in *trigger.Event) error {
 	branchReq := gitlab.NewGetProjectBranchRequest()
 	branchReq.ProjectId = repo.ProjectId
 	branchReq.Branch = event.GetBranch()
+	if branchReq.Branch == "" {
+		branchReq.Branch = in.SubName
+	}
 	b, err := v4.Project().GetProjectBranch(ctx, branchReq)
 	if err != nil {
 		return fmt.Errorf("查询分支: %s 异常, %s", branchReq.Branch, err)

@@ -1,10 +1,11 @@
 {
-    "skip_run_pipeline": false,
+    "skip_run_pipeline": true,
     "provider": "GITLAB",
-    "gitlab_event": {
-        "event_token": "11fdd50a",
-        "event_type": "PUSH",
-        "event_name": "push",
-        "ref": "refs/heads/master"
-    }
+    "is_mock": true,
+    "from": "https://gitlab.com",
+    "user_agent": "test",
+    "name": "Push Hook",
+    "sub_name": "master",
+    "token": "11fdd50a",
+    "raw": "{}"
 }

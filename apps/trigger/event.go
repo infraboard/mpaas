@@ -134,6 +134,10 @@ func (e *Event) GetGitlabEvent() (*GitlabWebHookEvent, error) {
 		return nil, fmt.Errorf("not gitlab")
 	}
 
+	if e.Raw == "" {
+		return nil, fmt.Errorf("event raw data not found")
+	}
+
 	event := NewGitlabWebHookEvent()
 	err := json.Unmarshal([]byte(e.Raw), event)
 	if err != nil {
