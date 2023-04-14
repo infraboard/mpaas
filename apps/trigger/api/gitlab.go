@@ -21,6 +21,14 @@ func (h *Handler) HandleGitlabEvent(r *restful.Request, w *restful.Response) {
 		return
 	}
 
+	// 专门处理Gilab事件
+	ge, err := event.GetGitlabEvent()
+	if err != nil {
+		response.Failed(w, err)
+		return
+	}
+	event.SubName = ge.GetBranch()
+
 	h.log.Debugf("accept event: %s", event.ToJson())
 	ins, err := h.svc.HandleEvent(r.Request.Context(), event)
 	if err != nil {

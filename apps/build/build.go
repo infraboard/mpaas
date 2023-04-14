@@ -32,6 +32,10 @@ func (s *BuildConfigSet) Add(item *BuildConfig) {
 	s.Items = append(s.Items, item)
 }
 
+func (s *BuildConfigSet) Len() int {
+	return len(s.Items)
+}
+
 // 比如: "foo.*"
 func (s *BuildConfigSet) MatchSubEvent(branchRegExp string) *BuildConfigSet {
 	set := NewBuildConfigSet()
