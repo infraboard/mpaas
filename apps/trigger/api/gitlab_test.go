@@ -37,7 +37,7 @@ func TestHandleGitlabPushEvent(t *testing.T) {
 	impl.HandleGitlabEvent(restful.NewRequest(req), restful.NewResponse(resp))
 
 	if resp.Code != http.StatusOK {
-		t.Log(resp)
+		t.Log(resp.Body)
 		t.Fatalf("Expected response code %d. Got %d.", http.StatusOK, resp.Code)
 	}
 
@@ -63,7 +63,7 @@ func TestMannulGitlabEvent(t *testing.T) {
 	impl.MannulGitlabEvent(restful.NewRequest(req), restful.NewResponse(resp))
 
 	if resp.Code != http.StatusOK {
-		t.Log(resp)
+		t.Log(resp.Body)
 		t.Fatalf("Expected response code %d. Got %d.", http.StatusOK, resp.Code)
 	}
 

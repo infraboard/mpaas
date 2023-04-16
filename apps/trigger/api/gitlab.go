@@ -21,6 +21,14 @@ func (h *Handler) HandleGitlabEvent(r *restful.Request, w *restful.Response) {
 		return
 	}
 
+	// 专门处理Gilab事件
+	ge, err := event.GetGitlabEvent()
+	if err != nil {
+		response.Failed(w, err)
+		return
+	}
+	event.SubName = ge.GetBranch()
+
 	h.log.Debugf("accept event: %s", event.ToJson())
 	ins, err := h.svc.HandleEvent(r.Request.Context(), event)
 	if err != nil {
@@ -98,6 +106,9 @@ func (h *Handler) BuildEvent(ctx context.Context, in *trigger.Event) error {
 	branchReq := gitlab.NewGetProjectBranchRequest()
 	branchReq.ProjectId = repo.ProjectId
 	branchReq.Branch = event.GetBranch()
+	if branchReq.Branch == "" {
+		branchReq.Branch = in.SubName
+	}
 	b, err := v4.Project().GetProjectBranch(ctx, branchReq)
 	if err != nil {
 		return fmt.Errorf("查询分支: %s 异常, %s", branchReq.Branch, err)

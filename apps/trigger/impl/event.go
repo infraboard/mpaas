@@ -29,19 +29,9 @@ func (i *impl) HandleEvent(ctx context.Context, in *trigger.Event) (
 		return nil, err
 	}
 
-	// 针对Gitlab的事件，独立提取分支作为子名称
-	switch in.Provider {
-	case trigger.EVENT_PROVIDER_GITLAB:
-		event, err := in.GetGitlabEvent()
-		if err != nil {
-			ins.Event.ParseError = err.Error()
-			return ins, nil
-		}
-		in.SubName = event.GetBranch()
-	}
-
 	// 子事件匹配
 	matched := set.MatchSubEvent(in.SubName)
+
 	for index := range matched.Items {
 		// 执行构建配置匹配的流水线
 		buildConf := matched.Items[index]

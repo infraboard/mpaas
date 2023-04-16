@@ -11,7 +11,7 @@ import (
 func TestQueryBuildConfig(t *testing.T) {
 	req := build.NewQueryBuildConfigRequest()
 	req.AddService(conf.C.MCENTER_SERVICE_ID)
-	req.Event = "push"
+	req.Event = "Push Hook"
 	set, err := impl.QueryBuildConfig(ctx, req)
 	if err != nil {
 		t.Fatal(err)
@@ -30,7 +30,8 @@ func TestDescribeBuildConfig(t *testing.T) {
 
 func TestUpdateMcenterBuildConfig(t *testing.T) {
 	req := build.NewPatchBuildConfigRequest(conf.C.MCENTER_BUILD_ID)
-	req.Spec.Condition.AddEvent("push")
+	// https://docs.gitlab.com/ee/user/project/integrations/webhook_events.html 中Header值: X-Gitlab-Event
+	req.Spec.Condition.AddEvent("Push Hook")
 	req.Spec.Condition.AddSubEvents("master")
 	req.Spec.ImageBuild.ImageRepository = "registry.cn-hangzhou.aliyuncs.com/infraboard/mcenter"
 	req.Spec.PipelineId = conf.C.MPAAS_PIPELINE_ID
