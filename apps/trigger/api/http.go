@@ -6,6 +6,7 @@ import (
 	restfulspec "github.com/emicklei/go-restful-openapi/v2"
 	"github.com/emicklei/go-restful/v3"
 	"github.com/infraboard/mcube/app"
+	"github.com/infraboard/mcube/http/label"
 	"github.com/infraboard/mcube/logger"
 	"github.com/infraboard/mcube/logger/zap"
 
@@ -53,10 +54,18 @@ func (h *Handler) Registry(ws *restful.WebService) {
 
 	ws.Route(ws.POST("gitlab").To(h.HandleGitlabEvent).
 		Doc("处理Gitlab Webhook事件").
-		Metadata(restfulspec.KeyOpenAPITags, tags))
+		Metadata(restfulspec.KeyOpenAPITags, tags).
+		Metadata(label.Resource, h.Name()).
+		Metadata(label.Action, label.Create.Value()).
+		Metadata(label.Auth, label.Disable).
+		Metadata(label.Permission, label.Disable))
 	ws.Route(ws.POST("mannul").To(h.MannulGitlabEvent).
 		Doc("手动模拟Gitlab Webhook事件").
-		Metadata(restfulspec.KeyOpenAPITags, tags))
+		Metadata(restfulspec.KeyOpenAPITags, tags).
+		Metadata(label.Resource, h.Name()).
+		Metadata(label.Action, label.Create.Value()).
+		Metadata(label.Auth, label.Enable).
+		Metadata(label.Permission, label.Enable))
 }
 
 func init() {
