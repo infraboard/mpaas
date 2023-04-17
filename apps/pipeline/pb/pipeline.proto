@@ -192,6 +192,9 @@ message RunPipelineRequest {
 	// Pipeline 的运行时参数
 	// @gotags: bson:"run_params" json:"run_params"
 	repeated job.RunParam run_params = 5;
+	// 下一个PipelineTaskId, 多个Pipeline编排时指定先后顺序
+	// @gotags: bson:"next_pipeline_task_id" json:"next_pipeline_task_id"
+	string next_pipeline_task_id = 8;
 	// 任务标签
 	// @gotags: bson:"labels" json:"labels"
 	map<string, string> labels = 15;

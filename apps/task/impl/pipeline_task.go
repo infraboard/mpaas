@@ -202,12 +202,19 @@ func (i *impl) PipelineTaskStatusChanged(ctx context.Context, in *task.JobTask) 
 
 // 更新Pipeline状态
 func (i *impl) updatePipelineStatus(ctx context.Context, in *task.PipelineTask) (*task.PipelineTask, error) {
+	// pipeline 状态更新回调
+	i.PipelineStatusChangedCallback()
+
 	in.Meta.UpdateAt = time.Now().Unix()
 	if _, err := i.pcol.UpdateByID(ctx, in.Meta.Id, bson.M{"$set": bson.M{"status": in.Status}}); err != nil {
 		return nil, exception.NewInternalServerError("update task(%s) document error, %s",
 			in.Meta.Id, err)
 	}
 	return in, nil
+}
+
+func (i *impl) PipelineStatusChangedCallback() {
+
 }
 
 // 更新Pipeline状态
