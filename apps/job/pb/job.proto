@@ -64,6 +64,9 @@ message JobStatus {
     // 发布人
     // @gotags: bson:"published_by" json:"published_by"
     string published_by = 4;
+    // 发布描述
+    // @gotags: bson:"published_describe" json:"published_describe"
+    string publish_describe = 5;
 }
 
 enum RUN_MODE {
