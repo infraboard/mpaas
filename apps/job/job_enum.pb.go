@@ -54,6 +54,51 @@ func (t *RUNNER_TYPE) UnmarshalJSON(b []byte) error {
 	return nil
 }
 
+// ParseJOB_STAGEFromString Parse JOB_STAGE from string
+func ParseJOB_STAGEFromString(str string) (JOB_STAGE, error) {
+	key := strings.Trim(string(str), `"`)
+	v, ok := JOB_STAGE_value[strings.ToUpper(key)]
+	if !ok {
+		return 0, fmt.Errorf("unknown JOB_STAGE: %s", str)
+	}
+
+	return JOB_STAGE(v), nil
+}
+
+// Equal type compare
+func (t JOB_STAGE) Equal(target JOB_STAGE) bool {
+	return t == target
+}
+
+// IsIn todo
+func (t JOB_STAGE) IsIn(targets ...JOB_STAGE) bool {
+	for _, target := range targets {
+		if t.Equal(target) {
+			return true
+		}
+	}
+
+	return false
+}
+
+// MarshalJSON todo
+func (t JOB_STAGE) MarshalJSON() ([]byte, error) {
+	b := bytes.NewBufferString(`"`)
+	b.WriteString(strings.ToUpper(t.String()))
+	b.WriteString(`"`)
+	return b.Bytes(), nil
+}
+
+// UnmarshalJSON todo
+func (t *JOB_STAGE) UnmarshalJSON(b []byte) error {
+	ins, err := ParseJOB_STAGEFromString(string(b))
+	if err != nil {
+		return err
+	}
+	*t = ins
+	return nil
+}
+
 // ParseRUN_MODEFromString Parse RUN_MODE from string
 func ParseRUN_MODEFromString(str string) (RUN_MODE, error) {
 	key := strings.Trim(string(str), `"`)

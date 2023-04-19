@@ -82,12 +82,18 @@ func ParseDescribeName(name string) (DESCRIBE_BY, string) {
 	}
 }
 
-func ParseUniqName(name string) (jobname, namespace, domain string) {
+// docker_build@default.default:v1
+func ParseUniqName(name string) (version, jobname, namespace, domain string) {
 	if name == "" {
 		return
 	}
 
-	nv := strings.Split(name, UNIQ_NAME_SPLITER)
+	v := strings.Split(name, UNIQ_VERSION_SPLITER)
+	if len(v) > 1 {
+		version = v[1]
+	}
+
+	nv := strings.Split(v[0], UNIQ_NAME_SPLITER)
 	jobname = nv[0]
 
 	if len(nv) > 1 {

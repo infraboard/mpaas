@@ -39,6 +39,31 @@ message Job {
     // job创建信息
 	// @gotags: bson:",inline" json:"spec"
     CreateJobRequest spec = 2; 
+    // job状态, 注意 Job是带有版本管理的
+	// @gotags: bson:"status" json:"status"
+    JobStatus status = 3; 
+}
+
+enum JOB_STAGE {
+	// draft 草案, 未发布状态, 允许编辑
+	DRAFT = 0;
+	// published 已发布, 已发布的job不允许修改
+	PUBLISHED = 1;
+}
+
+message JobStatus {
+    // job创建信息
+	// @gotags: bson:"stage" json:"stage"
+	JOB_STAGE stage = 1;
+    // 发布的版本
+    // @gotags: bson:"version" json:"version"
+    string version = 2;
+    // 发布时间
+    // @gotags: bson:"published_at" json:"published_at"
+    int64 published_at = 3;
+    // 发布人
+    // @gotags: bson:"published_by" json:"published_by"
+    string published_by = 4;
 }
 
 enum RUN_MODE {

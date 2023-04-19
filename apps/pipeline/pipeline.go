@@ -132,6 +132,13 @@ func NewRunJobRequest(jobName string) *RunJobRequest {
 	}
 }
 
+func (r *RunJobRequest) VersionName(version string) string {
+	if strings.Contains(r.JobName, job.UNIQ_VERSION_SPLITER) {
+		return r.JobName
+	}
+	return fmt.Sprintf("%s%s%s", r.JobName, job.UNIQ_VERSION_SPLITER, version)
+}
+
 func (r *RunJobRequest) Enabled() bool {
 	return !r.SkipRun
 }

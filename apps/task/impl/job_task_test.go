@@ -30,7 +30,7 @@ func TestRunBuildJob(t *testing.T) {
 	// 添加任务执行成功提醒
 	req.AddMentionUser(task.NewMentionUser("admin", notify.NOTIFY_TYPE_IM))
 	// 添加参数
-	version := job.NewVersionedRunParam("v1")
+	version := job.NewVersionedRunParam(job.LATEST_VERSION_NAME)
 	version.Params = job.NewRunParamWithKVPaire(
 		"GIT_SSH_URL", "git@github.com:infraboard/mcenter.git",
 		"GIT_BRANCH", "master",
@@ -48,7 +48,7 @@ func TestRunBuildJob(t *testing.T) {
 
 func TestRunDeployJob(t *testing.T) {
 	req := pipeline.NewRunJobRequest("docker_deploy@default.default")
-	version := job.NewVersionedRunParam("v1")
+	version := job.NewVersionedRunParam(job.LATEST_VERSION_NAME)
 	version.Params = job.NewRunParamWithKVPaire(
 		job.SYSTEM_VARIABLE_DEPLOY_ID, conf.C.DEPLOY_ID,
 		build.SYSTEM_VARIABLE_APP_VERSION, "1.30",

@@ -22,8 +22,9 @@ func New(req *CreateJobRequest) (*Job, error) {
 
 	req.BuildSearchLabels()
 	d := &Job{
-		Meta: meta.NewMeta(),
-		Spec: req,
+		Meta:   meta.NewMeta(),
+		Spec:   req,
+		Status: NewJobStatus(),
 	}
 
 	return d, nil
@@ -346,4 +347,8 @@ func (p *RunParam) SetSearchLabel(v bool) *RunParam {
 func (p *RunParam) SetRequired(v bool) *RunParam {
 	p.Required = v
 	return p
+}
+
+func NewJobStatus() *JobStatus {
+	return &JobStatus{}
 }

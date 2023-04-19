@@ -64,10 +64,17 @@ func (i *impl) DescribeJob(ctx context.Context, in *job.DescribeJobRequest) (
 	case job.DESCRIBE_BY_JOB_ID:
 		filter["_id"] = in.DescribeValue
 	case job.DESCRIBE_BY_JOB_UNIQ_NAME:
-		name, ns, domain := job.ParseUniqName(in.DescribeValue)
+		version, name, ns, domain := job.ParseUniqName(in.DescribeValue)
 		filter["name"] = name
 		filter["namespace"] = ns
 		filter["domain"] = domain
+		if version != "" {
+			if version == job.LATEST_VERSION_NAME {
+				filter["status.stage"] = job.JOB_STAGE_PUBLISHED
+			} else {
+				filter["status.version"] = version
+			}
+		}
 	}
 
 	opt := &options.FindOneOptions{

@@ -31,7 +31,6 @@ func (i *impl) HandleEvent(ctx context.Context, in *trigger.Event) (
 
 	// 子事件匹配
 	matched := set.MatchSubEvent(in.SubName)
-
 	for index := range matched.Items {
 		// 执行构建配置匹配的流水线
 		buildConf := matched.Items[index]

@@ -1,6 +1,7 @@
 package job
 
 const (
+	UNIQ_VERSION_SPLITER   = ":"
 	UNIQ_NAME_SPLITER      = "@"
 	UNIQ_NAMESPACE_SPLITER = "."
 )
@@ -23,4 +24,9 @@ const (
 	SYSTEM_VARIABLE_WORKLOAD_NAME = "_WORKLOAD_NAME"
 	// 部署服务名称
 	SYSTEM_VARIABLE_SERVICE_NAME = "_SERVICE_NAME"
+)
+
+const (
+	// 获取最新发布的版本
+	LATEST_VERSION_NAME = "latest"
 )

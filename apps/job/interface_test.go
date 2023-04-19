@@ -12,5 +12,5 @@ func TestParseDescribeName(t *testing.T) {
 }
 
 func TestParseUniqName(t *testing.T) {
-	t.Log(job.ParseUniqName("job_name@namespace.domain"))
+	t.Log(job.ParseUniqName("job_name@namespace.domain:v1"))
 }
