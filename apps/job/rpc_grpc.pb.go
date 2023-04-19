@@ -19,10 +19,11 @@ import (
 const _ = grpc.SupportPackageIsVersion7
 
 const (
-	RPC_CreateJob_FullMethodName   = "/infraboard.mpaas.job.RPC/CreateJob"
-	RPC_QueryJob_FullMethodName    = "/infraboard.mpaas.job.RPC/QueryJob"
-	RPC_DescribeJob_FullMethodName = "/infraboard.mpaas.job.RPC/DescribeJob"
-	RPC_UpdateJob_FullMethodName   = "/infraboard.mpaas.job.RPC/UpdateJob"
+	RPC_CreateJob_FullMethodName       = "/infraboard.mpaas.job.RPC/CreateJob"
+	RPC_QueryJob_FullMethodName        = "/infraboard.mpaas.job.RPC/QueryJob"
+	RPC_DescribeJob_FullMethodName     = "/infraboard.mpaas.job.RPC/DescribeJob"
+	RPC_UpdateJob_FullMethodName       = "/infraboard.mpaas.job.RPC/UpdateJob"
+	RPC_UpdateJobStatus_FullMethodName = "/infraboard.mpaas.job.RPC/UpdateJobStatus"
 )
 
 // RPCClient is the client API for RPC service.
@@ -33,6 +34,8 @@ type RPCClient interface {
 	QueryJob(ctx context.Context, in *QueryJobRequest, opts ...grpc.CallOption) (*JobSet, error)
 	DescribeJob(ctx context.Context, in *DescribeJobRequest, opts ...grpc.CallOption) (*Job, error)
 	UpdateJob(ctx context.Context, in *UpdateJobRequest, opts ...grpc.CallOption) (*Job, error)
+	// 编辑job状态, 比如发布
+	UpdateJobStatus(ctx context.Context, in *UpdateJobStatusRequest, opts ...grpc.CallOption) (*Job, error)
 }
 
 type rPCClient struct {
@@ -79,6 +82,15 @@ func (c *rPCClient) UpdateJob(ctx context.Context, in *UpdateJobRequest, opts ..
 	return out, nil
 }
 
+func (c *rPCClient) UpdateJobStatus(ctx context.Context, in *UpdateJobStatusRequest, opts ...grpc.CallOption) (*Job, error) {
+	out := new(Job)
+	err := c.cc.Invoke(ctx, RPC_UpdateJobStatus_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // RPCServer is the server API for RPC service.
 // All implementations must embed UnimplementedRPCServer
 // for forward compatibility
@@ -87,6 +99,8 @@ type RPCServer interface {
 	QueryJob(context.Context, *QueryJobRequest) (*JobSet, error)
 	DescribeJob(context.Context, *DescribeJobRequest) (*Job, error)
 	UpdateJob(context.Context, *UpdateJobRequest) (*Job, error)
+	// 编辑job状态, 比如发布
+	UpdateJobStatus(context.Context, *UpdateJobStatusRequest) (*Job, error)
 	mustEmbedUnimplementedRPCServer()
 }
 
@@ -105,6 +119,9 @@ func (UnimplementedRPCServer) DescribeJob(context.Context, *DescribeJobRequest) 
 }
 func (UnimplementedRPCServer) UpdateJob(context.Context, *UpdateJobRequest) (*Job, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method UpdateJob not implemented")
+}
+func (UnimplementedRPCServer) UpdateJobStatus(context.Context, *UpdateJobStatusRequest) (*Job, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UpdateJobStatus not implemented")
 }
 func (UnimplementedRPCServer) mustEmbedUnimplementedRPCServer() {}
 
@@ -191,6 +208,24 @@ func _RPC_UpdateJob_Handler(srv interface{}, ctx context.Context, dec func(inter
 	return interceptor(ctx, in, info, handler)
 }
 
+func _RPC_UpdateJobStatus_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(UpdateJobStatusRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(RPCServer).UpdateJobStatus(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: RPC_UpdateJobStatus_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(RPCServer).UpdateJobStatus(ctx, req.(*UpdateJobStatusRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // RPC_ServiceDesc is the grpc.ServiceDesc for RPC service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -213,6 +248,10 @@ var RPC_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "UpdateJob",
 			Handler:    _RPC_UpdateJob_Handler,
+		},
+		{
+			MethodName: "UpdateJobStatus",
+			Handler:    _RPC_UpdateJobStatus_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

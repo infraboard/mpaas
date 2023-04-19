@@ -14,6 +14,9 @@ service RPC {
     rpc QueryJob(QueryJobRequest) returns(JobSet);
     rpc DescribeJob(DescribeJobRequest) returns(Job);
     rpc UpdateJob(UpdateJobRequest) returns(Job);
+
+    // 编辑job状态, 比如发布
+    rpc UpdateJobStatus(UpdateJobStatusRequest) returns(Job);
 }
 
 message QueryJobRequest {
@@ -73,4 +76,13 @@ message UpdateJobRequest {
     // 更新的信息
     // @gotags: json:"spec"
     CreateJobRequest spec = 5;
+}
+
+message UpdateJobStatusRequest {
+    // job id
+    // @gotags: json:"id" validate:"required"
+    string id = 1;
+    // job状态, 注意 Job是带有版本管理的
+	// @gotags: bson:"status" json:"status"
+    JobStatus status = 2;
 }

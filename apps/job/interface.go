@@ -117,7 +117,6 @@ func NewDescribeJobRequest(name string) *DescribeJobRequest {
 }
 
 func (req *DescribeJobRequest) Validate() error {
-
 	return validate.Validate(req)
 }
 
@@ -137,4 +136,15 @@ func NewPatchJobRequest(id string) *UpdateJobRequest {
 		UpdateAt:   time.Now().Unix(),
 		Spec:       NewCreateJobRequest(),
 	}
+}
+
+func NewUpdateJobStatusRequest(id string) *UpdateJobStatusRequest {
+	return &UpdateJobStatusRequest{
+		Id:     id,
+		Status: NewJobStatus(),
+	}
+}
+
+func (r *UpdateJobStatusRequest) Validate() error {
+	return validate.Validate(r)
 }

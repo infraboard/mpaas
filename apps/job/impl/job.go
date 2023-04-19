@@ -2,6 +2,7 @@ package impl
 
 import (
 	"context"
+	"time"
 
 	"github.com/infraboard/mcube/exception"
 	"github.com/infraboard/mcube/pb/request"
@@ -117,6 +118,34 @@ func (i *impl) UpdateJob(ctx context.Context, in *job.UpdateJobRequest) (
 		return nil, err
 	}
 
+	if err := i.update(ctx, ins); err != nil {
+		return nil, err
+	}
+
+	return ins, nil
+}
+
+func (i *impl) UpdateJobStatus(ctx context.Context, in *job.UpdateJobStatusRequest) (
+	*job.Job, error) {
+	ins, err := i.DescribeJob(ctx, job.NewDescribeJobRequest("#"+in.Id))
+	if err != nil {
+		return nil, err
+	}
+
+	if err := in.Validate(); err != nil {
+		return nil, err
+	}
+
+	if in.Status.Stage < ins.Status.Stage {
+		return nil, exception.NewBadRequest("状态不合法")
+	}
+
+	switch in.Status.Stage {
+	case job.JOB_STAGE_PUBLISHED:
+		ins.Status.PublishedAt = time.Now().Unix()
+	}
+
+	ins.Status = in.Status
 	if err := i.update(ctx, ins); err != nil {
 		return nil, err
 	}

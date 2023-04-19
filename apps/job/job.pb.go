@@ -465,8 +465,8 @@ type JobStatus struct {
 	// @gotags: bson:"stage" json:"stage"
 	Stage JOB_STAGE `protobuf:"varint,1,opt,name=stage,proto3,enum=infraboard.mpaas.job.JOB_STAGE" json:"stage" bson:"stage"`
 	// 发布的版本
-	// @gotags: bson:"version" json:"version"
-	Version string `protobuf:"bytes,2,opt,name=version,proto3" json:"version" bson:"version"`
+	// @gotags: bson:"version" json:"version" validate:"required"
+	Version string `protobuf:"bytes,2,opt,name=version,proto3" json:"version" bson:"version" validate:"required"`
 	// 发布时间
 	// @gotags: bson:"published_at" json:"published_at"
 	PublishedAt int64 `protobuf:"varint,3,opt,name=published_at,json=publishedAt,proto3" json:"published_at" bson:"published_at"`

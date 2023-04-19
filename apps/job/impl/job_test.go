@@ -214,3 +214,14 @@ func TestDescribeJob(t *testing.T) {
 	}
 	t.Log(tools.MustToJson(ins))
 }
+
+func TestUpdateJobStatus(t *testing.T) {
+	req := job.NewUpdateJobStatusRequest("docker_build@default.default")
+	req.Status.Stage = job.JOB_STAGE_PUBLISHED
+	req.Status.Version = "v1"
+	ins, err := impl.UpdateJobStatus(ctx, req)
+	if err != nil {
+		t.Fatal(err)
+	}
+	t.Log(tools.MustToJson(ins))
+}
