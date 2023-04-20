@@ -11,6 +11,7 @@ import (
 	"github.com/infraboard/mcube/app"
 	"github.com/infraboard/mcube/logger"
 	"github.com/infraboard/mcube/logger/zap"
+	"go.opentelemetry.io/contrib/instrumentation/github.com/emicklei/go-restful/otelrestful"
 
 	"github.com/infraboard/mcenter/apps/endpoint"
 	"github.com/infraboard/mcenter/client/rpc"
@@ -45,6 +46,9 @@ func NewHTTPService() *HTTPService {
 
 	r.Filter(cors.Filter)
 	r.Filter(middleware.RestfulServerInterceptor())
+
+	filter := otelrestful.OTelFilter(version.ServiceName)
+	restful.DefaultContainer.Filter(filter)
 
 	server := &http.Server{
 		ReadHeaderTimeout: 60 * time.Second,

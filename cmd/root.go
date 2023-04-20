@@ -14,6 +14,7 @@ import (
 	"github.com/infraboard/mpaas/cmd/initial"
 	"github.com/infraboard/mpaas/cmd/start"
 	"github.com/infraboard/mpaas/conf"
+	"github.com/infraboard/mpaas/tracer"
 	"github.com/infraboard/mpaas/version"
 )
 
@@ -132,6 +133,10 @@ func initail() {
 
 	// 初始化全局app
 	err = app.InitAllApp()
+	cobra.CheckErr(err)
+
+	// 初始化Tracer
+	err = tracer.InitTracer()
 	cobra.CheckErr(err)
 }
 
