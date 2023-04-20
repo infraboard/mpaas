@@ -231,6 +231,11 @@ func (i *impl) PipelineStatusChangedCallback(ctx context.Context, in *task.Pipel
 		mu := in.Pipeline.Spec.MentionUsers[index]
 		i.PipelineTaskMention(ctx, mu, in)
 	}
+
+	// 是否需要运行下一个Pipeline
+	if in.Pipeline.Spec.NextPipeline != "" {
+		i.log.Debugf("next pipeline: %s", in.Pipeline.Spec.NextPipeline)
+	}
 }
 
 // 更新Pipeline状态

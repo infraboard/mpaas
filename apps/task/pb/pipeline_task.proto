@@ -53,6 +53,12 @@ message PipelineTaskStatus {
 	// Pipline 关注人通知状态
 	// @gotags: bson:"notify_status" json:"notify_status"
 	repeated CallbackStatus notify_status = 11;
+	// 如果有下一个需要运行的Pipeline Task 的id
+	// @gotags: bson:"next_pipeline_task_id" json:"next_pipeline_task_id"
+	string next_pipeline_task_id = 14;
+	// 运行下一个流水线失败
+	// @gotags: bson:"run_next_pipeline_error" json:"run_next_pipeline_error"
+	string run_next_pipeline_error = 15;
 }
 
 message StageStatus {
