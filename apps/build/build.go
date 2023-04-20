@@ -152,7 +152,7 @@ func (t *Trigger) MatchSubEvent(pattern string) bool {
 			if ok {
 				return true
 			}
-		case MATCH_TYPE_REG_EXP:
+		case MATCH_TYPE_REGEXP:
 			ok, _ := regexp.MatchString(pattern, b)
 			if ok {
 				return true

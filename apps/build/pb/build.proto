@@ -95,7 +95,7 @@ enum MATCH_TYPE {
     // 通配符
     GLOB = 1;
     // 正则表达式
-    REG_EXP = 2;
+    REGEXP = 2;
 }
 
 // 构建目标的类型
