@@ -148,6 +148,10 @@ func (t *Trigger) MatchSubEvent(pattern string) bool {
 	for _, b := range t.SubEvents {
 		switch t.SubEventsMatchType {
 		case MATCH_TYPE_GLOB:
+			// 如果是* 直接匹配所有, 避免通配符/的问题
+			if b == "*" {
+				return true
+			}
 			ok, _ := filepath.Match(pattern, b)
 			if ok {
 				return true
