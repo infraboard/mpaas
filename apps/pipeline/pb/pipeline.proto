@@ -60,6 +60,9 @@ message CreatePipelineRequest {
 	// 具体编排阶段
 	// @gotags: bson:"stages" json:"stages"
 	repeated Stage stages = 12;
+	// WebHook配置, 及时把job执行状态推送给外部, 常用于外部系统的集成，比如飞书机器人
+	// @gotags: bson:"webhooks" json:"webhooks"
+	repeated WebHook webhooks = 13;
 	// Pipeline的关注人, 关注后会及时把任务运行状态通知给他们
 	// @gotags: bson:"mention_users" json:"mention_users"
 	repeated MentionUser mention_users = 11;

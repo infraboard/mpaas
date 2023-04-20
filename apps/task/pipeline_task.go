@@ -70,6 +70,14 @@ func (p *PipelineTask) IsActive() bool {
 	return false
 }
 
+func (p *PipelineTask) HasJobSpec() bool {
+	if p.Pipeline != nil && p.Pipeline.Spec != nil {
+		return true
+	}
+
+	return false
+}
+
 func (p *PipelineTask) MarkedRunning() {
 	p.Status.Stage = STAGE_ACTIVE
 	p.Status.StartAt = time.Now().Unix()

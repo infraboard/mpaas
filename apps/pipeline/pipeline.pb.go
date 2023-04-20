@@ -232,6 +232,9 @@ type CreatePipelineRequest struct {
 	// 具体编排阶段
 	// @gotags: bson:"stages" json:"stages"
 	Stages []*Stage `protobuf:"bytes,12,rep,name=stages,proto3" json:"stages" bson:"stages"`
+	// WebHook配置, 及时把job执行状态推送给外部, 常用于外部系统的集成，比如飞书机器人
+	// @gotags: bson:"webhooks" json:"webhooks"
+	Webhooks []*WebHook `protobuf:"bytes,13,rep,name=webhooks,proto3" json:"webhooks" bson:"webhooks"`
 	// Pipeline的关注人, 关注后会及时把任务运行状态通知给他们
 	// @gotags: bson:"mention_users" json:"mention_users"
 	MentionUsers []*MentionUser `protobuf:"bytes,11,rep,name=mention_users,json=mentionUsers,proto3" json:"mention_users" bson:"mention_users"`
@@ -345,6 +348,13 @@ func (x *CreatePipelineRequest) GetWith() []*job.RunParam {
 func (x *CreatePipelineRequest) GetStages() []*Stage {
 	if x != nil {
 		return x.Stages
+	}
+	return nil
+}
+
+func (x *CreatePipelineRequest) GetWebhooks() []*WebHook {
+	if x != nil {
+		return x.Webhooks
 	}
 	return nil
 }
@@ -988,7 +998,7 @@ var file_apps_pipeline_pb_pipeline_proto_rawDesc = []byte{
 	0x61, 0x62, 0x6f, 0x61, 0x72, 0x64, 0x2e, 0x6d, 0x70, 0x61, 0x61, 0x73, 0x2e, 0x70, 0x69, 0x70,
 	0x65, 0x6c, 0x69, 0x6e, 0x65, 0x2e, 0x43, 0x72, 0x65, 0x61, 0x74, 0x65, 0x50, 0x69, 0x70, 0x65,
 	0x6c, 0x69, 0x6e, 0x65, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x52, 0x04, 0x73, 0x70, 0x65,
-	0x63, 0x22, 0xe3, 0x04, 0x0a, 0x15, 0x43, 0x72, 0x65, 0x61, 0x74, 0x65, 0x50, 0x69, 0x70, 0x65,
+	0x63, 0x22, 0xa3, 0x05, 0x0a, 0x15, 0x43, 0x72, 0x65, 0x61, 0x74, 0x65, 0x50, 0x69, 0x70, 0x65,
 	0x6c, 0x69, 0x6e, 0x65, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x12, 0x16, 0x0a, 0x06, 0x64,
 	0x6f, 0x6d, 0x61, 0x69, 0x6e, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x06, 0x64, 0x6f, 0x6d,
 	0x61, 0x69, 0x6e, 0x12, 0x1c, 0x0a, 0x09, 0x6e, 0x61, 0x6d, 0x65, 0x73, 0x70, 0x61, 0x63, 0x65,
@@ -1012,7 +1022,11 @@ var file_apps_pipeline_pb_pipeline_proto_rawDesc = []byte{
 	0x38, 0x0a, 0x06, 0x73, 0x74, 0x61, 0x67, 0x65, 0x73, 0x18, 0x0c, 0x20, 0x03, 0x28, 0x0b, 0x32,
 	0x20, 0x2e, 0x69, 0x6e, 0x66, 0x72, 0x61, 0x62, 0x6f, 0x61, 0x72, 0x64, 0x2e, 0x6d, 0x70, 0x61,
 	0x61, 0x73, 0x2e, 0x70, 0x69, 0x70, 0x65, 0x6c, 0x69, 0x6e, 0x65, 0x2e, 0x53, 0x74, 0x61, 0x67,
-	0x65, 0x52, 0x06, 0x73, 0x74, 0x61, 0x67, 0x65, 0x73, 0x12, 0x4b, 0x0a, 0x0d, 0x6d, 0x65, 0x6e,
+	0x65, 0x52, 0x06, 0x73, 0x74, 0x61, 0x67, 0x65, 0x73, 0x12, 0x3e, 0x0a, 0x08, 0x77, 0x65, 0x62,
+	0x68, 0x6f, 0x6f, 0x6b, 0x73, 0x18, 0x0d, 0x20, 0x03, 0x28, 0x0b, 0x32, 0x22, 0x2e, 0x69, 0x6e,
+	0x66, 0x72, 0x61, 0x62, 0x6f, 0x61, 0x72, 0x64, 0x2e, 0x6d, 0x70, 0x61, 0x61, 0x73, 0x2e, 0x70,
+	0x69, 0x70, 0x65, 0x6c, 0x69, 0x6e, 0x65, 0x2e, 0x57, 0x65, 0x62, 0x48, 0x6f, 0x6f, 0x6b, 0x52,
+	0x08, 0x77, 0x65, 0x62, 0x68, 0x6f, 0x6f, 0x6b, 0x73, 0x12, 0x4b, 0x0a, 0x0d, 0x6d, 0x65, 0x6e,
 	0x74, 0x69, 0x6f, 0x6e, 0x5f, 0x75, 0x73, 0x65, 0x72, 0x73, 0x18, 0x0b, 0x20, 0x03, 0x28, 0x0b,
 	0x32, 0x26, 0x2e, 0x69, 0x6e, 0x66, 0x72, 0x61, 0x62, 0x6f, 0x61, 0x72, 0x64, 0x2e, 0x6d, 0x70,
 	0x61, 0x61, 0x73, 0x2e, 0x70, 0x69, 0x70, 0x65, 0x6c, 0x69, 0x6e, 0x65, 0x2e, 0x4d, 0x65, 0x6e,
@@ -1200,27 +1214,28 @@ var file_apps_pipeline_pb_pipeline_proto_depIdxs = []int32{
 	3,  // 2: infraboard.mpaas.pipeline.Pipeline.spec:type_name -> infraboard.mpaas.pipeline.CreatePipelineRequest
 	14, // 3: infraboard.mpaas.pipeline.CreatePipelineRequest.with:type_name -> infraboard.mpaas.job.RunParam
 	4,  // 4: infraboard.mpaas.pipeline.CreatePipelineRequest.stages:type_name -> infraboard.mpaas.pipeline.Stage
-	6,  // 5: infraboard.mpaas.pipeline.CreatePipelineRequest.mention_users:type_name -> infraboard.mpaas.pipeline.MentionUser
-	9,  // 6: infraboard.mpaas.pipeline.CreatePipelineRequest.labels:type_name -> infraboard.mpaas.pipeline.CreatePipelineRequest.LabelsEntry
-	14, // 7: infraboard.mpaas.pipeline.Stage.with:type_name -> infraboard.mpaas.job.RunParam
-	5,  // 8: infraboard.mpaas.pipeline.Stage.jobs:type_name -> infraboard.mpaas.pipeline.RunJobRequest
-	15, // 9: infraboard.mpaas.pipeline.RunJobRequest.run_mode:type_name -> infraboard.mpaas.job.RUN_MODE
-	16, // 10: infraboard.mpaas.pipeline.RunJobRequest.run_params:type_name -> infraboard.mpaas.job.VersionedRunParam
-	16, // 11: infraboard.mpaas.pipeline.RunJobRequest.rollback_params:type_name -> infraboard.mpaas.job.VersionedRunParam
-	8,  // 12: infraboard.mpaas.pipeline.RunJobRequest.webhooks:type_name -> infraboard.mpaas.pipeline.WebHook
-	6,  // 13: infraboard.mpaas.pipeline.RunJobRequest.mention_users:type_name -> infraboard.mpaas.pipeline.MentionUser
-	10, // 14: infraboard.mpaas.pipeline.RunJobRequest.labels:type_name -> infraboard.mpaas.pipeline.RunJobRequest.LabelsEntry
-	17, // 15: infraboard.mpaas.pipeline.MentionUser.notify_types:type_name -> infraboard.mcenter.notify.NOTIFY_TYPE
-	15, // 16: infraboard.mpaas.pipeline.RunPipelineRequest.run_mode:type_name -> infraboard.mpaas.job.RUN_MODE
-	0,  // 17: infraboard.mpaas.pipeline.RunPipelineRequest.trigger_mode:type_name -> infraboard.mpaas.pipeline.TRIGGER_MODE
-	14, // 18: infraboard.mpaas.pipeline.RunPipelineRequest.run_params:type_name -> infraboard.mpaas.job.RunParam
-	11, // 19: infraboard.mpaas.pipeline.RunPipelineRequest.labels:type_name -> infraboard.mpaas.pipeline.RunPipelineRequest.LabelsEntry
-	12, // 20: infraboard.mpaas.pipeline.WebHook.header:type_name -> infraboard.mpaas.pipeline.WebHook.HeaderEntry
-	21, // [21:21] is the sub-list for method output_type
-	21, // [21:21] is the sub-list for method input_type
-	21, // [21:21] is the sub-list for extension type_name
-	21, // [21:21] is the sub-list for extension extendee
-	0,  // [0:21] is the sub-list for field type_name
+	8,  // 5: infraboard.mpaas.pipeline.CreatePipelineRequest.webhooks:type_name -> infraboard.mpaas.pipeline.WebHook
+	6,  // 6: infraboard.mpaas.pipeline.CreatePipelineRequest.mention_users:type_name -> infraboard.mpaas.pipeline.MentionUser
+	9,  // 7: infraboard.mpaas.pipeline.CreatePipelineRequest.labels:type_name -> infraboard.mpaas.pipeline.CreatePipelineRequest.LabelsEntry
+	14, // 8: infraboard.mpaas.pipeline.Stage.with:type_name -> infraboard.mpaas.job.RunParam
+	5,  // 9: infraboard.mpaas.pipeline.Stage.jobs:type_name -> infraboard.mpaas.pipeline.RunJobRequest
+	15, // 10: infraboard.mpaas.pipeline.RunJobRequest.run_mode:type_name -> infraboard.mpaas.job.RUN_MODE
+	16, // 11: infraboard.mpaas.pipeline.RunJobRequest.run_params:type_name -> infraboard.mpaas.job.VersionedRunParam
+	16, // 12: infraboard.mpaas.pipeline.RunJobRequest.rollback_params:type_name -> infraboard.mpaas.job.VersionedRunParam
+	8,  // 13: infraboard.mpaas.pipeline.RunJobRequest.webhooks:type_name -> infraboard.mpaas.pipeline.WebHook
+	6,  // 14: infraboard.mpaas.pipeline.RunJobRequest.mention_users:type_name -> infraboard.mpaas.pipeline.MentionUser
+	10, // 15: infraboard.mpaas.pipeline.RunJobRequest.labels:type_name -> infraboard.mpaas.pipeline.RunJobRequest.LabelsEntry
+	17, // 16: infraboard.mpaas.pipeline.MentionUser.notify_types:type_name -> infraboard.mcenter.notify.NOTIFY_TYPE
+	15, // 17: infraboard.mpaas.pipeline.RunPipelineRequest.run_mode:type_name -> infraboard.mpaas.job.RUN_MODE
+	0,  // 18: infraboard.mpaas.pipeline.RunPipelineRequest.trigger_mode:type_name -> infraboard.mpaas.pipeline.TRIGGER_MODE
+	14, // 19: infraboard.mpaas.pipeline.RunPipelineRequest.run_params:type_name -> infraboard.mpaas.job.RunParam
+	11, // 20: infraboard.mpaas.pipeline.RunPipelineRequest.labels:type_name -> infraboard.mpaas.pipeline.RunPipelineRequest.LabelsEntry
+	12, // 21: infraboard.mpaas.pipeline.WebHook.header:type_name -> infraboard.mpaas.pipeline.WebHook.HeaderEntry
+	22, // [22:22] is the sub-list for method output_type
+	22, // [22:22] is the sub-list for method input_type
+	22, // [22:22] is the sub-list for extension type_name
+	22, // [22:22] is the sub-list for extension extendee
+	0,  // [0:22] is the sub-list for field type_name
 }
 
 func init() { file_apps_pipeline_pb_pipeline_proto_init() }

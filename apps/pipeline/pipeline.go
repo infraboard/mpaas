@@ -107,9 +107,11 @@ func NewCreatePipelineRequestFromYAML(yml string) (*CreatePipelineRequest, error
 
 func NewCreatePipelineRequest() *CreatePipelineRequest {
 	return &CreatePipelineRequest{
-		With:   []*job.RunParam{},
-		Stages: []*Stage{},
-		Labels: map[string]string{},
+		With:         []*job.RunParam{},
+		Stages:       []*Stage{},
+		Webhooks:     []*WebHook{},
+		MentionUsers: []*MentionUser{},
+		Labels:       map[string]string{},
 	}
 }
 
@@ -119,6 +121,18 @@ func (req *CreatePipelineRequest) ToYAML() string {
 		panic(err)
 	}
 	return string(yml)
+}
+
+func (req *CreatePipelineRequest) MatchedWebHooks(event string) []*WebHook {
+	hooks := []*WebHook{}
+	for i := range req.Webhooks {
+		h := req.Webhooks[i]
+		if h.IsMatch(event) {
+			hooks = append(hooks, h)
+		}
+	}
+
+	return hooks
 }
 
 func (req *CreatePipelineRequest) AddStage(stages ...*Stage) {

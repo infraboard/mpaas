@@ -203,7 +203,7 @@ func (i *impl) PipelineTaskStatusChanged(ctx context.Context, in *task.JobTask) 
 // 更新Pipeline状态
 func (i *impl) updatePipelineStatus(ctx context.Context, in *task.PipelineTask) (*task.PipelineTask, error) {
 	// pipeline 状态更新回调
-	i.PipelineStatusChangedCallback()
+	i.PipelineStatusChangedCallback(ctx, in)
 
 	in.Meta.UpdateAt = time.Now().Unix()
 	if _, err := i.pcol.UpdateByID(ctx, in.Meta.Id, bson.M{"$set": bson.M{"status": in.Status}}); err != nil {
@@ -213,8 +213,24 @@ func (i *impl) updatePipelineStatus(ctx context.Context, in *task.PipelineTask) 
 	return in, nil
 }
 
-func (i *impl) PipelineStatusChangedCallback() {
+func (i *impl) PipelineStatusChangedCallback(ctx context.Context, in *task.PipelineTask) {
+	if !in.HasJobSpec() {
+		return
+	}
 
+	if in.Status == nil {
+		return
+	}
+
+	// WebHook回调
+	webhooks := in.Pipeline.Spec.MatchedWebHooks(in.Status.Stage.String())
+	i.hook.SendPipelineTaskStatus(ctx, webhooks, in)
+
+	// 关注人通知回调
+	for index := range in.Pipeline.Spec.MentionUsers {
+		mu := in.Pipeline.Spec.MentionUsers[index]
+		i.PipelineTaskMention(ctx, mu, in)
+	}
 }
 
 // 更新Pipeline状态

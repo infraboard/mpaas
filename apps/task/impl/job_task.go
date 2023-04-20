@@ -223,7 +223,7 @@ func (i *impl) UpdateJobTaskStatus(ctx context.Context, in *task.UpdateJobTaskSt
 	ins.Status.UpdateStatus(in)
 
 	// Job Task状态变更回调
-	i.JobTaskStatusChanged(ctx, ins)
+	i.JobTaskStatusChangedCallback(ctx, ins)
 
 	// 更新数据库
 	if err := i.updateJobTask(ctx, ins); err != nil {
@@ -245,7 +245,7 @@ func (i *impl) UpdateJobTaskStatus(ctx context.Context, in *task.UpdateJobTaskSt
 	return ins, nil
 }
 
-func (i *impl) JobTaskStatusChanged(ctx context.Context, in *task.JobTask) {
+func (i *impl) JobTaskStatusChangedCallback(ctx context.Context, in *task.JobTask) {
 	if !in.HasJobSpec() {
 		return
 	}
@@ -256,7 +256,7 @@ func (i *impl) JobTaskStatusChanged(ctx context.Context, in *task.JobTask) {
 
 	// WebHook回调
 	webhooks := in.Spec.MatchedWebHooks(in.Status.Stage.String())
-	i.hook.Send(ctx, webhooks, in)
+	i.hook.SendJobTaskStatus(ctx, webhooks, in)
 
 	// 关注人通知回调
 	for index := range in.Spec.MentionUsers {
