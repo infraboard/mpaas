@@ -142,6 +142,14 @@ func (p *JobTask) HTMLContent() string {
 	return buf.String()
 }
 
+func (p *JobTask) GetDomain() string {
+	return p.Spec.Domain
+}
+
+func (p *JobTask) GetNamespace() string {
+	return p.Spec.Namespace
+}
+
 func (p *JobTask) AddNotifyStatus(items ...*CallbackStatus) {
 	p.Status.AddNotifyStatus(items...)
 }

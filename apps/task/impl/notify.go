@@ -41,8 +41,8 @@ func (i *impl) TaskMention(ctx context.Context, mu *pipeline.MentionUser, in tas
 			status.AddEvent(task.NewErrorEvent("voice not impl"))
 		case notify.NOTIFY_TYPE_IM:
 			req := notify.NewSendNotifyRequest()
-			req.Domain = in.Spec.Domain
-			req.Namespace = in.Spec.Namespace
+			req.Domain = in.GetDomain()
+			req.Namespace = in.GetNamespace()
 			req.NotifyTye = notify.NOTIFY_TYPE_IM
 			req.AddUser(mu.UserName)
 			req.Title = in.ShowTitle()

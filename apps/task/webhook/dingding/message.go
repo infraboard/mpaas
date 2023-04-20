@@ -14,7 +14,7 @@ const (
 
 type MessageType string
 
-func NewStepCardMessage(s task.WebHookMessage) *Message {
+func NewStepCardMessage(s task.TaskMessage) *Message {
 	return &Message{
 		MsgType:    CardMessage,
 		ActionCard: newActionCard(s),
@@ -28,7 +28,7 @@ type Message struct {
 	ActionCard *ActionCard `json:"actionCard"`
 }
 
-func newActionCard(s task.WebHookMessage) *ActionCard {
+func newActionCard(s task.TaskMessage) *ActionCard {
 	return &ActionCard{
 		Title:              s.ShowTitle(),
 		Text:               s.MarkdownContent(),

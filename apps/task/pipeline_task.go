@@ -297,6 +297,26 @@ func (p *PipelineTask) GetStatusStage() STAGE {
 	return p.Status.GetStage()
 }
 
+func (p *PipelineTask) GetDomain() string {
+	return p.Params.Domain
+}
+
+func (p *PipelineTask) GetNamespace() string {
+	return p.Params.Namespace
+}
+
+func (p *PipelineTask) AddErrorEvent(format string, a ...any) {
+	p.Status.AddErrorEvent(format, a...)
+}
+
+func (p *PipelineTask) AddWebhookStatus(items ...*CallbackStatus) {
+	p.Status.AddWebhookStatus(items...)
+}
+
+func (p *PipelineTask) AddNotifyStatus(items ...*CallbackStatus) {
+	p.Status.AddNotifyStatus(items...)
+}
+
 // 大写导出
 func (s *PipelineTask) RuntimeRunParams() (envs []*job.RunParam) {
 	if s.Status == nil {
@@ -397,6 +417,10 @@ func (s *PipelineTaskStatus) GetJobTask(id string) *JobTask {
 	}
 
 	return nil
+}
+
+func (p *PipelineTaskStatus) AddNotifyStatus(items ...*CallbackStatus) {
+	p.NotifyStatus = append(p.NotifyStatus, items...)
 }
 
 func NewStageStatus(s *pipeline.Stage, pipelineTaskId string) *StageStatus {

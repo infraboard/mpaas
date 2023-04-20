@@ -48,7 +48,7 @@ func newJobTaskRequest(hook *pipeline.WebHook, t task.WebHookMessage, wg *sync.W
 
 type request struct {
 	hook     *pipeline.WebHook
-	task     task.WebHookMessage
+	task     task.TaskMessage
 	matchRes string
 
 	status *task.CallbackStatus

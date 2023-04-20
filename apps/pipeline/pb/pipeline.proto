@@ -177,27 +177,33 @@ enum TRIGGER_MODE  {
 }
 
 message RunPipelineRequest {
+    // pipeline id
+	// @gotags: bson:"domain" json:"domain"
+    string domain = 1;
+    // pipeline id
+	// @gotags: bson:"namespace" json:"namespace" 
+    string namespace = 2;
     // pipeline运行任务id, 如果没传 会自动生成
 	// @gotags: bson:"pipeline_task_id" json:"pipeline_task_id,omitempty"
-    string pipeline_task_id = 7;
+    string pipeline_task_id = 3;
     // pipeline id
 	// @gotags: bson:"pipeline_id" json:"pipeline_id" validate:"required"
-    string pipeline_id = 1;
+    string pipeline_id = 4;
 	// 运行模式
 	// @gotags: bson:"run_mode" json:"run_mode"
-	job.RUN_MODE run_mode = 2;
+	job.RUN_MODE run_mode = 5;
 	// 试运行
 	// @gotags: bson:"dry_run" json:"dry_run"
-	bool dry_run = 3;
+	bool dry_run = 6;
 	// 触发方式, 默认手工触发
 	// @gotags: bson:"trigger_mode" json:"trigger_mode" 
-	TRIGGER_MODE  trigger_mode = 6;
+	TRIGGER_MODE  trigger_mode = 7;
 	// 执行人
 	// @gotags: bson:"run_by" json:"run_by" validate:"required"
-	string run_by = 4;
+	string run_by = 8;
 	// Pipeline 的运行时参数
 	// @gotags: bson:"run_params" json:"run_params"
-	repeated job.RunParam run_params = 5;
+	repeated job.RunParam run_params = 9;
 	// 任务标签
 	// @gotags: bson:"labels" json:"labels"
 	map<string, string> labels = 15;
