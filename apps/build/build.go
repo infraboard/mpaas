@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 	"path/filepath"
 	"regexp"
-	"strings"
 
 	"github.com/infraboard/mpaas/apps/job"
 	"github.com/infraboard/mpaas/common/meta"
@@ -149,8 +148,7 @@ func (t *Trigger) MatchSubEvent(pattern string) bool {
 	for _, b := range t.SubEvents {
 		switch t.SubEventsMatchType {
 		case MATCH_TYPE_GLOB:
-			// 匹配之前需要特殊处理, 因为/对于filepath标识为一个目录, 需要替换掉，扁平处理
-			ok, _ := filepath.Match(pattern, strings.ReplaceAll(b, "/", "."))
+			ok, _ := filepath.Match(pattern, b)
 			if ok {
 				return true
 			}
