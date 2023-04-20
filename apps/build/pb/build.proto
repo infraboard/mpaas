@@ -81,9 +81,21 @@ message Trigger {
 	// 事件名称,那些事件可以触发
 	// @gotags: bson:"events" json:"events"
 	repeated string events = 1;
+	// 子事件匹配模式, 默认通配符模式
+	// @gotags: bson:"sub_events" json:"sub_events"
+	MATCH_TYPE sub_events_match_type = 2;
 	// 子事件, 支持正则 比如分支名称, 那些分支可以触发
 	// @gotags: bson:"sub_events" json:"sub_events"
-	repeated string sub_events = 2;
+	repeated string sub_events = 3;
+}
+
+enum MATCH_TYPE {
+    // 精确匹配
+    EXACT = 0;
+    // 通配符
+    GLOB = 1;
+    // 正则表达式
+    REG_EXP = 2;
 }
 
 // 构建目标的类型

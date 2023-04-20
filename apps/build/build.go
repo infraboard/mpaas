@@ -2,6 +2,7 @@ package build
 
 import (
 	"encoding/json"
+	"path/filepath"
 	"regexp"
 
 	"github.com/infraboard/mpaas/apps/job"
@@ -124,8 +125,9 @@ func NewPkgBuildConfig() *PkgBuildConfig {
 
 func NewTrigger() *Trigger {
 	return &Trigger{
-		Events:    []string{},
-		SubEvents: []string{},
+		Events:             []string{},
+		SubEvents:          []string{},
+		SubEventsMatchType: MATCH_TYPE_GLOB,
 	}
 }
 
@@ -138,15 +140,27 @@ func (t *Trigger) AddSubEvents(sub string) {
 }
 
 // 关于Go语言正则表达式: http://c.biancheng.net/view/5124.html
-func (t *Trigger) MatchSubEvent(branchRegExp string) bool {
+func (t *Trigger) MatchSubEvent(pattern string) bool {
 	if len(t.SubEvents) == 0 {
 		return true
 	}
 
 	for _, b := range t.SubEvents {
-		ok, _ := regexp.MatchString(branchRegExp, b)
-		if ok {
-			return true
+		switch t.SubEventsMatchType {
+		case MATCH_TYPE_GLOB:
+			ok, _ := filepath.Match(pattern, b)
+			if ok {
+				return true
+			}
+		case MATCH_TYPE_REG_EXP:
+			ok, _ := regexp.MatchString(pattern, b)
+			if ok {
+				return true
+			}
+		default:
+			if pattern == b {
+				return true
+			}
 		}
 	}
 

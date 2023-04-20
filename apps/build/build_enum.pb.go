@@ -54,6 +54,51 @@ func (t *VERSION_NAMED_RULE) UnmarshalJSON(b []byte) error {
 	return nil
 }
 
+// ParseMATCH_TYPEFromString Parse MATCH_TYPE from string
+func ParseMATCH_TYPEFromString(str string) (MATCH_TYPE, error) {
+	key := strings.Trim(string(str), `"`)
+	v, ok := MATCH_TYPE_value[strings.ToUpper(key)]
+	if !ok {
+		return 0, fmt.Errorf("unknown MATCH_TYPE: %s", str)
+	}
+
+	return MATCH_TYPE(v), nil
+}
+
+// Equal type compare
+func (t MATCH_TYPE) Equal(target MATCH_TYPE) bool {
+	return t == target
+}
+
+// IsIn todo
+func (t MATCH_TYPE) IsIn(targets ...MATCH_TYPE) bool {
+	for _, target := range targets {
+		if t.Equal(target) {
+			return true
+		}
+	}
+
+	return false
+}
+
+// MarshalJSON todo
+func (t MATCH_TYPE) MarshalJSON() ([]byte, error) {
+	b := bytes.NewBufferString(`"`)
+	b.WriteString(strings.ToUpper(t.String()))
+	b.WriteString(`"`)
+	return b.Bytes(), nil
+}
+
+// UnmarshalJSON todo
+func (t *MATCH_TYPE) UnmarshalJSON(b []byte) error {
+	ins, err := ParseMATCH_TYPEFromString(string(b))
+	if err != nil {
+		return err
+	}
+	*t = ins
+	return nil
+}
+
 // ParseTARGET_TYPEFromString Parse TARGET_TYPE from string
 func ParseTARGET_TYPEFromString(str string) (TARGET_TYPE, error) {
 	key := strings.Trim(string(str), `"`)
