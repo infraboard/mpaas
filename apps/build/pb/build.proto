@@ -82,7 +82,7 @@ message Trigger {
 	// @gotags: bson:"events" json:"events"
 	repeated string events = 1;
 	// 子事件匹配模式, 默认通配符模式
-	// @gotags: bson:"sub_events" json:"sub_events"
+	// @gotags: bson:"sub_events_match_type" json:"sub_events_match_type"
 	MATCH_TYPE sub_events_match_type = 2;
 	// 子事件, 支持正则 比如分支名称, 那些分支可以触发
 	// @gotags: bson:"sub_events" json:"sub_events"

@@ -475,9 +475,9 @@ type Trigger struct {
 	// 事件名称,那些事件可以触发
 	// @gotags: bson:"events" json:"events"
 	Events []string `protobuf:"bytes,1,rep,name=events,proto3" json:"events" bson:"events"`
-	// 子事件匹配模式
-	// @gotags: bson:"sub_events" json:"sub_events"
-	SubEventsMatchType MATCH_TYPE `protobuf:"varint,2,opt,name=sub_events_match_type,json=subEventsMatchType,proto3,enum=infraboard.mpaas.build.MATCH_TYPE" json:"sub_events" bson:"sub_events"`
+	// 子事件匹配模式, 默认通配符模式
+	// @gotags: bson:"sub_events_match_type" json:"sub_events_match_type"
+	SubEventsMatchType MATCH_TYPE `protobuf:"varint,2,opt,name=sub_events_match_type,json=subEventsMatchType,proto3,enum=infraboard.mpaas.build.MATCH_TYPE" json:"sub_events_match_type" bson:"sub_events_match_type"`
 	// 子事件, 支持正则 比如分支名称, 那些分支可以触发
 	// @gotags: bson:"sub_events" json:"sub_events"
 	SubEvents []string `protobuf:"bytes,3,rep,name=sub_events,json=subEvents,proto3" json:"sub_events" bson:"sub_events"`
