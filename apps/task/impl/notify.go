@@ -9,9 +9,9 @@ import (
 )
 
 // 调用mcenter api 通知用户Job Task执行状态
-func (i *impl) JotTaskMention(ctx context.Context, mu *pipeline.MentionUser, in *task.JobTask) {
-	if !mu.IsMatch(in.Status.Stage.String()) {
-		i.log.Debugf("stage: %s not matched target: %s", mu.Events, in.Status.Stage)
+func (i *impl) TaskMention(ctx context.Context, mu *pipeline.MentionUser, in task.MentionUserMessage) {
+	if !mu.IsMatch(in.GetStatusStage().String()) {
+		i.log.Debugf("stage: %s not matched target: %s", mu.Events, in.GetStatusStage())
 		return
 	}
 
@@ -60,12 +60,5 @@ func (i *impl) JotTaskMention(ctx context.Context, mu *pipeline.MentionUser, in 
 		}
 	}
 	status.MakeStatusUseEvent()
-	in.Status.AddNotifyStatus(status)
-}
-
-// 调用mcenter api 通知用户Pipeline Task执行状态
-func (i *impl) PipelineTaskMention(ctx context.Context, mu *pipeline.MentionUser, in *task.PipelineTask) {
-	if !mu.IsMatch(in.Status.Stage.String()) {
-		return
-	}
+	in.AddNotifyStatus(status)
 }

@@ -224,12 +224,12 @@ func (i *impl) PipelineStatusChangedCallback(ctx context.Context, in *task.Pipel
 
 	// WebHook回调
 	webhooks := in.Pipeline.Spec.MatchedWebHooks(in.Status.Stage.String())
-	i.hook.SendPipelineTaskStatus(ctx, webhooks, in)
+	i.hook.SendTaskStatus(ctx, webhooks, in)
 
 	// 关注人通知回调
 	for index := range in.Pipeline.Spec.MentionUsers {
 		mu := in.Pipeline.Spec.MentionUsers[index]
-		i.PipelineTaskMention(ctx, mu, in)
+		i.TaskMention(ctx, mu, in)
 	}
 
 	// 是否需要运行下一个Pipeline

@@ -1,8 +1,10 @@
 package task
 
 import (
+	"bytes"
 	"encoding/json"
 	"fmt"
+	"html/template"
 	"time"
 
 	"github.com/infraboard/mcube/exception"
@@ -228,6 +230,73 @@ func (p *PipelineTask) IsRunning() bool {
 	return p.Status.Stage > STAGE_PENDDING && p.Status.Stage < STAGE_CANCELED
 }
 
+// IM消息的标题
+func (p *PipelineTask) ShowTitle() string {
+	return fmt.Sprintf("流水线[%s]当前状态: %s", p.Pipeline.Spec.Name, p.Status.Stage.String())
+}
+
+var (
+	// 关于Go模版语法可以参考: https://www.tizi365.com/archives/85.html
+	PIPELINE_TASK_MARKDOWN_TEMPLATE = `
+**开始时间: **
+{{ .Status.StartAtFormat }}
+**结束时间: **
+{{ .Status.EndAtAtFormat }}
+**任务参数: **
+{{ range .Spec.RunParams.Params -}}
+▫ *{{.Name}}:  {{.Value}}*
+{{end}}
+`
+)
+
+func (p *PipelineTask) MarkdownContent() string {
+	buf := bytes.NewBuffer([]byte{})
+	t := template.New("pipeline task")
+	tmpl, err := t.Parse(PIPELINE_TASK_MARKDOWN_TEMPLATE)
+	if err != nil {
+		return err.Error()
+	}
+
+	err = tmpl.Execute(buf, p)
+	if err != nil {
+		return err.Error()
+	}
+	return buf.String()
+}
+
+var (
+	// 关于Go模版语法可以参考: https://www.tizi365.com/archives/85.html
+	PIPELINE_TASK_HTML_TEMPLATE = `
+开始时间: 
+{{ .Status.StartAtFormat }}
+结束时间: 
+{{ .Status.EndAtAtFormat }}
+任务参数: 
+{{ range .Spec.RunParams.Params -}}
+▫ *{{.Name}}:  {{.Value}}*
+{{end}}
+`
+)
+
+func (p *PipelineTask) HTMLContent() string {
+	buf := bytes.NewBuffer([]byte{})
+	t := template.New("pipeline task")
+	tmpl, err := t.Parse(PIPELINE_TASK_HTML_TEMPLATE)
+	if err != nil {
+		return err.Error()
+	}
+
+	err = tmpl.Execute(buf, p)
+	if err != nil {
+		return err.Error()
+	}
+	return buf.String()
+}
+
+func (p *PipelineTask) GetStatusStage() STAGE {
+	return p.Status.GetStage()
+}
+
 // 大写导出
 func (s *PipelineTask) RuntimeRunParams() (envs []*job.RunParam) {
 	if s.Status == nil {
@@ -294,6 +363,18 @@ func (s *PipelineTaskStatus) UpdateRuntimeEnv(updateBy string, envs []*RuntimeEn
 
 func (s *PipelineTaskStatus) AddRuntimeEnv(items ...*RuntimeEnv) {
 	s.RuntimeEnvs = append(s.RuntimeEnvs, items...)
+}
+
+func (t *PipelineTaskStatus) AddErrorEvent(format string, a ...any) {
+	t.Events = append(t.Events, NewEvent(EVENT_LEVEL_ERROR, fmt.Sprintf(format, a...)))
+}
+
+func (t *PipelineTaskStatus) AddEvent(level EVENT_LEVEL, format string, a ...any) {
+	t.Events = append(t.Events, NewEvent(level, fmt.Sprintf(format, a...)))
+}
+
+func (p *PipelineTaskStatus) AddWebhookStatus(items ...*CallbackStatus) {
+	p.WebhookStatus = append(p.WebhookStatus, items...)
 }
 
 func (s *PipelineTaskStatus) GetRuntimeEnv(name string) *RuntimeEnv {

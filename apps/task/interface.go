@@ -147,3 +147,28 @@ func NewDescribePipelineTaskRequest(id string) *DescribePipelineTaskRequest {
 		Id: id,
 	}
 }
+
+// IM 消息通知, 独立适配
+type WebHookMessage interface {
+	// IM消息事件的Title
+	ShowTitle() string
+	// Markdown格式的消息内容
+	MarkdownContent() string
+	// HTML格式的消息内容
+	HTMLContent() string
+	// 消息事件状态
+	GetStatusStage() STAGE
+	// Web事件回调
+	AddWebhookStatus(items ...*CallbackStatus)
+	// 通知过程中的事件
+	AddErrorEvent(format string, a ...any)
+}
+
+// Task状态变更用户通知
+type MentionUserMessage interface {
+	// Task状态变化通知消息
+	WebHookMessage
+
+	// 通知回调, 是否通知成功
+	AddNotifyStatus(items ...*CallbackStatus)
+}

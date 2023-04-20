@@ -21,19 +21,19 @@ var (
 
 func TestFeishuWebHook(t *testing.T) {
 	hooks := testPipelineWebHook(conf.C.FEISHU_BOT_URL)
-	sender.SendJobTaskStatus(ctx, hooks, jt)
+	sender.SendTaskStatus(ctx, hooks, jt)
 	t.Log(jt.ToJson())
 }
 
 func TestDingDingWebHook(t *testing.T) {
 	hooks := testPipelineWebHook(conf.C.DINGDING_BOT_URL)
-	sender.SendJobTaskStatus(ctx, hooks, jt)
+	sender.SendTaskStatus(ctx, hooks, jt)
 	t.Log(jt)
 }
 
 func TestWechatWebHook(t *testing.T) {
 	hooks := testPipelineWebHook(conf.C.WECHAT_BOT_URL)
-	sender.SendJobTaskStatus(ctx, hooks, jt)
+	sender.SendTaskStatus(ctx, hooks, jt)
 	t.Log(jt)
 }
 

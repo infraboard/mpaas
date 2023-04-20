@@ -142,6 +142,18 @@ func (p *JobTask) HTMLContent() string {
 	return buf.String()
 }
 
+func (p *JobTask) AddNotifyStatus(items ...*CallbackStatus) {
+	p.Status.AddNotifyStatus(items...)
+}
+
+func (p *JobTask) AddErrorEvent(format string, a ...any) {
+	p.Status.AddErrorEvent(format, a...)
+}
+
+func (p *JobTask) AddWebhookStatus(items ...*CallbackStatus) {
+	p.Status.AddWebhookStatus(items...)
+}
+
 func (p *JobTask) BuildSearchLabel() {
 	if p.Job != nil && p.Job.Spec != nil {
 		if p.Job.Spec.Labels == nil {
@@ -208,6 +220,10 @@ func (t *JobTask) GetStatusDetail() string {
 	}
 
 	return ""
+}
+
+func (s *JobTask) GetStatusStage() STAGE {
+	return s.Status.GetStage()
 }
 
 func (s *JobTask) HasJobSpec() bool {

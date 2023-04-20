@@ -50,15 +50,21 @@ message PipelineTaskStatus {
 	// 任务状态详细描述, 用于Debug
 	// @gotags: bson:"stage_status" json:"stage_status"
 	repeated StageStatus stage_status = 6;
+	// 事件回调状态
+	// @gotags: bson:"webhook_status" json:"webhook_status"
+	repeated CallbackStatus webhook_status = 7;
 	// Pipline 关注人通知状态
 	// @gotags: bson:"notify_status" json:"notify_status"
-	repeated CallbackStatus notify_status = 11;
+	repeated CallbackStatus notify_status = 8;
+	// 任务事件
+	// @gotags: bson:"events" json:"events"
+	repeated Event events = 9;
 	// 如果有下一个需要运行的Pipeline Task 的id
 	// @gotags: bson:"next_pipeline_task_id" json:"next_pipeline_task_id"
-	string next_pipeline_task_id = 14;
+	string next_pipeline_task_id = 10;
 	// 运行下一个流水线失败
 	// @gotags: bson:"run_next_pipeline_error" json:"run_next_pipeline_error"
-	string run_next_pipeline_error = 15;
+	string run_next_pipeline_error = 11;
 }
 
 message StageStatus {

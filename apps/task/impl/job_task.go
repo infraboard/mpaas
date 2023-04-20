@@ -256,12 +256,12 @@ func (i *impl) JobTaskStatusChangedCallback(ctx context.Context, in *task.JobTas
 
 	// WebHook回调
 	webhooks := in.Spec.MatchedWebHooks(in.Status.Stage.String())
-	i.hook.SendJobTaskStatus(ctx, webhooks, in)
+	i.hook.SendTaskStatus(ctx, webhooks, in)
 
 	// 关注人通知回调
 	for index := range in.Spec.MentionUsers {
 		mu := in.Spec.MentionUsers[index]
-		i.JotTaskMention(ctx, mu, in)
+		i.TaskMention(ctx, mu, in)
 	}
 }
 

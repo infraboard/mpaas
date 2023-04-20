@@ -20,7 +20,7 @@ type WebHook struct {
 	log logger.Logger
 }
 
-func (h *WebHook) SendJobTaskStatus(ctx context.Context, hooks []*pipeline.WebHook, t *task.JobTask) {
+func (h *WebHook) SendTaskStatus(ctx context.Context, hooks []*pipeline.WebHook, t task.WebHookMessage) {
 	if t == nil {
 		return
 	}
@@ -30,38 +30,15 @@ func (h *WebHook) SendJobTaskStatus(ctx context.Context, hooks []*pipeline.WebHo
 	}
 
 	if len(hooks) > MAX_WEBHOOKS_PER_SEND {
-		t.Status.AddErrorEvent("too many webhooks configs current: %d, max: %d", len(hooks), MAX_WEBHOOKS_PER_SEND)
+		t.AddErrorEvent("too many webhooks configs current: %d, max: %d", len(hooks), MAX_WEBHOOKS_PER_SEND)
 		return
 	}
 
-	h.log.Debugf("start send task[%s] webhook, total %d", t.Spec.JobName, len(hooks))
+	h.log.Debugf("start send job task[%s] webhook, total %d", t.ShowTitle(), len(hooks))
 	wg := &sync.WaitGroup{}
 	for i := range hooks {
-		req := newRequest(hooks[i], t, wg)
+		req := newJobTaskRequest(hooks[i], t, wg)
 		go req.Push(ctx)
 	}
 	wg.Wait()
-}
-
-func (h *WebHook) SendPipelineTaskStatus(ctx context.Context, hooks []*pipeline.WebHook, t *task.PipelineTask) {
-	if t == nil {
-		return
-	}
-
-	if len(hooks) == 0 {
-		return
-	}
-
-	// if len(hooks) > MAX_WEBHOOKS_PER_SEND {
-	// 	t.Status.AddErrorEvent("too many webhooks configs current: %d, max: %d", len(hooks), MAX_WEBHOOKS_PER_SEND)
-	// 	return
-	// }
-
-	// h.log.Debugf("start send task[%s] webhook, total %d", t.Spec.JobName, len(hooks))
-	// wg := &sync.WaitGroup{}
-	// for i := range hooks {
-	// 	req := newRequest(hooks[i], t, wg)
-	// 	go req.Push(ctx)
-	// }
-	// wg.Wait()
 }

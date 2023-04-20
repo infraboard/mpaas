@@ -33,12 +33,11 @@ var (
 	}
 )
 
-func newRequest(hook *pipeline.WebHook, t *task.JobTask, wg *sync.WaitGroup) *request {
+func newJobTaskRequest(hook *pipeline.WebHook, t task.WebHookMessage, wg *sync.WaitGroup) *request {
 	// 因为AddWebhookStatus是非并非安全的， 因此不能放到Push(Push 是并发的)里面跑
 	status := task.NewCallbackStatus(hook.ShowName())
-	t.Status.AddWebhookStatus(status)
+	t.AddWebhookStatus(status)
 	wg.Add(1)
-
 	return &request{
 		hook:   hook,
 		task:   t,
@@ -49,7 +48,7 @@ func newRequest(hook *pipeline.WebHook, t *task.JobTask, wg *sync.WaitGroup) *re
 
 type request struct {
 	hook     *pipeline.WebHook
-	task     *task.JobTask
+	task     task.WebHookMessage
 	matchRes string
 
 	status *task.CallbackStatus
@@ -70,7 +69,7 @@ func (r *request) Push(ctx context.Context) {
 		messageObj = dingding.NewStepCardMessage(r.task)
 		r.matchRes = `"errcode":0,`
 	case wechatBot:
-		messageObj = wechat.NewStepMarkdownMessage(r.task)
+		messageObj = wechat.NewStepMarkdownMessage(nil)
 		r.matchRes = `"errcode":0,`
 	default:
 		messageObj = r.task
@@ -144,7 +143,7 @@ func (r *request) NewFeishuMessage() *feishu.Message {
 	s := r.task
 
 	color := feishu.COLOR_PURPLE
-	switch s.Status.Stage {
+	switch s.GetStatusStage() {
 	case task.STAGE_FAILED:
 		color = feishu.COLOR_RED
 	case task.STAGE_SUCCEEDED:
