@@ -32,12 +32,15 @@ message Deployment  {
 
 // 部署需要动态注入的信息
 message DdynamicInjection {
+    // 是否注入系统信息, 比如服务名称, 部署名称等信息
+    // @gotags: bson:"system_env" json:"system_env"
+    bool system_env = 1;
     // 需要注入的环境变量
     // @gotags: bson:"env_groups" json:"env_groups"
-    repeated InjectionEnvGroup env_groups = 1;
+    repeated InjectionEnvGroup env_groups = 2;
     // 访问统计
     // @gotags: bson:"access_stat" json:"access_stat"
-    AccessStat access_stat = 2;
+    AccessStat access_stat = 3;
 }
 
 message InjectionEnvGroup {
