@@ -25,6 +25,52 @@ message Deployment  {
     // 部署状态
     // @gotags: bson:"status" json:"status"
     Status status = 5;
+    // 动态注入配置
+    // @gotags: bson:"dynamic_injection" json:"dynamic_injection"
+    DdynamicInjection dynamic_injection = 6;
+}
+
+// 部署需要动态注入的信息
+message DdynamicInjection {
+    // 需要注入的环境变量
+    // @gotags: bson:"env_groups" json:"env_groups"
+    repeated InjectionEnvGroup env_groups = 1;
+    // 访问统计
+    // @gotags: bson:"access_stat" json:"access_stat"
+    AccessStat access_stat = 2;
+}
+
+message InjectionEnvGroup {
+    // 开启动态注入, 默认开启
+    // @gotags: bson:"enabled" json:"enabled"
+    bool enabled = 1;
+    // 匹配标签, 默认匹配所有
+    // @gotags: bson:"match_label" json:"match_label"
+    map<string,string> match_label = 2;
+    // 需要注入的环境变量
+    // @gotags: bson:"inject_envs" json:"inject_envs"
+    repeated InjectionEnv inject_envs = 3;
+}
+
+message InjectionEnv {
+    // key名称
+    // @gotags: bson:"key" json:"key"
+    string key = 1;
+    // 值
+    // @gotags: bson:"value" json:"value"
+    string value = 2;
+    // 是否加密注入
+    // @gotags: bson:"encrypt" json:"encrypt"
+    bool encrypt = 3;
+}
+
+message AccessStat {
+    // 最近一次的拉取时间
+    // @gotags: bson:"pull_at" json:"pull_at"
+    int64 pull_at = 2;
+    // 访问次数
+    // @gotags: bson:"count" json:"count"
+    int64 count = 3;
 }
 
 enum STAGE {
