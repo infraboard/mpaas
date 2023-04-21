@@ -332,13 +332,21 @@ func (i *impl) QueryDeploymentInjectEnv(ctx context.Context, in *deploy.QueryDep
 	ins.DynamicInjection.AddEnabledGroupTo(set)
 
 	// 注入部署相关信息
+	systemGroup := ins.SystemInjectionEnvGroup()
+	systemGroup.Enabled = ins.DynamicInjection.SystemEnv
+	set.Add(systemGroup)
 
 	// 注入服务相关信息
-	app, err := i.mcenter.Service().DescribeService(ctx, service.NewDescribeServiceRequest(ins.Spec.ServiceId))
-	if err != nil {
-		return nil, err
+	if ins.Spec.ServiceId != "" {
+		app, err := i.mcenter.Service().DescribeService(ctx, service.NewDescribeServiceRequest(ins.Spec.ServiceId))
+		if err != nil {
+			return nil, err
+		}
+		systemGroup.AddEnv(
+			deploy.NewInjectionEnv("MCENTER_CLINET_ID", app.Credential.ClientId),
+			deploy.NewInjectionEnv("MCENTER_CLIENT_SECRET", app.Credential.ClientSecret),
+		)
 	}
-	fmt.Println(app)
 
 	return set, nil
 }

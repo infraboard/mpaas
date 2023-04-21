@@ -18,3 +18,27 @@ func (e *DdynamicInjection) AddEnabledGroupTo(set *InjectionEnvGroupSet) {
 		}
 	}
 }
+
+func NewInjectionEnvGroup() *InjectionEnvGroup {
+	return &InjectionEnvGroup{
+		Enabled:    true,
+		MatchLabel: map[string]string{},
+		InjectEnvs: []*InjectionEnv{},
+	}
+}
+
+func (g *InjectionEnvGroup) AddEnv(env ...*InjectionEnv) {
+	g.InjectEnvs = append(g.InjectEnvs, env...)
+}
+
+func NewInjectionEnv(key, value string) *InjectionEnv {
+	return &InjectionEnv{
+		Key:   key,
+		Value: value,
+	}
+}
+
+func (e *InjectionEnv) SetEncrypt(v bool) *InjectionEnv {
+	e.Encrypt = v
+	return e
+}

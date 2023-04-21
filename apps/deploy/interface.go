@@ -80,6 +80,10 @@ func NewCreateDeploymentRequest() *CreateDeploymentRequest {
 		Labels:         make(map[string]string),
 		K8STypeConfig:  NewK8STypeConfig(),
 		HostTypeConfig: NewHostTypeConfig(),
+		Provider:       "default",
+		Region:         "default",
+		Environment:    "default",
+		Group:          "default",
 	}
 }
 

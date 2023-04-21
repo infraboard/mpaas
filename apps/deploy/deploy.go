@@ -33,6 +33,21 @@ func NewDefaultDeploy() *Deployment {
 	}
 }
 
+func (d *Deployment) SystemInjectionEnvGroup() *InjectionEnvGroup {
+	group := NewInjectionEnvGroup()
+	group.AddEnv(
+		NewInjectionEnv("MPAAS_DEPLOY_ID", d.Meta.Id),
+		NewInjectionEnv("MCENTER_SERVICE_NAME", d.Spec.ServiceName),
+
+		// 服务发现相关变量
+		NewInjectionEnv("MCENTER_PROVIDER", d.Spec.Provider),
+		NewInjectionEnv("MCENTER_REGION", d.Spec.Region),
+		NewInjectionEnv("MCENTER_ENV", d.Spec.Environment),
+		NewInjectionEnv("MCENTER_GROUP", d.Spec.Group),
+	)
+	return group
+}
+
 func (d *Deployment) SetDefault() {
 	if d.Status == nil {
 		d.Status = NewStatus()
