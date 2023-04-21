@@ -50,15 +50,18 @@ message InjectionEnvGroupSet {
 }
 
 message InjectionEnvGroup {
+    // 组名称或者描述
+    // @gotags: bson:"name" json:"name"
+    string name = 1;
     // 开启动态注入, 默认开启
     // @gotags: bson:"enabled" json:"enabled"
-    bool enabled = 1;
+    bool enabled = 2;
     // 匹配标签, 默认匹配所有
     // @gotags: bson:"match_label" json:"match_label"
-    map<string,string> match_label = 2;
+    map<string,string> match_label = 3;
     // 需要注入的环境变量
     // @gotags: bson:"inject_envs" json:"inject_envs"
-    repeated InjectionEnv inject_envs = 3;
+    repeated InjectionEnv inject_envs = 4;
 }
 
 message InjectionEnv {
