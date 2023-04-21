@@ -10,6 +10,9 @@ func (s *InjectionEnvGroupSet) Add(items ...*InjectionEnvGroup) {
 	s.EnvGroups = append(s.EnvGroups, items...)
 }
 
+func (s *InjectionEnvGroupSet) Encrypt(key string) {
+}
+
 func (e *DdynamicInjection) AddEnabledGroupTo(set *InjectionEnvGroupSet) {
 	for i := range e.EnvGroups {
 		g := e.EnvGroups[i]

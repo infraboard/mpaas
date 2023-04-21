@@ -74,6 +74,9 @@ message InjectionEnv {
     // 是否加密注入
     // @gotags: bson:"encrypt" json:"encrypt"
     bool encrypt = 3;
+    // 如果加密失败, 补充失败原因
+    // @gotags: bson:"encrypt_failed" json:"encrypt_failed"
+    string encrypt_failed = 4;
 }
 
 message AccessStat {

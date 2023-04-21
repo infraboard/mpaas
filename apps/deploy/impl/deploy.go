@@ -331,10 +331,11 @@ func (i *impl) QueryDeploymentInjectEnv(ctx context.Context, in *deploy.QueryDep
 	// 注入已经启动的组变量
 	ins.DynamicInjection.AddEnabledGroupTo(set)
 
-	// 注入部署相关信息
+	// 注入部署相关系统变量
 	systemGroup := ins.SystemInjectionEnvGroup()
-	systemGroup.Enabled = ins.DynamicInjection.SystemEnv
-	set.Add(systemGroup)
+	if ins.DynamicInjection.SystemEnv {
+		set.Add(systemGroup)
+	}
 
 	// 注入服务相关信息
 	if ins.Spec.ServiceId != "" {
@@ -346,7 +347,11 @@ func (i *impl) QueryDeploymentInjectEnv(ctx context.Context, in *deploy.QueryDep
 			deploy.NewInjectionEnv("MCENTER_CLINET_ID", app.Credential.ClientId),
 			deploy.NewInjectionEnv("MCENTER_CLIENT_SECRET", app.Credential.ClientSecret),
 		)
-	}
 
+		// 使用服务的加密key对需要加密的环境变量加密
+		encryptKey := app.Security.EncryptKey
+		set.Encrypt(encryptKey)
+
+	}
 	return set, nil
 }
