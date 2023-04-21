@@ -234,6 +234,7 @@ func (i *impl) PipelineStatusChangedCallback(ctx context.Context, in *task.Pipel
 
 	// 是否需要运行下一个Pipeline
 	if in.Pipeline.Spec.NextPipeline != "" {
+		// 如果有审核单则提交审核单, 没有则直接运行
 		i.log.Debugf("next pipeline: %s", in.Pipeline.Spec.NextPipeline)
 	}
 }

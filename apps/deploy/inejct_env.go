@@ -1,5 +1,13 @@
 package deploy
 
+import (
+	"fmt"
+	"strings"
+
+	"github.com/infraboard/mcube/crypto/cbc"
+	"github.com/infraboard/mpaas/conf"
+)
+
 func NewInjectionEnvGroupSet() *InjectionEnvGroupSet {
 	return &InjectionEnvGroupSet{
 		EnvGroups: []*InjectionEnvGroup{},
@@ -11,6 +19,13 @@ func (s *InjectionEnvGroupSet) Add(items ...*InjectionEnvGroup) {
 }
 
 func (s *InjectionEnvGroupSet) Encrypt(key string) {
+	for m := range s.EnvGroups {
+		group := s.EnvGroups[m]
+		for n := range group.InjectEnvs {
+			env := group.InjectEnvs[n]
+			env.MakeEncrypt(key)
+		}
+	}
 }
 
 func (e *DdynamicInjection) AddEnabledGroupTo(set *InjectionEnvGroupSet) {
@@ -44,4 +59,27 @@ func NewInjectionEnv(key, value string) *InjectionEnv {
 func (e *InjectionEnv) SetEncrypt(v bool) *InjectionEnv {
 	e.Encrypt = v
 	return e
+}
+
+func (e *InjectionEnv) MakeEncrypt(key string) {
+	if strings.HasPrefix(e.Value, conf.CIPHER_TEXT_PREFIX) {
+		return
+	}
+
+	if !e.Encrypt {
+		return
+	}
+
+	if key == "" {
+		e.EncryptFailed = "加密key为空"
+		return
+	}
+
+	encrypt, err := cbc.EncryptToString(e.Value, []byte(key))
+	if err != nil {
+		e.EncryptFailed = err.Error()
+		return
+	}
+
+	e.Value = fmt.Sprintf("%s%s", conf.CIPHER_TEXT_PREFIX, encrypt)
 }
