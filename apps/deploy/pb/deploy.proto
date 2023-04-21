@@ -43,6 +43,12 @@ message DdynamicInjection {
     AccessStat access_stat = 3;
 }
 
+message InjectionEnvGroupSet {
+    // 需要注入的环境变量
+    // @gotags: bson:"env_groups" json:"env_groups"
+    repeated InjectionEnvGroup env_groups = 1;
+}
+
 message InjectionEnvGroup {
     // 开启动态注入, 默认开启
     // @gotags: bson:"enabled" json:"enabled"

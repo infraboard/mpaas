@@ -313,3 +313,32 @@ func (i *impl) UpdateK8sDeployStatus(ctx context.Context, ins *deploy.Deployment
 
 	return nil
 }
+
+// 查询部署是需要动态注入的环境变量, moperator 通过该接口拉取Env进行动态注入
+func (i *impl) QueryDeploymentInjectEnv(ctx context.Context, in *deploy.QueryDeploymentInjectEnvRequest) (
+	*deploy.InjectionEnvGroupSet, error) {
+	req := deploy.NewDescribeDeploymentRequest(in.Id)
+	ins, err := i.DescribeDeployment(ctx, req)
+	if err != nil {
+		return nil, err
+	}
+
+	set := deploy.NewInjectionEnvGroupSet()
+	if ins.DynamicInjection == nil {
+		return set, nil
+	}
+
+	// 注入已经启动的组变量
+	ins.DynamicInjection.AddEnabledGroupTo(set)
+
+	// 注入部署相关信息
+
+	// 注入服务相关信息
+	app, err := i.mcenter.Service().DescribeService(ctx, service.NewDescribeServiceRequest(ins.Spec.ServiceId))
+	if err != nil {
+		return nil, err
+	}
+	fmt.Println(app)
+
+	return set, nil
+}

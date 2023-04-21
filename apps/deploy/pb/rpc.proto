@@ -9,9 +9,20 @@ import "apps/deploy/pb/deploy.proto";
 
 // RPC 应用部署配置
 service RPC {
+    // 查询部署列表
     rpc QueryDeployment(QueryDeploymentRequest) returns(DeploymentSet);
+    // 查询部署详情
     rpc DescribeDeployment(DescribeDeploymentRequest) returns(Deployment);
+    // 更新部署状态, moperator通过该rpc接口更新部署状态
     rpc UpdateDeploymentStatus(UpdateDeploymentStatusRequest) returns(Deployment);
+    // 查询部署是需要动态注入的环境变量, moperator 通过该接口拉取Env进行动态注入
+    rpc QueryDeploymentInjectEnv(QueryDeploymentInjectEnvRequest) returns(InjectionEnvGroupSet);
+}
+
+message QueryDeploymentInjectEnvRequest {
+    // 部署Id
+    // @gotags: json:"id"  validate:"required"
+    string id = 2;
 }
 
 message UpdateDeploymentStatusRequest {

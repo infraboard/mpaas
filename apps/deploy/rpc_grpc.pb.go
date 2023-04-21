@@ -19,18 +19,24 @@ import (
 const _ = grpc.SupportPackageIsVersion7
 
 const (
-	RPC_QueryDeployment_FullMethodName        = "/infraboard.mpaas.deploy.RPC/QueryDeployment"
-	RPC_DescribeDeployment_FullMethodName     = "/infraboard.mpaas.deploy.RPC/DescribeDeployment"
-	RPC_UpdateDeploymentStatus_FullMethodName = "/infraboard.mpaas.deploy.RPC/UpdateDeploymentStatus"
+	RPC_QueryDeployment_FullMethodName          = "/infraboard.mpaas.deploy.RPC/QueryDeployment"
+	RPC_DescribeDeployment_FullMethodName       = "/infraboard.mpaas.deploy.RPC/DescribeDeployment"
+	RPC_UpdateDeploymentStatus_FullMethodName   = "/infraboard.mpaas.deploy.RPC/UpdateDeploymentStatus"
+	RPC_QueryDeploymentInjectEnv_FullMethodName = "/infraboard.mpaas.deploy.RPC/QueryDeploymentInjectEnv"
 )
 
 // RPCClient is the client API for RPC service.
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type RPCClient interface {
+	// 查询部署列表
 	QueryDeployment(ctx context.Context, in *QueryDeploymentRequest, opts ...grpc.CallOption) (*DeploymentSet, error)
+	// 查询部署详情
 	DescribeDeployment(ctx context.Context, in *DescribeDeploymentRequest, opts ...grpc.CallOption) (*Deployment, error)
+	// 更新部署状态, moperator通过该rpc接口更新部署状态
 	UpdateDeploymentStatus(ctx context.Context, in *UpdateDeploymentStatusRequest, opts ...grpc.CallOption) (*Deployment, error)
+	// 查询部署是需要动态注入的环境变量, moperator 通过该接口拉取Env进行动态注入
+	QueryDeploymentInjectEnv(ctx context.Context, in *QueryDeploymentInjectEnvRequest, opts ...grpc.CallOption) (*InjectionEnvGroupSet, error)
 }
 
 type rPCClient struct {
@@ -68,13 +74,27 @@ func (c *rPCClient) UpdateDeploymentStatus(ctx context.Context, in *UpdateDeploy
 	return out, nil
 }
 
+func (c *rPCClient) QueryDeploymentInjectEnv(ctx context.Context, in *QueryDeploymentInjectEnvRequest, opts ...grpc.CallOption) (*InjectionEnvGroupSet, error) {
+	out := new(InjectionEnvGroupSet)
+	err := c.cc.Invoke(ctx, RPC_QueryDeploymentInjectEnv_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // RPCServer is the server API for RPC service.
 // All implementations must embed UnimplementedRPCServer
 // for forward compatibility
 type RPCServer interface {
+	// 查询部署列表
 	QueryDeployment(context.Context, *QueryDeploymentRequest) (*DeploymentSet, error)
+	// 查询部署详情
 	DescribeDeployment(context.Context, *DescribeDeploymentRequest) (*Deployment, error)
+	// 更新部署状态, moperator通过该rpc接口更新部署状态
 	UpdateDeploymentStatus(context.Context, *UpdateDeploymentStatusRequest) (*Deployment, error)
+	// 查询部署是需要动态注入的环境变量, moperator 通过该接口拉取Env进行动态注入
+	QueryDeploymentInjectEnv(context.Context, *QueryDeploymentInjectEnvRequest) (*InjectionEnvGroupSet, error)
 	mustEmbedUnimplementedRPCServer()
 }
 
@@ -90,6 +110,9 @@ func (UnimplementedRPCServer) DescribeDeployment(context.Context, *DescribeDeplo
 }
 func (UnimplementedRPCServer) UpdateDeploymentStatus(context.Context, *UpdateDeploymentStatusRequest) (*Deployment, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method UpdateDeploymentStatus not implemented")
+}
+func (UnimplementedRPCServer) QueryDeploymentInjectEnv(context.Context, *QueryDeploymentInjectEnvRequest) (*InjectionEnvGroupSet, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method QueryDeploymentInjectEnv not implemented")
 }
 func (UnimplementedRPCServer) mustEmbedUnimplementedRPCServer() {}
 
@@ -158,6 +181,24 @@ func _RPC_UpdateDeploymentStatus_Handler(srv interface{}, ctx context.Context, d
 	return interceptor(ctx, in, info, handler)
 }
 
+func _RPC_QueryDeploymentInjectEnv_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(QueryDeploymentInjectEnvRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(RPCServer).QueryDeploymentInjectEnv(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: RPC_QueryDeploymentInjectEnv_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(RPCServer).QueryDeploymentInjectEnv(ctx, req.(*QueryDeploymentInjectEnvRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // RPC_ServiceDesc is the grpc.ServiceDesc for RPC service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -176,6 +217,10 @@ var RPC_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "UpdateDeploymentStatus",
 			Handler:    _RPC_UpdateDeploymentStatus_Handler,
+		},
+		{
+			MethodName: "QueryDeploymentInjectEnv",
+			Handler:    _RPC_QueryDeploymentInjectEnv_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
