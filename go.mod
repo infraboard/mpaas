@@ -12,7 +12,7 @@ require (
 	github.com/go-playground/validator/v10 v10.12.0
 	github.com/gorilla/websocket v1.5.0
 	github.com/imdario/mergo v0.3.13
-	github.com/infraboard/mcenter v0.0.10-0.20230412052339-06ca94c2c535
+	github.com/infraboard/mcenter v0.0.11-0.20230422010219-00d57d30af10
 	github.com/infraboard/mcube v1.9.16-0.20230421132557-66c470b84164
 	github.com/kvtools/valkeyrie v1.0.0
 	github.com/rs/xid v1.4.0
@@ -22,10 +22,10 @@ require (
 	go.etcd.io/etcd/client/v3 v3.5.7
 	go.mongodb.org/mongo-driver v1.11.4
 	go.opentelemetry.io/contrib/instrumentation/github.com/emicklei/go-restful/otelrestful v0.40.0
+	go.opentelemetry.io/contrib/instrumentation/go.mongodb.org/mongo-driver/mongo/otelmongo v0.40.0
 	go.opentelemetry.io/contrib/instrumentation/google.golang.org/grpc/otelgrpc v0.40.0
 	go.opentelemetry.io/otel v1.14.0
 	go.opentelemetry.io/otel/exporters/jaeger v1.14.0
-	go.opentelemetry.io/otel/exporters/stdout/stdouttrace v1.14.0
 	go.opentelemetry.io/otel/sdk v1.14.0
 	go.opentelemetry.io/otel/trace v1.14.0
 	google.golang.org/grpc v1.54.0

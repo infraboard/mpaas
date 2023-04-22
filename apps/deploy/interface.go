@@ -147,3 +147,9 @@ func NewUpdateDeploymentStatusRequest(id string) *UpdateDeploymentStatusRequest 
 		Id:               id,
 	}
 }
+
+func NewQueryDeploymentInjectEnvRequest(id string) *QueryDeploymentInjectEnvRequest {
+	return &QueryDeploymentInjectEnvRequest{
+		Id: id,
+	}
+}

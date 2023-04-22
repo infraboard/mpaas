@@ -12,6 +12,7 @@ import (
 	"github.com/infraboard/mcube/cache/redis"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
+	"go.opentelemetry.io/contrib/instrumentation/go.mongodb.org/mongo-driver/mongo/otelmongo"
 )
 
 const (
@@ -30,6 +31,7 @@ func newConfig() *Config {
 		Mcenter: rpc.NewDefaultConfig(),
 		Cache:   newDefaultCache(),
 		Image:   newDefaultImage(),
+		Jaeger:  newJaeger(),
 	}
 }
 
@@ -41,6 +43,7 @@ type Config struct {
 	Mcenter *rpc.Config `toml:"mcenter"`
 	Cache   *_cache     `toml:"cache"`
 	Image   *image      `toml:"image"`
+	Jaeger  *jaeger     `toml:"jaeger"`
 }
 
 // InitGloabl 注入全局变量
@@ -209,6 +212,9 @@ func (m *mongodb) getClient() (*mongo.Client, error) {
 	}
 	opts.SetHosts(m.Endpoints)
 	opts.SetConnectTimeout(5 * time.Second)
+	opts.Monitor = otelmongo.NewMonitor(
+		otelmongo.WithCommandAttributeDisabled(true),
+	)
 
 	// Connect to MongoDB
 	client, err := mongo.Connect(context.TODO(), opts)
@@ -246,4 +252,12 @@ func newDefaultImage() *image {
 type image struct {
 	// 镜像默认推送仓库地址
 	DefaultRegistry string `toml:"default_registry" json:"default_registry" yaml:"default_registry" env:"DEFAULT_REGISTRY"`
+}
+
+func newJaeger() *jaeger {
+	return &jaeger{}
+}
+
+type jaeger struct {
+	Endpoint string `toml:"endpoint" json:"endpoint" yaml:"endpoint" env:"JAEGER_ENDPOINT"`
 }

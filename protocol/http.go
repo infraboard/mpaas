@@ -35,7 +35,7 @@ func NewHTTPService() *HTTPService {
 
 	r := restful.DefaultContainer
 
-	// Optionally, you may need to enable CORS for the UI to work.
+	// CORS中间件
 	cors := restful.CrossOriginResourceSharing{
 		AllowedHeaders: []string{"*"},
 		AllowedDomains: []string{"*"},
@@ -43,12 +43,12 @@ func NewHTTPService() *HTTPService {
 		CookiesAllowed: false,
 		Container:      r,
 	}
-
 	r.Filter(cors.Filter)
-	r.Filter(middleware.RestfulServerInterceptor())
-
+	// trace中间件
 	filter := otelrestful.OTelFilter(version.ServiceName)
 	restful.DefaultContainer.Filter(filter)
+	// 认证中间件
+	r.Filter(middleware.RestfulServerInterceptor())
 
 	server := &http.Server{
 		ReadHeaderTimeout: 60 * time.Second,

@@ -40,9 +40,6 @@ func TestCreateMongoDeployment(t *testing.T) {
 	req.Kind = deploy.KIND_MIDDLEWARE
 	req.ServiceName = "mongodb"
 	req.K8STypeConfig = k8sConf
-	req.Provider = "腾讯云"
-	req.Region = "上海"
-	req.Environment = "生产"
 	req.DeployId = "mongodb"
 	req.Domain = domain.DEFAULT_DOMAIN
 	req.Namespace = namespace.DEFAULT_NAMESPACE
@@ -61,9 +58,6 @@ func TestCreateMcenterDeployment(t *testing.T) {
 
 	req := deploy.NewCreateDeploymentRequest()
 	req.K8STypeConfig = k8sConf
-	req.Provider = "腾讯云"
-	req.Region = "上海"
-	req.Environment = "生产"
 	req.ServiceId = conf.C.MCENTER_SERVICE_ID
 	req.DeployId = "mcenter_v1"
 
@@ -96,6 +90,15 @@ func TestUpdateDeploymentStatus(t *testing.T) {
 		t.Fatal(err)
 	}
 	t.Log(tools.MustToYaml(ds))
+}
+
+func TestQueryDeploymentInjectEnv(t *testing.T) {
+	req := deploy.NewQueryDeploymentInjectEnvRequest(conf.C.DEPLOY_ID)
+	env, err := impl.QueryDeploymentInjectEnv(ctx, req)
+	if err != nil {
+		t.Fatal(err)
+	}
+	t.Log(tools.MustToYaml(env))
 }
 
 func TestDeleteDeployment(t *testing.T) {
