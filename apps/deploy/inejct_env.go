@@ -8,6 +8,14 @@ import (
 	"github.com/infraboard/mpaas/conf"
 )
 
+func NewDdynamicInjection() *DdynamicInjection {
+	return &DdynamicInjection{
+		SystemEnv:  true,
+		EnvGroups:  []*InjectionEnvGroup{},
+		AccessStat: NewAccessStat(),
+	}
+}
+
 func NewInjectionEnvGroupSet() *InjectionEnvGroupSet {
 	return &InjectionEnvGroupSet{
 		EnvGroups: []*InjectionEnvGroup{},
@@ -82,4 +90,8 @@ func (e *InjectionEnv) MakeEncrypt(key string) {
 	}
 
 	e.Value = fmt.Sprintf("%s%s", conf.CIPHER_TEXT_PREFIX, encrypt)
+}
+
+func NewAccessStat() *AccessStat {
+	return &AccessStat{}
 }

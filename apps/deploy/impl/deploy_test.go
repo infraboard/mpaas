@@ -16,18 +16,18 @@ func TestQueryDeploy(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	t.Log(tools.MustToYaml(ds))
+	t.Log(tools.MustToJson(ds))
 }
 
 func TestDescribeDeployment(t *testing.T) {
-	req := deploy.NewDescribeDeploymentRequest(conf.C.MCENTER_DEPLOY_ID)
+	req := deploy.NewDescribeDeploymentRequest(conf.C.DEPLOY_ID)
 	ds, err := impl.DescribeDeployment(ctx, req)
 	if err != nil {
 		t.Fatal(err)
 	}
 
 	t.Log(ds.SystemVariable())
-	t.Log(tools.MustToYaml(ds))
+	t.Log(tools.MustToJson(ds))
 }
 
 func TestCreateMongoDeployment(t *testing.T) {
@@ -70,7 +70,7 @@ func TestCreateMcenterDeployment(t *testing.T) {
 
 func TestUpdateDeployment(t *testing.T) {
 	k8sConf := deploy.NewK8STypeConfig()
-	k8sConf.WorkloadConfig = tools.MustReadContentFile("test/deployment.yml")
+	k8sConf.WorkloadConfig = tools.MustReadContentFile("test/mcenter_workload.yml")
 	req := deploy.NewPatchDeployRequest(conf.C.DEPLOY_ID)
 	req.Spec.K8STypeConfig.ClusterId = "k8s-test"
 	ds, err := impl.UpdateDeployment(ctx, req)

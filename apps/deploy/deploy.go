@@ -27,9 +27,10 @@ func (s *DeploymentSet) Add(item *Deployment) {
 
 func NewDefaultDeploy() *Deployment {
 	return &Deployment{
-		Spec:       NewCreateDeploymentRequest(),
-		Credential: NewCredential(),
-		Status:     NewStatus(),
+		Spec:             NewCreateDeploymentRequest(),
+		Credential:       NewCredential(),
+		Status:           NewStatus(),
+		DynamicInjection: NewDdynamicInjection(),
 	}
 }
 
@@ -74,8 +75,9 @@ func (d *Deployment) MarshalJSON() ([]byte, error) {
 	return json.Marshal(struct {
 		*meta.Meta
 		*CreateDeploymentRequest
-		Status *Status `json:"status"`
-	}{d.Meta, d.Spec, d.Status})
+		Status           *Status            `json:"status"`
+		DynamicInjection *DdynamicInjection `json:"dynamic_injection"`
+	}{d.Meta, d.Spec, d.Status, d.DynamicInjection})
 }
 
 func (d *Deployment) GetK8sClusterId() string {
