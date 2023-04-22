@@ -20,7 +20,7 @@ func TestQueryDeploy(t *testing.T) {
 }
 
 func TestDescribeDeployment(t *testing.T) {
-	req := deploy.NewDescribeDeploymentRequest(conf.C.DEPLOY_ID)
+	req := deploy.NewDescribeDeploymentRequest(conf.C.MCENTER_DEPLOY_ID)
 	ds, err := impl.DescribeDeployment(ctx, req)
 	if err != nil {
 		t.Fatal(err)
@@ -65,7 +65,7 @@ func TestCreateMcenterDeployment(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	t.Log(ds)
+	t.Log(tools.MustToJson(ds))
 }
 
 func TestUpdateDeployment(t *testing.T) {
@@ -83,7 +83,7 @@ func TestUpdateDeployment(t *testing.T) {
 func TestUpdateDeploymentStatus(t *testing.T) {
 	k8sConf := deploy.NewK8STypeConfig()
 	k8sConf.WorkloadConfig = tools.MustReadContentFile("test/deployment.yml")
-	req := deploy.NewUpdateDeploymentStatusRequest(conf.C.DEPLOY_ID)
+	req := deploy.NewUpdateDeploymentStatusRequest(conf.C.MCENTER_DEPLOY_ID)
 	req.UpdatedK8SConfig = k8sConf
 	ds, err := impl.UpdateDeploymentStatus(ctx, req)
 	if err != nil {
@@ -93,7 +93,7 @@ func TestUpdateDeploymentStatus(t *testing.T) {
 }
 
 func TestQueryDeploymentInjectEnv(t *testing.T) {
-	req := deploy.NewQueryDeploymentInjectEnvRequest(conf.C.DEPLOY_ID)
+	req := deploy.NewQueryDeploymentInjectEnvRequest(conf.C.MCENTER_DEPLOY_ID)
 	env, err := impl.QueryDeploymentInjectEnv(ctx, req)
 	if err != nil {
 		t.Fatal(err)
@@ -102,7 +102,7 @@ func TestQueryDeploymentInjectEnv(t *testing.T) {
 }
 
 func TestDeleteDeployment(t *testing.T) {
-	req := deploy.NewDeleteDeploymentRequest(conf.C.DEPLOY_ID)
+	req := deploy.NewDeleteDeploymentRequest(conf.C.MCENTER_DEPLOY_ID)
 	ds, err := impl.DeleteDeployment(ctx, req)
 	if err != nil {
 		t.Fatal(err)

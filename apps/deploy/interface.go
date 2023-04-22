@@ -34,9 +34,11 @@ func New(req *CreateDeploymentRequest) (*Deployment, error) {
 	}
 
 	d := &Deployment{
-		Meta:   m,
-		Spec:   req,
-		Status: NewStatus(),
+		Meta:             m,
+		Spec:             req,
+		Status:           NewStatus(),
+		Credential:       NewCredential(),
+		DynamicInjection: NewDdynamicInjection(),
 	}
 
 	return d, nil
