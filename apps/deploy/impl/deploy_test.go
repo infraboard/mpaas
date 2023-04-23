@@ -98,7 +98,14 @@ func TestQueryDeploymentInjectEnv(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	t.Log(tools.MustToYaml(env))
+	t.Log(tools.MustToJson(env))
+
+	// 测试Group匹配
+	for i := range env.EnvGroups {
+		group := env.EnvGroups[i]
+		t.Log(group.IsLabelMatched(map[string]string{}))
+		t.Log(tools.MustToJson(group.ToContainerEnvVars()))
+	}
 }
 
 func TestDeleteDeployment(t *testing.T) {

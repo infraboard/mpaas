@@ -81,6 +81,7 @@ func (g *InjectionEnvGroup) IsLabelMatched(target map[string]string) bool {
 
 func (g *InjectionEnvGroup) ToContainerEnvVars() []v1.EnvVar {
 	envs := []v1.EnvVar{}
+
 	for i := range g.InjectEnvs {
 		env := g.InjectEnvs[i]
 		envs = append(envs, v1.EnvVar{
