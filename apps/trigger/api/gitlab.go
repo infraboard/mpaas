@@ -78,9 +78,9 @@ func (h *Handler) BuildEvent(ctx context.Context, in *trigger.Event) error {
 		return err
 	}
 	h.log.Debugf("service: %s", svc)
-	repo := svc.Spec.Repository
+	repo := svc.Spec.CodeRepository
 	if repo == nil || repo.Token == "" {
-		return fmt.Errorf("service %s[%s] no repo or private token info", svc.FullName(), svc.Id)
+		return fmt.Errorf("service %s[%s] no repo or private token info", svc.FullName(), svc.Meta.Id)
 	}
 
 	event, err := in.GetGitlabEvent()

@@ -34,9 +34,11 @@ func New(req *CreateDeploymentRequest) (*Deployment, error) {
 	}
 
 	d := &Deployment{
-		Meta:   m,
-		Spec:   req,
-		Status: NewStatus(),
+		Meta:             m,
+		Spec:             req,
+		Status:           NewStatus(),
+		Credential:       NewCredential(),
+		DynamicInjection: NewDdynamicInjection(),
 	}
 
 	return d, nil
@@ -145,5 +147,11 @@ func NewUpdateDeploymentStatusRequest(id string) *UpdateDeploymentStatusRequest 
 	return &UpdateDeploymentStatusRequest{
 		UpdatedK8SConfig: NewK8STypeConfig(),
 		Id:               id,
+	}
+}
+
+func NewQueryDeploymentInjectEnvRequest(id string) *QueryDeploymentInjectEnvRequest {
+	return &QueryDeploymentInjectEnvRequest{
+		Id: id,
 	}
 }

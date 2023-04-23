@@ -27,7 +27,7 @@ func (h *handler) Registry(ws *restful.WebService) {
 		Metadata(restfulspec.KeyOpenAPITags, tags).
 		Metadata(label.Resource, h.Name()).
 		Metadata(label.Action, label.List.Value()).
-		Metadata(label.Auth, label.Disable).
+		Metadata(label.Auth, label.Enable).
 		Metadata(label.Permission, label.Enable).
 		Reads(job.QueryJobRequest{}).
 		Writes(job.JobSet{}).
