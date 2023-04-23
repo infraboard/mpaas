@@ -15,6 +15,7 @@ import (
 	"github.com/infraboard/mpaas/provider/k8s"
 	"github.com/infraboard/mpaas/provider/k8s/meta"
 	"github.com/infraboard/mpaas/provider/k8s/network"
+	"github.com/infraboard/mpaas/provider/k8s/workload"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
 )
@@ -78,6 +79,11 @@ func (i *impl) RunK8sDeploy(ctx context.Context, ins *deploy.Deployment) error {
 	if serviceContainer == nil {
 		return fmt.Errorf("部署配置必须包含一个服务名称同名的容器 作为主容器")
 	}
+
+	// 补充Pod需要注入的信息
+	pts := wl.GetPodTemplateSpec()
+	workload.InjectPodTemplateSpecAnnotations(pts, deploy.ANNOTATION_DEPLOY_ID, ins.Meta.Id)
+
 	// 从镜像中获取部署的版本信息
 	ins.Spec.ServiceVersion = wl.GetServiceContainerVersion(ins.Spec.ServiceName)
 

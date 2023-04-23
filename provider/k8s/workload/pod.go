@@ -23,6 +23,19 @@ func (c *Client) DeletePod(ctx context.Context, req *meta.DeleteRequest) error {
 	return c.corev1.Pods("").Delete(ctx, "", req.Opts)
 }
 
+func InjectPodTemplateSpecAnnotations(pod *v1.PodTemplateSpec, key, value string) {
+	if pod == nil {
+		return
+	}
+
+	if pod.Annotations == nil {
+		pod.Annotations = map[string]string{}
+	}
+
+	// 注入
+	pod.Annotations[key] = value
+}
+
 func InjectPodEnvVars(pod *v1.PodSpec, envs []v1.EnvVar) {
 	if len(envs) == 0 {
 		return

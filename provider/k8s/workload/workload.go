@@ -7,6 +7,7 @@ import (
 	"github.com/infraboard/mpaas/provider/k8s/meta"
 	appsv1 "k8s.io/api/apps/v1"
 	batchv1 "k8s.io/api/batch/v1"
+	v1 "k8s.io/api/core/v1"
 	"sigs.k8s.io/yaml"
 )
 
@@ -127,6 +128,22 @@ func (w *WorkLoad) SetDefaultNamespace(ns string) {
 	case WORKLOAD_KIND_JOB:
 		w.Job.Namespace = ns
 	}
+}
+
+func (w *WorkLoad) GetPodTemplateSpec() (podSpec *v1.PodTemplateSpec) {
+	switch w.WorkloadKind {
+	case WORKLOAD_KIND_DEPLOYMENT:
+		podSpec = &w.Deployment.Spec.Template
+	case WORKLOAD_KIND_STATEFULSET:
+		podSpec = &w.StatefulSet.Spec.Template
+	case WORKLOAD_KIND_DAEMONSET:
+		podSpec = &w.DaemonSet.Spec.Template
+	case WORKLOAD_KIND_CRONJOB:
+		podSpec = &w.CronJob.Spec.JobTemplate.Spec.Template
+	case WORKLOAD_KIND_JOB:
+		podSpec = &w.Job.Spec.Template
+	}
+	return
 }
 
 // 获取负载当前状态
