@@ -351,7 +351,6 @@ func (i *impl) QueryDeploymentInjectEnv(ctx context.Context, in *deploy.QueryDep
 		// 使用服务的加密key对需要加密的环境变量加密
 		encryptKey := app.Security.EncryptKey
 		set.Encrypt(encryptKey)
-
 	}
 	return set, nil
 }
