@@ -6,6 +6,7 @@ import (
 
 	"github.com/infraboard/mcube/crypto/cbc"
 	"github.com/infraboard/mpaas/conf"
+	v1 "k8s.io/api/core/v1"
 )
 
 func NewDdynamicInjection() *DdynamicInjection {
@@ -55,6 +56,39 @@ func NewInjectionEnvGroup() *InjectionEnvGroup {
 
 func (g *InjectionEnvGroup) AddEnv(env ...*InjectionEnv) {
 	g.InjectEnvs = append(g.InjectEnvs, env...)
+}
+
+func (g *InjectionEnvGroup) IsLabelMatched(target map[string]string) bool {
+	// 如果没有配置匹配标签, 默认不过滤
+	if len(g.MatchLabel) == 0 {
+		return true
+	}
+
+	// 如果配置了Label，而目录没有Label 则不匹配
+	if len(target) == 0 {
+		return false
+	}
+
+	// 匹配目录是否含有指定的label, 如果有一个不相等则不匹配
+	for sk, sv := range g.MatchLabel {
+		if target[sk] != sv {
+			return false
+		}
+	}
+
+	return true
+}
+
+func (g *InjectionEnvGroup) ToContainerEnvVars() []v1.EnvVar {
+	envs := []v1.EnvVar{}
+	for i := range g.InjectEnvs {
+		env := g.InjectEnvs[i]
+		envs = append(envs, v1.EnvVar{
+			Name:  env.Key,
+			Value: env.Value,
+		})
+	}
+	return envs
 }
 
 func NewInjectionEnv(key, value string) *InjectionEnv {
