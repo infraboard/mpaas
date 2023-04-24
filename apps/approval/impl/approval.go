@@ -29,8 +29,7 @@ func (i *impl) CreateApproval(ctx context.Context, in *approval.CreateApprovalRe
 	}
 
 	// 补充Pipeline创建
-	if ins.Spec.PipelineId == "" {
-		in.PipelineSpec.ApprovalId = ins.Meta.Id
+	if !in.IsTemplate && ins.Spec.PipelineId == "" {
 		p, err := i.pipeline.CreatePipeline(ctx, in.PipelineSpec)
 		if err != nil {
 			return nil, err

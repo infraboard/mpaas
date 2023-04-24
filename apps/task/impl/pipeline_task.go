@@ -28,7 +28,7 @@ func (i *impl) RunPipeline(ctx context.Context, in *pipeline.RunPipelineRequest)
 	}
 
 	// 检查Pipeline状态
-	if err := i.CheckPipelineAllowRun(ctx, p); err != nil {
+	if err := i.CheckPipelineAllowRun(ctx, p, in.ApprovalId); err != nil {
 		return nil, err
 	}
 
@@ -72,11 +72,14 @@ func (i *impl) RunPipeline(ctx context.Context, in *pipeline.RunPipelineRequest)
 	return ins, nil
 }
 
-func (i *impl) CheckPipelineAllowRun(ctx context.Context, ins *pipeline.Pipeline) error {
+func (i *impl) CheckPipelineAllowRun(ctx context.Context, ins *pipeline.Pipeline, approlvalId string) error {
 	// 1. 检查审核状态
-	if ins.Spec.ApprovalId != "" {
+	if ins.Spec.RequiredApproval {
+		if approlvalId == "" {
+			return exception.NewBadRequest("流水线需要审核单才能运行")
+		}
 		a, err := i.approval.DescribeApproval(
-			ctx, approval.NewDescribeApprovalRequest(ins.Spec.ApprovalId),
+			ctx, approval.NewDescribeApprovalRequest(approlvalId),
 		)
 		if err != nil {
 			return err

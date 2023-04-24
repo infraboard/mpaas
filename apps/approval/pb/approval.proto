@@ -46,7 +46,7 @@ message CreateApprovalRequest {
     // 创建人
     // @gotags: bson:"create_by" json:"create_by" validate:"required"
     string create_by = 4;
-    // 申请人列表, 申请通过后, 由申请人执行发布
+    // 申请人列表, 申请通过后, 由申请人执行流水线
     // @gotags: bson:"proposers" json:"proposers"
     repeated string proposers = 5;
     // 审核人列表
@@ -87,7 +87,7 @@ enum STAGE {
 	// 审核通过
 	PASSED = 4;
 
-	// 发布关闭, 发布成功后,验证没问题, 发布结束
+	// 关闭, 执行成功后,验证没问题, 流程结束
 	CLOSED = 15;
 }
 

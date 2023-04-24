@@ -36,7 +36,7 @@ const (
 	STAGE_DENY STAGE = 3
 	// 审核通过
 	STAGE_PASSED STAGE = 4
-	// 发布关闭, 发布成功后,验证没问题, 发布结束
+	// 关闭, 执行成功后,验证没问题, 流程结束
 	STAGE_CLOSED STAGE = 15
 )
 
@@ -244,7 +244,7 @@ type CreateApprovalRequest struct {
 	// 创建人
 	// @gotags: bson:"create_by" json:"create_by" validate:"required"
 	CreateBy string `protobuf:"bytes,4,opt,name=create_by,json=createBy,proto3" json:"create_by" bson:"create_by" validate:"required"`
-	// 申请人列表, 申请通过后, 由申请人执行发布
+	// 申请人列表, 申请通过后, 由申请人执行流水线
 	// @gotags: bson:"proposers" json:"proposers"
 	Proposers []string `protobuf:"bytes,5,rep,name=proposers,proto3" json:"proposers" bson:"proposers"`
 	// 审核人列表
@@ -253,7 +253,7 @@ type CreateApprovalRequest struct {
 	// 申请单标题
 	// @gotags: bson:"title" json:"title" validate:"required"
 	Title string `protobuf:"bytes,7,opt,name=title,proto3" json:"title" bson:"title" validate:"required"`
-	// 发布说明
+	// 申请说明, 支持Markdown
 	// @gotags: bson:"describe" json:"describe" validate:"required"
 	Describe string `protobuf:"bytes,8,opt,name=describe,proto3" json:"describe" bson:"describe" validate:"required"`
 	// 审核通过后, 是否自动执行流水线, 默认审核通过后手动执行
