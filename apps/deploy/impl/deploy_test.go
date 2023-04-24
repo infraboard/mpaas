@@ -40,7 +40,6 @@ func TestCreateMongoDeployment(t *testing.T) {
 	req.Kind = deploy.KIND_MIDDLEWARE
 	req.ServiceName = "mongodb"
 	req.K8STypeConfig = k8sConf
-	req.DeployId = "mongodb"
 	req.Domain = domain.DEFAULT_DOMAIN
 	req.Namespace = namespace.DEFAULT_NAMESPACE
 
@@ -59,7 +58,6 @@ func TestCreateMcenterDeployment(t *testing.T) {
 	req := deploy.NewCreateDeploymentRequest()
 	req.K8STypeConfig = k8sConf
 	req.ServiceId = conf.C.MCENTER_SERVICE_ID
-	req.DeployId = "mcenter_v1"
 
 	ds, err := impl.CreateDeployment(ctx, req)
 	if err != nil {

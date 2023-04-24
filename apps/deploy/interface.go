@@ -29,9 +29,6 @@ func New(req *CreateDeploymentRequest) (*Deployment, error) {
 		return nil, err
 	}
 	m := meta.NewMeta()
-	if req.DeployId != "" {
-		m.Id = req.DeployId
-	}
 
 	d := &Deployment{
 		Meta:             m,
@@ -54,6 +51,14 @@ func (req *CreateDeploymentRequest) ValidateWorkLoad() error {
 	}
 
 	return nil
+}
+
+func (req *CreateDeploymentRequest) MakeName() {
+	name := fmt.Sprintf("%s-%s", req.ServiceName, req.ServiceVersion)
+	if req.NameSubfix != "" {
+		name = name + "-" + req.NameSubfix
+	}
+	req.Name = name
 }
 
 func (req *CreateDeploymentRequest) ValidateMiddleware() error {
