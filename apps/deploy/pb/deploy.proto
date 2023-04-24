@@ -185,9 +185,6 @@ enum KIND {
 }
 
 message CreateDeploymentRequest {
-    // 自动生成
-    // @gotags: bson:"name" json:"name"
-    string name = 22;
 	// 部署的类型
 	// @gotags: bson:"kind" json:"kind"
     KIND kind = 18;
@@ -236,9 +233,9 @@ message CreateDeploymentRequest {
     // 部署描述信息
     // @gotags: bson:"describe" json:"describe"
     string describe = 13;
-    // 部署名称后缀, 默认空, 命名结构: ServieNename-ServiceVersion-Subfix
-    // @gotags: bson:"deploy_id_subfix" json:"deploy_id_subfix"
-    string name_subfix = 14;
+    // 部署名称, 默认使用服务名称
+    // @gotags: bson:"name" json:"name"
+    string name = 14;
     // 是否需要发布申请, 需要发布申请的部署 不允许执行自动部署
     // @gotags: bson:"is_approval" json:"is_approval"
     bool is_approval = 15;

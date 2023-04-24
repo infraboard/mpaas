@@ -58,6 +58,7 @@ func (i *impl) CreateDeployment(ctx context.Context, in *deploy.CreateDeployment
 		}
 	}
 
+	ins.Spec.SetDefault()
 	if _, err := i.col.InsertOne(ctx, ins); err != nil {
 		return nil, exception.NewInternalServerError("inserted a deploy document error, %s", err)
 	}
@@ -85,8 +86,6 @@ func (i *impl) RunK8sDeploy(ctx context.Context, ins *deploy.Deployment) error {
 
 	// 从镜像中获取部署的版本信息
 	ins.Spec.ServiceVersion = wl.GetServiceContainerVersion(ins.Spec.ServiceName)
-	// 生成部署名称
-	ins.Spec.MakeName()
 
 	wl.SetAnnotations(deploy.ANNOTATION_DEPLOY_ID, ins.Meta.Id)
 

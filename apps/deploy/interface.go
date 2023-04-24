@@ -8,6 +8,7 @@ import (
 	"github.com/infraboard/mcenter/common/validate"
 	"github.com/infraboard/mcube/http/request"
 	pb_request "github.com/infraboard/mcube/pb/request"
+	"github.com/infraboard/mpaas/common/hash"
 	"github.com/infraboard/mpaas/common/meta"
 	"github.com/infraboard/mpaas/provider/k8s/workload"
 )
@@ -53,20 +54,22 @@ func (req *CreateDeploymentRequest) ValidateWorkLoad() error {
 	return nil
 }
 
-func (req *CreateDeploymentRequest) MakeName() {
-	name := fmt.Sprintf("%s-%s", req.ServiceName, req.ServiceVersion)
-	if req.NameSubfix != "" {
-		name = name + "-" + req.NameSubfix
-	}
-	req.Name = name
-}
-
 func (req *CreateDeploymentRequest) ValidateMiddleware() error {
 	if req.ServiceName == "" {
 		return fmt.Errorf("when middleware, service_name required")
 	}
 
 	return nil
+}
+
+func (req *CreateDeploymentRequest) SetDefault() {
+	if req.Name == "" {
+		req.Name = req.ServiceName
+	}
+}
+
+func (req *CreateDeploymentRequest) UUID() string {
+	return hash.FnvHash(req.Domain, req.Namespace, req.ServiceName, req.Name)
 }
 
 func NewQueryDeploymentRequestFromHttp(r *http.Request) *QueryDeploymentRequest {
