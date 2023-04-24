@@ -50,8 +50,10 @@ message QueryDeploymentRequest {
 }
 
 enum DESCRIBE_BY {
-    // 用户的ID
+    // 部署ID
     ID = 0;
+    // 部署的名称
+    NAME = 1;
 }
 
 message DescribeDeploymentRequest {
@@ -61,6 +63,12 @@ message DescribeDeploymentRequest {
     // 查询值
     // @gotags: json:"describe_value"  validate:"required"
     string describe_value = 2;
+    // 查询值
+    // @gotags: json:"domain"
+    string domain = 3;
+    // 查询值
+    // @gotags: json:"namespace"  
+    string namespace = 4;
 }
 
 message UpdateDeploymentRequest {

@@ -72,7 +72,6 @@ func (i *impl) RunK8sDeploy(ctx context.Context, ins *deploy.Deployment) error {
 		return err
 	}
 	wl.SetDefaultNamespace(ins.Spec.Namespace)
-	wl.SetAnnotations(deploy.ANNOTATION_DEPLOY_ID, ins.Meta.Id)
 
 	// 检查主容器是否存在
 	serviceContainer := wl.GetServiceContainer(ins.Spec.ServiceName)
@@ -86,6 +85,10 @@ func (i *impl) RunK8sDeploy(ctx context.Context, ins *deploy.Deployment) error {
 
 	// 从镜像中获取部署的版本信息
 	ins.Spec.ServiceVersion = wl.GetServiceContainerVersion(ins.Spec.ServiceName)
+	// 生成部署名称
+	ins.Spec.MakeName()
+
+	wl.SetAnnotations(deploy.ANNOTATION_DEPLOY_ID, ins.Meta.Id)
 
 	// 查询部署的k8s集群
 	k8sClient, err := i.GetDeployK8sClient(ctx, wc.ClusterId)
@@ -155,6 +158,10 @@ func (i *impl) DescribeDeployment(ctx context.Context, req *deploy.DescribeDeplo
 	switch req.DescribeBy {
 	case deploy.DESCRIBE_BY_ID:
 		filter["_id"] = req.DescribeValue
+	case deploy.DESCRIBE_BY_NAME:
+		filter["domain"] = req.Domain
+		filter["namespace"] = req.Namespace
+		filter["name"] = req.DescribeValue
 	}
 
 	d := deploy.NewDefaultDeploy()
