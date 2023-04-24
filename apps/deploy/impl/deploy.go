@@ -59,6 +59,7 @@ func (i *impl) CreateDeployment(ctx context.Context, in *deploy.CreateDeployment
 	}
 
 	ins.Spec.SetDefault()
+	ins.Meta.Id = ins.Spec.UUID()
 	if _, err := i.col.InsertOne(ctx, ins); err != nil {
 		return nil, exception.NewInternalServerError("inserted a deploy document error, %s", err)
 	}
