@@ -233,7 +233,7 @@ message CreateDeploymentRequest {
     // 部署描述信息
     // @gotags: bson:"describe" json:"describe"
     string describe = 13;
-    // 部署名称, 默认使用服务名称
+    // 部署名称, 默认使用 Deployment部署Yaml的名称
     // @gotags: bson:"name" json:"name"
     string name = 14;
     // 是否需要发布申请, 需要发布申请的部署 不允许执行自动部署

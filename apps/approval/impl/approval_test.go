@@ -42,11 +42,11 @@ func TestCreateApproval(t *testing.T) {
 	req.Domain = domain.DEFAULT_DOMAIN
 	req.Namespace = namespace.DEFAULT_NAMESPACE
 	req.CreateBy = "test"
-	req.Version = "v1.0.0"
+	req.Title = "v1.0.0"
 	req.Describe = "发布说明, 支持Markdown语法"
 	req.AddProposer("test@default")
 	req.AddAuditor("test@default")
-	req.AutoPublish = true
+	req.AutoRun = true
 	tools.MustReadYamlFile("test/create.yml", req.PipelineSpec)
 	set, err := impl.CreateApproval(ctx, req)
 	if err != nil {

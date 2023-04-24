@@ -74,6 +74,7 @@ func (i *impl) RunK8sDeploy(ctx context.Context, ins *deploy.Deployment) error {
 		return err
 	}
 	wl.SetDefaultNamespace(ins.Spec.Namespace)
+	ins.Spec.Name = wl.Deployment.Name
 
 	// 检查主容器是否存在
 	serviceContainer := wl.GetServiceContainer(ins.Spec.ServiceName)

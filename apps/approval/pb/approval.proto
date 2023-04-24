@@ -52,15 +52,15 @@ message CreateApprovalRequest {
     // 审核人列表
     // @gotags: bson:"auditors" json:"auditors"
     repeated string auditors = 6;
-    // 发布号
-    // @gotags: bson:"version" json:"version" validate:"required"
-    string version = 7;
-    // 发布说明
+    // 申请单标题
+    // @gotags: bson:"title" json:"title" validate:"required"
+    string title = 7;
+    // 申请说明, 支持Markdown
     // @gotags: bson:"describe" json:"describe" validate:"required"
     string describe = 8;
-    // 审核通过后, 是否自动执行发布, 默认审核通过后手动发布
-    // @gotags: bson:"auto_publish" json:"auto_publish"
-    bool auto_publish = 9;
+    // 审核通过后, 是否自动执行流水线, 默认审核通过后手动执行
+    // @gotags: bson:"auto_run" json:"auto_run"
+    bool auto_run = 9;
     // 流水线配置
     // @gotags: bson:"-" json:"pipeline_spec,omitempty"
     pipeline.CreatePipelineRequest pipeline_spec = 10;

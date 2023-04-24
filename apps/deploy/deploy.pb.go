@@ -1068,7 +1068,7 @@ type CreateDeploymentRequest struct {
 	// 部署描述信息
 	// @gotags: bson:"describe" json:"describe"
 	Describe string `protobuf:"bytes,13,opt,name=describe,proto3" json:"describe" bson:"describe"`
-	// 部署名称, 默认使用服务名称
+	// 部署名称, 默认使用 Deployment部署Yaml的名称
 	// @gotags: bson:"name" json:"name"
 	Name string `protobuf:"bytes,14,opt,name=name,proto3" json:"name" bson:"name"`
 	// 是否需要发布申请, 需要发布申请的部署 不允许执行自动部署
