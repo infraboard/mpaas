@@ -366,5 +366,14 @@ func (i *impl) QueryDeploymentInjectEnv(ctx context.Context, in *deploy.QueryDep
 		encryptKey := app.Security.EncryptKey
 		set.Encrypt(encryptKey)
 	}
+
+	// 更新统计
+	as := ins.DynamicInjection.AccessStat
+	as.Inc()
+	_, err = i.col.UpdateOne(ctx, bson.M{"_id": ins.Meta.Id}, bson.M{"$set": bson.M{"dynamic_injection.access_stat": as}})
+	if err != nil {
+		return nil, exception.NewInternalServerError("update deploy status(%s) error, %s", ins.Meta.Id, err)
+	}
+
 	return set, nil
 }

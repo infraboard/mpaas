@@ -3,6 +3,7 @@ package deploy
 import (
 	"fmt"
 	"strings"
+	"time"
 
 	"github.com/infraboard/mcube/crypto/cbc"
 	"github.com/infraboard/mpaas/conf"
@@ -129,4 +130,9 @@ func (e *InjectionEnv) MakeEncrypt(key string) {
 
 func NewAccessStat() *AccessStat {
 	return &AccessStat{}
+}
+
+func (a *AccessStat) Inc() {
+	a.PullAt = time.Now().Unix()
+	a.Count++
 }
