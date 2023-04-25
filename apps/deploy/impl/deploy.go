@@ -59,7 +59,6 @@ func (i *impl) CreateDeployment(ctx context.Context, in *deploy.CreateDeployment
 	}
 
 	ins.Spec.SetDefault()
-	ins.Meta.Id = ins.Spec.UUID()
 	if _, err := i.col.InsertOne(ctx, ins); err != nil {
 		return nil, exception.NewInternalServerError("inserted a deploy document error, %s", err)
 	}
@@ -75,6 +74,7 @@ func (i *impl) RunK8sDeploy(ctx context.Context, ins *deploy.Deployment) error {
 	}
 	wl.SetDefaultNamespace(ins.Spec.Namespace)
 	ins.Spec.Name = wl.Deployment.Name
+	ins.Meta.Id = ins.Spec.UUID()
 
 	// 检查主容器是否存在
 	serviceContainer := wl.GetServiceContainer(ins.Spec.ServiceName)
