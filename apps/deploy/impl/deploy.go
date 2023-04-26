@@ -42,6 +42,21 @@ func (i *impl) CreateDeployment(ctx context.Context, in *deploy.CreateDeployment
 		ins.Spec.ServiceName = svc.Spec.Name
 		ins.Spec.Domain = svc.Spec.Namespace
 		ins.Spec.Namespace = svc.Spec.Namespace
+
+		// 提前负责名称
+		wc := ins.Spec.K8STypeConfig
+		wl, err := wc.GetWorkLoad()
+		if err != nil {
+			return nil, err
+		}
+		ins.Spec.Name = wl.GetObjectMeta().Name
+		ins.Meta.Id = ins.Spec.UUID()
+
+		// 检查主容器是否存在
+		serviceContainer := wl.GetServiceContainer(ins.Spec.ServiceName)
+		if serviceContainer == nil {
+			return nil, fmt.Errorf("部署配置必须包含一个服务名称同名的容器 作为主容器")
+		}
 	case deploy.KIND_MIDDLEWARE:
 		err := in.ValidateMiddleware()
 		if err != nil {
@@ -73,14 +88,6 @@ func (i *impl) RunK8sDeploy(ctx context.Context, ins *deploy.Deployment) error {
 		return err
 	}
 	wl.SetDefaultNamespace(ins.Spec.Namespace)
-	ins.Spec.Name = wl.Deployment.Name
-	ins.Meta.Id = ins.Spec.UUID()
-
-	// 检查主容器是否存在
-	serviceContainer := wl.GetServiceContainer(ins.Spec.ServiceName)
-	if serviceContainer == nil {
-		return fmt.Errorf("部署配置必须包含一个服务名称同名的容器 作为主容器")
-	}
 
 	// 补充Pod需要注入的信息
 	pts := wl.GetPodTemplateSpec()
