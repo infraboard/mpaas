@@ -22,47 +22,14 @@ import (
 
 func (i *impl) CreateDeployment(ctx context.Context, in *deploy.CreateDeploymentRequest) (
 	*deploy.Deployment, error) {
-	ins, err := deploy.New(in)
+	err := i.validate(ctx, in)
 	if err != nil {
 		return nil, exception.NewBadRequest(err.Error())
 	}
 
-	// 补充服务相关信息
-	switch in.Kind {
-	case deploy.KIND_WORKLOAD:
-		// 应用负载 需要关联服务
-		err := in.ValidateWorkLoad()
-		if err != nil {
-			return nil, exception.NewBadRequest(err.Error())
-		}
-		svc, err := i.mcenter.Service().DescribeService(ctx, service.NewDescribeServiceRequest(in.ServiceId))
-		if err != nil {
-			return nil, err
-		}
-		ins.Spec.ServiceName = svc.Spec.Name
-		ins.Spec.Domain = svc.Spec.Namespace
-		ins.Spec.Namespace = svc.Spec.Namespace
-
-		// 提前负责名称
-		wc := ins.Spec.K8STypeConfig
-		wl, err := wc.GetWorkLoad()
-		if err != nil {
-			return nil, err
-		}
-		ins.Spec.Name = wl.GetObjectMeta().Name
-		ins.Meta.Id = ins.Spec.UUID()
-
-		// 检查主容器是否存在
-		serviceContainer := wl.GetServiceContainer(ins.Spec.ServiceName)
-		if serviceContainer == nil {
-			return nil, fmt.Errorf("部署配置必须包含一个服务名称同名的容器 作为主容器")
-		}
-	case deploy.KIND_MIDDLEWARE:
-		err := in.ValidateMiddleware()
-		if err != nil {
-			return nil, exception.NewBadRequest(err.Error())
-		}
-	}
+	ins := deploy.New(in)
+	ins.Spec.SetDefault()
+	ins.Meta.Id = ins.Spec.UUID()
 
 	switch in.Type {
 	case deploy.TYPE_KUBERNETES:
@@ -73,11 +40,56 @@ func (i *impl) CreateDeployment(ctx context.Context, in *deploy.CreateDeployment
 		}
 	}
 
-	ins.Spec.SetDefault()
 	if _, err := i.col.InsertOne(ctx, ins); err != nil {
 		return nil, exception.NewInternalServerError("inserted a deploy document error, %s", err)
 	}
 	return ins, nil
+}
+
+func (i *impl) validate(ctx context.Context, in *deploy.CreateDeploymentRequest) error {
+	if err := in.Validate(); err != nil {
+		return err
+	}
+
+	wc := in.K8STypeConfig
+	wl, err := wc.GetWorkLoad()
+	if err != nil {
+		return err
+	}
+
+	// 补充服务相关信息
+	switch in.Kind {
+	case deploy.KIND_WORKLOAD:
+		err := in.ValidateWorkLoad()
+		if err != nil {
+			return exception.NewBadRequest(err.Error())
+		}
+
+		svc, err := i.mcenter.Service().DescribeService(ctx, service.NewDescribeServiceRequest(in.ServiceId))
+		if err != nil {
+			return err
+		}
+		in.ServiceName = svc.Spec.Name
+		in.Domain = svc.Spec.Namespace
+		in.Namespace = svc.Spec.Namespace
+	case deploy.KIND_MIDDLEWARE:
+		err := in.ValidateMiddleware()
+		if err != nil {
+			return err
+		}
+	}
+
+	// 获取部署名称
+	in.Name = wl.GetObjectMeta().Name
+	// 从镜像中获取部署的版本信息
+	in.ServiceVersion = wl.GetServiceContainerVersion(in.ServiceName)
+
+	// 检查主容器是否存在
+	serviceContainer := wl.GetServiceContainer(in.ServiceName)
+	if serviceContainer == nil {
+		return fmt.Errorf("部署配置必须包含一个服务名称同名的容器 作为主容器")
+	}
+	return nil
 }
 
 func (i *impl) RunK8sDeploy(ctx context.Context, ins *deploy.Deployment) error {
@@ -92,10 +104,6 @@ func (i *impl) RunK8sDeploy(ctx context.Context, ins *deploy.Deployment) error {
 	// 补充Pod需要注入的信息
 	pts := wl.GetPodTemplateSpec()
 	workload.InjectPodTemplateSpecAnnotations(pts, deploy.ANNOTATION_DEPLOY_ID, ins.Meta.Id)
-
-	// 从镜像中获取部署的版本信息
-	ins.Spec.ServiceVersion = wl.GetServiceContainerVersion(ins.Spec.ServiceName)
-
 	wl.SetAnnotations(deploy.ANNOTATION_DEPLOY_ID, ins.Meta.Id)
 
 	// 查询部署的k8s集群

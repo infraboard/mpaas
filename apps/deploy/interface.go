@@ -25,10 +25,7 @@ type Service interface {
 }
 
 // New 新建一个部署配置
-func New(req *CreateDeploymentRequest) (*Deployment, error) {
-	if err := req.Validate(); err != nil {
-		return nil, err
-	}
+func New(req *CreateDeploymentRequest) *Deployment {
 	m := meta.NewMeta()
 
 	d := &Deployment{
@@ -39,7 +36,7 @@ func New(req *CreateDeploymentRequest) (*Deployment, error) {
 		DynamicInjection: NewDdynamicInjection(),
 	}
 
-	return d, nil
+	return d
 }
 
 func (req *CreateDeploymentRequest) Validate() error {
