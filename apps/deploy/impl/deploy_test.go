@@ -47,7 +47,7 @@ func TestCreateMongoDeployment(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	t.Log(ds)
+	t.Log(tools.MustToJson(ds))
 }
 
 func TestCreateMcenterDeployment(t *testing.T) {

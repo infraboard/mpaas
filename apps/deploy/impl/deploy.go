@@ -3,7 +3,6 @@ package impl
 import (
 	"context"
 	"fmt"
-	"time"
 
 	"github.com/imdario/mergo"
 	"github.com/infraboard/mcenter/apps/service"
@@ -29,7 +28,13 @@ func (i *impl) CreateDeployment(ctx context.Context, in *deploy.CreateDeployment
 
 	ins := deploy.New(in)
 	ins.Spec.SetDefault()
+	ins.Status.MarkCreating()
+
+	// 因为有WebHook 需要提前保存好集群信息
 	ins.Meta.Id = ins.Spec.UUID()
+	if _, err := i.col.InsertOne(ctx, ins); err != nil {
+		return nil, exception.NewInternalServerError("inserted a deploy document error, %s", err)
+	}
 
 	switch in.Type {
 	case deploy.TYPE_KUBERNETES:
@@ -38,11 +43,9 @@ func (i *impl) CreateDeployment(ctx context.Context, in *deploy.CreateDeployment
 		if err != nil {
 			return nil, err
 		}
+		i.update(ctx, ins)
 	}
 
-	if _, err := i.col.InsertOne(ctx, ins); err != nil {
-		return nil, exception.NewInternalServerError("inserted a deploy document error, %s", err)
-	}
 	return ins, nil
 }
 
@@ -218,10 +221,8 @@ func (i *impl) UpdateDeployment(ctx context.Context, in *deploy.UpdateDeployment
 		return nil, exception.NewBadRequest("unknown update mode: %s", in.UpdateMode)
 	}
 
-	d.Meta.UpdateAt = time.Now().Unix()
-	_, err = i.col.UpdateOne(ctx, bson.M{"_id": d.Meta.Id}, bson.M{"$set": d})
-	if err != nil {
-		return nil, exception.NewInternalServerError("update deploy(%s) error, %s", d.Meta.Id, err)
+	if err := i.update(ctx, d); err != nil {
+		return nil, err
 	}
 
 	return d, nil

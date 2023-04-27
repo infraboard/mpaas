@@ -1,6 +1,10 @@
 package impl
 
 import (
+	"context"
+	"time"
+
+	"github.com/infraboard/mcube/exception"
 	"github.com/infraboard/mpaas/apps/deploy"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo/options"
@@ -39,4 +43,13 @@ func (r *queryRequest) FindFilter() bson.M {
 	}
 
 	return filter
+}
+
+func (i *impl) update(ctx context.Context, ins *deploy.Deployment) error {
+	ins.Meta.UpdateAt = time.Now().Unix()
+	_, err := i.col.UpdateOne(ctx, bson.M{"_id": ins.Meta.Id}, bson.M{"$set": ins})
+	if err != nil {
+		return exception.NewInternalServerError("update deploy(%s) error, %s", ins.Meta.Id, err)
+	}
+	return nil
 }
