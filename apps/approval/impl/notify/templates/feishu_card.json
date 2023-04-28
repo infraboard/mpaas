@@ -1,0 +1,110 @@
+{
+  "header": {
+    "template": "wathet",
+    "title": {
+      "tag": "plain_text",
+      "content": "xxx提交的「系统帐号及权限申请」待你审批"
+    }
+  },
+  "elements": [
+    {
+      "tag": "div",
+      "fields": [
+        {
+          "is_short": true,
+          "text": {
+            "tag": "lark_md",
+            "content": "**申请人：**[@王冰](https://open.feishu.cn/document/ugTN1YjL4UTN24CO1UjN/uUzN1YjL1cTN24SN3UjN?from=mcb)"
+          }
+        }
+      ]
+    },
+    {
+      "tag": "markdown",
+      "content": "**执行人：**xxx"
+    },
+    {
+      "tag": "markdown",
+      "content": "**其他审核人：**sfsdf\n"
+    },
+    {
+      "tag": "column_set",
+      "flex_mode": "none",
+      "background_style": "grey",
+      "columns": [
+        {
+          "tag": "column",
+          "width": "weighted",
+          "weight": 1,
+          "vertical_align": "top",
+          "elements": [
+            {
+              "tag": "column_set",
+              "flex_mode": "none",
+              "background_style": "default",
+              "columns": [
+                {
+                  "tag": "column",
+                  "width": "weighted",
+                  "weight": 1,
+                  "vertical_align": "top",
+                  "elements": [
+                    {
+                      "tag": "markdown",
+                      "content": "**执行流程：**xxx流水线"
+                    },
+                    {
+                      "tag": "markdown",
+                      "content": "**执行方式：**手动执行"
+                    },
+                    {
+                      "tag": "markdown",
+                      "content": "**执行变量：**\nxx\nxxx\n"
+                    }
+                  ]
+                }
+              ],
+              "horizontal_spacing": "default"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "tag": "action",
+      "actions": [
+        {
+          "tag": "button",
+          "text": {
+            "tag": "plain_text",
+            "content": "同意"
+          },
+          "type": "primary",
+          "value": {
+            "approval_id": "xxxx"
+          }
+        },
+        {
+          "tag": "button",
+          "text": {
+            "tag": "plain_text",
+            "content": "拒绝"
+          },
+          "type": "danger",
+          "value": {
+            "approval_id": "xxxx"
+          }
+        }
+      ]
+    },
+    {
+      "tag": "note",
+      "elements": [
+        {
+          "tag": "plain_text",
+          "content": "备注信息"
+        }
+      ]
+    }
+  ]
+}
