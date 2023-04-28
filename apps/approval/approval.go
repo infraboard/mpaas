@@ -21,7 +21,7 @@ func New(req *CreateApprovalRequest) (*Approval, error) {
 }
 
 func (req *CreateApprovalRequest) AddProposer(userIds ...string) {
-	req.Proposers = append(req.Proposers, userIds...)
+	req.Operators = append(req.Operators, userIds...)
 }
 
 func (req *CreateApprovalRequest) AddAuditor(userIds ...string) {
@@ -30,7 +30,7 @@ func (req *CreateApprovalRequest) AddAuditor(userIds ...string) {
 
 func (req *CreateApprovalRequest) UserIds() (uids []string) {
 	uids = append(uids, req.Auditors...)
-	uids = append(uids, req.Proposers...)
+	uids = append(uids, req.Operators...)
 	return
 }
 func (req *CreateApprovalRequest) IsAuditor(uid string) bool {

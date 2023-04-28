@@ -28,7 +28,6 @@ func (i *impl) CreateDeployment(ctx context.Context, in *deploy.CreateDeployment
 
 	ins := deploy.New(in)
 	ins.Spec.SetDefault()
-	ins.Status.MarkCreating()
 
 	// 因为有WebHook 需要提前保存好集群信息
 	ins.Meta.Id = ins.Spec.UUID()
@@ -38,10 +37,10 @@ func (i *impl) CreateDeployment(ctx context.Context, in *deploy.CreateDeployment
 
 	switch in.Type {
 	case deploy.TYPE_KUBERNETES:
-		// 如果服务是k8s服务则直接执行部署
+		// 如果创建成功, 等待回调更新状态, 如果失败则直接更新状态
 		err := i.RunK8sDeploy(ctx, ins)
 		if err != nil {
-			return nil, err
+			ins.Status.MarkFailed(err)
 		}
 		i.update(ctx, ins)
 	}

@@ -43,8 +43,8 @@ func (req *CreateApprovalRequest) Validate() error {
 		return fmt.Errorf("流水线配置缺失")
 	}
 
-	if len(req.Proposers) == 0 {
-		return fmt.Errorf("申请人缺失")
+	if len(req.Operators) == 0 {
+		return fmt.Errorf("执行人缺失")
 	}
 
 	if len(req.Auditors) == 0 {
@@ -56,7 +56,7 @@ func (req *CreateApprovalRequest) Validate() error {
 
 func NewCreateApprovalRequest() *CreateApprovalRequest {
 	return &CreateApprovalRequest{
-		Proposers:    []string{},
+		Operators:    []string{},
 		Auditors:     []string{},
 		PipelineSpec: pipeline.NewCreatePipelineRequest(),
 		RunParams:    []*job.RunParam{},

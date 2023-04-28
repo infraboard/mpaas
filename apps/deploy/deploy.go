@@ -156,6 +156,11 @@ func NewStatus() *Status {
 	return &Status{}
 }
 
+func (s *Status) MarkFailed(err error) {
+	s.Stage = STAGE_ERROR
+	s.Message = err.Error()
+}
+
 func (s *Status) MarkCreating() {
 	s.Stage = STAGE_CREATING
 }
