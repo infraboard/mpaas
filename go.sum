@@ -153,6 +153,7 @@ github.com/kr/text v0.2.0/go.mod h1:eLer722TekiGuMkidMxC/pM04lWEeraHUUmBw8l2grE=
 github.com/kvtools/valkeyrie v1.0.0 h1:LAITop2wPoYCMitR24GZZsW0b57hmI+ePD18VRTtOf0=
 github.com/kvtools/valkeyrie v1.0.0/go.mod h1:bDi/OdhJCSbGPMsCgUQl881yuEweKCSItAtTBI+ZjpU=
 github.com/larksuite/oapi-sdk-go/v3 v3.0.20 h1:qwH7lEr2WNWgbxI/v2jGWujFmKMht2ZCw3bYS1fXkDE=
+github.com/larksuite/oapi-sdk-go/v3 v3.0.20/go.mod h1:FKi8vBgtkBt/xNRQUwdWvoDmsPh7/wP75Sn5IBIBQLk=
 github.com/leodido/go-urn v1.2.2 h1:7z68G0FCGvDk646jz1AelTYNYWrTNm0bEcFAo147wt4=
 github.com/leodido/go-urn v1.2.2/go.mod h1:kUaIbLZWttglzwNuG0pgsh5vuV6u2YcGBYz1hIPjtOQ=
 github.com/mailru/easyjson v0.0.0-20190614124828-94de47d64c63/go.mod h1:C1wdFJiN94OJF2b5HbByQZoLdCWB1Yqtg26g4irojpc=

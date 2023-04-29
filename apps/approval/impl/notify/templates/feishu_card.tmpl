@@ -3,7 +3,7 @@
     "template": "wathet",
     "title": {
       "tag": "plain_text",
-      "content": "xxx提交的「系统帐号及权限申请」待你审批"
+      "content": "{{.Title}}"
     }
   },
   "elements": [
@@ -14,18 +14,18 @@
           "is_short": true,
           "text": {
             "tag": "lark_md",
-            "content": "**申请人：**[@王冰](https://open.feishu.cn/document/ugTN1YjL4UTN24CO1UjN/uUzN1YjL1cTN24SN3UjN?from=mcb)"
+            "content": "**申请人：**{{.CreateBy}}"
           }
         }
       ]
     },
     {
       "tag": "markdown",
-      "content": "**执行人：**xxx"
+      "content": "**执行人：**{{.Operator}}"
     },
     {
       "tag": "markdown",
-      "content": "**其他审核人：**sfsdf\n"
+      "content": "**其他审核人：**{{.Auditor}}\n"
     },
     {
       "tag": "column_set",
@@ -51,15 +51,15 @@
                   "elements": [
                     {
                       "tag": "markdown",
-                      "content": "**执行流程：**xxx流水线"
+                      "content": "**执行流程：**{{.PipelineDesc}}"
                     },
                     {
                       "tag": "markdown",
-                      "content": "**执行方式：**手动执行"
+                      "content": "**执行方式：**{{.ExecType}}"
                     },
                     {
                       "tag": "markdown",
-                      "content": "**执行变量：**\nxx\nxxx\n"
+                      "content": "**执行变量：**{{.ExecVars}}"
                     }
                   ]
                 }
@@ -73,28 +73,32 @@
     {
       "tag": "action",
       "actions": [
+        {{- if .ShowPassButton}}
         {
           "tag": "button",
           "text": {
             "tag": "plain_text",
-            "content": "同意"
+            "content": "{{.PassButton}}"
           },
           "type": "primary",
           "value": {
             "approval_id": "xxxx"
           }
         },
+        {{- end}}
+        {{- if .ShowDenyButton}}
         {
           "tag": "button",
           "text": {
             "tag": "plain_text",
-            "content": "拒绝"
+            "content": "{{.DenyButton}}"
           },
           "type": "danger",
           "value": {
             "approval_id": "xxxx"
           }
         }
+        {{- end}}
       ]
     },
     {
@@ -102,7 +106,7 @@
       "elements": [
         {
           "tag": "plain_text",
-          "content": "备注信息"
+          "content": "{{.Note}}"
         }
       ]
     }
