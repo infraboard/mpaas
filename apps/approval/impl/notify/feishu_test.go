@@ -1,6 +1,7 @@
 package notify_test
 
 import (
+	"strings"
 	"testing"
 
 	"github.com/infraboard/mcenter/apps/domain"
@@ -47,6 +48,7 @@ func TestFeishuCardPassNotify(t *testing.T) {
 
 func TestFeishuCardDenyNotify(t *testing.T) {
 	msg := feishuNotifyCard
+	msg.ExecVars = strings.ReplaceAll(msg.ExecVars, "\n", "\\n")
 	msg.ShowPassButton = false
 	msg.DenyButton = "xxx已拒绝"
 	content, err := msg.Render()
