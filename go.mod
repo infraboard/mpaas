@@ -15,7 +15,6 @@ require (
 	github.com/infraboard/mcenter v0.0.11-0.20230424052430-687ea1d39e56
 	github.com/infraboard/mcube v1.9.16-0.20230421132557-66c470b84164
 	github.com/kvtools/valkeyrie v1.0.0
-	github.com/larksuite/oapi-sdk-go/v3 v3.0.20
 	github.com/rs/xid v1.5.0
 	github.com/spf13/cobra v1.7.0
 	github.com/stretchr/testify v1.8.2
