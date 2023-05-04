@@ -18,6 +18,8 @@ func NewFeishuAuditNotifyMessage() *FeishuAuditNotifyMessage {
 	}
 }
 
+// 关于飞书卡片数据结构描述: https://open.feishu.cn/document/ukTMukTMukTM/uEjNwUjLxYDM14SM2ATN
+// 关于飞书卡片搭建工具: https://open.feishu.cn/document/ukTMukTMukTM/uYzM3QjL2MzN04iNzcDN/message-card-builder
 type FeishuAuditNotifyMessage struct {
 	// 标题
 	Title string
