@@ -85,6 +85,10 @@ func (i *impl) CheckPipelineAllowRun(ctx context.Context, ins *pipeline.Pipeline
 			return err
 		}
 
+		if a.Pipeline.Meta.Id != ins.Meta.Id {
+			return fmt.Errorf("审核单不属于当前执行的流水线")
+		}
+
 		if !a.Status.IsAllowPublish() {
 			return fmt.Errorf("当前状态: %s 不允许发布", a.Status.Stage)
 		}

@@ -176,31 +176,36 @@ func (i *impl) UpdateApprovalStatus(ctx context.Context, in *approval.UpdateAppr
 		return nil, err
 	}
 
-	// 1. 关闭后的发布申请 不能修改状态
+	// 关闭后的发布申请 不能修改状态
 	if !ins.Status.Stage.Equal(approval.STAGE_CLOSED) {
 		if err != nil {
 			return nil, exception.NewBadRequest("发布申请已关闭, 禁止更新状态")
 		}
 	}
 
-	// 2. 修改的状态不能回退, 比如你不能把发布中的状态 修改为审核中
+	// 修改的状态不能回退, 比如你不能把发布中的状态 修改为审核中
 	if in.Status.Stage < ins.Status.Stage {
 		return nil, exception.NewBadRequest("不能回退状态, 当前状态: %s", ins.Status.Stage)
 	}
 
-	// 3. 只有审核人能修改审核状态
+	// 只有审核人能修改审核状态
 	if in.Status.Stage.Equal(approval.STAGE_PENDDING) && !ins.Spec.IsAuditor(in.UpdateBy) {
 		return nil, exception.NewBadRequest("只有审核人员: %s 能审核", ins.Spec.Auditors)
 	}
 
-	// 4. 保存更新
+	// 保存更新
 	ins.Status.Update(in.Status.Stage)
+
+	// 审批通知
+	i.Notify(ctx, ins)
+
+	// 保存对象
 	_, err = i.col.UpdateOne(ctx, bson.M{"_id": ins.Meta.Id}, bson.M{"$set": bson.M{"status": in.Status}})
 	if err != nil {
 		return nil, exception.NewInternalServerError("update approval(%s) error, %s", ins.Meta.Id, err)
 	}
 
-	// 5. 如果允许自动执行, 则审核通过后自动执行
+	// 如果允许自动执行, 则审核通过后自动执行
 	if ins.Spec.AutoRun && ins.Status.Stage.Equal(approval.STAGE_PASSED) {
 		runReq := pipeline.NewRunPipelineRequest(ins.Spec.PipelineId)
 		runReq.RunBy = "@" + ins.UUID()
@@ -214,6 +219,25 @@ func (i *impl) UpdateApprovalStatus(ctx context.Context, in *approval.UpdateAppr
 		i.log.Debugf("auto publish pipeline task: %s", pt.Meta.Id)
 	}
 	return ins, nil
+}
+
+func (i *impl) Notify(ctx context.Context, in *approval.Approval) {
+	record := approval.NewNotifyRecord(in.Status.Stage)
+	in.Status.AddNotifyRecords(record)
+
+	msg := in.FeishuAuditNotifyMessage()
+	req, err := msg.BuildNotifyRequest()
+	if err != nil {
+		record.Failed(err)
+		return
+	}
+
+	resp, err := i.mcenter.Notify().SendNotify(ctx, req)
+	if err != nil {
+		record.Failed(err)
+		return
+	}
+	record.Success(resp.ToJson())
 }
 
 // 删除发布申请

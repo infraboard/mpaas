@@ -125,4 +125,7 @@ message NotifyRecord {
     // 通知失败的原因
     // @gotags: bson:"message" json:"message"
     string message = 4;
+    // 具体详情, 通过成功后的响应数据, Debug使用
+    // @gotags: bson:"detail" json:"detail"
+    string detail = 5;
 }

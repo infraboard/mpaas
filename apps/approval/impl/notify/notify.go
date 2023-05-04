@@ -3,7 +3,12 @@ package notify
 import (
 	"bytes"
 	"embed"
+	"fmt"
 	"text/template"
+
+	"github.com/infraboard/mcenter/apps/domain"
+	"github.com/infraboard/mcenter/apps/namespace"
+	"github.com/infraboard/mcenter/apps/notify"
 )
 
 //go:embed templates/*
@@ -45,7 +50,7 @@ type FeishuAuditNotifyMessage struct {
 	Note string
 }
 
-func (t *FeishuAuditNotifyMessage) Render() (string, error) {
+func (t *FeishuAuditNotifyMessage) render() (string, error) {
 	content, err := templatesDir.ReadFile("templates/feishu_card.tmpl")
 	if err != nil {
 		return "", err
@@ -62,4 +67,25 @@ func (t *FeishuAuditNotifyMessage) Render() (string, error) {
 	}
 
 	return buf.String(), nil
+}
+
+func (t *FeishuAuditNotifyMessage) BuildNotifyRequest(userIds ...string) (*notify.SendNotifyRequest, error) {
+	if len(userIds) == 0 {
+		return nil, fmt.Errorf("send feishu notify, but feishu user id is nil")
+	}
+
+	req := notify.NewSendNotifyRequest()
+	req.Domain = domain.DEFAULT_DOMAIN
+	req.Namespace = namespace.DEFAULT_NAMESPACE
+	req.NotifyTye = notify.NOTIFY_TYPE_IM
+	req.AddUser(userIds...)
+	req.Title = t.Title
+	req.ContentType = "interactive"
+
+	content, err := t.render()
+	if err != nil {
+		return nil, err
+	}
+	req.Content = content
+	return req, nil
 }

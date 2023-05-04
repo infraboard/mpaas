@@ -4,9 +4,6 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/infraboard/mcenter/apps/domain"
-	"github.com/infraboard/mcenter/apps/namespace"
-	mcenter_notify "github.com/infraboard/mcenter/apps/notify"
 	"github.com/infraboard/mpaas/apps/approval/impl/notify"
 )
 
@@ -27,23 +24,22 @@ var feishuNotifyCard = &notify.FeishuAuditNotifyMessage{
 }
 
 func TestFeishuCardAuditNotity(t *testing.T) {
-	msg := feishuNotifyCard
-	content, err := msg.Render()
+	req, err := feishuNotifyCard.BuildNotifyRequest("admin")
 	if err != nil {
 		t.Fatal(err)
 	}
-	t.Log(content)
+	t.Log(req.Content)
 }
 
 func TestFeishuCardPassNotify(t *testing.T) {
 	msg := feishuNotifyCard
 	msg.ShowDenyButton = false
 	msg.PassButton = "xxx已同意"
-	content, err := msg.Render()
+	req, err := feishuNotifyCard.BuildNotifyRequest("admin")
 	if err != nil {
 		t.Fatal(err)
 	}
-	t.Log(content)
+	t.Log(req.Content)
 }
 
 func TestFeishuCardDenyNotify(t *testing.T) {
@@ -51,20 +47,12 @@ func TestFeishuCardDenyNotify(t *testing.T) {
 	msg.ExecVars = strings.ReplaceAll(msg.ExecVars, "\n", "\\n")
 	msg.ShowPassButton = false
 	msg.DenyButton = "xxx已拒绝"
-	content, err := msg.Render()
+	req, err := msg.BuildNotifyRequest("admin")
 	if err != nil {
 		t.Fatal(err)
 	}
-	t.Log(content)
+	t.Log(req.Content)
 
-	req := mcenter_notify.NewSendNotifyRequest()
-	req.Domain = domain.DEFAULT_DOMAIN
-	req.Namespace = namespace.DEFAULT_NAMESPACE
-	req.NotifyTye = mcenter_notify.NOTIFY_TYPE_IM
-	req.AddUser("admin")
-	req.Title = msg.Title
-	req.ContentType = "interactive"
-	req.Content = content
 	res, err := nrpc.SendNotify(ctx, req)
 	if err != nil {
 		t.Fatal(err)

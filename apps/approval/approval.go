@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"time"
 
+	"github.com/infraboard/mpaas/apps/approval/impl/notify"
 	pipeline "github.com/infraboard/mpaas/apps/pipeline"
 	"github.com/infraboard/mpaas/common/meta"
 )
@@ -76,12 +77,23 @@ func (i *Approval) MarshalJSON() ([]byte, error) {
 	}{i.Meta, i.Spec, i.Status, i.Pipeline})
 }
 
+func (i *Approval) FeishuAuditNotifyMessage() *notify.FeishuAuditNotifyMessage {
+	msg := notify.NewFeishuAuditNotifyMessage()
+	msg.Title = i.Spec.Title
+	msg.CreateBy = i.Spec.CreateBy
+	return msg
+}
+
 func (s *Status) IsAllowPublish() bool {
 	if s.Stage >= STAGE_PASSED && s.Stage < STAGE_CLOSED {
 		return true
 	}
 
 	return false
+}
+
+func (s *Status) AddNotifyRecords(records ...*NotifyRecord) {
+	s.NotifyRecords = append(s.NotifyRecords, records...)
 }
 
 func (s *Status) Update(stage STAGE) {
@@ -92,4 +104,20 @@ func (s *Status) Update(stage STAGE) {
 	case STAGE_CLOSED:
 		s.CloseAt = time.Now().Unix()
 	}
+}
+
+func NewNotifyRecord(Stage STAGE) *NotifyRecord {
+	return &NotifyRecord{
+		Stage:    Stage,
+		NotifyAt: time.Now().Unix(),
+	}
+}
+
+func (r *NotifyRecord) Failed(err error) {
+	r.Message = err.Error()
+}
+
+func (r *NotifyRecord) Success(detail string) {
+	r.IsSuccess = true
+	r.Detail = detail
 }
