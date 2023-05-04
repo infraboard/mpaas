@@ -28,7 +28,7 @@ var feishuNotifyCard = &notify.FeishuAuditNotifyMessage{
 }
 
 func TestFeishuCardAuditNotity(t *testing.T) {
-	req, err := feishuNotifyCard.BuildNotifyRequest("admin")
+	req, err := feishuNotifyCard.BuildNotifyRequest()
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -39,7 +39,7 @@ func TestFeishuCardPassNotify(t *testing.T) {
 	msg := feishuNotifyCard
 	msg.ShowDenyButton = false
 	msg.PassButtonName = "xxx已同意"
-	req, err := feishuNotifyCard.BuildNotifyRequest("admin")
+	req, err := feishuNotifyCard.BuildNotifyRequest()
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -51,12 +51,13 @@ func TestFeishuCardDenyNotify(t *testing.T) {
 	msg.ExecVars = strings.ReplaceAll(msg.ExecVars, "\n", "\\n")
 	msg.ShowPassButton = false
 	msg.DenyButtonName = "xxx已拒绝"
-	req, err := msg.BuildNotifyRequest("admin")
+	req, err := msg.BuildNotifyRequest()
 	if err != nil {
 		t.Fatal(err)
 	}
 	t.Log(req.Content)
 
+	req.AddUser("admin")
 	res, err := nrpc.SendNotify(ctx, req)
 	if err != nil {
 		t.Fatal(err)

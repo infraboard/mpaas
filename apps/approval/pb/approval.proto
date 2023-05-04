@@ -109,7 +109,7 @@ message Status {
     STAGE stage = 1;
     // 审核人, 由于有多个可以审核的人, 需要知道谁审核通过的
     // @gotags: bson:"audit_by" json:"audit_by"
-    int64 audit_by = 2;
+    string audit_by = 2;
     // 审核时间
     // @gotags: bson:"audit_at" json:"audit_at"
     int64 audit_at = 3;

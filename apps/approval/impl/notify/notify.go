@@ -3,7 +3,6 @@ package notify
 import (
 	"bytes"
 	"embed"
-	"fmt"
 	"text/template"
 
 	"github.com/infraboard/mcenter/apps/notify"
@@ -20,10 +19,6 @@ func NewFeishuAuditNotifyMessage() *FeishuAuditNotifyMessage {
 }
 
 type FeishuAuditNotifyMessage struct {
-	// 消息来源域
-	Domain string
-	// 消息来源空间
-	Namespace string
 	// 标题
 	Title string
 	// 申请人
@@ -50,6 +45,12 @@ type FeishuAuditNotifyMessage struct {
 	ApprovalId string
 	// 备注
 	Note string
+
+	// 需要关联传递的参数
+	// 消息来源域
+	Domain string
+	// 消息来源空间
+	Namespace string
 }
 
 func (t *FeishuAuditNotifyMessage) render() (string, error) {
@@ -71,16 +72,11 @@ func (t *FeishuAuditNotifyMessage) render() (string, error) {
 	return buf.String(), nil
 }
 
-func (t *FeishuAuditNotifyMessage) BuildNotifyRequest(userIds ...string) (*notify.SendNotifyRequest, error) {
-	if len(userIds) == 0 {
-		return nil, fmt.Errorf("send feishu notify, but feishu user id is nil")
-	}
-
+func (t *FeishuAuditNotifyMessage) BuildNotifyRequest() (*notify.SendNotifyRequest, error) {
 	req := notify.NewSendNotifyRequest()
 	req.Domain = t.Domain
 	req.Namespace = t.Namespace
 	req.NotifyTye = notify.NOTIFY_TYPE_IM
-	req.AddUser(userIds...)
 	req.Title = t.Title
 	req.ContentType = "interactive"
 

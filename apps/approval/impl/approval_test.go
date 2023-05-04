@@ -44,7 +44,7 @@ func TestCreateApproval(t *testing.T) {
 	req.CreateBy = "test"
 	req.Title = "v1.0.0"
 	req.Describe = "发布说明, 支持Markdown语法"
-	req.AddProposer("test@default")
+	req.AddOperator("test@default")
 	req.AddAuditor("test@default")
 	req.AutoRun = true
 	tools.MustReadYamlFile("test/create.yml", req.PipelineSpec)

@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
+	"strings"
 	"time"
 
 	"github.com/infraboard/mpaas/apps/approval/impl/notify"
@@ -22,12 +23,20 @@ func New(req *CreateApprovalRequest) (*Approval, error) {
 	}, nil
 }
 
-func (req *CreateApprovalRequest) AddProposer(userIds ...string) {
+func (req *CreateApprovalRequest) AddOperator(userIds ...string) {
 	req.Operators = append(req.Operators, userIds...)
+}
+
+func (req *CreateApprovalRequest) OperatorToString() string {
+	return strings.Join(req.Operators, ",")
 }
 
 func (req *CreateApprovalRequest) AddAuditor(userIds ...string) {
 	req.Auditors = append(req.Auditors, userIds...)
+}
+
+func (req *CreateApprovalRequest) AuditorToString() string {
+	return strings.Join(req.Auditors, ",")
 }
 
 func (req *CreateApprovalRequest) UserIds() (uids []string) {
@@ -87,6 +96,30 @@ func (i *Approval) UUID() string {
 	return fmt.Sprintf("approval-%s", i.Meta.Id)
 }
 
+// 其他审核人
+func (i *Approval) OtherAuditors() (users []string) {
+	for _, auditor := range i.Spec.Auditors {
+		if auditor != i.Status.AuditBy {
+			users = append(users, auditor)
+		}
+	}
+	return
+}
+
+// 操作人和其他审核人
+func (i *Approval) OperatorAndOtherAuditors() (users []string) {
+	users = append(users, i.Spec.Operators...)
+	users = append(users, i.OtherAuditors()...)
+	return
+}
+
+// 所有人
+func (i *Approval) OperatorAndAuditors() (users []string) {
+	users = append(users, i.Spec.Operators...)
+	users = append(users, i.Spec.Auditors...)
+	return
+}
+
 func (i *Approval) MarshalJSON() ([]byte, error) {
 	return json.Marshal(struct {
 		*meta.Meta
@@ -96,14 +129,15 @@ func (i *Approval) MarshalJSON() ([]byte, error) {
 	}{i.Meta, i.Spec, i.Status, i.Pipeline})
 }
 
-func (i *Approval) FeishuAuditNotifyMessage() *notify.FeishuAuditNotifyMessage {
-	msg := notify.NewFeishuAuditNotifyMessage()
+func (i *Approval) FeishuAuditNotifyMessage() (msg *notify.FeishuAuditNotifyMessage, users []string) {
+	msg = notify.NewFeishuAuditNotifyMessage()
 	msg.Domain = i.Spec.Domain
 	msg.Namespace = i.Spec.Namespace
 	msg.ApprovalId = i.Meta.Id
 	msg.Title = i.Spec.Title
 	msg.CreateBy = i.Spec.CreateBy
-	// msg.Operator = i.Spec.Operators[]
+	msg.Operator = i.Spec.OperatorToString()
+	msg.Auditor = i.Spec.AuditorToString()
 	msg.PipelineDesc = i.Pipeline.Spec.Description
 	msg.ExecType = i.Spec.AutoRunDesc()
 	msg.ExecVars = i.Spec.RunParamsDesc()
@@ -112,30 +146,34 @@ func (i *Approval) FeishuAuditNotifyMessage() *notify.FeishuAuditNotifyMessage {
 	msg.Note = "该消息由mpaas平台提供"
 
 	switch i.Status.Stage {
-	// 待审核, 通知审核人
 	case STAGE_PENDDING:
+		// 待审核, 通知审核人
 		msg.ShowDenyButton = true
 		msg.ShowPassButton = true
-		// msg.Auditor = ""
-	// 审核通过, 通知申请人, 通知其他审核人
+		users = i.Spec.Auditors
 	case STAGE_PASSED:
+		// 审核通过, 通知申请人, 通知其他审核人
 		msg.ShowPassButton = true
-		msg.PassButtonName = "xxx已同意"
-		// msg.Auditor = ""
-	// 审核通过, 通知申请人, 通知其他审核人
+		msg.PassButtonName = i.Status.AuditBy + "已同意"
+		users = i.OperatorAndOtherAuditors()
 	case STAGE_DENY:
+		// 审核通过, 通知申请人, 通知其他审核人
 		msg.ShowDenyButton = true
-		msg.PassButtonName = "xxx已拒绝"
-	// 审核过期, 通知所有人
+		msg.PassButtonName = i.Status.AuditBy + "已拒绝"
+		users = i.OperatorAndOtherAuditors()
 	case STAGE_EXPIRED:
+		// 审核过期, 通知所有人
 		msg.ShowPassButton = true
 		msg.PassButtonName = "已过期"
-	// 审核关闭, 通知所有人
+		users = i.OperatorAndAuditors()
 	case STAGE_CLOSED:
+		// 审核关闭, 通知所有人
 		msg.ShowPassButton = true
 		msg.PassButtonName = "已关闭"
+		users = i.OperatorAndAuditors()
 	}
-	return msg
+
+	return
 }
 
 func (s *Status) IsAllowPublish() bool {

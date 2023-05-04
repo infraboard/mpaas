@@ -225,13 +225,15 @@ func (i *impl) Notify(ctx context.Context, in *approval.Approval) {
 	record := approval.NewNotifyRecord(in.Status.Stage)
 	in.Status.AddNotifyRecords(record)
 
-	msg := in.FeishuAuditNotifyMessage()
+	msg, users := in.FeishuAuditNotifyMessage()
 	req, err := msg.BuildNotifyRequest()
 	if err != nil {
 		record.Failed(err)
 		return
 	}
 
+	// 发送给哪些用户
+	req.AddUser(users...)
 	resp, err := i.mcenter.Notify().SendNotify(ctx, req)
 	if err != nil {
 		record.Failed(err)
