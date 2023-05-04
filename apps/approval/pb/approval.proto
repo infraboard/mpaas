@@ -103,8 +103,26 @@ message Status {
     string audit_comment = 3;
     // 发布关闭的时间
     // @gotags: bson:"close_at" json:"close_at"
-    int64 close_at = 8;
+    int64 close_at = 12;
     // 关闭备注
     // @gotags: bson:"close_comment" json:"close_comment"
-    string close_comment = 9;
+    string close_comment = 13;
+    // 通知记录
+    // @gotags: bson:"notify_records" json:"notify_records"
+    repeated NotifyRecord notify_records = 14;
+}
+
+message NotifyRecord {
+    // 那种状态的通知
+    // @gotags: bson:"stage" json:"stage"
+    STAGE stage = 1;
+    // 通知时间
+    // @gotags: bson:"notify_at" json:"notify_at"
+    int64 notify_at = 2;
+    // 是否通知成功
+    // @gotags: bson:"is_success" json:"is_success"
+    bool is_success = 3;
+    // 通知失败的原因
+    // @gotags: bson:"message" json:"message"
+    string message = 4;
 }

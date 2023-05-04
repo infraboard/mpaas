@@ -82,7 +82,8 @@
           },
           "type": "primary",
           "value": {
-            "approval_id": "{{.ApprovalId}}"
+            "approval_id": "{{.ApprovalId}}",
+            "status": "PASSED"
           }
         },
         {{- end}}
@@ -95,7 +96,8 @@
           },
           "type": "danger",
           "value": {
-            "approval_id": "{{.ApprovalId}}"
+            "approval_id": "{{.ApprovalId}}",
+            "status": "DENY"
           }
         }
         {{- end}}
