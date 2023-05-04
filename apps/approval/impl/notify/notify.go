@@ -6,8 +6,6 @@ import (
 	"fmt"
 	"text/template"
 
-	"github.com/infraboard/mcenter/apps/domain"
-	"github.com/infraboard/mcenter/apps/namespace"
 	"github.com/infraboard/mcenter/apps/notify"
 )
 
@@ -22,13 +20,17 @@ func NewFeishuAuditNotifyMessage() *FeishuAuditNotifyMessage {
 }
 
 type FeishuAuditNotifyMessage struct {
+	// 消息来源域
+	Domain string
+	// 消息来源空间
+	Namespace string
 	// 标题
 	Title string
 	// 申请人
 	CreateBy string
-	// 执行人
+	// 执行人列表
 	Operator string
-	// 其他审核人
+	// 审核人列表
 	Auditor string
 	// 流水线描述
 	PipelineDesc string
@@ -39,11 +41,11 @@ type FeishuAuditNotifyMessage struct {
 	// 是否显示同意按钮
 	ShowPassButton bool
 	// 同意按钮的名称
-	PassButton string
+	PassButtonName string
 	// 是否显示拒绝按钮
 	ShowDenyButton bool
 	// 拒绝按钮的名称
-	DenyButton string
+	DenyButtonName string
 	// 申请单Id, 点击按钮触发时的回调携带参数
 	ApprovalId string
 	// 备注
@@ -75,8 +77,8 @@ func (t *FeishuAuditNotifyMessage) BuildNotifyRequest(userIds ...string) (*notif
 	}
 
 	req := notify.NewSendNotifyRequest()
-	req.Domain = domain.DEFAULT_DOMAIN
-	req.Namespace = namespace.DEFAULT_NAMESPACE
+	req.Domain = t.Domain
+	req.Namespace = t.Namespace
 	req.NotifyTye = notify.NOTIFY_TYPE_IM
 	req.AddUser(userIds...)
 	req.Title = t.Title

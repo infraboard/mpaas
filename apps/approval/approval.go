@@ -1,6 +1,7 @@
 package approval
 
 import (
+	"bytes"
 	"encoding/json"
 	"fmt"
 	"time"
@@ -34,6 +35,24 @@ func (req *CreateApprovalRequest) UserIds() (uids []string) {
 	uids = append(uids, req.Operators...)
 	return
 }
+
+func (req *CreateApprovalRequest) AutoRunDesc() string {
+	if req.AutoRun {
+		return "自动执行"
+	}
+	return "手动执行"
+}
+
+func (req *CreateApprovalRequest) RunParamsDesc() string {
+	buf := bytes.NewBufferString("\\n")
+	for i := range req.RunParams {
+		item := req.RunParams[i]
+		buf.WriteString(item.MarkdownShortShow())
+		buf.WriteString("\\n")
+	}
+	return buf.String()
+}
+
 func (req *CreateApprovalRequest) IsAuditor(uid string) bool {
 	for _, v := range req.Auditors {
 		if v == uid {
@@ -79,8 +98,43 @@ func (i *Approval) MarshalJSON() ([]byte, error) {
 
 func (i *Approval) FeishuAuditNotifyMessage() *notify.FeishuAuditNotifyMessage {
 	msg := notify.NewFeishuAuditNotifyMessage()
+	msg.Domain = i.Spec.Domain
+	msg.Namespace = i.Spec.Namespace
+	msg.ApprovalId = i.Meta.Id
 	msg.Title = i.Spec.Title
 	msg.CreateBy = i.Spec.CreateBy
+	// msg.Operator = i.Spec.Operators[]
+	msg.PipelineDesc = i.Pipeline.Spec.Description
+	msg.ExecType = i.Spec.AutoRunDesc()
+	msg.ExecVars = i.Spec.RunParamsDesc()
+	msg.DenyButtonName = "拒绝"
+	msg.PassButtonName = "同意"
+	msg.Note = "该消息由mpaas平台提供"
+
+	switch i.Status.Stage {
+	// 待审核, 通知审核人
+	case STAGE_PENDDING:
+		msg.ShowDenyButton = true
+		msg.ShowPassButton = true
+		// msg.Auditor = ""
+	// 审核通过, 通知申请人, 通知其他审核人
+	case STAGE_PASSED:
+		msg.ShowPassButton = true
+		msg.PassButtonName = "xxx已同意"
+		// msg.Auditor = ""
+	// 审核通过, 通知申请人, 通知其他审核人
+	case STAGE_DENY:
+		msg.ShowDenyButton = true
+		msg.PassButtonName = "xxx已拒绝"
+	// 审核过期, 通知所有人
+	case STAGE_EXPIRED:
+		msg.ShowPassButton = true
+		msg.PassButtonName = "已过期"
+	// 审核关闭, 通知所有人
+	case STAGE_CLOSED:
+		msg.ShowPassButton = true
+		msg.PassButtonName = "已关闭"
+	}
 	return msg
 }
 

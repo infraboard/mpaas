@@ -43,36 +43,48 @@ message CreateApprovalRequest {
     // 是否是模版
     // @gotags: bson:"is_template" json:"is_template"
     bool is_template = 3;
+    // 模版id
+    // @gotags: bson:"template_id" json:"template_id"
+    bool template_id = 4;
+    // 模版参数
+    // @gotags: bson:"template_option" json:"template_option"
+    TemplateOption template_option = 5;
     // 申请人
     // @gotags: bson:"create_by" json:"create_by" validate:"required"
-    string create_by = 4;
+    string create_by = 6;
     // 执行人列表, 申请通过后, 执行人负责流水线的执行
     // @gotags: bson:"operators" json:"operators"
-    repeated string operators = 5;
+    repeated string operators = 7;
     // 审核人列表
     // @gotags: bson:"auditors" json:"auditors"
-    repeated string auditors = 6;
+    repeated string auditors = 8;
     // 申请单标题
     // @gotags: bson:"title" json:"title" validate:"required"
-    string title = 7;
+    string title = 9;
     // 申请说明, 支持Markdown
     // @gotags: bson:"describe" json:"describe" validate:"required"
-    string describe = 8;
+    string describe = 10;
     // 审核通过后, 是否自动执行流水线, 默认审核通过后手动执行
     // @gotags: bson:"auto_run" json:"auto_run"
-    bool auto_run = 9;
+    bool auto_run = 11;
     // 流水线配置
     // @gotags: bson:"-" json:"pipeline_spec,omitempty"
-    pipeline.CreatePipelineRequest pipeline_spec = 10;
+    pipeline.CreatePipelineRequest pipeline_spec = 12;
     // 流水线Id
     // @gotags: bson:"pipeline_id" json:"pipeline_id"
-    string pipeline_id = 11;
+    string pipeline_id = 13;
 	// 运行时需要传递的参数
 	// @gotags: bson:"run_params" json:"run_params"
-	repeated job.RunParam run_params = 12;
+	repeated job.RunParam run_params = 14;
 	// 申请单标签
 	// @gotags: bson:"labels" json:"labels"
 	map<string, string> labels = 15;
+}
+
+message TemplateOption {
+	// 是否允许编辑审核人
+	// @gotags: bson:"allow_edit_auditors" json:"allow_edit_auditors"
+    bool allow_edit_auditors = 1; 
 }
 
 enum STAGE {
@@ -95,12 +107,15 @@ message Status {
     // 当前状态
     // @gotags: bson:"stage" json:"stage"
     STAGE stage = 1;
+    // 审核人, 由于有多个可以审核的人, 需要知道谁审核通过的
+    // @gotags: bson:"audit_by" json:"audit_by"
+    int64 audit_by = 2;
     // 审核时间
     // @gotags: bson:"audit_at" json:"audit_at"
-    int64 audit_at = 2;
+    int64 audit_at = 3;
     // 审核意见
     // @gotags: bson:"audit_comment" json:"audit_comment"
-    string audit_comment = 3;
+    string audit_comment = 4;
     // 发布关闭的时间
     // @gotags: bson:"close_at" json:"close_at"
     int64 close_at = 12;

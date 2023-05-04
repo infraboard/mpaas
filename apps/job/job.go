@@ -349,6 +349,11 @@ func (p *RunParam) SetRequired(v bool) *RunParam {
 	return p
 }
 
+// Markdown格式的简要说明
+func (p *RunParam) MarkdownShortShow() string {
+	return fmt.Sprintf("%s: %s", p.Name, p.Value)
+}
+
 func NewJobStatus() *JobStatus {
 	return &JobStatus{}
 }
