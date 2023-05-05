@@ -47,6 +47,7 @@ func TestCreateApproval(t *testing.T) {
 	req.AddOperator("test@default")
 	req.AddAuditor("test@default")
 	req.AutoRun = true
+	req.IsCreatePipeline = true
 	tools.MustReadYamlFile("test/create.yml", req.PipelineSpec)
 	set, err := impl.CreateApproval(ctx, req)
 	if err != nil {

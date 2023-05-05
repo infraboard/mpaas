@@ -208,7 +208,7 @@ func (i *impl) UpdateApprovalStatus(ctx context.Context, in *approval.UpdateAppr
 	// 如果允许自动执行, 则审核通过后自动执行
 	if ins.Spec.AutoRun && ins.Status.Stage.Equal(approval.STAGE_PASSED) {
 		runReq := pipeline.NewRunPipelineRequest(ins.Spec.PipelineId)
-		runReq.RunBy = "@" + ins.UUID()
+		runReq.RunBy = "@" + ins.Meta.Id
 		runReq.TriggerMode = pipeline.TRIGGER_MODE_APPROVAL
 		runReq.AddRunParam(ins.Spec.RunParams...)
 		runReq.ApprovalId = ins.Meta.Id
@@ -251,8 +251,8 @@ func (i *impl) DeleteApproval(ctx context.Context, in *approval.DeleteApprovalRe
 	}
 
 	// 未关闭的申请不允许删除
-	if !ins.Status.Stage.Equal(approval.STAGE_CLOSED) {
-		return nil, exception.NewBadRequest("申请单未关闭")
+	if !ins.Status.AllowDelete() {
+		return nil, exception.NewBadRequest("草稿或者关闭的申请单才允许删除")
 	}
 
 	// 删除自动创建的Pipeline, 而关联的pipeline不删除

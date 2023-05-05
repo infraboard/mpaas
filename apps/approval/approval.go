@@ -3,7 +3,6 @@ package approval
 import (
 	"bytes"
 	"encoding/json"
-	"fmt"
 	"strings"
 	"time"
 
@@ -16,8 +15,9 @@ func New(req *CreateApprovalRequest) (*Approval, error) {
 	if err := req.Validate(); err != nil {
 		return nil, err
 	}
+
 	return &Approval{
-		Meta:   meta.NewMeta(),
+		Meta:   meta.NewMeta().IdWithPrefix("apv"),
 		Spec:   req,
 		Status: NewStatus(),
 	}, nil
@@ -90,10 +90,6 @@ func NewDefaultApproval() *Approval {
 		Meta: meta.NewMeta(),
 		Spec: NewCreateApprovalRequest(),
 	}
-}
-
-func (i *Approval) UUID() string {
-	return fmt.Sprintf("approval-%s", i.Meta.Id)
 }
 
 // 其他审核人
@@ -186,6 +182,11 @@ func (s *Status) IsAllowPublish() bool {
 
 func (s *Status) AddNotifyRecords(records ...*NotifyRecord) {
 	s.NotifyRecords = append(s.NotifyRecords, records...)
+}
+
+// 根据申请单状态判断是否可以删除, 草稿状态和关闭状态的才允许删除
+func (s *Status) AllowDelete() bool {
+	return s.Stage < STAGE_PENDDING || s.Stage >= STAGE_CLOSED
 }
 
 func (s *Status) Update(stage STAGE) {
