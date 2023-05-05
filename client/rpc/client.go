@@ -28,15 +28,6 @@ func NewClientSetFromEnv() (*ClientSet, error) {
 // NewClient todo
 func NewClientSetFromConfig(conf *rpc.Config) (*ClientSet, error) {
 	log := zap.L().Named("sdk.mpaas")
-	// 加载mcenter client, mpaas基于mcenter client实现服务发现
-	if !rpc.HasLoaded() {
-		err := rpc.LoadClientFromConfig(conf)
-		if err != nil {
-			return nil, err
-		}
-	} else {
-		log.Warnf("mecenter client is loaded, skip loaded agine")
-	}
 
 	ctx, cancel := context.WithTimeout(context.Background(), conf.Timeout())
 	defer cancel()
@@ -45,7 +36,7 @@ func NewClientSetFromConfig(conf *rpc.Config) (*ClientSet, error) {
 	conn, err := grpc.DialContext(
 		ctx,
 		fmt.Sprintf("%s://%s", resolver.Scheme, "mpaas"),
-		grpc.WithPerRPCCredentials(rpc.NewAuthentication(conf.ClientID, conf.ClientSecret)),
+		grpc.WithPerRPCCredentials(rpc.NewAuthenticationFromEnv()),
 		grpc.WithTransportCredentials(insecure.NewCredentials()),
 		grpc.WithDefaultServiceConfig(`{"loadBalancingPolicy":"round_robin"}`),
 		grpc.WithBlock(),
