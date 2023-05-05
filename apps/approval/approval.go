@@ -125,7 +125,7 @@ func (i *Approval) MarshalJSON() ([]byte, error) {
 		*meta.Meta
 		*CreateApprovalRequest
 		*Status
-		DeployPipeline *pipeline.Pipeline
+		Pipeline *pipeline.Pipeline `json:"pipeline"`
 	}{i.Meta, i.Spec, i.Status, i.Pipeline})
 }
 

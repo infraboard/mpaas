@@ -255,10 +255,12 @@ func (i *impl) DeleteApproval(ctx context.Context, in *approval.DeleteApprovalRe
 		return nil, exception.NewBadRequest("申请单未关闭")
 	}
 
-	// 删除Pipeline
-	_, err = i.pipeline.DeletePipeline(ctx, pipeline.NewDeletePipelineRequest(ins.Spec.PipelineId))
-	if err != nil {
-		return nil, err
+	// 删除自动创建的Pipeline, 而关联的pipeline不删除
+	if ins.Spec.IsCreatePipeline {
+		_, err = i.pipeline.DeletePipeline(ctx, pipeline.NewDeletePipelineRequest(ins.Spec.PipelineId))
+		if err != nil {
+			return nil, err
+		}
 	}
 
 	// 删除Pipeline

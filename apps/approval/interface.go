@@ -8,7 +8,6 @@ import (
 	"github.com/infraboard/mcenter/common/validate"
 	"github.com/infraboard/mcube/http/request"
 	"github.com/infraboard/mpaas/apps/job"
-	"github.com/infraboard/mpaas/apps/pipeline"
 )
 
 const (
@@ -56,11 +55,10 @@ func (req *CreateApprovalRequest) Validate() error {
 
 func NewCreateApprovalRequest() *CreateApprovalRequest {
 	return &CreateApprovalRequest{
-		Operators:    []string{},
-		Auditors:     []string{},
-		PipelineSpec: pipeline.NewCreatePipelineRequest(),
-		RunParams:    []*job.RunParam{},
-		Labels:       map[string]string{},
+		Operators: []string{},
+		Auditors:  []string{},
+		RunParams: []*job.RunParam{},
+		Labels:    map[string]string{},
 	}
 }
 

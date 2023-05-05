@@ -67,18 +67,21 @@ message CreateApprovalRequest {
     // 审核通过后, 是否自动执行流水线, 默认审核通过后手动执行
     // @gotags: bson:"auto_run" json:"auto_run"
     bool auto_run = 11;
-    // 流水线配置
+    // 是否创建Pipeline, 如果不是则关联pipeline
+    // @gotags: bson:"is_create_pipeline" json:"is_create_pipeline"
+    bool is_create_pipeline = 12;
+    // 流水线配置, 创建申请单时, 动态创建流水线
     // @gotags: bson:"-" json:"pipeline_spec,omitempty"
-    pipeline.CreatePipelineRequest pipeline_spec = 12;
-    // 流水线Id
+    pipeline.CreatePipelineRequest pipeline_spec = 13;
+    // 流水线Id, 关联的流水线Id
     // @gotags: bson:"pipeline_id" json:"pipeline_id"
-    string pipeline_id = 13;
+    string pipeline_id = 14;
 	// 运行时需要传递的参数
 	// @gotags: bson:"run_params" json:"run_params"
-	repeated job.RunParam run_params = 14;
+	repeated job.RunParam run_params = 15;
 	// 申请单标签
 	// @gotags: bson:"labels" json:"labels"
-	map<string, string> labels = 15;
+	map<string, string> labels = 25;
 }
 
 message TemplateOption {
