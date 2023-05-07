@@ -2,8 +2,8 @@ package tracer
 
 import (
 	"context"
-	"os"
 
+	"github.com/infraboard/mpaas/conf"
 	"github.com/infraboard/mpaas/version"
 	"go.opentelemetry.io/otel"
 	"go.opentelemetry.io/otel/exporters/jaeger"
@@ -17,7 +17,7 @@ import (
 var Tracer oteltrace.Tracer
 
 func InitTracer() error {
-	ep := os.Getenv("JAEGER_ENDPOINT")
+	ep := conf.C().Jaeger.Endpoint
 
 	if ep == "" {
 		return nil
