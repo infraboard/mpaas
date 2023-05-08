@@ -26,6 +26,13 @@ func TestDescribeApproval(t *testing.T) {
 		t.Fatal(err)
 	}
 	t.Log(tools.MustToJson(ins))
+
+	msg, _ := ins.FeishuAuditNotifyMessage()
+	sendReq, err := msg.BuildNotifyRequest()
+	if err != nil {
+		t.Fatal(err)
+	}
+	t.Log(sendReq.Content)
 }
 
 func TestEditApproval(t *testing.T) {
@@ -41,11 +48,11 @@ func TestCreateApproval(t *testing.T) {
 	req := approval.NewCreateApprovalRequest()
 	req.Domain = domain.DEFAULT_DOMAIN
 	req.Namespace = namespace.DEFAULT_NAMESPACE
-	req.CreateBy = "test"
+	req.CreateBy = "admin"
 	req.Title = "v1.0.0"
 	req.Describe = "发布说明, 支持Markdown语法"
-	req.AddOperator("test@default")
-	req.AddAuditor("test@default")
+	req.AddOperator("admin@default")
+	req.AddAuditor("admin@default")
 	req.AutoRun = true
 	req.IsCreatePipeline = true
 	tools.MustReadYamlFile("test/create.yml", req.PipelineSpec)

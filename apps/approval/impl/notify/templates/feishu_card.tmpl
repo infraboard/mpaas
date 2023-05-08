@@ -90,9 +90,7 @@
             "approval_id": "{{.ApprovalId}}",
             "status": "PASSED"
           }
-        },
-        {{- end}}
-        {{- if .ShowDenyButton}}
+        }{{- end}}{{- if .ShowDenyButton}},
         {
           "tag": "button",
           "text": {

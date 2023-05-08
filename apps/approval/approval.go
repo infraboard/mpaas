@@ -144,27 +144,25 @@ func (i *Approval) FeishuAuditNotifyMessage() (msg *notify.FeishuAuditNotifyMess
 	switch i.Status.Stage {
 	case STAGE_PENDDING:
 		// 待审核, 通知审核人
-		msg.ShowDenyButton = true
-		msg.ShowPassButton = true
 		users = i.Spec.Auditors
 	case STAGE_PASSED:
 		// 审核通过, 通知申请人, 通知其他审核人
-		msg.ShowPassButton = true
+		msg.ShowDenyButton = false
 		msg.PassButtonName = i.Status.AuditBy + "已同意"
 		users = i.OperatorAndOtherAuditors()
 	case STAGE_DENY:
 		// 审核通过, 通知申请人, 通知其他审核人
-		msg.ShowDenyButton = true
+		msg.ShowDenyButton = false
 		msg.PassButtonName = i.Status.AuditBy + "已拒绝"
 		users = i.OperatorAndOtherAuditors()
 	case STAGE_EXPIRED:
 		// 审核过期, 通知所有人
-		msg.ShowPassButton = true
+		msg.ShowDenyButton = false
 		msg.PassButtonName = "已过期"
 		users = i.OperatorAndAuditors()
 	case STAGE_CLOSED:
 		// 审核关闭, 通知所有人
-		msg.ShowPassButton = true
+		msg.ShowDenyButton = false
 		msg.PassButtonName = "已关闭"
 		users = i.OperatorAndAuditors()
 	}

@@ -8,7 +8,7 @@
     "template": "wathet",
     "title": {
       "tag": "plain_text",
-      "content": "xxx提交的「系统帐号及权限申请」待你审批"
+      "content": "v1.0.0"
     }
   },
   "elements": [
@@ -19,18 +19,18 @@
           "is_short": true,
           "text": {
             "tag": "lark_md",
-            "content": "**申请人：**[@王冰](https://open.feishu.cn/document/ugTN1YjL4UTN24CO1UjN/uUzN1YjL1cTN24SN3UjN?from=mcb)"
+            "content": "**申请人：**admin"
           }
         }
       ]
     },
     {
       "tag": "markdown",
-      "content": "**执行人：**xxxx"
+      "content": "**执行人：**admin@default"
     },
     {
       "tag": "markdown",
-      "content": "**其他审核人：**xxx\n"
+      "content": "**审核人：**admin@default\n"
     },
     {
       "tag": "column_set",
@@ -56,15 +56,15 @@
                   "elements": [
                     {
                       "tag": "markdown",
-                      "content": "**执行流程：**xxx流水线"
+                      "content": "**执行流程：**分组发布"
                     },
                     {
                       "tag": "markdown",
-                      "content": "**执行方式：**手动执行"
+                      "content": "**执行方式：**自动执行"
                     },
                     {
                       "tag": "markdown",
-                      "content": "**执行变量：****\nxx\nxxx\n"
+                      "content": "**执行变量：**\n"
                     }
                   ]
                 }
@@ -82,11 +82,12 @@
           "tag": "button",
           "text": {
             "tag": "plain_text",
-            "content": "xxx已拒绝"
+            "content": "已关闭"
           },
-          "type": "danger",
+          "type": "primary",
           "value": {
-            "approval_id": "xxx"
+            "approval_id": "apv-chc88j3o99m7goggkda0",
+            "status": "PASSED"
           }
         }
       ]
@@ -96,7 +97,7 @@
       "elements": [
         {
           "tag": "plain_text",
-          "content": "备注信息"
+          "content": "该消息由mpaas平台提供"
         }
       ]
     }

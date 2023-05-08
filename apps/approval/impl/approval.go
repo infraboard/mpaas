@@ -200,7 +200,7 @@ func (i *impl) UpdateApprovalStatus(ctx context.Context, in *approval.UpdateAppr
 	i.Notify(ctx, ins)
 
 	// 保存对象
-	_, err = i.col.UpdateOne(ctx, bson.M{"_id": ins.Meta.Id}, bson.M{"$set": bson.M{"status": in.Status}})
+	_, err = i.col.UpdateOne(ctx, bson.M{"_id": ins.Meta.Id}, bson.M{"$set": bson.M{"status": ins.Status}})
 	if err != nil {
 		return nil, exception.NewInternalServerError("update approval(%s) error, %s", ins.Meta.Id, err)
 	}
@@ -239,7 +239,12 @@ func (i *impl) Notify(ctx context.Context, in *approval.Approval) {
 		record.Failed(err)
 		return
 	}
+
 	record.Success(resp.ToJson())
+	failedMsg := resp.FailedResponseToMessage()
+	if failedMsg != "" {
+		record.Failed(fmt.Errorf(failedMsg))
+	}
 }
 
 // 删除发布申请
