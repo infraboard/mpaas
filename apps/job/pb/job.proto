@@ -132,7 +132,6 @@ message CreateJobRequest {
 	// 扩展属性
 	// @gotags: bson:"extra" json:"extra"
 	map<string, string> extra = 25;
-
 }
 
 message VersionedRunParam {
@@ -203,8 +202,8 @@ message RunParam {
 	// @gotags: bson:"read_only" json:"read_only"
 	bool read_only = 4;
 	// 参数描述
-	// @gotags: bson:"desc" json:"desc"
-	string desc = 5;
+	// @gotags: bson:"param_desc" json:"param_desc"
+	string param_desc = 5;
 	// 值类型
 	// @gotags: bson:"value_type" json:"value_type"
 	PARAM_VALUE_TYPE value_type = 6;
@@ -220,6 +219,9 @@ message RunParam {
 	// 默认值, task运行时如果未传人，会填充默认值
 	// @gotags: bson:"value" json:"value"
 	string value = 10;
+	// 值描述
+	// @gotags: bson:"value_desc" json:"value_desc"
+	string value_desc = 14;
 	// 参数生效的范围
 	// @gotags: bson:"param_scope" json:"param_scope"
 	ParamScope param_scope = 11;
