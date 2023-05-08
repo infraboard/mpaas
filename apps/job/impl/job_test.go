@@ -26,16 +26,16 @@ func TestCreateTestJob(t *testing.T) {
 	req.RunnerSpec = tools.MustReadContentFile("test/test.yml")
 	v1 := job.NewVersionedRunParam("v1")
 	v1.Add(&job.RunParam{
-		Required:  true,
-		Name:      "cluster_id",
-		ParamDesc: "job运行时的k8s集群",
-		Value:     "k8s-test",
+		Required: true,
+		Name:     "cluster_id",
+		NameDesc: "job运行时的k8s集群",
+		Value:    "k8s-test",
 	})
 	v1.Add(&job.RunParam{
-		Required:  true,
-		Name:      "namespace",
-		ParamDesc: "job运行时的namespace",
-		Value:     "default",
+		Required: true,
+		Name:     "namespace",
+		NameDesc: "job运行时的namespace",
+		Value:    "default",
 	})
 	req.AddVersionParams(v1)
 
@@ -80,14 +80,14 @@ func TestUpdateDeployJob(t *testing.T) {
 	v1.Add(&job.RunParam{
 		Required:    true,
 		Name:        "cluster_id",
-		ParamDesc:   "job运行时的k8s集群",
+		NameDesc:    "job运行时的k8s集群",
 		Value:       "k8s-test",
 		SearchLabel: true,
 	})
 	v1.Add(&job.RunParam{
 		Required:    true,
 		Name:        "namespace",
-		ParamDesc:   "job运行时的namespace",
+		NameDesc:    "job运行时的namespace",
 		Value:       "default",
 		SearchLabel: true,
 	})
@@ -96,21 +96,21 @@ func TestUpdateDeployJob(t *testing.T) {
 	v1.Add(&job.RunParam{
 		Required:    true,
 		Name:        job.SYSTEM_VARIABLE_DEPLOY_ID,
-		ParamDesc:   "部署id, 部署时由系统传人",
+		NameDesc:    "部署id, 部署时由系统传人",
 		Example:     "deploy01",
 		SearchLabel: true,
 	})
 	v1.Add(&job.RunParam{
 		Required:    true,
 		Name:        build.SYSTEM_VARIABLE_IMAGE_REPOSITORY,
-		ParamDesc:   "应用部署的镜像仓库地址",
+		NameDesc:    "应用部署的镜像仓库地址",
 		Example:     "registry.cn-hangzhou.aliyuncs.com/infraboard/mcenter",
 		SearchLabel: true,
 	})
 	v1.Add(&job.RunParam{
 		Required:    true,
 		Name:        build.SYSTEM_VARIABLE_APP_VERSION,
-		ParamDesc:   "应用部署时的版本",
+		NameDesc:    "应用部署时的版本",
 		Example:     "v0.0.1",
 		SearchLabel: true,
 	})
@@ -131,14 +131,14 @@ func TestUpdateBuildJob(t *testing.T) {
 	v1.Add(&job.RunParam{
 		Required:    true,
 		Name:        "cluster_id",
-		ParamDesc:   "job运行时的k8s集群",
+		NameDesc:    "job运行时的k8s集群",
 		Value:       "k8s-test",
 		SearchLabel: true,
 	})
 	v1.Add(&job.RunParam{
 		Required:    true,
 		Name:        "namespace",
-		ParamDesc:   "job运行时的namespace",
+		NameDesc:    "job运行时的namespace",
 		Value:       "default",
 		SearchLabel: true,
 	})
@@ -147,53 +147,53 @@ func TestUpdateBuildJob(t *testing.T) {
 	v1.Add(&job.RunParam{
 		Required:    true,
 		Name:        "GIT_SSH_URL",
-		ParamDesc:   "应用git代码仓库地址",
+		NameDesc:    "应用git代码仓库地址",
 		Example:     "git@github.com:infraboard/mpaas.git",
 		SearchLabel: true,
 	})
 	v1.Add(&job.RunParam{
-		Required:  false,
-		Name:      "APP_DOCKERFILE",
-		ParamDesc: "应用git代码仓库中用于构建镜像的Dockerfile路径",
-		Value:     "Dockerfile",
-		Example:   "Dockerfile",
+		Required: false,
+		Name:     "APP_DOCKERFILE",
+		NameDesc: "应用git代码仓库中用于构建镜像的Dockerfile路径",
+		Value:    "Dockerfile",
+		Example:  "Dockerfile",
 	})
 	v1.Add(&job.RunParam{
-		Required:  true,
-		Name:      "GIT_BRANCH",
-		ParamDesc: "需要拉去的代码分支",
-		Example:   "master",
+		Required: true,
+		Name:     "GIT_BRANCH",
+		NameDesc: "需要拉去的代码分支",
+		Example:  "master",
 	})
 	v1.Add(&job.RunParam{
-		Required:  true,
-		Name:      "GIT_COMMIT_ID",
-		ParamDesc: "应用git代码仓库地址",
-		Example:   "32d63566098f7e0b0ac3a3d8ddffe71cc6cad7b0",
+		Required: true,
+		Name:     "GIT_COMMIT_ID",
+		NameDesc: "应用git代码仓库地址",
+		Example:  "32d63566098f7e0b0ac3a3d8ddffe71cc6cad7b0",
 	})
 	v1.Add(&job.RunParam{
 		UsageType: job.PARAM_USAGE_TYPE_TEMPLATE,
 		Name:      "GIT_SSH_SECRET",
-		ParamDesc: "用于拉取git仓库代码的secret名称, kubectl create secret generic git-ssh-key --from-file=id_rsa=${HOME}/.ssh/id_rsa",
+		NameDesc:  "用于拉取git仓库代码的secret名称, kubectl create secret generic git-ssh-key --from-file=id_rsa=${HOME}/.ssh/id_rsa",
 		Example:   "git-ssh-key",
 		Value:     "git-ssh-key",
 	})
 	// docker push registry.cn-hangzhou.aliyuncs.com/infraboard/mpaas:[镜像版本号]
 	v1.Add(&job.RunParam{
-		Required:  true,
-		Name:      build.SYSTEM_VARIABLE_IMAGE_REPOSITORY,
-		ParamDesc: "镜像推送地址",
-		Example:   "registry.cn-hangzhou.aliyuncs.com/infraboard/mpaas",
+		Required: true,
+		Name:     build.SYSTEM_VARIABLE_IMAGE_REPOSITORY,
+		NameDesc: "镜像推送地址",
+		Example:  "registry.cn-hangzhou.aliyuncs.com/infraboard/mpaas",
 	})
 	v1.Add(&job.RunParam{
-		Required:  true,
-		Name:      build.SYSTEM_VARIABLE_APP_VERSION,
-		ParamDesc: "镜像版本",
-		Example:   "v0.0.2",
+		Required: true,
+		Name:     build.SYSTEM_VARIABLE_APP_VERSION,
+		NameDesc: "镜像版本",
+		Example:  "v0.0.2",
 	})
 	v1.Add(&job.RunParam{
 		UsageType: job.PARAM_USAGE_TYPE_TEMPLATE,
 		Name:      "IMAGE_PUSH_SECRET",
-		ParamDesc: "用于推送镜像的secret名称, 具体文档参考: https://github.com/GoogleContainerTools/kaniko#pushing-to-docker-hub",
+		NameDesc:  "用于推送镜像的secret名称, 具体文档参考: https://github.com/GoogleContainerTools/kaniko#pushing-to-docker-hub",
 		Example:   "kaniko-secret",
 		Value:     "kaniko-secret",
 	})

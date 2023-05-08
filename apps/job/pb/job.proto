@@ -202,8 +202,8 @@ message RunParam {
 	// @gotags: bson:"read_only" json:"read_only"
 	bool read_only = 4;
 	// 参数描述
-	// @gotags: bson:"param_desc" json:"param_desc"
-	string param_desc = 5;
+	// @gotags: bson:"name_desc" json:"name_desc"
+	string name_desc = 5;
 	// 值类型
 	// @gotags: bson:"value_type" json:"value_type"
 	PARAM_VALUE_TYPE value_type = 6;
