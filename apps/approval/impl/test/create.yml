@@ -1,5 +1,10 @@
 name: devcloud产品发布流水线
 description: 分组发布
+with:
+  - name: GlobalVar1
+    value: mcenter_v1
+  - name: GlobalVar2
+    value: mcenter_v1
 stages:
   - name: 后端API
     jobs:

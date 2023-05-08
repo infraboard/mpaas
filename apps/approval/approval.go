@@ -7,6 +7,7 @@ import (
 	"time"
 
 	"github.com/infraboard/mpaas/apps/approval/impl/notify"
+	job "github.com/infraboard/mpaas/apps/job"
 	pipeline "github.com/infraboard/mpaas/apps/pipeline"
 	"github.com/infraboard/mpaas/common/meta"
 )
@@ -37,6 +38,10 @@ func (req *CreateApprovalRequest) AddAuditor(userIds ...string) {
 
 func (req *CreateApprovalRequest) AuditorToString() string {
 	return strings.Join(req.Auditors, ",")
+}
+
+func (req *CreateApprovalRequest) AddRunParam(params ...*job.RunParam) {
+	req.RunParams = append(req.RunParams, params...)
 }
 
 func (req *CreateApprovalRequest) UserIds() (uids []string) {

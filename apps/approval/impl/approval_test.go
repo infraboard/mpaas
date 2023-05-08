@@ -6,6 +6,7 @@ import (
 	"github.com/infraboard/mcenter/apps/domain"
 	"github.com/infraboard/mcenter/apps/namespace"
 	"github.com/infraboard/mpaas/apps/approval"
+	"github.com/infraboard/mpaas/apps/job"
 	"github.com/infraboard/mpaas/test/conf"
 	"github.com/infraboard/mpaas/test/tools"
 )
@@ -56,6 +57,10 @@ func TestCreateApproval(t *testing.T) {
 	req.AutoRun = true
 	req.IsCreatePipeline = true
 	tools.MustReadYamlFile("test/create.yml", req.PipelineSpec)
+	req.AddRunParam(job.NewRunParamWithKVPaire(
+		"RunVar1", "RunValue1",
+		"RunVar2", "RunValue2",
+	)...)
 	set, err := impl.CreateApproval(ctx, req)
 	if err != nil {
 		t.Fatal(err)
