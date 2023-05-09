@@ -1,0 +1,13 @@
+{
+    "open_id": "卡片操作用户的open_id",
+    "user_id": "卡片操作用户的user_id",
+    "open_message_id": "卡片消息的唯一id",
+    "tenant_key": "卡片消息归属的租户id",
+    "token": "更新卡片用的token(凭证)",
+    "action": {
+        "value": {
+            "key": "value"
+        },
+        "tag": "button"
+    }
+}
