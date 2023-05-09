@@ -4,7 +4,7 @@ package infraboard.mpaas.task;
 option go_package = "github.com/infraboard/mpaas/apps/task";
 
 import "mpaas/apps/task/pb/job_task.proto";
-import "github.com/infraboard/mcube/pb/page/page.proto";
+import "mcube/pb/page/page.proto";
 
 // RPC 执行Job
 service JobRPC {

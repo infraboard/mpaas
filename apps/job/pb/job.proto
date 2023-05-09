@@ -3,7 +3,7 @@ syntax = "proto3";
 package infraboard.mpaas.job;
 option go_package = "github.com/infraboard/mpaas/apps/job";
 
-import "github.com/infraboard/mcube/pb/resource/base.proto";
+import "mcube/pb/resource/base.proto";
 import "mpaas/common/meta/meta.proto";
 
 // 执行方式

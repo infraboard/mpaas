@@ -5,7 +5,7 @@ option go_package = "github.com/infraboard/mpaas/apps/pipeline";
 
 import "mpaas/common/meta/meta.proto";
 import "mpaas/apps/job/pb/job.proto";
-import "github.com/infraboard/mcenter/apps/notify/pb/notify.proto";
+import "mcenter/apps/notify/pb/notify.proto";
 
 message PipelineSet {
 	// 总数量

@@ -4,8 +4,8 @@ package infraboard.mpaas.pipeline;
 option go_package = "github.com/infraboard/mpaas/apps/pipeline";
 
 import "mpaas/apps/pipeline/pb/pipeline.proto";
-import "github.com/infraboard/mcube/pb/page/page.proto";
-import "github.com/infraboard/mcube/pb/request/request.proto";
+import "mcube/pb/page/page.proto";
+import "mcube/pb/request/request.proto";
 
 // RPC Pipeline管理
 service RPC {

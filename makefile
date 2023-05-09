@@ -76,7 +76,7 @@ pb: ## Copy mcube protobuf files to common/pb
 	@sudo rm -rf common/pb/github.com/infraboard/mcube/pb/*/*.go
 
 gen: ## Init Service
-	@protoc -I=..  -I=common/pb --go_out=. --go_opt=module=${PKG} --go-grpc_out=. --go-grpc_opt=module=${PKG} ../mpaas/apps/*/pb/*.proto ../mpaas/common/*/*.proto
+	@protoc -I=.. --go_out=. --go_opt=module=${PKG} --go-grpc_out=. --go-grpc_opt=module=${PKG} ../mpaas/apps/*/pb/*.proto ../mpaas/common/*/*.proto
 	@go fmt ./...
 
 	@protoc-go-inject-tag -input=apps/*/*.pb.go

@@ -4,7 +4,7 @@ package infraboard.mpaas.trigger;
 option go_package = "github.com/infraboard/mpaas/apps/trigger";
 
 import "mpaas/apps/trigger/pb/event.proto";
-import "github.com/infraboard/mcube/pb/page/page.proto";
+import "mcube/pb/page/page.proto";
 
 service RPC {
     // 处理事件

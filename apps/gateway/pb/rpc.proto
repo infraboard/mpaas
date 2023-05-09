@@ -3,7 +3,7 @@ syntax = "proto3";
 package infraboard.mpaas.gateway;
 option go_package = "github.com/infraboard/mpaas/apps/gateway";
 
-import "github.com/infraboard/mcube/pb/page/page.proto";
+import "mcube/pb/page/page.proto";
 import "mpaas/apps/gateway/pb/gateway.proto";
 
 // RPC 角色RPC服务

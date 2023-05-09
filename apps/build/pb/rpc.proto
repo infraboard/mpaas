@@ -4,8 +4,8 @@ package infraboard.mpaas.build;
 option go_package = "github.com/infraboard/mpaas/apps/build";
 
 import "mpaas/apps/build/pb/build.proto";
-import "github.com/infraboard/mcube/pb/page/page.proto";
-import "github.com/infraboard/mcube/pb/request/request.proto";
+import "mcube/pb/page/page.proto";
+import "mcube/pb/request/request.proto";
 
 // RPC 服务构建配置
 service RPC {

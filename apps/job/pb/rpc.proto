@@ -4,9 +4,9 @@ package infraboard.mpaas.job;
 option go_package = "github.com/infraboard/mpaas/apps/job";
 
 import "mpaas/apps/job/pb/job.proto";
-import "github.com/infraboard/mcube/pb/page/page.proto";
-import "github.com/infraboard/mcube/pb/resource/base.proto";
-import "github.com/infraboard/mcube/pb/request/request.proto";
+import "mcube/pb/page/page.proto";
+import "mcube/pb/resource/base.proto";
+import "mcube/pb/request/request.proto";
 
 // RPC Job定义
 service RPC {

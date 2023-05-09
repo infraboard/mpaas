@@ -3,8 +3,8 @@ syntax = "proto3";
 package infraboard.mpaas.cluster;
 option go_package = "github.com/infraboard/mpaas/apps/cluster";
 
-import "github.com/infraboard/mcube/pb/page/page.proto";
-import "github.com/infraboard/mcube/pb/request/request.proto";
+import "mcube/pb/page/page.proto";
+import "mcube/pb/request/request.proto";
 import "mpaas/apps/cluster/pb/cluster.proto";
 
 service RPC {
