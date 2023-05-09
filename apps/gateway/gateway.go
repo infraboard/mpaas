@@ -3,7 +3,7 @@ package gateway
 import (
 	"encoding/json"
 
-	meta "github.com/infraboard/mpaas/common/meta"
+	resource "github.com/infraboard/mcube/pb/resource"
 )
 
 func New(req *CreateGatewayRequest) (*Gateway, error) {
@@ -12,7 +12,7 @@ func New(req *CreateGatewayRequest) (*Gateway, error) {
 	}
 
 	return &Gateway{
-		Meta: meta.NewMeta(),
+		Meta: resource.NewMeta(),
 		Spec: req,
 	}, nil
 }
@@ -25,7 +25,7 @@ func NewDefaultGateway() *Gateway {
 
 func (d *Gateway) MarshalJSON() ([]byte, error) {
 	return json.Marshal(struct {
-		*meta.Meta
+		*resource.Meta
 		*CreateGatewayRequest
 	}{d.Meta, d.Spec})
 }

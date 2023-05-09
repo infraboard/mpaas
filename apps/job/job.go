@@ -10,7 +10,7 @@ import (
 
 	"github.com/imdario/mergo"
 	"github.com/infraboard/mcube/logger/zap"
-	"github.com/infraboard/mpaas/common/meta"
+	"github.com/infraboard/mcube/pb/resource"
 	v1 "k8s.io/api/core/v1"
 )
 
@@ -22,7 +22,7 @@ func New(req *CreateJobRequest) (*Job, error) {
 
 	req.BuildSearchLabels()
 	d := &Job{
-		Meta:   meta.NewMeta(),
+		Meta:   resource.NewMeta(),
 		Spec:   req,
 		Status: NewJobStatus(),
 	}
@@ -86,7 +86,7 @@ func (i *Job) AllowVersions() (versions []string) {
 
 func (i *Job) MarshalJSON() ([]byte, error) {
 	return json.Marshal(struct {
-		*meta.Meta
+		*resource.Meta
 		*CreateJobRequest
 	}{i.Meta, i.Spec})
 }

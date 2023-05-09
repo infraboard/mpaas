@@ -8,8 +8,8 @@ import (
 	"github.com/infraboard/mcenter/common/validate"
 	"github.com/infraboard/mcube/http/request"
 	pb_request "github.com/infraboard/mcube/pb/request"
+	resource "github.com/infraboard/mcube/pb/resource"
 	"github.com/infraboard/mpaas/common/hash"
-	"github.com/infraboard/mpaas/common/meta"
 	"github.com/infraboard/mpaas/provider/k8s/workload"
 )
 
@@ -26,7 +26,7 @@ type Service interface {
 
 // New 新建一个部署配置
 func New(req *CreateDeploymentRequest) *Deployment {
-	m := meta.NewMeta()
+	m := resource.NewMeta()
 
 	d := &Deployment{
 		Meta:             m,

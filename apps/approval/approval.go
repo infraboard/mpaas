@@ -6,10 +6,10 @@ import (
 	"strings"
 	"time"
 
+	"github.com/infraboard/mcube/pb/resource"
 	"github.com/infraboard/mpaas/apps/approval/impl/notify"
 	job "github.com/infraboard/mpaas/apps/job"
 	pipeline "github.com/infraboard/mpaas/apps/pipeline"
-	"github.com/infraboard/mpaas/common/meta"
 )
 
 func New(req *CreateApprovalRequest) (*Approval, error) {
@@ -18,7 +18,7 @@ func New(req *CreateApprovalRequest) (*Approval, error) {
 	}
 
 	return &Approval{
-		Meta:   meta.NewMeta().IdWithPrefix("apv"),
+		Meta:   resource.NewMeta().IdWithPrefix("apv"),
 		Spec:   req,
 		Status: NewStatus(),
 	}, nil
@@ -92,7 +92,7 @@ func (s *ApprovalSet) Add(item *Approval) {
 
 func NewDefaultApproval() *Approval {
 	return &Approval{
-		Meta: meta.NewMeta(),
+		Meta: resource.NewMeta(),
 		Spec: NewCreateApprovalRequest(),
 	}
 }
@@ -123,7 +123,7 @@ func (i *Approval) OperatorAndAuditors() (users []string) {
 
 func (i *Approval) MarshalJSON() ([]byte, error) {
 	return json.Marshal(struct {
-		*meta.Meta
+		*resource.Meta
 		*CreateApprovalRequest
 		*Status
 		Pipeline *pipeline.Pipeline `json:"pipeline"`

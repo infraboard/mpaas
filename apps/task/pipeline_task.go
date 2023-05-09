@@ -8,9 +8,9 @@ import (
 	"time"
 
 	"github.com/infraboard/mcube/exception"
+	"github.com/infraboard/mcube/pb/resource"
 	"github.com/infraboard/mpaas/apps/job"
 	"github.com/infraboard/mpaas/apps/pipeline"
-	"github.com/infraboard/mpaas/common/meta"
 )
 
 func NewPipelineTaskSet() *PipelineTaskSet {
@@ -49,7 +49,7 @@ func NewPipelineTask(p *pipeline.Pipeline, in *pipeline.RunPipelineRequest) *Pip
 
 func NewDefaultPipelineTask() *PipelineTask {
 	return &PipelineTask{
-		Meta:   meta.NewMeta(),
+		Meta:   resource.NewMeta(),
 		Params: pipeline.NewRunPipelineRequest(""),
 		Status: NewPipelineTaskStatus(),
 	}
@@ -57,7 +57,7 @@ func NewDefaultPipelineTask() *PipelineTask {
 
 func (p *PipelineTask) MarshalJSON() ([]byte, error) {
 	return json.Marshal(struct {
-		*meta.Meta
+		*resource.Meta
 		*pipeline.RunPipelineRequest
 		*PipelineTaskStatus
 		Pipeline *pipeline.Pipeline `json:"pipeline"`

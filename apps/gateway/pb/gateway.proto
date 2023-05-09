@@ -3,7 +3,7 @@ syntax = "proto3";
 package infraboard.mpaas.gateway;
 option go_package = "github.com/infraboard/mpaas/apps/gateway";
 
-import "mpaas/common/meta/meta.proto";
+import "mcube/pb/resource/meta.proto";
 
 enum TYPE {
     // 基于Etcd对接的Traefik网关
@@ -13,7 +13,7 @@ enum TYPE {
 message Gateway {
     // 元信息
     // @gotags: bson:",inline" json:"meta"
-    common.meta.Meta meta = 1;
+    infraboard.mcube.resource.Meta meta = 1;
     // 网关信息
     // @gotags: bson:",inline" json:"spec"
     CreateGatewayRequest spec = 2;

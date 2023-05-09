@@ -3,7 +3,7 @@ syntax = "proto3";
 package infraboard.mpaas.artifact;
 option go_package = "github.com/infraboard/mpaas/apps/artifact";
 
-import "mpaas/common/meta/meta.proto";
+import "mcube/pb/resource/meta.proto";
 
 enum TYPE {
 	// 容器镜像
@@ -28,7 +28,7 @@ enum OS {
 message Artifact {
     // 元信息
     // @gotags: bson:",inline" json:"meta"
-    common.meta.Meta meta = 1;
+    infraboard.mcube.resource.Meta meta = 1;
     // 创建信息
     // @gotags: bson:",inline" json:"spec"
     CreateArtifactRequest spec = 2;

@@ -11,9 +11,9 @@ import (
 	"github.com/infraboard/mcenter/apps/notify"
 	"github.com/infraboard/mcenter/common/validate"
 	"github.com/infraboard/mcube/http/request"
+	"github.com/infraboard/mcube/pb/resource"
 	job "github.com/infraboard/mpaas/apps/job"
 	"github.com/infraboard/mpaas/common/format"
-	"github.com/infraboard/mpaas/common/meta"
 	"github.com/rs/xid"
 	"sigs.k8s.io/yaml"
 )
@@ -43,7 +43,7 @@ func New(req *CreatePipelineRequest) (*Pipeline, error) {
 	req.BuildNumber()
 
 	d := &Pipeline{
-		Meta: meta.NewMeta(),
+		Meta: resource.NewMeta(),
 		Spec: req,
 	}
 	return d, nil
@@ -75,7 +75,7 @@ func (p *Pipeline) Patch(req *UpdatePipelineRequest) error {
 
 func (p *Pipeline) MarshalJSON() ([]byte, error) {
 	return json.Marshal(struct {
-		*meta.Meta
+		*resource.Meta
 		*CreatePipelineRequest
 	}{p.Meta, p.Spec})
 }

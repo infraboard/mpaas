@@ -3,7 +3,7 @@ syntax = "proto3";
 package infraboard.mpaas.task;
 option go_package = "github.com/infraboard/mpaas/apps/task";
 
-import "mpaas/common/meta/meta.proto";
+import "mcube/pb/resource/meta.proto";
 import "mpaas/apps/task/pb/job_task.proto";
 import "mpaas/apps/pipeline/pb/pipeline.proto";
 
@@ -19,7 +19,7 @@ message PipelineTaskSet {
 message PipelineTask {
     // 元信息
     // @gotags: bson:",inline" json:"meta"
-    common.meta.Meta meta = 1;
+    infraboard.mcube.resource.Meta meta = 1;
     // 运作时参数
     // @gotags: bson:",inline" json:"params"
     pipeline.RunPipelineRequest params = 2;

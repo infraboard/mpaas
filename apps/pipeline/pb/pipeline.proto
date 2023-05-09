@@ -3,7 +3,7 @@ syntax = "proto3";
 package infraboard.mpaas.pipeline;
 option go_package = "github.com/infraboard/mpaas/apps/pipeline";
 
-import "mpaas/common/meta/meta.proto";
+import "mcube/pb/resource/meta.proto";
 import "mpaas/apps/job/pb/job.proto";
 import "mcenter/apps/notify/pb/notify.proto";
 
@@ -20,7 +20,7 @@ message PipelineSet {
 message Pipeline {
     // 元信息
     // @gotags: bson:",inline" json:"meta"
-    common.meta.Meta meta = 1;
+    infraboard.mcube.resource.Meta meta = 1;
 	// 流水线定义
 	// @gotags: bson:",inline" json:"spec"
 	CreatePipelineRequest spec = 2;

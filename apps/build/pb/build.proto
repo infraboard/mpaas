@@ -3,7 +3,7 @@ syntax = "proto3";
 package infraboard.mpaas.build;
 option go_package = "github.com/infraboard/mpaas/apps/build";
 
-import "mpaas/common/meta/meta.proto";
+import "mcube/pb/resource/meta.proto";
 
 message BuildConfigSet {
     // 总数
@@ -15,7 +15,7 @@ message BuildConfigSet {
 message BuildConfig  {
     // 元信息
     // @gotags: bson:",inline" json:"meta"
-    common.meta.Meta meta = 1;
+    infraboard.mcube.resource.Meta meta = 1;
     // 创建信息
     // @gotags: bson:",inline" json:"spec"
     CreateBuildConfigRequest spec = 6;

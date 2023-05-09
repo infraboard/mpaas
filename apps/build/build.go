@@ -5,8 +5,8 @@ import (
 	"path/filepath"
 	"regexp"
 
+	"github.com/infraboard/mcube/pb/resource"
 	"github.com/infraboard/mpaas/apps/job"
-	"github.com/infraboard/mpaas/common/meta"
 )
 
 // New 新建一个domain
@@ -16,7 +16,7 @@ func New(req *CreateBuildConfigRequest) (*BuildConfig, error) {
 	}
 
 	d := &BuildConfig{
-		Meta: meta.NewMeta(),
+		Meta: resource.NewMeta(),
 		Spec: req,
 	}
 
@@ -59,7 +59,7 @@ func NewDefaultBuildConfig() *BuildConfig {
 
 func (b *BuildConfig) MarshalJSON() ([]byte, error) {
 	return json.Marshal(struct {
-		*meta.Meta
+		*resource.Meta
 		*CreateBuildConfigRequest
 	}{b.Meta, b.Spec})
 }

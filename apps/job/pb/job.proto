@@ -4,7 +4,7 @@ package infraboard.mpaas.job;
 option go_package = "github.com/infraboard/mpaas/apps/job";
 
 import "mcube/pb/resource/base.proto";
-import "mpaas/common/meta/meta.proto";
+import "mcube/pb/resource/meta.proto";
 
 // 执行方式
 enum RUNNER_TYPE {
@@ -35,7 +35,7 @@ message JobSet {
 message Job {
     // 元信息
     // @gotags: bson:",inline" json:"meta"
-    common.meta.Meta meta = 1;
+    infraboard.mcube.resource.Meta meta = 1;
     // job创建信息
 	// @gotags: bson:",inline" json:"spec"
     CreateJobRequest spec = 2; 

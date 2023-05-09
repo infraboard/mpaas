@@ -7,9 +7,9 @@ import (
 	"time"
 
 	"github.com/imdario/mergo"
+	"github.com/infraboard/mcube/pb/resource"
 	"github.com/infraboard/mpaas/apps/build"
 	"github.com/infraboard/mpaas/apps/job"
-	meta "github.com/infraboard/mpaas/common/meta"
 	"github.com/infraboard/mpaas/provider/k8s/network"
 	"github.com/infraboard/mpaas/provider/k8s/workload"
 	v1 "k8s.io/api/core/v1"
@@ -73,7 +73,7 @@ func (d *Deployment) ValidateToken(token string) error {
 
 func (d *Deployment) MarshalJSON() ([]byte, error) {
 	return json.Marshal(struct {
-		*meta.Meta
+		*resource.Meta
 		*CreateDeploymentRequest
 		Status           *Status            `json:"status"`
 		DynamicInjection *DdynamicInjection `json:"dynamic_injection"`
