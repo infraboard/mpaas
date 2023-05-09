@@ -5,7 +5,7 @@ option go_package = "github.com/infraboard/mpaas/apps/cluster";
 
 import "github.com/infraboard/mcube/pb/page/page.proto";
 import "github.com/infraboard/mcube/pb/request/request.proto";
-import "apps/cluster/pb/cluster.proto";
+import "mpaas/apps/cluster/pb/cluster.proto";
 
 service RPC {
     rpc QueryCluster(QueryClusterRequest) returns(ClusterSet);

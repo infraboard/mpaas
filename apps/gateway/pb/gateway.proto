@@ -3,7 +3,7 @@ syntax = "proto3";
 package infraboard.mpaas.gateway;
 option go_package = "github.com/infraboard/mpaas/apps/gateway";
 
-import "common/meta/meta.proto";
+import "mpaas/common/meta/meta.proto";
 
 enum TYPE {
     // 基于Etcd对接的Traefik网关

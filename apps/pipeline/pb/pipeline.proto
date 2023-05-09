@@ -3,8 +3,8 @@ syntax = "proto3";
 package infraboard.mpaas.pipeline;
 option go_package = "github.com/infraboard/mpaas/apps/pipeline";
 
-import "common/meta/meta.proto";
-import "apps/job/pb/job.proto";
+import "mpaas/common/meta/meta.proto";
+import "mpaas/apps/job/pb/job.proto";
 import "github.com/infraboard/mcenter/apps/notify/pb/notify.proto";
 
 message PipelineSet {

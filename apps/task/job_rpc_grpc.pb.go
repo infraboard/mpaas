@@ -2,7 +2,7 @@
 // versions:
 // - protoc-gen-go-grpc v1.3.0
 // - protoc             v3.21.6
-// source: apps/task/pb/job_rpc.proto
+// source: mpaas/apps/task/pb/job_rpc.proto
 
 package task
 
@@ -224,5 +224,5 @@ var JobRPC_ServiceDesc = grpc.ServiceDesc{
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
-	Metadata: "apps/task/pb/job_rpc.proto",
+	Metadata: "mpaas/apps/task/pb/job_rpc.proto",
 }

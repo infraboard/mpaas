@@ -2,7 +2,7 @@
 // versions:
 // - protoc-gen-go-grpc v1.3.0
 // - protoc             v3.21.6
-// source: apps/trigger/pb/rpc.proto
+// source: mpaas/apps/trigger/pb/rpc.proto
 
 package trigger
 
@@ -146,5 +146,5 @@ var RPC_ServiceDesc = grpc.ServiceDesc{
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
-	Metadata: "apps/trigger/pb/rpc.proto",
+	Metadata: "mpaas/apps/trigger/pb/rpc.proto",
 }

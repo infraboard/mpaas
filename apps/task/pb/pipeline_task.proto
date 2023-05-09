@@ -3,9 +3,9 @@ syntax = "proto3";
 package infraboard.mpaas.task;
 option go_package = "github.com/infraboard/mpaas/apps/task";
 
-import "common/meta/meta.proto";
-import "apps/task/pb/job_task.proto";
-import "apps/pipeline/pb/pipeline.proto";
+import "mpaas/common/meta/meta.proto";
+import "mpaas/apps/task/pb/job_task.proto";
+import "mpaas/apps/pipeline/pb/pipeline.proto";
 
 message PipelineTaskSet {
 	// 总数量

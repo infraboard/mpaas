@@ -3,7 +3,7 @@ syntax = "proto3";
 package infraboard.mpaas.deploy;
 option go_package = "github.com/infraboard/mpaas/apps/deploy";
 
-import "common/meta/meta.proto";
+import "mpaas/common/meta/meta.proto";
 
 message DeploymentSet {
     // 总数

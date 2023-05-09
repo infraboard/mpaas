@@ -4,7 +4,7 @@ package infraboard.mpaas.job;
 option go_package = "github.com/infraboard/mpaas/apps/job";
 
 import "github.com/infraboard/mcube/pb/resource/base.proto";
-import "common/meta/meta.proto";
+import "mpaas/common/meta/meta.proto";
 
 // 执行方式
 enum RUNNER_TYPE {

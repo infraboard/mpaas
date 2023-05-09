@@ -35,12 +35,18 @@ func (f *FeishuCardCallback) ApprovalId() string {
 	return f.Action.Value["approval_id"]
 }
 
-func (f *FeishuCardCallback) Status() string {
-	return f.Action.Value["status"]
+func (f *FeishuCardCallback) Status() (approval.STAGE, error) {
+	return approval.ParseSTAGEFromString(f.Action.Value["status"])
 }
 
-func (r *FeishuCardCallback) BuildUpdateApprovalStatusRequest() *approval.UpdateApprovalStatusRequest {
+func (r *FeishuCardCallback) BuildUpdateApprovalStatusRequest() (*approval.UpdateApprovalStatusRequest, error) {
 	req := approval.NewUpdateApprovalStatusRequest(r.ApprovalId())
+	req.Status.AuditBy = ""
 
-	return req
+	stage, err := r.Status()
+	if err != nil {
+		return nil, err
+	}
+	req.Status.Stage = stage
+	return req, nil
 }

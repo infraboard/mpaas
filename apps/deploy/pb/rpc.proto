@@ -5,7 +5,7 @@ option go_package = "github.com/infraboard/mpaas/apps/deploy";
 
 import "github.com/infraboard/mcube/pb/request/request.proto";
 import "github.com/infraboard/mcube/pb/page/page.proto";
-import "apps/deploy/pb/deploy.proto";
+import "mpaas/apps/deploy/pb/deploy.proto";
 
 // RPC 应用部署配置
 service RPC {

@@ -2,7 +2,7 @@
 // versions:
 // - protoc-gen-go-grpc v1.3.0
 // - protoc             v3.21.6
-// source: apps/pipeline/pb/rpc.proto
+// source: mpaas/apps/pipeline/pb/rpc.proto
 
 package pipeline
 
@@ -263,5 +263,5 @@ var RPC_ServiceDesc = grpc.ServiceDesc{
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
-	Metadata: "apps/pipeline/pb/rpc.proto",
+	Metadata: "mpaas/apps/pipeline/pb/rpc.proto",
 }

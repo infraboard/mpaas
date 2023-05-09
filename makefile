@@ -4,6 +4,7 @@ MAIN_FILE := main.go
 PKG := github.com/infraboard/mpaas
 IMAGE_PREFIX := github.com/infraboard/mpaas
 
+WORKSPACE := ${shell pwd}
 MOD_DIR := $(shell go env GOPATH)/pkg/mod
 PKG_LIST := $(shell go list ${PKG}/... | grep -v /vendor/ | grep -v redis)
 GO_FILES := $(shell find . -name '*.go' | grep -v /vendor/ | grep -v _test.go)
@@ -75,7 +76,7 @@ pb: ## Copy mcube protobuf files to common/pb
 	@sudo rm -rf common/pb/github.com/infraboard/mcube/pb/*/*.go
 
 gen: ## Init Service
-	@protoc -I=.  -I=common/pb --go_out=. --go_opt=module=${PKG} --go-grpc_out=. --go-grpc_opt=module=${PKG} apps/*/pb/*.proto common/*/*.proto
+	@protoc -I=..  -I=common/pb --go_out=. --go_opt=module=${PKG} --go-grpc_out=. --go-grpc_opt=module=${PKG} ../mpaas/apps/*/pb/*.proto ../mpaas/common/*/*.proto
 	@go fmt ./...
 
 	@protoc-go-inject-tag -input=apps/*/*.pb.go

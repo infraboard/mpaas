@@ -3,9 +3,9 @@ syntax = "proto3";
 package infraboard.mpaas.approval;
 option go_package = "github.com/infraboard/mpaas/apps/approval";
 
-import "common/meta/meta.proto";
-import "apps/pipeline/pb/pipeline.proto";
-import "apps/job/pb/job.proto";
+import "mpaas/common/meta/meta.proto";
+import "mpaas/apps/pipeline/pb/pipeline.proto";
+import "mpaas/apps/job/pb/job.proto";
 
 message ApprovalSet {
     // 总数
@@ -128,6 +128,9 @@ message Status {
     // 通知记录
     // @gotags: bson:"notify_records" json:"notify_records"
     repeated NotifyRecord notify_records = 14;
+	// 其他额外属性
+	// @gotags: bson:"extra" json:"extra"
+	map<string, string> extra = 15;
 }
 
 message NotifyRecord {

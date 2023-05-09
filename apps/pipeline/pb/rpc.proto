@@ -3,7 +3,7 @@ syntax = "proto3";
 package infraboard.mpaas.pipeline;
 option go_package = "github.com/infraboard/mpaas/apps/pipeline";
 
-import "apps/pipeline/pb/pipeline.proto";
+import "mpaas/apps/pipeline/pb/pipeline.proto";
 import "github.com/infraboard/mcube/pb/page/page.proto";
 import "github.com/infraboard/mcube/pb/request/request.proto";
 

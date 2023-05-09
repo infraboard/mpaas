@@ -5,7 +5,7 @@ option go_package = "github.com/infraboard/mpaas/apps/approval";
 
 import "github.com/infraboard/mcube/pb/request/request.proto";
 import "github.com/infraboard/mcube/pb/page/page.proto";
-import "apps/approval/pb/approval.proto";
+import "mpaas/apps/approval/pb/approval.proto";
 
 // RPC 服务构建配置
 service RPC {

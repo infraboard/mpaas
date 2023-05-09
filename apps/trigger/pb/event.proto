@@ -3,8 +3,8 @@ syntax = "proto3";
 package infraboard.mpaas.trigger;
 option go_package = "github.com/infraboard/mpaas/apps/trigger";
 
-import "apps/build/pb/build.proto";
-import "apps/task/pb/pipeline_task.proto";
+import "mpaas/apps/build/pb/build.proto";
+import "mpaas/apps/task/pb/pipeline_task.proto";
 
 message RecordSet {
     // 总数

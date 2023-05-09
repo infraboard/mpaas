@@ -2,7 +2,7 @@
 // versions:
 // - protoc-gen-go-grpc v1.3.0
 // - protoc             v3.21.6
-// source: apps/approval/pb/rpc.proto
+// source: mpaas/apps/approval/pb/rpc.proto
 
 package approval
 
@@ -263,5 +263,5 @@ var RPC_ServiceDesc = grpc.ServiceDesc{
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
-	Metadata: "apps/approval/pb/rpc.proto",
+	Metadata: "mpaas/apps/approval/pb/rpc.proto",
 }

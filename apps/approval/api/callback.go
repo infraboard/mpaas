@@ -57,7 +57,11 @@ func (h *callbackHandler) FeishuCard(r *restful.Request, w *restful.Response) {
 		return
 	}
 
-	in := req.BuildUpdateApprovalStatusRequest()
+	in, err := req.BuildUpdateApprovalStatusRequest()
+	if err != nil {
+		response.Failed(w, err)
+		return
+	}
 	ins, err := h.service.UpdateApprovalStatus(r.Request.Context(), in)
 	if err != nil {
 		response.Failed(w, err)
