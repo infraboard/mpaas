@@ -80,5 +80,12 @@ func (h *callbackHandler) FeishuCard(r *restful.Request, w *restful.Response) {
 		return
 	}
 
-	response.Success(w, ins)
+	// 返回更新后的卡片信息
+	msg, _ := ins.FeishuAuditNotifyMessage()
+	sendReq, err := msg.BuildNotifyRequest()
+	if err != nil {
+		response.Failed(w, err)
+		return
+	}
+	response.Success(w, sendReq.Content)
 }
