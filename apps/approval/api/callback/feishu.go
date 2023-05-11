@@ -1,6 +1,9 @@
 package callback
 
-import "github.com/infraboard/mpaas/apps/approval"
+import (
+	"github.com/infraboard/mpaas/apps/approval"
+	"github.com/infraboard/mpaas/common/format"
+)
 
 func NewFeishuCardCallback() *FeishuCardCallback {
 	return &FeishuCardCallback{
@@ -35,18 +38,24 @@ func (f *FeishuCardCallback) ApprovalId() string {
 	return f.Action.Value["approval_id"]
 }
 
+func (f *FeishuCardCallback) String() string {
+	return format.Prettify(f)
+}
+
 func (f *FeishuCardCallback) Status() (approval.STAGE, error) {
 	return approval.ParseSTAGEFromString(f.Action.Value["status"])
 }
 
-func (r *FeishuCardCallback) BuildUpdateApprovalStatusRequest() (*approval.UpdateApprovalStatusRequest, error) {
+func (r *FeishuCardCallback) BuildUpdateApprovalStatusRequest(auditBy string) (*approval.UpdateApprovalStatusRequest, error) {
 	req := approval.NewUpdateApprovalStatusRequest(r.ApprovalId())
-	req.Status.AuditBy = ""
+	req.Status.AuditBy = auditBy
 
 	stage, err := r.Status()
 	if err != nil {
 		return nil, err
 	}
 	req.Status.Stage = stage
+
+	req.Status.Extra[EXTRA_FEISHU_CALLBACK_KEY] = r.String()
 	return req, nil
 }

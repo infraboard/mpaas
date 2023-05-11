@@ -3,6 +3,8 @@ package api
 import (
 	restfulspec "github.com/emicklei/go-restful-openapi/v2"
 	"github.com/emicklei/go-restful/v3"
+	"github.com/infraboard/mcenter/apps/user"
+	"github.com/infraboard/mcenter/client/rpc"
 	"github.com/infraboard/mcube/http/label"
 	"github.com/infraboard/mcube/http/restful/response"
 	"github.com/infraboard/mcube/logger"
@@ -20,11 +22,13 @@ func init() {
 type callbackHandler struct {
 	service approval.Service
 	log     logger.Logger
+	mcenter *rpc.ClientSet
 }
 
 func (h *callbackHandler) Config() error {
 	h.log = zap.L().Named(approval.AppName)
 	h.service = app.GetGrpcApp(approval.AppName).(approval.Service)
+	h.mcenter = rpc.C()
 	return nil
 }
 
@@ -57,7 +61,15 @@ func (h *callbackHandler) FeishuCard(r *restful.Request, w *restful.Response) {
 		return
 	}
 
-	in, err := req.BuildUpdateApprovalStatusRequest()
+	// 根据飞书UserId查询用户信息
+	descReq := user.NewDescriptUserRequestByFeishuUserId(req.UserId)
+	u, err := h.mcenter.User().DescribeUser(r.Request.Context(), descReq)
+	if err != nil {
+		response.Failed(w, err)
+		return
+	}
+
+	in, err := req.BuildUpdateApprovalStatusRequest(u.Meta.Id)
 	if err != nil {
 		response.Failed(w, err)
 		return
