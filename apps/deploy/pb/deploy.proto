@@ -221,6 +221,9 @@ message CreateDeploymentRequest {
     // 服务部署所属分组
     // @gotags: bson:"group" json:"group" validate:"required"
     string group = 21;
+    // 实例权重
+    // @gotags: bson:"weight" json:"weight" toml:"weight" validate:"required"
+    uint32 weight = 22;
     // 部署方式
     // @gotags: bson:"type" json:"type"
     TYPE type = 9;
@@ -242,15 +245,27 @@ message CreateDeploymentRequest {
     // 是否需要发布申请, 需要发布申请的部署 不允许执行自动部署
     // @gotags: bson:"is_approval" json:"is_approval"
     bool is_approval = 15;
-    // 内部访问地址
-    // @gotags: bson:"internal_access" json:"internal_access"
-    AccessAddress internal_access = 16;
-    // 外部访问地址
-    // @gotags: bson:"public_access" json:"public_access"
-    AccessAddress public_access = 17;
+    // 服务访问地址相关信息
+    // @gotags: bson:"access_info" json:"access_info"
+    AccessInfo access_info = 16;
     // 部署标签
     // @gotags: bson:"labels" json:"labels"
     map<string,string> labels = 25;
+}
+
+message AccessInfo {
+    // 内部访问地址
+    // @gotags: bson:"private" json:"private"
+    AccessAddress private = 1;
+    // 是否注册到网关
+    // @gotags: bson:"registe_gateway" json:"registe_gateway"
+    bool registe_gateway = 2;
+    // 网关Id
+    // @gotags: bson:"gateway_id" json:"gateway_id"
+    string gateway_id = 3;
+    // 外部访问地址
+    // @gotags: bson:"public" json:"public"
+    AccessAddress public = 4;
 }
 
 enum ACCESS_TYPE {
