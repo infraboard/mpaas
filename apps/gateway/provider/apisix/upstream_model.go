@@ -45,25 +45,34 @@ type CreateUpstreamRequeset struct {
 	RetryTimeout int `json:"retry_timeout"`
 	// 设置连接、发送消息、接收消息的超时时间，以秒为单位
 	Timeout Timeout `json:"timeout"`
-	// hash_on 支持的类型有 vars（NGINX 内置变量），header（自定义 header），cookie，consumer，默认值为 vars
-	HashOn string `json:"hash_on"`
+	// hash_on 默认值为 vars
+	HashOn HASH_ON `json:"hash_on"`
 	// 标识上游服务名称、使用场景等
 	Name string `json:"name"`
 	// 上游服务描述、使用场景等
 	Desc string `json:"desc"`
 	// 跟上游通信时使用的 scheme。
-	// 对于 7 层代理，可选值为 [http, https, grpc, grpcs]。
-	// 对于 4 层代理，可选值为 [tcp, udp, tls]。
-	// 默认值为 http，详细信息请参考下文。
 	Scheme UPSTREAM_SCHEME `json:"scheme"`
 	// 标识附加属性的键值对
-	// {"version":"v2","build":"16","env":"production"}
 	Labels map[string]string `json:"labels"`
 	// TLS 配置
 	TLSConfig TLSConfig `json:"tls"`
 	// 允许 Upstream 有自己单独的连接池。它下属的字段，比如 requests，可以用于配置上游连接保持的参数
 	KeepalivePool KeepalivePool `json:"keepalive_pool"`
 }
+
+type HASH_ON string
+
+const (
+	// NGINX 内置变量
+	HASH_ON_VARS HASH_ON = "vars"
+	// header自定义 header
+	HASH_ON_HEADER = "header"
+	//
+	HASH_ON_COOKIE = "cookie"
+	//
+	HASH_ON_CONSUMER = "consumer"
+)
 
 // 动态设置 keepalive 指令，详细信息请参考下文
 type KeepalivePool struct {
@@ -82,16 +91,16 @@ type TLSConfig struct {
 	ClientCertId string `json:"client_cert_id"`
 }
 
-type UPSTREAM_SCHEME int
+type UPSTREAM_SCHEME string
 
 const (
-	UPSTREAM_SCHEME_HTTP UPSTREAM_SCHEME = iota
-	UPSTREAM_SCHEME_HTTPS
-	UPSTREAM_SCHEME_GRPC
-	UPSTREAM_SCHEME_GRPCS
-	UPSTREAM_SCHEME_TCP
-	UPSTREAM_SCHEME_UDP
-	UPSTREAM_SCHEME_TLS
+	UPSTREAM_SCHEME_HTTP  UPSTREAM_SCHEME = "http"
+	UPSTREAM_SCHEME_HTTPS UPSTREAM_SCHEME = "https"
+	UPSTREAM_SCHEME_GRPC  UPSTREAM_SCHEME = "grpc"
+	UPSTREAM_SCHEME_GRPCS UPSTREAM_SCHEME = "grpcs"
+	UPSTREAM_SCHEME_TCP   UPSTREAM_SCHEME = "tcp"
+	UPSTREAM_SCHEME_UDP   UPSTREAM_SCHEME = "udp"
+	UPSTREAM_SCHEME_TLS   UPSTREAM_SCHEME = "tls"
 )
 
 // 设置连接、发送消息、接收消息的超时时间，每项都为 15 秒
@@ -152,15 +161,15 @@ type ActiveHealthCheck struct {
 	Successes int `json:"successes"`
 }
 
-type CHECK_PROTOCOL int
+type CHECK_PROTOCOL string
 
 const (
 	// http
-	CHECK_PROTOCOL_HTTP CHECK_PROTOCOL = iota
+	CHECK_PROTOCOL_HTTP CHECK_PROTOCOL = "http"
 	// https
-	CHECK_PROTOCOL_HTTPS
+	CHECK_PROTOCOL_HTTPS CHECK_PROTOCOL = "https"
 	// tcp
-	CHECK_PROTOCOL_TCP
+	CHECK_PROTOCOL_TCP CHECK_PROTOCOL = "tcp"
 )
 
 // 被动检查配置
