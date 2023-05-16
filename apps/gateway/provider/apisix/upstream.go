@@ -81,3 +81,20 @@ func (c *Client) RemoveNodeFromUpstream(ctx context.Context, in *RemoveNodeFromU
 
 type RemoveNodeFromUpstreamRequest struct {
 }
+
+// 删除Upstream
+// /apisix/admin/upstreams/{id}
+func (c *Client) DeleteUpstream(ctx context.Context, in *DeleteUpstreamRequest) (
+	*Upstream, error) {
+	raw, err := c.c.
+		Delete("upstreams").
+		Suffix(in.UpStreamId).
+		Do(ctx).
+		Raw()
+	fmt.Print(raw, err)
+	return nil, nil
+}
+
+type DeleteUpstreamRequest struct {
+	UpStreamId string `json:"upstream_id"`
+}

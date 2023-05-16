@@ -1,5 +1,12 @@
 package apisix
 
+import "github.com/infraboard/mcube/tools/pretty"
+
+type RouteList struct {
+	Total int      `json:"total"`
+	List  []*Route `json:"list"`
+}
+
 type Route struct {
 	*Meta
 	*CreateRouteRequest
@@ -26,6 +33,10 @@ type CreateRouteRequest struct {
 	Timeout *Timeout `json:"timeout"`
 	// 当设置为 true 时，启用 websocket(boolean), 默认值为 false
 	EnableWebsocket bool `json:"enable_websocket"`
+}
+
+func (r *CreateRouteRequest) ToJSON() string {
+	return pretty.ToJSON(r)
 }
 
 type ROUTE_STATUS int
