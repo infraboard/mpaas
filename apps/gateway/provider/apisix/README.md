@@ -18,3 +18,4 @@ docker-compose -p docker-apisix -f docker-compose-arm64.yml up -d
 + [API Six 官方文档](https://apisix.apache.org/zh/docs/apisix/getting-started/)
 + [API Six Go语言插件](https://apisix.apache.org/zh/docs/go-plugin-runner/getting-started/)
 + [apache apisix](https://www.jianshu.com/p/16f0b621815c)
++ [为什么 APISIX Ingress 是比 Traefik 更好的选择？](https://cloud.tencent.com/developer/article/2207539)
