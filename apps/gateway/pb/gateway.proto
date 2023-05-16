@@ -6,8 +6,10 @@ option go_package = "github.com/infraboard/mpaas/apps/gateway";
 import "mcube/pb/resource/meta.proto";
 
 enum TYPE {
+    // 基于APISIX的网关
+    APISIX = 0;
     // 基于Etcd对接的Traefik网关
-    TRAEFIK_ETCD = 0;
+    TRAEFIK_ETCD = 1;
 }
 
 message Gateway {
@@ -55,9 +57,21 @@ message CreateGatewayRequest {
     // Traefik网关配置, 通过该配置可以操作网关
     // @gotags: bson:"traefik_config" json:"traefik_config"
     TraefikConfig traefik_config = 9;
+    // APISix网关相关配置
+    // @gotags: bson:"apisix_config" json:"apisix_config"
+    ApisixConfig apisix_config = 10;
     // 网关标签
     // @gotags: bson:"labels" json:"labels"
     map<string,string> labels =15;                 
+}
+
+message ApisixConfig {
+    // 网关地址
+    // @gotags: bson:"address" json:"address"
+    string address =1;
+    // 操作admin api的key
+    // @gotags: bson:"api_key" json:"api_key"
+    string api_key = 2;
 }
 
 // Traefik网关配置, 通过操作Etcd来操作Traefik
