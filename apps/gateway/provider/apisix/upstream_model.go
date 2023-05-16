@@ -1,5 +1,7 @@
 package apisix
 
+import "github.com/infraboard/mcube/tools/pretty"
+
 type UPSTREAM_TYPE int
 
 const (
@@ -13,11 +15,22 @@ const (
 	UPSTREAM_TYPE_LEAST_CONN
 )
 
+func NewUpstream() *Upstream {
+	return &Upstream{
+		Meta:                   NewMeta(),
+		CreateUpstreamRequeset: NewCreateUpstreamRequeset(),
+	}
+}
+
 type Upstream struct {
 	// 通用信息
 	*Meta
 	// 具体参数
 	*CreateUpstreamRequeset
+}
+
+func NewCreateUpstreamRequeset() *CreateUpstreamRequeset {
+	return &CreateUpstreamRequeset{}
 }
 
 type CreateUpstreamRequeset struct {
@@ -55,6 +68,10 @@ type CreateUpstreamRequeset struct {
 	TLSConfig TLSConfig `json:"tls"`
 	// 允许 Upstream 有自己单独的连接池。它下属的字段，比如 requests，可以用于配置上游连接保持的参数
 	KeepalivePool KeepalivePool `json:"keepalive_pool"`
+}
+
+func (r *CreateUpstreamRequeset) ToJSON() string {
+	return pretty.ToJSON(r)
 }
 
 type HASH_ON string

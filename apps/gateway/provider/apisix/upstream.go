@@ -1,10 +1,20 @@
 package apisix
 
-import "context"
+import (
+	"context"
+	"fmt"
+)
 
 // 创建Upstream 参考: https://apisix.apache.org/zh/docs/apisix/admin-api/#upstream
+// /apisix/admin/upstreams
 func (c *Client) CreateUpstream(ctx context.Context, in *CreateUpstreamRequeset) (
 	*Upstream, error) {
+	raw, err := c.c.
+		Post("upstreams").
+		Body(in.ToJSON()).
+		Do(ctx).
+		Raw()
+	fmt.Print(raw, err)
 	return nil, nil
 }
 

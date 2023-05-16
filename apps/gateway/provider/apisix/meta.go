@@ -1,5 +1,9 @@
 package apisix
 
+func NewMeta() *Meta {
+	return &Meta{}
+}
+
 type Meta struct {
 	// 唯一Id
 	Id string `json:"id"`
