@@ -130,6 +130,10 @@ type Node struct {
 	Priority int    `json:"priority"`
 }
 
+func (n *Node) ToJSON() string {
+	return pretty.ToJSON(n)
+}
+
 type DiscoverNodes struct {
 	// 服务名称, 与 nodes 二选一
 	ServiceName string `json:"service_name"`
