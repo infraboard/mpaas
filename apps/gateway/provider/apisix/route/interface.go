@@ -17,6 +17,12 @@ func NewQueryRouteRequest() *QueryRouteRequest {
 type QueryRouteRequest struct {
 }
 
+func NewDescribeRouteRequest(routeId string) *DescribeRouteRequest {
+	return &DescribeRouteRequest{
+		RouteId: routeId,
+	}
+}
+
 type DescribeRouteRequest struct {
 	RouteId string
 }

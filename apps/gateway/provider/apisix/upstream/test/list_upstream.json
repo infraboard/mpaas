@@ -1,0 +1,17 @@
+{
+    "modifiedIndex": 62,
+    "key": "/apisix/upstreams/1",
+    "value": {
+        "hash_on": "vars",
+        "id": "1",
+        "create_time": 1684288268,
+        "type": "roundrobin",
+        "pass_host": "pass",
+        "scheme": "http",
+        "nodes": {
+            "gateway.docker.internal:8010": 1
+        },
+        "update_time": 1684289950
+    },
+    "createdIndex": 45
+}

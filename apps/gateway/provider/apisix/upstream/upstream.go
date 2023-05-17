@@ -4,10 +4,8 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/infraboard/mcube/tools/pretty"
+	"github.com/infraboard/mpaas/apps/gateway/provider/apisix"
 )
-
-// 参考: https://apisix.apache.org/zh/docs/apisix/admin-api/#upstream
 
 // 创建Upstream
 // /apisix/admin/upstreams
@@ -26,17 +24,22 @@ func (c *Client) CreateUpstream(ctx context.Context, in *CreateUpstreamRequeset)
 // /apisix/admin/upstreams/{id}
 func (c *Client) DescribeUpstream(ctx context.Context, in *DescribeUpstreamRequest) (
 	*Upstream, error) {
-	raw, err := c.c.
+	resp := apisix.NewReponse()
+	err := c.c.
 		Get("upstreams").
 		Suffix(in.UpStreamId).
 		Do(ctx).
-		Raw()
-	fmt.Print(raw, err)
-	return nil, nil
-}
+		Into(resp)
+	if err != nil {
+		return nil, err
+	}
 
-type DescribeUpstreamRequest struct {
-	UpStreamId string `json:"upstream_id"`
+	ins := NewUpstream()
+	err = resp.GetValue(ins)
+	if err != nil {
+		return nil, err
+	}
+	return ins, nil
 }
 
 // 在 Upstream 中添加一个节点
@@ -53,33 +56,16 @@ func (c *Client) AddNodeToUpstream(ctx context.Context, in *AddNodeToUpstreamReq
 	return nil, nil
 }
 
-type AddNodeToUpstreamRequest struct {
-	UpStreamId string  `json:"upstream_id"`
-	Nodes      []*Node `json:"nodes"`
-}
-
-func (r *AddNodeToUpstreamRequest) ToJSON() string {
-	return pretty.ToJSON(r)
-}
-
 // 更新 Upstream 中单个节点
 func (c *Client) UpdateUpstreamNode(ctx context.Context, in *UpdateUpstreamNodeRequeset) (
 	*Upstream, error) {
 	return nil, nil
 }
 
-type UpdateUpstreamNodeRequeset struct {
-	UpStreamId string `json:"upstream_id"`
-	*Node
-}
-
 // 删除 Upstream 中的一个节点
 func (c *Client) RemoveNodeFromUpstream(ctx context.Context, in *RemoveNodeFromUpstreamRequest) (
 	*Upstream, error) {
 	return nil, nil
-}
-
-type RemoveNodeFromUpstreamRequest struct {
 }
 
 // 删除Upstream
@@ -93,8 +79,4 @@ func (c *Client) DeleteUpstream(ctx context.Context, in *DeleteUpstreamRequest) 
 		Raw()
 	fmt.Print(raw, err)
 	return nil, nil
-}
-
-type DeleteUpstreamRequest struct {
-	UpStreamId string `json:"upstream_id"`
 }

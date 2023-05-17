@@ -44,6 +44,10 @@ type Route struct {
 	*CreateRouteRequest
 }
 
+func (r *Route) String() string {
+	return pretty.ToJSON(r)
+}
+
 func NewCreateRouteRequest() *CreateRouteRequest {
 	return &CreateRouteRequest{
 		RouteMatchRule: NewRouteMatchRule(),
@@ -82,7 +86,14 @@ func (r *CreateRouteRequest) ToJSON() string {
 }
 
 func NewRouteMatchRule() *RouteMatchRule {
-	return &RouteMatchRule{}
+	return &RouteMatchRule{
+		Hosts:       []string{},
+		URIs:        []string{},
+		RemoteAddrs: []string{},
+		Methods:     []string{},
+		Vars:        []*MatchExpr{},
+		Labels:      map[string]string{},
+	}
 }
 
 type RouteMatchRule struct {

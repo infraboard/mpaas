@@ -39,13 +39,22 @@ func (c *Client) QueryRoute(ctx context.Context, in *QueryRouteRequest) (
 // /apisix/admin/routes/{id}
 func (c *Client) DescribeRoute(ctx context.Context, in *DescribeRouteRequest) (
 	*Route, error) {
-	raw, err := c.c.
+	resp := apisix.NewReponse()
+	err := c.c.
 		Get("routes").
 		Suffix(in.RouteId).
 		Do(ctx).
-		Raw()
-	fmt.Print(raw, err)
-	return nil, nil
+		Into(resp)
+	if err != nil {
+		return nil, err
+	}
+
+	r := NewRoute()
+	err = resp.GetValue(r)
+	if err != nil {
+		return nil, err
+	}
+	return r, nil
 }
 
 // 更新路由

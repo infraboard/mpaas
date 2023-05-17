@@ -5,19 +5,6 @@ import (
 	"github.com/infraboard/mpaas/apps/gateway/provider/apisix"
 )
 
-type UPSTREAM_TYPE int
-
-const (
-	// 带权重的 Round Robin。
-	UPSTREAM_TYPE_ROUNDROBIN UPSTREAM_TYPE = iota
-	// 一致性哈希。
-	UPSTREAM_TYPE_CHASH
-	// 选择延迟最小的节点，请参考 EWMA_chart。
-	UPSTREAM_TYPE_EWMA
-	// 选择 (active_conn + 1) / weight
-	UPSTREAM_TYPE_LEAST_CONN
-)
-
 func NewUpstream() *Upstream {
 	return &Upstream{
 		Meta:                   apisix.NewMeta(),
@@ -32,6 +19,10 @@ type Upstream struct {
 	*CreateUpstreamRequeset
 }
 
+func (r *Upstream) String() string {
+	return pretty.ToJSON(r)
+}
+
 func NewCreateUpstreamRequeset() *CreateUpstreamRequeset {
 	return &CreateUpstreamRequeset{}
 }
@@ -40,7 +31,7 @@ type CreateUpstreamRequeset struct {
 	// 负载均衡算法，默认值是roundrobin
 	Type UPSTREAM_TYPE `json:"type"`
 	// 后端服务地址
-	Nodes []*Node `json:"nodes"`
+	Nodes map[string]int `json:"nodes"`
 	// 采用注册中心时的配置, 与 nodes 二选一
 	DiscoverNodes
 	// 该选项只有类型是 chash 才有效。根据 key 来查找对应的节点 id，相同的 key 在同一个对象中，则返回相同 id。

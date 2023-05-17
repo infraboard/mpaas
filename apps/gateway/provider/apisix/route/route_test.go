@@ -14,3 +14,12 @@ func TestQueryRoute(t *testing.T) {
 	}
 	t.Log(list)
 }
+
+func TestDescribeRoute(t *testing.T) {
+	in := route.NewDescribeRouteRequest("1")
+	ins, err := client.DescribeRoute(ctx, in)
+	if err != nil {
+		t.Fatal(err)
+	}
+	t.Log(ins)
+}

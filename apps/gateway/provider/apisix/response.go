@@ -28,7 +28,7 @@ func (r *ReponseList) Values(l Lister) {
 	}
 }
 
-func NewReponse(v any) *Reponse {
+func NewReponse() *Reponse {
 	return &Reponse{}
 }
 
@@ -37,6 +37,10 @@ type Reponse struct {
 	Key           string          `json:"key"`
 	Value         json.RawMessage `json:"value"`
 	CreatedIndex  int             `json:"createdIndex"`
+}
+
+func (r *Reponse) GetValue(v any) error {
+	return json.Unmarshal(r.Value, v)
 }
 
 type Lister interface {

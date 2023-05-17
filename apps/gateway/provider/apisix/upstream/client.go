@@ -8,7 +8,7 @@ func NewClient(c *rest.RESTClient) *Client {
 	}
 }
 
-// 路由规则: https://apisix.apache.org/zh/docs/apisix/admin-api/#route
+// 参考: https://apisix.apache.org/zh/docs/apisix/admin-api/#upstream
 type Client struct {
 	c *rest.RESTClient
 }
