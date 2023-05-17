@@ -1,4 +1,4 @@
-package apisix
+package upstream
 
 import (
 	"context"

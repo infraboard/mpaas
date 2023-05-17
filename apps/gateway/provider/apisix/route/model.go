@@ -1,15 +1,55 @@
-package apisix
+package route
 
-import "github.com/infraboard/mcube/tools/pretty"
+import (
+	"encoding/json"
+
+	"github.com/infraboard/mcube/tools/pretty"
+	"github.com/infraboard/mpaas/apps/gateway/provider/apisix"
+)
+
+func NewRouteList() *RouteList {
+	return &RouteList{
+		List: []*Route{},
+	}
+}
 
 type RouteList struct {
 	Total int      `json:"total"`
 	List  []*Route `json:"list"`
 }
 
+func (l *RouteList) String() string {
+	return pretty.ToJSON(l)
+}
+
+func (l *RouteList) Add(item json.RawMessage) {
+	r := NewRoute()
+	err := json.Unmarshal(item, r)
+	if err != nil {
+		panic(err)
+	}
+	l.List = append(l.List, r)
+	l.Total++
+}
+
+func NewRoute() *Route {
+	return &Route{
+		Meta:               apisix.NewMeta(),
+		CreateRouteRequest: NewCreateRouteRequest(),
+	}
+}
+
 type Route struct {
-	*Meta
+	*apisix.Meta
 	*CreateRouteRequest
+}
+
+func NewCreateRouteRequest() *CreateRouteRequest {
+	return &CreateRouteRequest{
+		RouteMatchRule: NewRouteMatchRule(),
+		Timeout:        apisix.NewTimeout(),
+		Plugins:        map[string]interface{}{},
+	}
 }
 
 type CreateRouteRequest struct {
@@ -29,8 +69,10 @@ type CreateRouteRequest struct {
 	Name string `json:"name"`
 	// 路由描述信息
 	Desc string `json:"desc"`
+	// 路由描述信息
+	Status ROUTE_STATUS `json:"status"`
 	// 为 Route 设置 Upstream 连接、发送消息和接收消息的超时时间（单位为秒）
-	Timeout *Timeout `json:"timeout"`
+	Timeout *apisix.Timeout `json:"timeout"`
 	// 当设置为 true 时，启用 websocket(boolean), 默认值为 false
 	EnableWebsocket bool `json:"enable_websocket"`
 }
@@ -39,20 +81,19 @@ func (r *CreateRouteRequest) ToJSON() string {
 	return pretty.ToJSON(r)
 }
 
-type ROUTE_STATUS int
-
-const (
-	// 表示禁用
-	ROUTE_STATUS_DISABLED ROUTE_STATUS = iota
-	// 表示启用
-	ROUTE_STATUS_ENABLED
-)
+func NewRouteMatchRule() *RouteMatchRule {
+	return &RouteMatchRule{}
+}
 
 type RouteMatchRule struct {
 	// 非空列表形态的 host，表示允许有多个不同 host，匹配其中任意一个即可
 	Hosts []string `json:"hosts"`
+	// 单独
+	Host string `json:"host"`
 	// URI匹配规则
 	URIs []string `json:"uris"`
+	// 单独
+	URI string `json:"uri"`
 	// 非空列表形态的 remote_addr，表示允许有多个不同 IP 地址，符合其中任意一个即可
 	RemoteAddrs []string `json:"remote_addrs"`
 	// 如果为空或没有该选项，则表示没有任何 method 限制。

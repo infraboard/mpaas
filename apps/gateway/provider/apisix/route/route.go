@@ -1,11 +1,11 @@
-package apisix
+package route
 
 import (
 	"context"
 	"fmt"
-)
 
-// 路由规则: https://apisix.apache.org/zh/docs/apisix/admin-api/#route
+	"github.com/infraboard/mpaas/apps/gateway/provider/apisix"
+)
 
 // 创建路由规则
 // /apisix/admin/routes
@@ -24,15 +24,15 @@ func (c *Client) CreateRoute(ctx context.Context, in *CreateRouteRequest) (
 // /apisix/admin/routes
 func (c *Client) QueryRoute(ctx context.Context, in *QueryRouteRequest) (
 	*RouteList, error) {
-	raw, err := c.c.
+	list := NewRouteList()
+	resp := apisix.NewReponseList()
+	err := c.c.
 		Get("routes").
 		Do(ctx).
-		Raw()
-	fmt.Print(raw, err)
-	return nil, nil
-}
+		Into(resp)
 
-type QueryRouteRequest struct {
+	resp.Values(list)
+	return list, err
 }
 
 // 查询路由详情
@@ -48,18 +48,11 @@ func (c *Client) DescribeRoute(ctx context.Context, in *DescribeRouteRequest) (
 	return nil, nil
 }
 
-type DescribeRouteRequest struct {
-	RouteId string
-}
-
 // 更新路由
 // /apisix/admin/routes/{id}
 func (c *Client) UpdateRoute(ctx context.Context, in *UpdateRouteRequest) (
 	*Route, error) {
 	return nil, nil
-}
-
-type UpdateRouteRequest struct {
 }
 
 // 删除路由
@@ -73,8 +66,4 @@ func (c *Client) DeleteRoute(ctx context.Context, in *DeleteRouteRequest) (
 		Raw()
 	fmt.Print(raw, err)
 	return nil, nil
-}
-
-type DeleteRouteRequest struct {
-	RouteId string
 }

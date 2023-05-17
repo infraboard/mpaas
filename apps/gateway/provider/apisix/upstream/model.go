@@ -1,6 +1,9 @@
-package apisix
+package upstream
 
-import "github.com/infraboard/mcube/tools/pretty"
+import (
+	"github.com/infraboard/mcube/tools/pretty"
+	"github.com/infraboard/mpaas/apps/gateway/provider/apisix"
+)
 
 type UPSTREAM_TYPE int
 
@@ -17,14 +20,14 @@ const (
 
 func NewUpstream() *Upstream {
 	return &Upstream{
-		Meta:                   NewMeta(),
+		Meta:                   apisix.NewMeta(),
 		CreateUpstreamRequeset: NewCreateUpstreamRequeset(),
 	}
 }
 
 type Upstream struct {
 	// 通用信息
-	*Meta
+	*apisix.Meta
 	// 具体参数
 	*CreateUpstreamRequeset
 }
@@ -53,7 +56,7 @@ type CreateUpstreamRequeset struct {
 	// 当设置为 0 时，表示不启用重试超时机制
 	RetryTimeout int `json:"retry_timeout"`
 	// 设置连接、发送消息、接收消息的超时时间，以秒为单位
-	Timeout Timeout `json:"timeout"`
+	Timeout apisix.Timeout `json:"timeout"`
 	// hash_on 默认值为 vars
 	HashOn HASH_ON `json:"hash_on"`
 	// 标识上游服务名称、使用场景等
@@ -115,13 +118,6 @@ const (
 	UPSTREAM_SCHEME_UDP   UPSTREAM_SCHEME = "udp"
 	UPSTREAM_SCHEME_TLS   UPSTREAM_SCHEME = "tls"
 )
-
-// 设置连接、发送消息、接收消息的超时时间，每项都为 15 秒
-type Timeout struct {
-	Connect int `json:"connect"`
-	Send    int `json:"send"`
-	Read    int `json:"read"`
-}
 
 type Node struct {
 	Host     string `json:"host"`

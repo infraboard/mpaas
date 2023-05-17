@@ -1,0 +1,23 @@
+{
+    "list": [
+        {
+            "modifiedIndex": 63,
+            "key": "/apisix/routes/1",
+            "value": {
+                "id": "1",
+                "create_time": 1684288510,
+                "update_time": 1684290057,
+                "uri": "/*",
+                "status": 1,
+                "methods": [
+                    "GET"
+                ],
+                "priority": 0,
+                "upstream_id": "1",
+                "host": "devcloud.com"
+            },
+            "createdIndex": 46
+        }
+    ],
+    "total": 1
+}

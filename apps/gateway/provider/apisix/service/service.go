@@ -1,4 +1,4 @@
-package apisix
+package service
 
 import (
 	"context"
@@ -9,7 +9,7 @@ import (
 
 // 创建服务
 // /apisix/admin/services
-func (c *Client) CreateService(ctx context.Context, in *CreateRouteRequest) (
+func (c *Client) CreateService(ctx context.Context, in *CreateServiceRequest) (
 	*Service, error) {
 	raw, err := c.c.
 		Post("services").
