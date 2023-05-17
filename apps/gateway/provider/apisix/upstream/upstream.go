@@ -4,7 +4,7 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/infraboard/mpaas/apps/gateway/provider/apisix"
+	"github.com/infraboard/mpaas/apps/gateway/provider/apisix/common"
 )
 
 // 创建Upstream
@@ -24,7 +24,7 @@ func (c *Client) CreateUpstream(ctx context.Context, in *CreateUpstreamRequeset)
 // /apisix/admin/upstreams/{id}
 func (c *Client) DescribeUpstream(ctx context.Context, in *DescribeUpstreamRequest) (
 	*Upstream, error) {
-	resp := apisix.NewReponse()
+	resp := common.NewReponse()
 	err := c.c.
 		Get("upstreams").
 		Suffix(in.UpStreamId).

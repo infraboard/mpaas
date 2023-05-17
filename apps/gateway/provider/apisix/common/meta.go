@@ -1,4 +1,4 @@
-package apisix
+package common
 
 func NewMeta() *Meta {
 	return &Meta{}

@@ -15,5 +15,9 @@ var (
 
 func init() {
 	zap.DevelopmentSetup()
-	client = route.NewClient(apisix.DefaultClientConn())
+	conn := apisix.NewClient(
+		"http://127.0.0.1:9180",
+		"edd1c9f034335f136f87ad84b625c8f1",
+	).Conn()
+	client = route.NewClient(conn)
 }

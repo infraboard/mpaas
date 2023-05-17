@@ -1,4 +1,4 @@
-package apisix
+package common
 
 import (
 	"encoding/json"

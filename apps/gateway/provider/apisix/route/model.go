@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 
 	"github.com/infraboard/mcube/tools/pretty"
-	"github.com/infraboard/mpaas/apps/gateway/provider/apisix"
+	"github.com/infraboard/mpaas/apps/gateway/provider/apisix/common"
 )
 
 func NewRouteList() *RouteList {
@@ -34,13 +34,13 @@ func (l *RouteList) Add(item json.RawMessage) {
 
 func NewRoute() *Route {
 	return &Route{
-		Meta:               apisix.NewMeta(),
+		Meta:               common.NewMeta(),
 		CreateRouteRequest: NewCreateRouteRequest(),
 	}
 }
 
 type Route struct {
-	*apisix.Meta
+	*common.Meta
 	*CreateRouteRequest
 }
 
@@ -51,7 +51,7 @@ func (r *Route) String() string {
 func NewCreateRouteRequest() *CreateRouteRequest {
 	return &CreateRouteRequest{
 		RouteMatchRule: NewRouteMatchRule(),
-		Timeout:        apisix.NewTimeout(),
+		Timeout:        common.NewTimeout(),
 		Plugins:        map[string]interface{}{},
 	}
 }
@@ -76,7 +76,7 @@ type CreateRouteRequest struct {
 	// 路由描述信息
 	Status ROUTE_STATUS `json:"status"`
 	// 为 Route 设置 Upstream 连接、发送消息和接收消息的超时时间（单位为秒）
-	Timeout *apisix.Timeout `json:"timeout"`
+	Timeout *common.Timeout `json:"timeout"`
 	// 当设置为 true 时，启用 websocket(boolean), 默认值为 false
 	EnableWebsocket bool `json:"enable_websocket"`
 }

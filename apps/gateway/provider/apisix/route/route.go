@@ -4,7 +4,7 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/infraboard/mpaas/apps/gateway/provider/apisix"
+	"github.com/infraboard/mpaas/apps/gateway/provider/apisix/common"
 )
 
 // 创建路由规则
@@ -25,7 +25,7 @@ func (c *Client) CreateRoute(ctx context.Context, in *CreateRouteRequest) (
 func (c *Client) QueryRoute(ctx context.Context, in *QueryRouteRequest) (
 	*RouteList, error) {
 	list := NewRouteList()
-	resp := apisix.NewReponseList()
+	resp := common.NewReponseList()
 	err := c.c.
 		Get("routes").
 		Do(ctx).
@@ -39,7 +39,7 @@ func (c *Client) QueryRoute(ctx context.Context, in *QueryRouteRequest) (
 // /apisix/admin/routes/{id}
 func (c *Client) DescribeRoute(ctx context.Context, in *DescribeRouteRequest) (
 	*Route, error) {
-	resp := apisix.NewReponse()
+	resp := common.NewReponse()
 	err := c.c.
 		Get("routes").
 		Suffix(in.RouteId).

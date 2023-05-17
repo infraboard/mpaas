@@ -2,7 +2,7 @@ package service
 
 import (
 	"github.com/infraboard/mcube/tools/pretty"
-	"github.com/infraboard/mpaas/apps/gateway/provider/apisix"
+	"github.com/infraboard/mpaas/apps/gateway/provider/apisix/common"
 )
 
 type ServiceList struct {
@@ -11,7 +11,7 @@ type ServiceList struct {
 }
 
 type Service struct {
-	*apisix.Meta
+	*common.Meta
 	*CreateServiceRequest
 }
 
