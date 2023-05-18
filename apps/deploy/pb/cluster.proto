@@ -1,0 +1,109 @@
+syntax = "proto3";
+
+package infraboard.mpaas.deploy;
+option go_package = "github.com/infraboard/mpaas/apps/deploy";
+
+import "mcube/pb/resource/meta.proto";
+
+// 部署集群
+message Cluster  {
+    // 元信息
+    // @gotags: bson:",inline" json:"meta"
+    infraboard.mcube.resource.Meta meta = 1;
+    // 创建信息
+    // @gotags: bson:",inline" json:"spec"
+    CreateClusterRequest spec = 2;
+}
+
+
+
+message CreateClusterRequest {
+    // 对象所在域
+    // @gotags: bson:"domain" json:"domain"
+    string domain = 1;
+    // 对象所在空间
+    // @gotags: bson:"namespace" json:"namespace"
+    string namespace = 2;
+    // 集群所属环境
+    // @gotags: bson:"environment" json:"environment" validate:"required"
+    string environment = 3;
+    // 集群名称
+    // @gotags: bson:"name" json:"name"
+    string name = 4;
+    // 集群描述
+    // @gotags: bson:"describe" json:"describe"
+    string describe = 5;
+    // 集群对外访问流量配置
+    // @gotags: bson:"traffic_config" json:"traffic_config"
+    TrafficConfig traffic_config = 6;
+    // 部署标签
+    // @gotags: bson:"labels" json:"labels"
+    map<string,string> labels = 15;
+}
+
+message TrafficConfig {
+    // 使用那个网关来暴露服务
+    // @gotags: bson:"gateway_id" json:"gateway_id"
+    string gateway_id = 1;
+    // 集群的访问模式
+    // @gotags: bson:"exported_type" json:"access_type"
+    TRAFFIC_POLICY exported_type = 2;
+    // 部署匹配规则
+    // @gotags: bson:"depoy_rule" json:"depoy_rule"
+    DeployRule depoy_rule = 3;
+    // 集群匹配规则
+    // @gotags: bson:"cluster_rule" json:"cluster_rule"
+    ClusterRule cluster_rule = 4;
+}
+
+// 对外访问的方式
+enum TRAFFIC_POLICY {
+    // 直接暴露部署的访问方式, 每个部署单独配置流量规则
+    BY_DEPLOY = 0;
+    // 将多个部署做成一个负载均衡, 对外使用一个域名进行暴露, 一个集群配置一个流量规则
+    BY_CLUSTER = 1;
+}
+
+// 独立域名相关配置
+message DeployRule {
+    // 每个部署的规则配置
+    // @gotags: bson:"deploy_traffic" json:"deploy_traffic"
+    repeated DeployTraffic deploy_traffic = 2;
+}
+
+message DeployTraffic {
+    // 部署匹配规则
+    // @gotags: bson:"deploy" json:"rule"
+    string rule = 1;
+    // 部署Id
+    // @gotags: bson:"deploy" json:"deploy"
+    string deploy = 2;
+    // 访问域名
+    // @gotags: bson:"domain" json:"domain"
+    string domain = 3;
+}
+
+// 负载均衡模式配置
+message ClusterRule {
+    // 集群匹配规则
+    // @gotags: bson:"rule" json:"rule"
+    string rule = 1;
+    // 访问域名
+    // @gotags: bson:"domain" json:"domain"
+    string domain = 2;
+    // 网关上对应服务的id
+    // @gotags: bson:"gateway_service_id" json:"gateway_service_id"
+    string gateway_service_id = 3;
+    // 权重
+    // @gotags: bson:"domain" json:"domain"
+    repeated DeployWeight deploy_weight = 4;
+}
+
+message DeployWeight {
+    // 那个部署
+    // @gotags: bson:"deploy" json:"deploy"
+    string deploy = 1;
+    // 部署权重(0~100)
+    // @gotags: bson:"weight" json:"weight"
+    int32 weight = 2;
+}

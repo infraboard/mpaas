@@ -33,7 +33,7 @@ func (i *impl) Config() error {
 	if err != nil {
 		return err
 	}
-	i.col = db.Collection(i.Name())
+	i.col = db.Collection("deploys")
 	i.log = zap.L().Named(i.Name())
 	i.mcenter = rpc.C()
 	i.cluster = app.GetInternalApp(cluster.AppName).(cluster.Service)
