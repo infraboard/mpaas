@@ -7,7 +7,7 @@ import (
 	"github.com/infraboard/mcube/http/label"
 	"github.com/infraboard/mcube/http/restful/response"
 
-	"github.com/infraboard/mpaas/apps/cluster"
+	cluster "github.com/infraboard/mpaas/apps/k8s"
 )
 
 func (h *handler) Registry(ws *restful.WebService) {

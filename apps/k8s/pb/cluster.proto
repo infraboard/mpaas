@@ -1,7 +1,7 @@
 syntax = "proto3";
 
-package infraboard.mpaas.cluster;
-option go_package = "github.com/infraboard/mpaas/apps/cluster";
+package infraboard.mpaas.k8s;
+option go_package = "github.com/infraboard/mpaas/apps/k8s";
 
 // Cluster k8s集群相关信息
 message Cluster {

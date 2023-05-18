@@ -10,8 +10,8 @@ import (
 
 	"github.com/infraboard/mcenter/client/rpc"
 	"github.com/infraboard/mpaas/apps/approval"
-	"github.com/infraboard/mpaas/apps/cluster"
 	"github.com/infraboard/mpaas/apps/job"
+	"github.com/infraboard/mpaas/apps/k8s"
 	"github.com/infraboard/mpaas/apps/pipeline"
 	"github.com/infraboard/mpaas/apps/task"
 	"github.com/infraboard/mpaas/conf"
@@ -36,7 +36,7 @@ type impl struct {
 
 	job      job.Service
 	pipeline pipeline.Service
-	cluster  cluster.Service
+	cluster  k8s.Service
 	approval approval.Service
 	hook     *webhook.WebHook
 
@@ -53,7 +53,7 @@ func (i *impl) Config() error {
 	i.log = zap.L().Named(i.Name())
 	i.job = app.GetInternalApp(job.AppName).(job.Service)
 	i.pipeline = app.GetInternalApp(pipeline.AppName).(pipeline.Service)
-	i.cluster = app.GetInternalApp(cluster.AppName).(cluster.Service)
+	i.cluster = app.GetInternalApp(k8s.AppName).(k8s.Service)
 	i.approval = app.GetInternalApp(approval.AppName).(approval.Service)
 	i.mcenter = rpc.C()
 	if err := runner.Init(); err != nil {

@@ -7,7 +7,7 @@ import (
 	"github.com/infraboard/mcube/exception"
 	"github.com/infraboard/mcube/pb/request"
 
-	"github.com/infraboard/mpaas/apps/cluster"
+	cluster "github.com/infraboard/mpaas/apps/k8s"
 	"github.com/infraboard/mpaas/provider/k8s"
 )
 

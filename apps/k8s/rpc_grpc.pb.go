@@ -2,9 +2,9 @@
 // versions:
 // - protoc-gen-go-grpc v1.3.0
 // - protoc             v3.21.6
-// source: mpaas/apps/cluster/pb/rpc.proto
+// source: mpaas/apps/k8s/pb/rpc.proto
 
-package cluster
+package k8s
 
 import (
 	context "context"
@@ -19,8 +19,8 @@ import (
 const _ = grpc.SupportPackageIsVersion7
 
 const (
-	RPC_QueryCluster_FullMethodName    = "/infraboard.mpaas.cluster.RPC/QueryCluster"
-	RPC_DescribeCluster_FullMethodName = "/infraboard.mpaas.cluster.RPC/DescribeCluster"
+	RPC_QueryCluster_FullMethodName    = "/infraboard.mpaas.k8s.RPC/QueryCluster"
+	RPC_DescribeCluster_FullMethodName = "/infraboard.mpaas.k8s.RPC/DescribeCluster"
 )
 
 // RPCClient is the client API for RPC service.
@@ -129,7 +129,7 @@ func _RPC_DescribeCluster_Handler(srv interface{}, ctx context.Context, dec func
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
 var RPC_ServiceDesc = grpc.ServiceDesc{
-	ServiceName: "infraboard.mpaas.cluster.RPC",
+	ServiceName: "infraboard.mpaas.k8s.RPC",
 	HandlerType: (*RPCServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
@@ -142,5 +142,5 @@ var RPC_ServiceDesc = grpc.ServiceDesc{
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
-	Metadata: "mpaas/apps/cluster/pb/rpc.proto",
+	Metadata: "mpaas/apps/k8s/pb/rpc.proto",
 }

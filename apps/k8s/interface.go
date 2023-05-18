@@ -1,7 +1,11 @@
-package cluster
+package k8s
 
 import (
 	context "context"
+)
+
+const (
+	AppName = "k8s_clusters"
 )
 
 type Service interface {

@@ -1,11 +1,11 @@
 syntax = "proto3";
 
-package infraboard.mpaas.cluster;
-option go_package = "github.com/infraboard/mpaas/apps/cluster";
+package infraboard.mpaas.k8s;
+option go_package = "github.com/infraboard/mpaas/apps/k8s";
 
 import "mcube/pb/page/page.proto";
 import "mcube/pb/request/request.proto";
-import "mpaas/apps/cluster/pb/cluster.proto";
+import "mpaas/apps/k8s/pb/cluster.proto";
 
 service RPC {
     rpc QueryCluster(QueryClusterRequest) returns(ClusterSet);

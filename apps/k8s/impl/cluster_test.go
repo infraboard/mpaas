@@ -3,7 +3,7 @@ package impl_test
 import (
 	"testing"
 
-	"github.com/infraboard/mpaas/apps/cluster"
+	cluster "github.com/infraboard/mpaas/apps/k8s"
 	"github.com/infraboard/mpaas/test/tools"
 )
 

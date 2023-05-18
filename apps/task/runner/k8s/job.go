@@ -3,7 +3,7 @@ package k8s
 import (
 	"context"
 
-	"github.com/infraboard/mpaas/apps/cluster"
+	"github.com/infraboard/mpaas/apps/k8s"
 	"github.com/infraboard/mpaas/apps/task"
 	"github.com/infraboard/mpaas/common/format"
 	"github.com/infraboard/mpaas/provider/k8s/workload"
@@ -14,7 +14,7 @@ import (
 func (r *K8sRunner) Run(ctx context.Context, in *task.RunTaskRequest) (
 	*task.JobTaskStatus, error) {
 	runnerParams := in.Params.K8SJobRunnerParams()
-	cReq := cluster.NewDescribeClusterRequest(runnerParams.ClusterId)
+	cReq := k8s.NewDescribeClusterRequest(runnerParams.ClusterId)
 	c, err := r.cluster.DescribeCluster(ctx, cReq)
 	if err != nil {
 		return nil, err

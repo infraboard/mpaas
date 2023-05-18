@@ -12,8 +12,8 @@ import (
 	v1 "k8s.io/api/batch/v1"
 	"sigs.k8s.io/yaml"
 
-	"github.com/infraboard/mpaas/apps/cluster"
 	"github.com/infraboard/mpaas/apps/job"
+	"github.com/infraboard/mpaas/apps/k8s"
 	"github.com/infraboard/mpaas/apps/pipeline"
 	"github.com/infraboard/mpaas/apps/task"
 	"github.com/infraboard/mpaas/apps/task/runner"
@@ -322,7 +322,7 @@ func (i *impl) CleanTaskResource(ctx context.Context, in *task.JobTask) error {
 		}
 		k8sParams := jobParams.K8SJobRunnerParams()
 
-		descReq := cluster.NewDescribeClusterRequest(k8sParams.ClusterId)
+		descReq := k8s.NewDescribeClusterRequest(k8sParams.ClusterId)
 		c, err := i.cluster.DescribeCluster(ctx, descReq)
 		if err != nil {
 			return fmt.Errorf("find k8s cluster error, %s", err)

@@ -1,4 +1,4 @@
-package cluster
+package k8s
 
 import (
 	"encoding/base64"
@@ -19,10 +19,6 @@ import (
 	"github.com/infraboard/mpaas/conf"
 	"github.com/infraboard/mpaas/provider/k8s"
 	"github.com/infraboard/mpaas/provider/k8s/workload"
-)
-
-const (
-	AppName = "clusters"
 )
 
 var (

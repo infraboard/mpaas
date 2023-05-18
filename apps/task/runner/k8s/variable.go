@@ -3,9 +3,9 @@ package k8s
 import (
 	"context"
 
-	"github.com/infraboard/mpaas/apps/cluster"
 	"github.com/infraboard/mpaas/apps/deploy"
 	"github.com/infraboard/mpaas/apps/job"
+	"github.com/infraboard/mpaas/apps/k8s"
 	"github.com/infraboard/mpaas/provider/k8s/workload"
 	v1 "k8s.io/api/batch/v1"
 )
@@ -33,7 +33,7 @@ func (r *K8sRunner) handleDeployment(ctx context.Context, in *job.VersionedRunPa
 	switch dc.Spec.Type {
 	case deploy.TYPE_KUBERNETES:
 		// 容器部署需要注入的信息
-		descReq := cluster.NewDescribeClusterRequest(dc.Spec.K8STypeConfig.ClusterId)
+		descReq := k8s.NewDescribeClusterRequest(dc.Spec.K8STypeConfig.ClusterId)
 		c, err := r.cluster.DescribeCluster(ctx, descReq)
 		if err != nil {
 			return err
