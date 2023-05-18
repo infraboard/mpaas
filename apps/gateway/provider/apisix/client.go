@@ -11,6 +11,7 @@ func NewClient(address, apiKey string) *ClientSet {
 	c := rest.NewRESTClient()
 	c.SetBaseURL(address + "/apisix/admin")
 	c.SetHeader("X-API-KEY", apiKey)
+	c.EnableTrace()
 	return &ClientSet{
 		c: c,
 	}

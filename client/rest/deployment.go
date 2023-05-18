@@ -6,7 +6,7 @@ import (
 	"github.com/emicklei/go-restful/v3"
 	"github.com/infraboard/mcube/http/response"
 	"github.com/infraboard/mcube/http/restful/accessor/yamlk8s"
-	"github.com/infraboard/mpaas/apps/cluster"
+	cluster "github.com/infraboard/mpaas/apps/k8s"
 	"github.com/infraboard/mpaas/provider/k8s/meta"
 	appsv1 "k8s.io/api/apps/v1"
 )

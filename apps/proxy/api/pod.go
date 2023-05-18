@@ -10,7 +10,7 @@ import (
 	"github.com/gorilla/websocket"
 	"github.com/infraboard/mcube/http/label"
 	"github.com/infraboard/mcube/http/restful/response"
-	"github.com/infraboard/mpaas/apps/cluster"
+	cluster "github.com/infraboard/mpaas/apps/k8s"
 	"github.com/infraboard/mpaas/apps/proxy"
 	"github.com/infraboard/mpaas/provider/k8s"
 	"github.com/infraboard/mpaas/provider/k8s/meta"

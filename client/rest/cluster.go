@@ -3,7 +3,7 @@ package rest
 import (
 	"context"
 
-	"github.com/infraboard/mpaas/apps/cluster"
+	cluster "github.com/infraboard/mpaas/apps/k8s"
 )
 
 func (c *ClientSet) CreateCluster(ctx context.Context, req *cluster.CreateClusterRequest) (
