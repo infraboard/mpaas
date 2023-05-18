@@ -453,8 +453,8 @@ type ClusterRule struct {
 	// @gotags: bson:"gateway_service_id" json:"gateway_service_id"
 	GatewayServiceId string `protobuf:"bytes,3,opt,name=gateway_service_id,json=gatewayServiceId,proto3" json:"gateway_service_id" bson:"gateway_service_id"`
 	// 权重
-	// @gotags: bson:"domain" json:"domain"
-	DeployWeight []*DeployWeight `protobuf:"bytes,4,rep,name=deploy_weight,json=deployWeight,proto3" json:"domain" bson:"domain"`
+	// @gotags: bson:"deploy_weight" json:"deploy_weight"
+	DeployWeight []*DeployWeight `protobuf:"bytes,4,rep,name=deploy_weight,json=deployWeight,proto3" json:"deploy_weight" bson:"deploy_weight"`
 }
 
 func (x *ClusterRule) Reset() {

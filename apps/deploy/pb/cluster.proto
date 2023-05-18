@@ -95,7 +95,7 @@ message ClusterRule {
     // @gotags: bson:"gateway_service_id" json:"gateway_service_id"
     string gateway_service_id = 3;
     // 权重
-    // @gotags: bson:"domain" json:"domain"
+    // @gotags: bson:"deploy_weight" json:"deploy_weight"
     repeated DeployWeight deploy_weight = 4;
 }
 
