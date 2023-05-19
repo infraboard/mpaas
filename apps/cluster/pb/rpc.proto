@@ -1,0 +1,47 @@
+syntax = "proto3";
+
+package infraboard.mpaas.cluster;
+option go_package = "github.com/infraboard/mpaas/apps/cluster";
+
+import "mpaas/apps/cluster/pb/cluster.proto";
+import "mcube/pb/page/page.proto";
+
+
+// RPC 应用集群管理
+service RPC {
+    // 查询集群列表
+    rpc QueryCluster(QueryClusterRequest) returns(ClusterSet);
+    // 查询集群详情
+    rpc DescribeCluster(DescribeClusterRequest) returns(Cluster);
+}
+
+message QueryClusterRequest {
+    // 分页请求
+    // @gotags: json:"page"
+    mcube.page.PageRequest page = 1;
+    // 部署Id列表
+    // @gotags: json:"ids"
+    repeated string ids = 2;
+}
+
+message DescribeClusterRequest {
+
+}
+
+message UpdateClusterRequest {
+    // 部署Id
+    // @gotags: json:"id"
+    string id = 1;
+    // 更新人
+    // @gotags: json:"update_by"
+    string update_by = 2;
+    // 集群信息
+    // @gotags: json:"spec"
+    CreateClusterRequest spec = 3;
+}
+
+message DeleteClusterRequest {
+    // 部署Id
+    // @gotags: json:"id"
+    string id = 1;
+}

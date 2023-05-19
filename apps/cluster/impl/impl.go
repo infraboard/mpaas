@@ -9,8 +9,7 @@ import (
 	"github.com/infraboard/mcube/logger/zap"
 	"google.golang.org/grpc"
 
-	"github.com/infraboard/mpaas/apps/deploy"
-	cluster "github.com/infraboard/mpaas/apps/k8s"
+	"github.com/infraboard/mpaas/apps/cluster"
 	"github.com/infraboard/mpaas/conf"
 )
 
@@ -22,7 +21,7 @@ var (
 type impl struct {
 	col *mongo.Collection
 	log logger.Logger
-	deploy.UnimplementedRPCServer
+	cluster.UnimplementedRPCServer
 
 	mcenter *rpc.ClientSet
 	cluster cluster.Service
@@ -41,11 +40,11 @@ func (i *impl) Config() error {
 }
 
 func (i *impl) Name() string {
-	return deploy.AppName
+	return cluster.AppName
 }
 
 func (i *impl) Registry(server *grpc.Server) {
-	deploy.RegisterRPCServer(server, svr)
+	cluster.RegisterRPCServer(server, svr)
 }
 
 func init() {
