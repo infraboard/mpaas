@@ -209,15 +209,18 @@ message CreateDeploymentRequest {
     // 服务版本, k8s部署时 通过yaml自动提取
     // @gotags: bson:"service_version" json:"service_version"
     string service_version = 5;
-    // 部署环境
-    // @gotags: bson:"environment" json:"environment" validate:"required"
-    string environment = 6;
     // 部署资源提供方
     // @gotags: bson:"provider" json:"provider" validate:"required"
     string provider = 7;
     // 部署地域
     // @gotags: bson:"region" json:"region" validate:"required"
     string region = 8;
+    // 部署环境
+    // @gotags: bson:"environment" json:"environment" validate:"required"
+    string environment = 6;
+    // 部署所属集群
+    // @gotags: bson:"cluster" json:"cluster" validate:"required"
+    string cluster = 23;
     // 服务部署所属分组
     // @gotags: bson:"group" json:"group" validate:"required"
     string group = 21;

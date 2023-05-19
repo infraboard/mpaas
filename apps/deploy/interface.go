@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"net/http"
 
+	"github.com/infraboard/mcenter/apps/instance"
 	"github.com/infraboard/mcenter/common/validate"
 	"github.com/infraboard/mcube/http/request"
 	pb_request "github.com/infraboard/mcube/pb/request"
@@ -87,10 +88,11 @@ func NewCreateDeploymentRequest() *CreateDeploymentRequest {
 		Labels:         make(map[string]string),
 		K8STypeConfig:  NewK8STypeConfig(),
 		HostTypeConfig: NewHostTypeConfig(),
-		Provider:       "default",
-		Region:         "default",
-		Environment:    "default",
-		Group:          "default",
+		Provider:       instance.DEFAULT_PROVIDER,
+		Region:         instance.DEFAULT_REGION,
+		Environment:    instance.DEFAULT_ENV,
+		Cluster:        instance.DEFAULT_CLUSTER,
+		Group:          instance.DEFAULT_GROUP,
 	}
 }
 

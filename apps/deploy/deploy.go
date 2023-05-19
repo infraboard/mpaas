@@ -44,6 +44,7 @@ func (d *Deployment) SystemInjectionEnvGroup() *InjectionEnvGroup {
 		NewInjectionEnv("MCENTER_INSTANCE_PROVIDER", d.Spec.Provider),
 		NewInjectionEnv("MCENTER_INSTANCE_REGION", d.Spec.Region),
 		NewInjectionEnv("MCENTER_INSTANCE_ENV", d.Spec.Environment),
+		NewInjectionEnv("MCENTER_INSTANCE_CLUSTER", d.Spec.Cluster),
 		NewInjectionEnv("MCENTER_INSTANCE_GROUP", d.Spec.Group),
 		NewInjectionEnv("MCENTER_INSTANCE_NAME", d.Meta.Id),
 		NewInjectionEnv("MCENTER_INSTANCE_WEIGHT", fmt.Sprintf("%d", d.Spec.Weight)),
