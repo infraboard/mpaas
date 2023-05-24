@@ -59,9 +59,18 @@ message InjectionEnvGroup {
     // 匹配标签, 默认匹配所有
     // @gotags: bson:"match_label" json:"match_label"
     map<string,string> match_label = 3;
+    // 注入相关状态
+    // @gotags: bson:"status" json:"status"
+    InjectionEnvGroupStatus status = 5;
     // 需要注入的环境变量
     // @gotags: bson:"inject_envs" json:"inject_envs"
     repeated InjectionEnv inject_envs = 4;
+}
+
+message InjectionEnvGroupStatus {
+    // 部署时 动态将需要注入的变量, 创建为一个configmap 关联给容器env配置
+    // @gotags: bson:"ref_configmap" json:"ref_configmap"
+    string ref_configmap = 1;
 }
 
 message InjectionEnv {

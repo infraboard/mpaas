@@ -107,7 +107,6 @@ func (i *impl) RunK8sDeploy(ctx context.Context, ins *deploy.Deployment) error {
 	pts := wl.GetPodTemplateSpec()
 	workload.InjectPodTemplateSpecAnnotations(pts, deploy.ANNOTATION_DEPLOY_ID, ins.Meta.Id)
 	wl.SetAnnotations(deploy.ANNOTATION_DEPLOY_ID, ins.Meta.Id)
-
 	// 查询部署的k8s集群
 	k8sClient, err := i.GetDeployK8sClient(ctx, wc.ClusterId)
 	if err != nil {

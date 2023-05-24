@@ -36,6 +36,7 @@ func NewDefaultDeploy() *Deployment {
 
 func (d *Deployment) SystemInjectionEnvGroup() *InjectionEnvGroup {
 	group := NewInjectionEnvGroup()
+	group.Name = "mpaas system env"
 	group.AddEnv(
 		NewInjectionEnv("MPAAS_DEPLOY_ID", d.Meta.Id),
 		NewInjectionEnv("MCENTER_SERVICE_NAME", d.Spec.ServiceName),
