@@ -56,7 +56,7 @@ func (h *handler) Registry(ws *restful.WebService) {
 		Returns(200, "OK", build.BuildConfig{}).
 		Returns(404, "Not Found", nil))
 
-	ws.Route(ws.PUT("/{id}").To(h.PatchBuildConfig).
+	ws.Route(ws.PATCH("/{id}").To(h.PatchBuildConfig).
 		Doc("修改构建配置").
 		Param(ws.PathParameter("id", "identifier of the secret").DataType("string")).
 		Metadata(restfulspec.KeyOpenAPITags, tags).
