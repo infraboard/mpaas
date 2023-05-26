@@ -3,7 +3,6 @@ package deploy
 import (
 	"fmt"
 	"strings"
-	"time"
 
 	"github.com/infraboard/mcube/crypto/cbc"
 	"github.com/infraboard/mpaas/conf"
@@ -12,9 +11,8 @@ import (
 
 func NewDdynamicInjection() *DdynamicInjection {
 	return &DdynamicInjection{
-		SystemEnv:  true,
-		EnvGroups:  []*InjectionEnvGroup{},
-		AccessStat: NewAccessStat(),
+		SystemEnv: true,
+		EnvGroups: []*InjectionEnvGroup{},
 	}
 }
 
@@ -126,13 +124,4 @@ func (e *InjectionEnv) MakeEncrypt(key string) {
 	}
 
 	e.Value = fmt.Sprintf("%s%s", conf.CIPHER_TEXT_PREFIX, encrypt)
-}
-
-func NewAccessStat() *AccessStat {
-	return &AccessStat{}
-}
-
-func (a *AccessStat) Inc() {
-	a.PullAt = time.Now().Unix()
-	a.Count++
 }

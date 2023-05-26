@@ -38,9 +38,6 @@ message DdynamicInjection {
     // 需要注入的环境变量
     // @gotags: bson:"env_groups" json:"env_groups"
     repeated InjectionEnvGroup env_groups = 2;
-    // 访问统计
-    // @gotags: bson:"access_stat" json:"access_stat"
-    AccessStat access_stat = 3;
 }
 
 message InjectionEnvGroupSet {
@@ -89,15 +86,6 @@ message InjectionEnv {
     // 如果加密失败, 补充失败原因
     // @gotags: bson:"encrypt_failed" json:"encrypt_failed"
     string encrypt_failed = 4;
-}
-
-message AccessStat {
-    // 最近一次的拉取时间
-    // @gotags: bson:"pull_at" json:"pull_at"
-    int64 pull_at = 2;
-    // 访问次数
-    // @gotags: bson:"count" json:"count"
-    int64 count = 3;
 }
 
 enum STAGE {
