@@ -91,6 +91,17 @@ func (g *InjectionEnvGroup) ToContainerEnvVars() []v1.EnvVar {
 	return envs
 }
 
+func (g *InjectionEnvGroup) ToConfigMap() *v1.ConfigMap {
+	cm := &v1.ConfigMap{
+		Data: map[string]string{},
+	}
+	for i := range g.InjectEnvs {
+		env := g.InjectEnvs[i]
+		cm.Data[env.Key] = env.Value
+	}
+	return cm
+}
+
 func NewInjectionEnv(key, value string) *InjectionEnv {
 	return &InjectionEnv{
 		Key:   key,

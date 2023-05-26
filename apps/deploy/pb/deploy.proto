@@ -68,6 +68,9 @@ message InjectionEnvGroupStatus {
     // 部署时 动态将需要注入的变量, 创建为一个configmap 关联给容器env配置
     // @gotags: bson:"ref_configmap" json:"ref_configmap"
     string ref_configmap = 1;
+    // 注册失败时的错误信息
+    // @gotags: bson:"error_message" json:"error_message"
+    string error_message = 2;
 }
 
 message InjectionEnv {
@@ -221,9 +224,6 @@ message CreateDeploymentRequest {
     // 服务部署所属分组
     // @gotags: bson:"group" json:"group" validate:"required"
     string group = 21;
-    // 实例权重
-    // @gotags: bson:"weight" json:"weight" toml:"weight" validate:"required"
-    uint32 weight = 22;
     // 部署方式
     // @gotags: bson:"type" json:"type"
     TYPE type = 9;

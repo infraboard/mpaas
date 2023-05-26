@@ -102,7 +102,7 @@ func TestQueryDeploymentInjectEnv(t *testing.T) {
 	for i := range env.EnvGroups {
 		group := env.EnvGroups[i]
 		t.Log(group.IsLabelMatched(map[string]string{}))
-		t.Log(tools.MustToJson(group.ToContainerEnvVars()))
+		t.Log(tools.MustToJson(group.ToConfigMap()))
 	}
 }
 

@@ -107,6 +107,9 @@ func (i *impl) RunK8sDeploy(ctx context.Context, ins *deploy.Deployment) error {
 	pts := wl.GetPodTemplateSpec()
 	workload.InjectPodTemplateSpecAnnotations(pts, deploy.ANNOTATION_DEPLOY_ID, ins.Meta.Id)
 	wl.SetAnnotations(deploy.ANNOTATION_DEPLOY_ID, ins.Meta.Id)
+
+	// 补充需要注入的系统变量
+
 	// 查询部署的k8s集群
 	k8sClient, err := i.GetDeployK8sClient(ctx, wc.ClusterId)
 	if err != nil {
@@ -351,12 +354,18 @@ func (i *impl) QueryDeploymentInjectEnv(ctx context.Context, in *deploy.QueryDep
 		return nil, err
 	}
 
+	return i.queryDeploymentInjectEnv(ctx, ins)
+}
+
+// 查询部署是需要动态注入的环境变量, moperator 通过该接口拉取Env进行动态注入
+func (i *impl) queryDeploymentInjectEnv(ctx context.Context, ins *deploy.Deployment) (
+	*deploy.InjectionEnvGroupSet, error) {
 	set := deploy.NewInjectionEnvGroupSet()
 	if ins.DynamicInjection == nil {
 		return set, nil
 	}
 
-	// 注入已经启动的组变量
+	// 注入已经启用的组变量
 	ins.DynamicInjection.AddEnabledGroupTo(set)
 
 	// 注入部署相关系统变量
@@ -380,6 +389,14 @@ func (i *impl) QueryDeploymentInjectEnv(ctx context.Context, in *deploy.QueryDep
 		encryptKey := app.Security.EncryptKey
 		set.Encrypt(encryptKey)
 	}
-
 	return set, nil
+}
+
+// InjectionEnvGroup --> ConfigMap
+// <deployname>-<groupname>
+func GetInjectionEnvGroupConfigMap(ctx context.Context, configmapName string, in *deploy.InjectionEnvGroup) error {
+	//
+	in.ToContainerEnvVars()
+
+	return nil
 }
