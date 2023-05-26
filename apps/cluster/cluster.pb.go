@@ -21,55 +21,6 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// 对外访问的方式
-type TRAFFIC_POLICY int32
-
-const (
-	// 直接暴露部署的访问方式, 每个部署单独配置流量规则
-	TRAFFIC_POLICY_BY_DEPLOY TRAFFIC_POLICY = 0
-	// 将多个部署做成一个负载均衡, 对外使用一个域名进行暴露, 一个集群配置一个流量规则
-	TRAFFIC_POLICY_BY_CLUSTER TRAFFIC_POLICY = 1
-)
-
-// Enum value maps for TRAFFIC_POLICY.
-var (
-	TRAFFIC_POLICY_name = map[int32]string{
-		0: "BY_DEPLOY",
-		1: "BY_CLUSTER",
-	}
-	TRAFFIC_POLICY_value = map[string]int32{
-		"BY_DEPLOY":  0,
-		"BY_CLUSTER": 1,
-	}
-)
-
-func (x TRAFFIC_POLICY) Enum() *TRAFFIC_POLICY {
-	p := new(TRAFFIC_POLICY)
-	*p = x
-	return p
-}
-
-func (x TRAFFIC_POLICY) String() string {
-	return protoimpl.X.EnumStringOf(x.Descriptor(), protoreflect.EnumNumber(x))
-}
-
-func (TRAFFIC_POLICY) Descriptor() protoreflect.EnumDescriptor {
-	return file_mpaas_apps_cluster_pb_cluster_proto_enumTypes[0].Descriptor()
-}
-
-func (TRAFFIC_POLICY) Type() protoreflect.EnumType {
-	return &file_mpaas_apps_cluster_pb_cluster_proto_enumTypes[0]
-}
-
-func (x TRAFFIC_POLICY) Number() protoreflect.EnumNumber {
-	return protoreflect.EnumNumber(x)
-}
-
-// Deprecated: Use TRAFFIC_POLICY.Descriptor instead.
-func (TRAFFIC_POLICY) EnumDescriptor() ([]byte, []int) {
-	return file_mpaas_apps_cluster_pb_cluster_proto_rawDescGZIP(), []int{0}
-}
-
 type ClusterSet struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
@@ -207,9 +158,6 @@ type CreateClusterRequest struct {
 	// 集群描述
 	// @gotags: bson:"describe" json:"describe"
 	Describe string `protobuf:"bytes,5,opt,name=describe,proto3" json:"describe" bson:"describe"`
-	// 集群对外访问流量配置
-	// @gotags: bson:"traffic_config" json:"traffic_config"
-	TrafficConfig *TrafficConfig `protobuf:"bytes,6,opt,name=traffic_config,json=trafficConfig,proto3" json:"traffic_config" bson:"traffic_config"`
 	// 部署标签
 	// @gotags: bson:"labels" json:"labels"
 	Labels map[string]string `protobuf:"bytes,15,rep,name=labels,proto3" json:"labels" protobuf_key:"bytes,1,opt,name=key,proto3" protobuf_val:"bytes,2,opt,name=value,proto3" bson:"labels"`
@@ -282,355 +230,11 @@ func (x *CreateClusterRequest) GetDescribe() string {
 	return ""
 }
 
-func (x *CreateClusterRequest) GetTrafficConfig() *TrafficConfig {
-	if x != nil {
-		return x.TrafficConfig
-	}
-	return nil
-}
-
 func (x *CreateClusterRequest) GetLabels() map[string]string {
 	if x != nil {
 		return x.Labels
 	}
 	return nil
-}
-
-type TrafficConfig struct {
-	state         protoimpl.MessageState
-	sizeCache     protoimpl.SizeCache
-	unknownFields protoimpl.UnknownFields
-
-	// 使用那个网关来暴露服务
-	// @gotags: bson:"gateway_id" json:"gateway_id"
-	GatewayId string `protobuf:"bytes,1,opt,name=gateway_id,json=gatewayId,proto3" json:"gateway_id" bson:"gateway_id"`
-	// 集群的访问模式
-	// @gotags: bson:"exported_type" json:"access_type"
-	ExportedType TRAFFIC_POLICY `protobuf:"varint,2,opt,name=exported_type,json=exportedType,proto3,enum=infraboard.mpaas.cluster.TRAFFIC_POLICY" json:"access_type" bson:"exported_type"`
-	// 部署匹配规则
-	// @gotags: bson:"depoy_rule" json:"depoy_rule"
-	DepoyRule *DeployRule `protobuf:"bytes,3,opt,name=depoy_rule,json=depoyRule,proto3" json:"depoy_rule" bson:"depoy_rule"`
-	// 集群匹配规则
-	// @gotags: bson:"cluster_rule" json:"cluster_rule"
-	ClusterRule *ClusterRule `protobuf:"bytes,4,opt,name=cluster_rule,json=clusterRule,proto3" json:"cluster_rule" bson:"cluster_rule"`
-}
-
-func (x *TrafficConfig) Reset() {
-	*x = TrafficConfig{}
-	if protoimpl.UnsafeEnabled {
-		mi := &file_mpaas_apps_cluster_pb_cluster_proto_msgTypes[3]
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		ms.StoreMessageInfo(mi)
-	}
-}
-
-func (x *TrafficConfig) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*TrafficConfig) ProtoMessage() {}
-
-func (x *TrafficConfig) ProtoReflect() protoreflect.Message {
-	mi := &file_mpaas_apps_cluster_pb_cluster_proto_msgTypes[3]
-	if protoimpl.UnsafeEnabled && x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-// Deprecated: Use TrafficConfig.ProtoReflect.Descriptor instead.
-func (*TrafficConfig) Descriptor() ([]byte, []int) {
-	return file_mpaas_apps_cluster_pb_cluster_proto_rawDescGZIP(), []int{3}
-}
-
-func (x *TrafficConfig) GetGatewayId() string {
-	if x != nil {
-		return x.GatewayId
-	}
-	return ""
-}
-
-func (x *TrafficConfig) GetExportedType() TRAFFIC_POLICY {
-	if x != nil {
-		return x.ExportedType
-	}
-	return TRAFFIC_POLICY_BY_DEPLOY
-}
-
-func (x *TrafficConfig) GetDepoyRule() *DeployRule {
-	if x != nil {
-		return x.DepoyRule
-	}
-	return nil
-}
-
-func (x *TrafficConfig) GetClusterRule() *ClusterRule {
-	if x != nil {
-		return x.ClusterRule
-	}
-	return nil
-}
-
-// 独立域名相关配置
-type DeployRule struct {
-	state         protoimpl.MessageState
-	sizeCache     protoimpl.SizeCache
-	unknownFields protoimpl.UnknownFields
-
-	// 每个部署的规则配置
-	// @gotags: bson:"deploy_traffic" json:"deploy_traffic"
-	DeployTraffic []*DeployTraffic `protobuf:"bytes,2,rep,name=deploy_traffic,json=deployTraffic,proto3" json:"deploy_traffic" bson:"deploy_traffic"`
-}
-
-func (x *DeployRule) Reset() {
-	*x = DeployRule{}
-	if protoimpl.UnsafeEnabled {
-		mi := &file_mpaas_apps_cluster_pb_cluster_proto_msgTypes[4]
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		ms.StoreMessageInfo(mi)
-	}
-}
-
-func (x *DeployRule) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*DeployRule) ProtoMessage() {}
-
-func (x *DeployRule) ProtoReflect() protoreflect.Message {
-	mi := &file_mpaas_apps_cluster_pb_cluster_proto_msgTypes[4]
-	if protoimpl.UnsafeEnabled && x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-// Deprecated: Use DeployRule.ProtoReflect.Descriptor instead.
-func (*DeployRule) Descriptor() ([]byte, []int) {
-	return file_mpaas_apps_cluster_pb_cluster_proto_rawDescGZIP(), []int{4}
-}
-
-func (x *DeployRule) GetDeployTraffic() []*DeployTraffic {
-	if x != nil {
-		return x.DeployTraffic
-	}
-	return nil
-}
-
-type DeployTraffic struct {
-	state         protoimpl.MessageState
-	sizeCache     protoimpl.SizeCache
-	unknownFields protoimpl.UnknownFields
-
-	// 部署匹配规则
-	// @gotags: bson:"deploy" json:"rule"
-	Rule string `protobuf:"bytes,1,opt,name=rule,proto3" json:"rule" bson:"deploy"`
-	// 部署Id
-	// @gotags: bson:"deploy" json:"deploy"
-	Deploy string `protobuf:"bytes,2,opt,name=deploy,proto3" json:"deploy" bson:"deploy"`
-	// 访问域名
-	// @gotags: bson:"domain" json:"domain"
-	Domain string `protobuf:"bytes,3,opt,name=domain,proto3" json:"domain" bson:"domain"`
-}
-
-func (x *DeployTraffic) Reset() {
-	*x = DeployTraffic{}
-	if protoimpl.UnsafeEnabled {
-		mi := &file_mpaas_apps_cluster_pb_cluster_proto_msgTypes[5]
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		ms.StoreMessageInfo(mi)
-	}
-}
-
-func (x *DeployTraffic) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*DeployTraffic) ProtoMessage() {}
-
-func (x *DeployTraffic) ProtoReflect() protoreflect.Message {
-	mi := &file_mpaas_apps_cluster_pb_cluster_proto_msgTypes[5]
-	if protoimpl.UnsafeEnabled && x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-// Deprecated: Use DeployTraffic.ProtoReflect.Descriptor instead.
-func (*DeployTraffic) Descriptor() ([]byte, []int) {
-	return file_mpaas_apps_cluster_pb_cluster_proto_rawDescGZIP(), []int{5}
-}
-
-func (x *DeployTraffic) GetRule() string {
-	if x != nil {
-		return x.Rule
-	}
-	return ""
-}
-
-func (x *DeployTraffic) GetDeploy() string {
-	if x != nil {
-		return x.Deploy
-	}
-	return ""
-}
-
-func (x *DeployTraffic) GetDomain() string {
-	if x != nil {
-		return x.Domain
-	}
-	return ""
-}
-
-// 负载均衡模式配置
-type ClusterRule struct {
-	state         protoimpl.MessageState
-	sizeCache     protoimpl.SizeCache
-	unknownFields protoimpl.UnknownFields
-
-	// 集群匹配规则
-	// @gotags: bson:"rule" json:"rule"
-	Rule string `protobuf:"bytes,1,opt,name=rule,proto3" json:"rule" bson:"rule"`
-	// 访问域名
-	// @gotags: bson:"domain" json:"domain"
-	Domain string `protobuf:"bytes,2,opt,name=domain,proto3" json:"domain" bson:"domain"`
-	// 网关上对应服务的id
-	// @gotags: bson:"gateway_service_id" json:"gateway_service_id"
-	GatewayServiceId string `protobuf:"bytes,3,opt,name=gateway_service_id,json=gatewayServiceId,proto3" json:"gateway_service_id" bson:"gateway_service_id"`
-	// 权重
-	// @gotags: bson:"deploy_weight" json:"deploy_weight"
-	DeployWeight []*DeployWeight `protobuf:"bytes,4,rep,name=deploy_weight,json=deployWeight,proto3" json:"deploy_weight" bson:"deploy_weight"`
-}
-
-func (x *ClusterRule) Reset() {
-	*x = ClusterRule{}
-	if protoimpl.UnsafeEnabled {
-		mi := &file_mpaas_apps_cluster_pb_cluster_proto_msgTypes[6]
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		ms.StoreMessageInfo(mi)
-	}
-}
-
-func (x *ClusterRule) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*ClusterRule) ProtoMessage() {}
-
-func (x *ClusterRule) ProtoReflect() protoreflect.Message {
-	mi := &file_mpaas_apps_cluster_pb_cluster_proto_msgTypes[6]
-	if protoimpl.UnsafeEnabled && x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-// Deprecated: Use ClusterRule.ProtoReflect.Descriptor instead.
-func (*ClusterRule) Descriptor() ([]byte, []int) {
-	return file_mpaas_apps_cluster_pb_cluster_proto_rawDescGZIP(), []int{6}
-}
-
-func (x *ClusterRule) GetRule() string {
-	if x != nil {
-		return x.Rule
-	}
-	return ""
-}
-
-func (x *ClusterRule) GetDomain() string {
-	if x != nil {
-		return x.Domain
-	}
-	return ""
-}
-
-func (x *ClusterRule) GetGatewayServiceId() string {
-	if x != nil {
-		return x.GatewayServiceId
-	}
-	return ""
-}
-
-func (x *ClusterRule) GetDeployWeight() []*DeployWeight {
-	if x != nil {
-		return x.DeployWeight
-	}
-	return nil
-}
-
-type DeployWeight struct {
-	state         protoimpl.MessageState
-	sizeCache     protoimpl.SizeCache
-	unknownFields protoimpl.UnknownFields
-
-	// 那个部署
-	// @gotags: bson:"deploy" json:"deploy"
-	Deploy string `protobuf:"bytes,1,opt,name=deploy,proto3" json:"deploy" bson:"deploy"`
-	// 部署权重(0~100)
-	// @gotags: bson:"weight" json:"weight"
-	Weight int32 `protobuf:"varint,2,opt,name=weight,proto3" json:"weight" bson:"weight"`
-}
-
-func (x *DeployWeight) Reset() {
-	*x = DeployWeight{}
-	if protoimpl.UnsafeEnabled {
-		mi := &file_mpaas_apps_cluster_pb_cluster_proto_msgTypes[7]
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		ms.StoreMessageInfo(mi)
-	}
-}
-
-func (x *DeployWeight) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*DeployWeight) ProtoMessage() {}
-
-func (x *DeployWeight) ProtoReflect() protoreflect.Message {
-	mi := &file_mpaas_apps_cluster_pb_cluster_proto_msgTypes[7]
-	if protoimpl.UnsafeEnabled && x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-// Deprecated: Use DeployWeight.ProtoReflect.Descriptor instead.
-func (*DeployWeight) Descriptor() ([]byte, []int) {
-	return file_mpaas_apps_cluster_pb_cluster_proto_rawDescGZIP(), []int{7}
-}
-
-func (x *DeployWeight) GetDeploy() string {
-	if x != nil {
-		return x.Deploy
-	}
-	return ""
-}
-
-func (x *DeployWeight) GetWeight() int32 {
-	if x != nil {
-		return x.Weight
-	}
-	return 0
 }
 
 var File_mpaas_apps_cluster_pb_cluster_proto protoreflect.FileDescriptor
@@ -656,7 +260,7 @@ var file_mpaas_apps_cluster_pb_cluster_proto_rawDesc = []byte{
 	0x61, 0x62, 0x6f, 0x61, 0x72, 0x64, 0x2e, 0x6d, 0x70, 0x61, 0x61, 0x73, 0x2e, 0x63, 0x6c, 0x75,
 	0x73, 0x74, 0x65, 0x72, 0x2e, 0x43, 0x72, 0x65, 0x61, 0x74, 0x65, 0x43, 0x6c, 0x75, 0x73, 0x74,
 	0x65, 0x72, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x52, 0x04, 0x73, 0x70, 0x65, 0x63, 0x22,
-	0xfd, 0x02, 0x0a, 0x14, 0x43, 0x72, 0x65, 0x61, 0x74, 0x65, 0x43, 0x6c, 0x75, 0x73, 0x74, 0x65,
+	0xad, 0x02, 0x0a, 0x14, 0x43, 0x72, 0x65, 0x61, 0x74, 0x65, 0x43, 0x6c, 0x75, 0x73, 0x74, 0x65,
 	0x72, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x12, 0x16, 0x0a, 0x06, 0x64, 0x6f, 0x6d, 0x61,
 	0x69, 0x6e, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x06, 0x64, 0x6f, 0x6d, 0x61, 0x69, 0x6e,
 	0x12, 0x1c, 0x0a, 0x09, 0x6e, 0x61, 0x6d, 0x65, 0x73, 0x70, 0x61, 0x63, 0x65, 0x18, 0x02, 0x20,
@@ -666,11 +270,6 @@ var file_mpaas_apps_cluster_pb_cluster_proto_rawDesc = []byte{
 	0x12, 0x12, 0x0a, 0x04, 0x6e, 0x61, 0x6d, 0x65, 0x18, 0x04, 0x20, 0x01, 0x28, 0x09, 0x52, 0x04,
 	0x6e, 0x61, 0x6d, 0x65, 0x12, 0x1a, 0x0a, 0x08, 0x64, 0x65, 0x73, 0x63, 0x72, 0x69, 0x62, 0x65,
 	0x18, 0x05, 0x20, 0x01, 0x28, 0x09, 0x52, 0x08, 0x64, 0x65, 0x73, 0x63, 0x72, 0x69, 0x62, 0x65,
-	0x12, 0x4e, 0x0a, 0x0e, 0x74, 0x72, 0x61, 0x66, 0x66, 0x69, 0x63, 0x5f, 0x63, 0x6f, 0x6e, 0x66,
-	0x69, 0x67, 0x18, 0x06, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x27, 0x2e, 0x69, 0x6e, 0x66, 0x72, 0x61,
-	0x62, 0x6f, 0x61, 0x72, 0x64, 0x2e, 0x6d, 0x70, 0x61, 0x61, 0x73, 0x2e, 0x63, 0x6c, 0x75, 0x73,
-	0x74, 0x65, 0x72, 0x2e, 0x54, 0x72, 0x61, 0x66, 0x66, 0x69, 0x63, 0x43, 0x6f, 0x6e, 0x66, 0x69,
-	0x67, 0x52, 0x0d, 0x74, 0x72, 0x61, 0x66, 0x66, 0x69, 0x63, 0x43, 0x6f, 0x6e, 0x66, 0x69, 0x67,
 	0x12, 0x52, 0x0a, 0x06, 0x6c, 0x61, 0x62, 0x65, 0x6c, 0x73, 0x18, 0x0f, 0x20, 0x03, 0x28, 0x0b,
 	0x32, 0x3a, 0x2e, 0x69, 0x6e, 0x66, 0x72, 0x61, 0x62, 0x6f, 0x61, 0x72, 0x64, 0x2e, 0x6d, 0x70,
 	0x61, 0x61, 0x73, 0x2e, 0x63, 0x6c, 0x75, 0x73, 0x74, 0x65, 0x72, 0x2e, 0x43, 0x72, 0x65, 0x61,
@@ -679,57 +278,11 @@ var file_mpaas_apps_cluster_pb_cluster_proto_rawDesc = []byte{
 	0x62, 0x65, 0x6c, 0x73, 0x1a, 0x39, 0x0a, 0x0b, 0x4c, 0x61, 0x62, 0x65, 0x6c, 0x73, 0x45, 0x6e,
 	0x74, 0x72, 0x79, 0x12, 0x10, 0x0a, 0x03, 0x6b, 0x65, 0x79, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09,
 	0x52, 0x03, 0x6b, 0x65, 0x79, 0x12, 0x14, 0x0a, 0x05, 0x76, 0x61, 0x6c, 0x75, 0x65, 0x18, 0x02,
-	0x20, 0x01, 0x28, 0x09, 0x52, 0x05, 0x76, 0x61, 0x6c, 0x75, 0x65, 0x3a, 0x02, 0x38, 0x01, 0x22,
-	0x8c, 0x02, 0x0a, 0x0d, 0x54, 0x72, 0x61, 0x66, 0x66, 0x69, 0x63, 0x43, 0x6f, 0x6e, 0x66, 0x69,
-	0x67, 0x12, 0x1d, 0x0a, 0x0a, 0x67, 0x61, 0x74, 0x65, 0x77, 0x61, 0x79, 0x5f, 0x69, 0x64, 0x18,
-	0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x09, 0x67, 0x61, 0x74, 0x65, 0x77, 0x61, 0x79, 0x49, 0x64,
-	0x12, 0x4d, 0x0a, 0x0d, 0x65, 0x78, 0x70, 0x6f, 0x72, 0x74, 0x65, 0x64, 0x5f, 0x74, 0x79, 0x70,
-	0x65, 0x18, 0x02, 0x20, 0x01, 0x28, 0x0e, 0x32, 0x28, 0x2e, 0x69, 0x6e, 0x66, 0x72, 0x61, 0x62,
-	0x6f, 0x61, 0x72, 0x64, 0x2e, 0x6d, 0x70, 0x61, 0x61, 0x73, 0x2e, 0x63, 0x6c, 0x75, 0x73, 0x74,
-	0x65, 0x72, 0x2e, 0x54, 0x52, 0x41, 0x46, 0x46, 0x49, 0x43, 0x5f, 0x50, 0x4f, 0x4c, 0x49, 0x43,
-	0x59, 0x52, 0x0c, 0x65, 0x78, 0x70, 0x6f, 0x72, 0x74, 0x65, 0x64, 0x54, 0x79, 0x70, 0x65, 0x12,
-	0x43, 0x0a, 0x0a, 0x64, 0x65, 0x70, 0x6f, 0x79, 0x5f, 0x72, 0x75, 0x6c, 0x65, 0x18, 0x03, 0x20,
-	0x01, 0x28, 0x0b, 0x32, 0x24, 0x2e, 0x69, 0x6e, 0x66, 0x72, 0x61, 0x62, 0x6f, 0x61, 0x72, 0x64,
-	0x2e, 0x6d, 0x70, 0x61, 0x61, 0x73, 0x2e, 0x63, 0x6c, 0x75, 0x73, 0x74, 0x65, 0x72, 0x2e, 0x44,
-	0x65, 0x70, 0x6c, 0x6f, 0x79, 0x52, 0x75, 0x6c, 0x65, 0x52, 0x09, 0x64, 0x65, 0x70, 0x6f, 0x79,
-	0x52, 0x75, 0x6c, 0x65, 0x12, 0x48, 0x0a, 0x0c, 0x63, 0x6c, 0x75, 0x73, 0x74, 0x65, 0x72, 0x5f,
-	0x72, 0x75, 0x6c, 0x65, 0x18, 0x04, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x25, 0x2e, 0x69, 0x6e, 0x66,
-	0x72, 0x61, 0x62, 0x6f, 0x61, 0x72, 0x64, 0x2e, 0x6d, 0x70, 0x61, 0x61, 0x73, 0x2e, 0x63, 0x6c,
-	0x75, 0x73, 0x74, 0x65, 0x72, 0x2e, 0x43, 0x6c, 0x75, 0x73, 0x74, 0x65, 0x72, 0x52, 0x75, 0x6c,
-	0x65, 0x52, 0x0b, 0x63, 0x6c, 0x75, 0x73, 0x74, 0x65, 0x72, 0x52, 0x75, 0x6c, 0x65, 0x22, 0x5c,
-	0x0a, 0x0a, 0x44, 0x65, 0x70, 0x6c, 0x6f, 0x79, 0x52, 0x75, 0x6c, 0x65, 0x12, 0x4e, 0x0a, 0x0e,
-	0x64, 0x65, 0x70, 0x6c, 0x6f, 0x79, 0x5f, 0x74, 0x72, 0x61, 0x66, 0x66, 0x69, 0x63, 0x18, 0x02,
-	0x20, 0x03, 0x28, 0x0b, 0x32, 0x27, 0x2e, 0x69, 0x6e, 0x66, 0x72, 0x61, 0x62, 0x6f, 0x61, 0x72,
-	0x64, 0x2e, 0x6d, 0x70, 0x61, 0x61, 0x73, 0x2e, 0x63, 0x6c, 0x75, 0x73, 0x74, 0x65, 0x72, 0x2e,
-	0x44, 0x65, 0x70, 0x6c, 0x6f, 0x79, 0x54, 0x72, 0x61, 0x66, 0x66, 0x69, 0x63, 0x52, 0x0d, 0x64,
-	0x65, 0x70, 0x6c, 0x6f, 0x79, 0x54, 0x72, 0x61, 0x66, 0x66, 0x69, 0x63, 0x22, 0x53, 0x0a, 0x0d,
-	0x44, 0x65, 0x70, 0x6c, 0x6f, 0x79, 0x54, 0x72, 0x61, 0x66, 0x66, 0x69, 0x63, 0x12, 0x12, 0x0a,
-	0x04, 0x72, 0x75, 0x6c, 0x65, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x04, 0x72, 0x75, 0x6c,
-	0x65, 0x12, 0x16, 0x0a, 0x06, 0x64, 0x65, 0x70, 0x6c, 0x6f, 0x79, 0x18, 0x02, 0x20, 0x01, 0x28,
-	0x09, 0x52, 0x06, 0x64, 0x65, 0x70, 0x6c, 0x6f, 0x79, 0x12, 0x16, 0x0a, 0x06, 0x64, 0x6f, 0x6d,
-	0x61, 0x69, 0x6e, 0x18, 0x03, 0x20, 0x01, 0x28, 0x09, 0x52, 0x06, 0x64, 0x6f, 0x6d, 0x61, 0x69,
-	0x6e, 0x22, 0xb4, 0x01, 0x0a, 0x0b, 0x43, 0x6c, 0x75, 0x73, 0x74, 0x65, 0x72, 0x52, 0x75, 0x6c,
-	0x65, 0x12, 0x12, 0x0a, 0x04, 0x72, 0x75, 0x6c, 0x65, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52,
-	0x04, 0x72, 0x75, 0x6c, 0x65, 0x12, 0x16, 0x0a, 0x06, 0x64, 0x6f, 0x6d, 0x61, 0x69, 0x6e, 0x18,
-	0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x06, 0x64, 0x6f, 0x6d, 0x61, 0x69, 0x6e, 0x12, 0x2c, 0x0a,
-	0x12, 0x67, 0x61, 0x74, 0x65, 0x77, 0x61, 0x79, 0x5f, 0x73, 0x65, 0x72, 0x76, 0x69, 0x63, 0x65,
-	0x5f, 0x69, 0x64, 0x18, 0x03, 0x20, 0x01, 0x28, 0x09, 0x52, 0x10, 0x67, 0x61, 0x74, 0x65, 0x77,
-	0x61, 0x79, 0x53, 0x65, 0x72, 0x76, 0x69, 0x63, 0x65, 0x49, 0x64, 0x12, 0x4b, 0x0a, 0x0d, 0x64,
-	0x65, 0x70, 0x6c, 0x6f, 0x79, 0x5f, 0x77, 0x65, 0x69, 0x67, 0x68, 0x74, 0x18, 0x04, 0x20, 0x03,
-	0x28, 0x0b, 0x32, 0x26, 0x2e, 0x69, 0x6e, 0x66, 0x72, 0x61, 0x62, 0x6f, 0x61, 0x72, 0x64, 0x2e,
-	0x6d, 0x70, 0x61, 0x61, 0x73, 0x2e, 0x63, 0x6c, 0x75, 0x73, 0x74, 0x65, 0x72, 0x2e, 0x44, 0x65,
-	0x70, 0x6c, 0x6f, 0x79, 0x57, 0x65, 0x69, 0x67, 0x68, 0x74, 0x52, 0x0c, 0x64, 0x65, 0x70, 0x6c,
-	0x6f, 0x79, 0x57, 0x65, 0x69, 0x67, 0x68, 0x74, 0x22, 0x3e, 0x0a, 0x0c, 0x44, 0x65, 0x70, 0x6c,
-	0x6f, 0x79, 0x57, 0x65, 0x69, 0x67, 0x68, 0x74, 0x12, 0x16, 0x0a, 0x06, 0x64, 0x65, 0x70, 0x6c,
-	0x6f, 0x79, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x06, 0x64, 0x65, 0x70, 0x6c, 0x6f, 0x79,
-	0x12, 0x16, 0x0a, 0x06, 0x77, 0x65, 0x69, 0x67, 0x68, 0x74, 0x18, 0x02, 0x20, 0x01, 0x28, 0x05,
-	0x52, 0x06, 0x77, 0x65, 0x69, 0x67, 0x68, 0x74, 0x2a, 0x2f, 0x0a, 0x0e, 0x54, 0x52, 0x41, 0x46,
-	0x46, 0x49, 0x43, 0x5f, 0x50, 0x4f, 0x4c, 0x49, 0x43, 0x59, 0x12, 0x0d, 0x0a, 0x09, 0x42, 0x59,
-	0x5f, 0x44, 0x45, 0x50, 0x4c, 0x4f, 0x59, 0x10, 0x00, 0x12, 0x0e, 0x0a, 0x0a, 0x42, 0x59, 0x5f,
-	0x43, 0x4c, 0x55, 0x53, 0x54, 0x45, 0x52, 0x10, 0x01, 0x42, 0x2a, 0x5a, 0x28, 0x67, 0x69, 0x74,
-	0x68, 0x75, 0x62, 0x2e, 0x63, 0x6f, 0x6d, 0x2f, 0x69, 0x6e, 0x66, 0x72, 0x61, 0x62, 0x6f, 0x61,
-	0x72, 0x64, 0x2f, 0x6d, 0x70, 0x61, 0x61, 0x73, 0x2f, 0x61, 0x70, 0x70, 0x73, 0x2f, 0x63, 0x6c,
-	0x75, 0x73, 0x74, 0x65, 0x72, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
+	0x20, 0x01, 0x28, 0x09, 0x52, 0x05, 0x76, 0x61, 0x6c, 0x75, 0x65, 0x3a, 0x02, 0x38, 0x01, 0x42,
+	0x2a, 0x5a, 0x28, 0x67, 0x69, 0x74, 0x68, 0x75, 0x62, 0x2e, 0x63, 0x6f, 0x6d, 0x2f, 0x69, 0x6e,
+	0x66, 0x72, 0x61, 0x62, 0x6f, 0x61, 0x72, 0x64, 0x2f, 0x6d, 0x70, 0x61, 0x61, 0x73, 0x2f, 0x61,
+	0x70, 0x70, 0x73, 0x2f, 0x63, 0x6c, 0x75, 0x73, 0x74, 0x65, 0x72, 0x62, 0x06, 0x70, 0x72, 0x6f,
+	0x74, 0x6f, 0x33,
 }
 
 var (
@@ -744,37 +297,24 @@ func file_mpaas_apps_cluster_pb_cluster_proto_rawDescGZIP() []byte {
 	return file_mpaas_apps_cluster_pb_cluster_proto_rawDescData
 }
 
-var file_mpaas_apps_cluster_pb_cluster_proto_enumTypes = make([]protoimpl.EnumInfo, 1)
-var file_mpaas_apps_cluster_pb_cluster_proto_msgTypes = make([]protoimpl.MessageInfo, 9)
+var file_mpaas_apps_cluster_pb_cluster_proto_msgTypes = make([]protoimpl.MessageInfo, 4)
 var file_mpaas_apps_cluster_pb_cluster_proto_goTypes = []interface{}{
-	(TRAFFIC_POLICY)(0),          // 0: infraboard.mpaas.cluster.TRAFFIC_POLICY
-	(*ClusterSet)(nil),           // 1: infraboard.mpaas.cluster.ClusterSet
-	(*Cluster)(nil),              // 2: infraboard.mpaas.cluster.Cluster
-	(*CreateClusterRequest)(nil), // 3: infraboard.mpaas.cluster.CreateClusterRequest
-	(*TrafficConfig)(nil),        // 4: infraboard.mpaas.cluster.TrafficConfig
-	(*DeployRule)(nil),           // 5: infraboard.mpaas.cluster.DeployRule
-	(*DeployTraffic)(nil),        // 6: infraboard.mpaas.cluster.DeployTraffic
-	(*ClusterRule)(nil),          // 7: infraboard.mpaas.cluster.ClusterRule
-	(*DeployWeight)(nil),         // 8: infraboard.mpaas.cluster.DeployWeight
-	nil,                          // 9: infraboard.mpaas.cluster.CreateClusterRequest.LabelsEntry
-	(*resource.Meta)(nil),        // 10: infraboard.mcube.resource.Meta
+	(*ClusterSet)(nil),           // 0: infraboard.mpaas.cluster.ClusterSet
+	(*Cluster)(nil),              // 1: infraboard.mpaas.cluster.Cluster
+	(*CreateClusterRequest)(nil), // 2: infraboard.mpaas.cluster.CreateClusterRequest
+	nil,                          // 3: infraboard.mpaas.cluster.CreateClusterRequest.LabelsEntry
+	(*resource.Meta)(nil),        // 4: infraboard.mcube.resource.Meta
 }
 var file_mpaas_apps_cluster_pb_cluster_proto_depIdxs = []int32{
-	2,  // 0: infraboard.mpaas.cluster.ClusterSet.items:type_name -> infraboard.mpaas.cluster.Cluster
-	10, // 1: infraboard.mpaas.cluster.Cluster.meta:type_name -> infraboard.mcube.resource.Meta
-	3,  // 2: infraboard.mpaas.cluster.Cluster.spec:type_name -> infraboard.mpaas.cluster.CreateClusterRequest
-	4,  // 3: infraboard.mpaas.cluster.CreateClusterRequest.traffic_config:type_name -> infraboard.mpaas.cluster.TrafficConfig
-	9,  // 4: infraboard.mpaas.cluster.CreateClusterRequest.labels:type_name -> infraboard.mpaas.cluster.CreateClusterRequest.LabelsEntry
-	0,  // 5: infraboard.mpaas.cluster.TrafficConfig.exported_type:type_name -> infraboard.mpaas.cluster.TRAFFIC_POLICY
-	5,  // 6: infraboard.mpaas.cluster.TrafficConfig.depoy_rule:type_name -> infraboard.mpaas.cluster.DeployRule
-	7,  // 7: infraboard.mpaas.cluster.TrafficConfig.cluster_rule:type_name -> infraboard.mpaas.cluster.ClusterRule
-	6,  // 8: infraboard.mpaas.cluster.DeployRule.deploy_traffic:type_name -> infraboard.mpaas.cluster.DeployTraffic
-	8,  // 9: infraboard.mpaas.cluster.ClusterRule.deploy_weight:type_name -> infraboard.mpaas.cluster.DeployWeight
-	10, // [10:10] is the sub-list for method output_type
-	10, // [10:10] is the sub-list for method input_type
-	10, // [10:10] is the sub-list for extension type_name
-	10, // [10:10] is the sub-list for extension extendee
-	0,  // [0:10] is the sub-list for field type_name
+	1, // 0: infraboard.mpaas.cluster.ClusterSet.items:type_name -> infraboard.mpaas.cluster.Cluster
+	4, // 1: infraboard.mpaas.cluster.Cluster.meta:type_name -> infraboard.mcube.resource.Meta
+	2, // 2: infraboard.mpaas.cluster.Cluster.spec:type_name -> infraboard.mpaas.cluster.CreateClusterRequest
+	3, // 3: infraboard.mpaas.cluster.CreateClusterRequest.labels:type_name -> infraboard.mpaas.cluster.CreateClusterRequest.LabelsEntry
+	4, // [4:4] is the sub-list for method output_type
+	4, // [4:4] is the sub-list for method input_type
+	4, // [4:4] is the sub-list for extension type_name
+	4, // [4:4] is the sub-list for extension extendee
+	0, // [0:4] is the sub-list for field type_name
 }
 
 func init() { file_mpaas_apps_cluster_pb_cluster_proto_init() }
@@ -819,80 +359,19 @@ func file_mpaas_apps_cluster_pb_cluster_proto_init() {
 				return nil
 			}
 		}
-		file_mpaas_apps_cluster_pb_cluster_proto_msgTypes[3].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*TrafficConfig); i {
-			case 0:
-				return &v.state
-			case 1:
-				return &v.sizeCache
-			case 2:
-				return &v.unknownFields
-			default:
-				return nil
-			}
-		}
-		file_mpaas_apps_cluster_pb_cluster_proto_msgTypes[4].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*DeployRule); i {
-			case 0:
-				return &v.state
-			case 1:
-				return &v.sizeCache
-			case 2:
-				return &v.unknownFields
-			default:
-				return nil
-			}
-		}
-		file_mpaas_apps_cluster_pb_cluster_proto_msgTypes[5].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*DeployTraffic); i {
-			case 0:
-				return &v.state
-			case 1:
-				return &v.sizeCache
-			case 2:
-				return &v.unknownFields
-			default:
-				return nil
-			}
-		}
-		file_mpaas_apps_cluster_pb_cluster_proto_msgTypes[6].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*ClusterRule); i {
-			case 0:
-				return &v.state
-			case 1:
-				return &v.sizeCache
-			case 2:
-				return &v.unknownFields
-			default:
-				return nil
-			}
-		}
-		file_mpaas_apps_cluster_pb_cluster_proto_msgTypes[7].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*DeployWeight); i {
-			case 0:
-				return &v.state
-			case 1:
-				return &v.sizeCache
-			case 2:
-				return &v.unknownFields
-			default:
-				return nil
-			}
-		}
 	}
 	type x struct{}
 	out := protoimpl.TypeBuilder{
 		File: protoimpl.DescBuilder{
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: file_mpaas_apps_cluster_pb_cluster_proto_rawDesc,
-			NumEnums:      1,
-			NumMessages:   9,
+			NumEnums:      0,
+			NumMessages:   4,
 			NumExtensions: 0,
 			NumServices:   0,
 		},
 		GoTypes:           file_mpaas_apps_cluster_pb_cluster_proto_goTypes,
 		DependencyIndexes: file_mpaas_apps_cluster_pb_cluster_proto_depIdxs,
-		EnumInfos:         file_mpaas_apps_cluster_pb_cluster_proto_enumTypes,
 		MessageInfos:      file_mpaas_apps_cluster_pb_cluster_proto_msgTypes,
 	}.Build()
 	File_mpaas_apps_cluster_pb_cluster_proto = out.File

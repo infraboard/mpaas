@@ -1,0 +1,61 @@
+syntax = "proto3";
+
+package infraboard.mpaas.traffic;
+option go_package = "github.com/infraboard/mpaas/apps/traffic";
+
+import "mcube/pb/resource/meta.proto";
+
+message RuleSet {
+    // 总数
+    int64 total = 1;
+    // 清单
+    repeated Rule items = 2;
+}
+
+// 部署集群
+message Rule  {
+    // 元信息
+    // @gotags: bson:",inline" json:"meta"
+    infraboard.mcube.resource.Meta meta = 1;
+    // 创建信息
+    // @gotags: bson:",inline" json:"spec"
+    CreateRuleRequest spec = 2;
+}
+
+message CreateRuleRequest {
+    // 被方法的目标类型, 比如部署/集群
+    // @gotags: bson:"target_type" json:"target_type"
+    TARGET_TYPE target_type = 1;
+    // 目标的值, 具体的部署或者集群
+    // @gotags: bson:"target_value" json:"target_value"
+    string target_value = 2;
+    // 使用那个网关来暴露服务
+    // @gotags: bson:"gateway_id" json:"gateway_id"
+    string gateway_id = 3;
+    // 流量匹配规则
+    // @gotags: bson:"rule" json:"rule"
+    string rule = 4;
+    // 访问域名
+    // @gotags: bson:"domain" json:"domain"
+    string domain = 5;
+    // 权重
+    // @gotags: bson:"deploy_weight" json:"deploy_weight"
+    repeated DeployWeight deploy_weight = 6;
+}
+
+// 对外访问的方式
+enum TARGET_TYPE {
+    // 直接暴露部署的访问方式, 每个部署单独配置流量规则
+    DEPLOY = 0;
+    // 将多个部署做成一个负载均衡, 对外使用一个域名进行暴露, 一个集群配置一个流量规则
+    CLUSTER = 1;
+}
+
+message DeployWeight {
+    // 那个部署
+    // @gotags: bson:"deploy" json:"deploy"
+    string deploy = 1;
+    // 部署权重(0~100)
+    // @gotags: bson:"weight" json:"weight"
+    int32 weight = 2;
+}

@@ -1,0 +1,27 @@
+syntax = "proto3";
+
+package infraboard.mpaas.traffic;
+option go_package = "github.com/infraboard/mpaas/apps/traffic";
+
+import "mpaas/apps/traffic/pb/rule.proto";
+import "mcube/pb/page/page.proto";
+
+
+// RPC 流量管理
+service RPC {
+    // 查询流量规则配置列表
+    rpc QueryRule(QueryRuleRequest) returns(RuleSet);
+    // 查询流量规则配置详情
+    rpc DescribeRule(DescribeRuleRequest) returns(Rule);
+}
+
+message QueryRuleRequest {
+    // 分页请求
+    // @gotags: json:"page"
+    mcube.page.PageRequest page = 1;
+}
+
+
+message DescribeRuleRequest {
+
+}
