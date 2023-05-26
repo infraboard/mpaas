@@ -19,9 +19,21 @@ message QueryClusterRequest {
     // 分页请求
     // @gotags: json:"page"
     mcube.page.PageRequest page = 1;
-    // 部署Id列表
+    // 集群 所属域
+    // @gotags: json:"domain"
+    string domain = 3;
+    // 集群 所属空间
+    // @gotags: json:"namespace"
+    string namespace = 4;
+    // 集群 Id列表
     // @gotags: json:"ids"
-    repeated string ids = 2;
+    repeated string ids = 5;
+    // 集群 名称列表
+    // @gotags: json:"names"
+    repeated string names = 6;
+    // 集群 标签
+    // @gotags: json:"label"
+    map<string,string> label = 7;
 }
 
 message DescribeClusterRequest {
