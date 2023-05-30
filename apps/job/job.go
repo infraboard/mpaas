@@ -73,7 +73,8 @@ func (i *Job) MarshalJSON() ([]byte, error) {
 	return json.Marshal(struct {
 		*resource.Meta
 		*CreateJobRequest
-	}{i.Meta, i.Spec})
+		*JobStatus
+	}{i.Meta, i.Spec, i.Status})
 }
 
 func NewRunParamSet() *RunParamSet {

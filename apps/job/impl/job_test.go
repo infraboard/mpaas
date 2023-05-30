@@ -11,7 +11,6 @@ import (
 
 func TestQueryJob(t *testing.T) {
 	req := job.NewQueryJobRequest()
-	req.Label["cluster_id"] = "k8s-test"
 	set, err := impl.QueryJob(ctx, req)
 	if err != nil {
 		t.Fatal(err)
