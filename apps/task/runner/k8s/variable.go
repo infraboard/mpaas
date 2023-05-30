@@ -12,12 +12,12 @@ import (
 
 // 对系统变量进行处理
 
-func (r *K8sRunner) HanleSystemVariable(ctx context.Context, in *job.VersionedRunParam, job *v1.Job) error {
+func (r *K8sRunner) HanleSystemVariable(ctx context.Context, in *job.RunParamSet, job *v1.Job) error {
 	return r.handleDeployment(ctx, in, job)
 }
 
 // 查询部署配置, 注入相关变量
-func (r *K8sRunner) handleDeployment(ctx context.Context, in *job.VersionedRunParam, job *v1.Job) error {
+func (r *K8sRunner) handleDeployment(ctx context.Context, in *job.RunParamSet, job *v1.Job) error {
 	DeploymentId := in.GetDeploymentId()
 
 	if DeploymentId == "" {

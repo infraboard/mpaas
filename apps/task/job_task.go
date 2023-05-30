@@ -175,19 +175,8 @@ func (p *JobTask) BuildSearchLabel() {
 	p.Spec.BuildSearchLabel()
 }
 
-func (p *JobTask) GetVersionedRunParam() (*job.VersionedRunParam, error) {
-	j := p.Job
-	v := p.Spec.GetRunParamsVersion()
-	params := j.GetVersionedRunParam(v)
-	if params != nil {
-		return params, nil
-	}
-
-	return nil, fmt.Errorf("job %s version: %s not found, allow version: %s",
-		j.Spec.Name,
-		v,
-		j.AllowVersions(),
-	)
+func (p *JobTask) GetRunParamSet() *job.RunParamSet {
+	return p.Spec.RunParams
 }
 
 func (p *JobTask) SystemRunParam() (items []*job.RunParam) {

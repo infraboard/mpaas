@@ -197,7 +197,7 @@ message RunTaskRequest {
 	bool manual_update_status = 4;
 	// job运行时参数
 	// @gotags: bson:"params" json:"params"
-	job.VersionedRunParam params = 5;
+	job.RunParamSet params = 5;
 	// 标签
 	// @gotags: bson:"labels" json:"labels"
 	map<string, string> labels = 15;

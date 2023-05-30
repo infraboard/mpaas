@@ -129,10 +129,10 @@ message RunJobRequest {
 	job.RUN_MODE run_mode = 8;
 	// job运行时参数
 	// @gotags: bson:"run_params" json:"run_params"
-	job.VersionedRunParam run_params = 9;
+	job.RunParamSet run_params = 9;
 	// job回滚时参数, 如果要回滚 则回滚参数必填
 	// @gotags: bson:"rollback_params" json:"rollback_params"
-	job.VersionedRunParam rollback_params = 10;
+	job.RunParamSet rollback_params = 10;
 	// 忽略失败, 当Pipeline运行时, 不会因为执行失败而 中断Pipeline执行
 	// @gotags: bson:"ignore_failed" json:"ignore_failed"
 	bool ignore_failed = 11;

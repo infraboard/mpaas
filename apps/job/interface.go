@@ -25,8 +25,8 @@ func NewCreateJobRequest() *CreateJobRequest {
 	return &CreateJobRequest{
 		Domain:         domain.DEFAULT_DOMAIN,
 		Namespace:      namespace.DEFAULT_NAMESPACE,
-		RunParams:      []*VersionedRunParam{},
-		RollbackParams: []*VersionedRunParam{},
+		RunParams:      NewRunParamSet(),
+		RollbackParams: NewRunParamSet(),
 		Labels:         make(map[string]string),
 		Extra:          make(map[string]string),
 	}
@@ -48,10 +48,6 @@ func (req *CreateJobRequest) Validate() error {
 	}
 
 	return validate.Validate(req)
-}
-
-func (req *CreateJobRequest) AddVersionParams(item *VersionedRunParam) {
-	req.RunParams = append(req.RunParams, item)
 }
 
 func NewQueryJobRequestFromHTTP(r *http.Request) *QueryJobRequest {

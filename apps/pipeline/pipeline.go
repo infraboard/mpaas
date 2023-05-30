@@ -142,7 +142,7 @@ func (req *CreatePipelineRequest) AddStage(stages ...*Stage) {
 func NewRunJobRequest(jobName string) *RunJobRequest {
 	return &RunJobRequest{
 		JobName:   jobName,
-		RunParams: job.NewVersionedRunParam(""),
+		RunParams: job.NewRunParamSet(),
 	}
 }
 
@@ -177,14 +177,6 @@ func (r *RunJobRequest) AddMentionUser(items ...*MentionUser) {
 	r.MentionUsers = append(r.MentionUsers, items...)
 }
 
-func (r *RunJobRequest) GetRunParamsVersion() string {
-	if r.RunParams != nil {
-		return r.RunParams.Version
-	}
-
-	return ""
-}
-
 func (r *RunJobRequest) BuildSearchLabel() {
 	if r.Labels == nil {
 		r.Labels = map[string]string{}
@@ -207,10 +199,10 @@ func (r *RunJobRequest) SetDefault() {
 		r.UpdateToken = xid.New().String()
 	}
 	if r.RunParams == nil {
-		r.RunParams = job.NewVersionedRunParam("")
+		r.RunParams = job.NewRunParamSet()
 	}
 	if r.RollbackParams == nil {
-		r.RollbackParams = job.NewVersionedRunParam("")
+		r.RollbackParams = job.NewRunParamSet()
 	}
 	if r.Webhooks == nil {
 		r.Webhooks = []*WebHook{}

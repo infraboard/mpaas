@@ -1,8 +1,12 @@
 package api
 
 import (
+	"net/http"
+	"time"
+
 	restfulspec "github.com/emicklei/go-restful-openapi/v2"
 	"github.com/emicklei/go-restful/v3"
+	"github.com/gorilla/websocket"
 	"github.com/infraboard/mcube/http/label"
 	"github.com/infraboard/mcube/http/restful/response"
 	"github.com/infraboard/mpaas/apps/task"
@@ -31,9 +35,9 @@ func (h *handler) RegistryUserHandler(ws *restful.WebService) {
 		Doc("查询任务日志").
 		Metadata(restfulspec.KeyOpenAPITags, tags).
 		Metadata(label.Resource, h.Name()).
-		Metadata(label.Action, label.Create.Value()).
-		Reads(task.UpdateJobTaskOutputRequest{}).
-		Writes(task.JobTask{}))
+		Metadata(label.Action, label.Get.Value()).
+		Reads(task.WatchJobTaskLogRequest{}).
+		Writes(task.WatchJobTaskLogReponse{}))
 }
 
 func (h *handler) UpdateJobTaskOutput(r *restful.Request, w *restful.Response) {
@@ -66,13 +70,42 @@ func (h *handler) UpdateJobTaskStatus(r *restful.Request, w *restful.Response) {
 	response.Success(w, set)
 }
 
-func (h *handler) WatchTaskLog(r *restful.Request, w *restful.Response) {
-	in := task.NewWatchJobTaskLogRequest(r.PathParameter("id"))
+var (
+	upgrader = websocket.Upgrader{
+		HandshakeTimeout: 60 * time.Second,
+		ReadBufferSize:   8192,
+		WriteBufferSize:  8192,
+		CheckOrigin: func(r *http.Request) bool {
+			return true
+		},
+	}
+)
 
-	req := task.NewWatchJobTaskLogHttpServerImpl(nil)
-	err := h.service.WatchJobTaskLog(in, req)
+func (h *handler) WatchTaskLog(r *restful.Request, w *restful.Response) {
+	// websocket handshake
+	ws, err := upgrader.Upgrade(w, r.Request, nil)
 	if err != nil {
 		response.Failed(w, err)
 		return
 	}
+	defer ws.Close()
+
+	in := task.NewWatchJobTaskLogRequest(r.PathParameter("id"))
+	req := task.NewWatchJobTaskLogHttpServerImpl(ws)
+	err = h.service.WatchJobTaskLog(in, req)
+
+	var (
+		code int
+		msg  string
+	)
+	if err != nil {
+		code = 500
+		msg = err.Error()
+	}
+
+	ws.WriteControl(
+		websocket.CloseMessage,
+		websocket.FormatCloseMessage(code, msg),
+		time.Now().Add(3*time.Second),
+	)
 }

@@ -64,8 +64,8 @@ func (b *BuildConfig) MarshalJSON() ([]byte, error) {
 	}{b.Meta, b.Spec})
 }
 
-func (b *BuildConfig) BuildRunParams() *job.VersionedRunParam {
-	params := job.NewVersionedRunParam("build")
+func (b *BuildConfig) BuildRunParams() *job.RunParamSet {
+	params := job.NewRunParamSet()
 	// 补充部署Id
 	if b.Spec.DeployId != "" {
 		params.Add(job.NewRunParam(

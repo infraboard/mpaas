@@ -103,8 +103,8 @@ func (e *GitlabWebHookEvent) ParseEventType(eventHeaderName string) {
 // GIT_SSH_URL: git@github.com:infraboard/mpaas.git
 // GIT_BRANCH: master
 // GIT_COMMIT_ID: bfacd86c647935aea532f29421fe83c6a6111260
-func (e *Event) GitRunParams() *job.VersionedRunParam {
-	params := job.NewVersionedRunParam("v1")
+func (e *Event) GitRunParams() *job.RunParamSet {
+	params := job.NewRunParamSet()
 	params.Add(
 		// 补充gitlab事件相关变量
 		job.NewRunParam(VARIABLE_EVENT_PROVIDER, EVENT_PROVIDER_GITLAB.String()),
@@ -147,7 +147,7 @@ func (e *Event) GetGitlabEvent() (*GitlabWebHookEvent, error) {
 	return event, nil
 }
 
-func (e *GitlabWebHookEvent) GitRunParams(params *job.VersionedRunParam) {
+func (e *GitlabWebHookEvent) GitRunParams(params *job.RunParamSet) {
 	// 补充项目相关信息
 	params.Add(
 		job.NewRunParam(VARIABLE_GIT_PROJECT_NAME, e.Project.Name).SetSearchLabel(true),

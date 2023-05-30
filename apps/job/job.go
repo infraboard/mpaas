@@ -35,12 +35,9 @@ func (r *CreateJobRequest) BuildSearchLabels() {
 		r.Labels = map[string]string{}
 	}
 
-	for i := range r.RunParams {
-		v := r.RunParams[i]
-		sl := v.SearchLabels()
-		for k, v := range sl {
-			r.Labels[k] = v
-		}
+	sl := r.RunParams.SearchLabels()
+	for k, v := range sl {
+		r.Labels[k] = v
 	}
 }
 
@@ -72,18 +69,6 @@ func (i *Job) Patch(req *UpdateJobRequest) error {
 	return mergo.MergeWithOverwrite(i.Spec, req.Spec)
 }
 
-func (i *Job) HasRunParams() bool {
-	return len(i.Spec.RunParams) > 0
-}
-
-func (i *Job) AllowVersions() (versions []string) {
-	for m := range i.Spec.RunParams {
-		v := i.Spec.RunParams[m]
-		versions = append(versions, v.Version)
-	}
-	return
-}
-
 func (i *Job) MarshalJSON() ([]byte, error) {
 	return json.Marshal(struct {
 		*resource.Meta
@@ -91,32 +76,20 @@ func (i *Job) MarshalJSON() ([]byte, error) {
 	}{i.Meta, i.Spec})
 }
 
-func (i *Job) GetVersionedRunParam(version string) *VersionedRunParam {
-	for m := range i.Spec.RunParams {
-		v := i.Spec.RunParams[m]
-		if v.Version == version {
-			return v
-		}
-	}
-
-	return nil
-}
-
-func NewVersionedRunParam(version string) *VersionedRunParam {
-	return &VersionedRunParam{
-		Version: version,
-		Params:  []*RunParam{},
+func NewRunParamSet() *RunParamSet {
+	return &RunParamSet{
+		Params: []*RunParam{},
 	}
 }
 
 // 绕开Merge, 直接注入, 因为Merge只允许注入Job声明的变量
 // 非job声明的变量只能通过Add添加, 比如系统变量
-func (r *VersionedRunParam) Add(items ...*RunParam) {
+func (r *RunParamSet) Add(items ...*RunParam) {
 	r.Params = append(r.Params, items...)
 }
 
 // 检查是否有重复的参数
-func (r *VersionedRunParam) CheckDuplicate() error {
+func (r *RunParamSet) CheckDuplicate() error {
 	kc := map[string]int{}
 	for i := range r.Params {
 		p := r.Params[i]
@@ -136,7 +109,7 @@ func (r *VersionedRunParam) CheckDuplicate() error {
 	return nil
 }
 
-func (r *VersionedRunParam) Validate() error {
+func (r *RunParamSet) Validate() error {
 	err := r.CheckDuplicate()
 	if err != nil {
 		return err
@@ -155,7 +128,7 @@ func (r *VersionedRunParam) Validate() error {
 // 从参数中提取k8s job执行器(runner)需要的参数
 // 这里采用反射来获取Struc Tag, 然后根据Struct Tag 获取参数的具体值
 // 关于反射 可以参考: https://blog.csdn.net/bocai_xiaodaidai/article/details/123668047
-func (r *VersionedRunParam) K8SJobRunnerParams() *K8SJobRunnerParams {
+func (r *RunParamSet) K8SJobRunnerParams() *K8SJobRunnerParams {
 	params := NewK8SJobRunnerParams()
 
 	// params是一个Pointer Value, 如果需要获取值的类型需要这样处理:
@@ -178,15 +151,15 @@ func (r *VersionedRunParam) K8SJobRunnerParams() *K8SJobRunnerParams {
 	return params
 }
 
-func (r *VersionedRunParam) GetDeploymentId() string {
+func (r *RunParamSet) GetDeploymentId() string {
 	return r.GetParamValue(SYSTEM_VARIABLE_DEPLOY_ID)
 }
 
-func (r *VersionedRunParam) GetJobTaskId() string {
+func (r *RunParamSet) GetJobTaskId() string {
 	return r.GetParamValue(SYSTEM_VARIABLE_JOB_TASK_ID)
 }
 
-func (r *VersionedRunParam) GetPipelineTaskId() string {
+func (r *RunParamSet) GetPipelineTaskId() string {
 	return r.GetParamValue(SYSTEM_VARIABLE_PIPELINE_TASK_ID)
 }
 
@@ -195,7 +168,7 @@ func (r *VersionedRunParam) GetPipelineTaskId() string {
 //	用户变量: 大写开头的变量, 因为一般环境变量都是大写的比如 DB_PASS,
 //	系统变量: _开头为系统变量, 由Runner处理并注入, 比如 _DEPLOY_ID
 //	Runner变量: 小写的变量, 用于系统内部使用, 不会注入, 比如 K8SJobRunnerParams 中的cluster_id
-func (r *VersionedRunParam) EnvVars() (envs []v1.EnvVar) {
+func (r *RunParamSet) EnvVars() (envs []v1.EnvVar) {
 	for i := range r.Params {
 		item := r.Params[i]
 		// 只导出环境变量
@@ -212,7 +185,7 @@ func (r *VersionedRunParam) EnvVars() (envs []v1.EnvVar) {
 	return
 }
 
-func (r *VersionedRunParam) TemplateVars() (vars []*RunParam) {
+func (r *RunParamSet) TemplateVars() (vars []*RunParam) {
 	for i := range r.Params {
 		item := r.Params[i]
 		// 只导出模版变量
@@ -235,7 +208,7 @@ func ParamsToEnvVar(params []*RunParam) (envs []v1.EnvVar) {
 }
 
 // 获取参数的值
-func (r *VersionedRunParam) GetParamValue(key string) string {
+func (r *RunParamSet) GetParamValue(key string) string {
 	for i := range r.Params {
 		item := r.Params[i]
 		if item.Name == key {
@@ -246,7 +219,7 @@ func (r *VersionedRunParam) GetParamValue(key string) string {
 }
 
 // 设置参数的值
-func (r *VersionedRunParam) SetParamValue(key, value string) {
+func (r *RunParamSet) SetParamValue(key, value string) {
 	for i := range r.Params {
 		param := r.Params[i]
 		if param.IsEdit() && param.Name == key {
@@ -257,14 +230,14 @@ func (r *VersionedRunParam) SetParamValue(key, value string) {
 	zap.L().Warnf("set param %s value failed, job no param or readonly", key)
 }
 
-func (r *VersionedRunParam) Merge(targets ...*RunParam) {
+func (r *RunParamSet) Merge(targets ...*RunParam) {
 	for i := range targets {
 		t := targets[i]
 		r.SetParamValue(t.Name, t.Value)
 	}
 }
 
-func (r *VersionedRunParam) SearchLabels() map[string]string {
+func (r *RunParamSet) SearchLabels() map[string]string {
 	labels := map[string]string{}
 	for i := range r.Params {
 		p := r.Params[i]

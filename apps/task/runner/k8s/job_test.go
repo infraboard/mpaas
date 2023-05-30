@@ -11,7 +11,7 @@ import (
 
 func TestRun(t *testing.T) {
 	jobSpec := tools.MustReadContentFile("test/job.yaml")
-	params := job.NewVersionedRunParam("v0.1")
+	params := job.NewRunParamSet()
 	params.Add(
 		&job.RunParam{
 			Name:  "cluster_id",

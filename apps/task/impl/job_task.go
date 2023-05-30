@@ -40,8 +40,7 @@ func (i *impl) RunJob(ctx context.Context, in *pipeline.RunJobRequest) (
 	// 忽略执行
 	if in.Enabled() {
 		// 查询需要执行的Job
-		versionedName := in.VersionName(in.RunParams.Version)
-		req := job.NewDescribeJobRequest(versionedName)
+		req := job.NewDescribeJobRequest(in.JobName)
 
 		j, err := i.job.DescribeJob(ctx, req)
 		if err != nil {
@@ -56,14 +55,7 @@ func (i *impl) RunJob(ctx context.Context, in *pipeline.RunJobRequest) (
 		// 2. 系统变量(默认禁止修改)
 		// 3. task变量
 		// 4. pipeline变量
-		params := j.GetVersionedRunParam(in.GetRunParamsVersion())
-		if params == nil {
-			return nil, fmt.Errorf("job %s version: %s not found, allow version: %s",
-				j.Spec.Name,
-				in.GetRunParamsVersion(),
-				j.AllowVersions(),
-			)
-		}
+		params := j.Spec.RunParams
 		params.Add(ins.SystemRunParam()...)
 		params.Merge(in.RunParams.Params...)
 		err = i.LoadPipelineRunParam(ctx, params)
@@ -104,7 +96,7 @@ func (i *impl) RunJob(ctx context.Context, in *pipeline.RunJobRequest) (
 }
 
 // 加载Pipeline 提供的运行时参数
-func (i *impl) LoadPipelineRunParam(ctx context.Context, params *job.VersionedRunParam) error {
+func (i *impl) LoadPipelineRunParam(ctx context.Context, params *job.RunParamSet) error {
 	pipelineTaskId := params.GetPipelineTaskId()
 	if pipelineTaskId == "" {
 		return nil
@@ -318,10 +310,7 @@ func (i *impl) CleanTaskResource(ctx context.Context, in *task.JobTask) error {
 
 	switch in.Job.Spec.RunnerType {
 	case job.RUNNER_TYPE_K8S_JOB:
-		jobParams, err := in.GetVersionedRunParam()
-		if err != nil {
-			return err
-		}
+		jobParams := in.GetRunParamSet()
 		k8sParams := jobParams.K8SJobRunnerParams()
 
 		descReq := k8s.NewDescribeClusterRequest(k8sParams.ClusterId)
@@ -386,10 +375,7 @@ func (i *impl) WatchJobTaskLog(in *task.WatchJobTaskLogRequest, stream task.JobR
 
 	switch t.Job.Spec.RunnerType {
 	case job.RUNNER_TYPE_K8S_JOB:
-		jobParams, err := t.GetVersionedRunParam()
-		if err != nil {
-			return err
-		}
+		jobParams := t.GetRunParamSet()
 		k8sParams := jobParams.K8SJobRunnerParams()
 
 		descReq := k8s.NewDescribeClusterRequest(k8sParams.ClusterId)

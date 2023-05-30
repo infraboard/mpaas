@@ -43,7 +43,7 @@ func (req *QueryJobTaskRequest) HasLabel() bool {
 	return req.Labels != nil && len(req.Labels) > 0
 }
 
-func NewRunTaskRequest(name, spec string, params *job.VersionedRunParam) *RunTaskRequest {
+func NewRunTaskRequest(name, spec string, params *job.RunParamSet) *RunTaskRequest {
 	return &RunTaskRequest{
 		Name:    name,
 		JobSpec: spec,
@@ -212,7 +212,6 @@ type WatchJobTaskLogWebsocketServerImpl struct {
 	ws *websocket.Conn
 }
 
-func (i *WatchJobTaskLogWebsocketServerImpl) Send(*WatchJobTaskLogReponse) error {
-	// i.ws.WriteMessage()
-	return nil
+func (i *WatchJobTaskLogWebsocketServerImpl) Send(resp *WatchJobTaskLogReponse) error {
+	return i.ws.WriteMessage(websocket.BinaryMessage, resp.Data)
 }

@@ -7,7 +7,7 @@ import (
 )
 
 func TestK8SJobRunnerParams(t *testing.T) {
-	param := job.NewVersionedRunParam("v0.1")
+	param := job.NewRunParamSet()
 	param.Add(&job.RunParam{
 		Name:     "cluster_id",
 		Required: true,
@@ -21,7 +21,7 @@ func TestK8SJobRunnerParams(t *testing.T) {
 }
 
 func TestCheckDuplicate(t *testing.T) {
-	param := job.NewVersionedRunParam("v0.1")
+	param := job.NewRunParamSet()
 	param.Add(&job.RunParam{
 		Name:     "cluster_id",
 		Required: true,

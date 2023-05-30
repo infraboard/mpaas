@@ -25,6 +25,21 @@ func TestQueryJobTask(t *testing.T) {
 	t.Log(set)
 }
 
+func TestWatchJobTaskLog(t *testing.T) {
+	req := task.NewWatchJobTaskLogRequest("xx")
+	stream, err := client.JobTask().WatchJobTaskLog(ctx, req)
+	if err != nil {
+		t.Fatal(err)
+	}
+	for {
+		resp, err := stream.Recv()
+		if err != nil {
+			t.Fatal(err)
+		}
+		t.Log(string(resp.Data))
+	}
+}
+
 func TestQueryDeployment(t *testing.T) {
 	req := deploy.NewQueryDeploymentRequest()
 	set, err := client.Deploy().QueryDeployment(ctx, req)

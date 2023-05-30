@@ -16,7 +16,7 @@ import (
 
 func TestQueryJobTask(t *testing.T) {
 	req := task.NewQueryTaskRequest()
-	req.PipelineTaskId = conf.C.PIPELINE_TASK_ID
+	// req.PipelineTaskId = conf.C.PIPELINE_TASK_ID
 	set, err := impl.QueryJobTask(ctx, req)
 	if err != nil {
 		t.Fatal(err)
@@ -32,7 +32,7 @@ func TestRunBuildJob(t *testing.T) {
 	// 添加任务执行成功提醒
 	req.AddMentionUser(task.NewMentionUser("admin", notify.NOTIFY_TYPE_IM))
 	// 添加参数
-	version := job.NewVersionedRunParam(job.LATEST_VERSION_NAME)
+	version := job.NewRunParamSet()
 	version.Params = job.NewRunParamWithKVPaire(
 		"GIT_SSH_URL", "git@github.com:infraboard/mcenter.git",
 		"GIT_BRANCH", "master",
@@ -50,7 +50,7 @@ func TestRunBuildJob(t *testing.T) {
 
 func TestRunDeployJob(t *testing.T) {
 	req := pipeline.NewRunJobRequest("docker_deploy@default.default")
-	version := job.NewVersionedRunParam(job.LATEST_VERSION_NAME)
+	version := job.NewRunParamSet()
 	version.Params = job.NewRunParamWithKVPaire(
 		job.SYSTEM_VARIABLE_DEPLOY_ID, conf.C.DEPLOY_ID,
 		build.SYSTEM_VARIABLE_APP_VERSION, "1.30",
@@ -132,6 +132,6 @@ type WatchJobTaskLogMockServerImpl struct {
 }
 
 func (i *WatchJobTaskLogMockServerImpl) Send(resp *task.WatchJobTaskLogReponse) error {
-	fmt.Println(resp)
+	fmt.Println(string(resp.Data))
 	return nil
 }
