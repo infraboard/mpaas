@@ -23,6 +23,7 @@ const (
 	JobRPC_UpdateJobTaskStatus_FullMethodName = "/infraboard.mpaas.task.JobRPC/UpdateJobTaskStatus"
 	JobRPC_UpdateJobTaskOutput_FullMethodName = "/infraboard.mpaas.task.JobRPC/UpdateJobTaskOutput"
 	JobRPC_DescribeJobTask_FullMethodName     = "/infraboard.mpaas.task.JobRPC/DescribeJobTask"
+	JobRPC_WatchJobTaskLog_FullMethodName     = "/infraboard.mpaas.task.JobRPC/WatchJobTaskLog"
 )
 
 // JobRPCClient is the client API for JobRPC service.
@@ -37,6 +38,8 @@ type JobRPCClient interface {
 	UpdateJobTaskOutput(ctx context.Context, in *UpdateJobTaskOutputRequest, opts ...grpc.CallOption) (*JobTask, error)
 	// 任务执行详情
 	DescribeJobTask(ctx context.Context, in *DescribeJobTaskRequest, opts ...grpc.CallOption) (*JobTask, error)
+	// 查询Task日志
+	WatchJobTaskLog(ctx context.Context, in *WatchJobTaskLogRequest, opts ...grpc.CallOption) (JobRPC_WatchJobTaskLogClient, error)
 }
 
 type jobRPCClient struct {
@@ -83,6 +86,38 @@ func (c *jobRPCClient) DescribeJobTask(ctx context.Context, in *DescribeJobTaskR
 	return out, nil
 }
 
+func (c *jobRPCClient) WatchJobTaskLog(ctx context.Context, in *WatchJobTaskLogRequest, opts ...grpc.CallOption) (JobRPC_WatchJobTaskLogClient, error) {
+	stream, err := c.cc.NewStream(ctx, &JobRPC_ServiceDesc.Streams[0], JobRPC_WatchJobTaskLog_FullMethodName, opts...)
+	if err != nil {
+		return nil, err
+	}
+	x := &jobRPCWatchJobTaskLogClient{stream}
+	if err := x.ClientStream.SendMsg(in); err != nil {
+		return nil, err
+	}
+	if err := x.ClientStream.CloseSend(); err != nil {
+		return nil, err
+	}
+	return x, nil
+}
+
+type JobRPC_WatchJobTaskLogClient interface {
+	Recv() (*WatchJobTaskLogReponse, error)
+	grpc.ClientStream
+}
+
+type jobRPCWatchJobTaskLogClient struct {
+	grpc.ClientStream
+}
+
+func (x *jobRPCWatchJobTaskLogClient) Recv() (*WatchJobTaskLogReponse, error) {
+	m := new(WatchJobTaskLogReponse)
+	if err := x.ClientStream.RecvMsg(m); err != nil {
+		return nil, err
+	}
+	return m, nil
+}
+
 // JobRPCServer is the server API for JobRPC service.
 // All implementations must embed UnimplementedJobRPCServer
 // for forward compatibility
@@ -95,6 +130,8 @@ type JobRPCServer interface {
 	UpdateJobTaskOutput(context.Context, *UpdateJobTaskOutputRequest) (*JobTask, error)
 	// 任务执行详情
 	DescribeJobTask(context.Context, *DescribeJobTaskRequest) (*JobTask, error)
+	// 查询Task日志
+	WatchJobTaskLog(*WatchJobTaskLogRequest, JobRPC_WatchJobTaskLogServer) error
 	mustEmbedUnimplementedJobRPCServer()
 }
 
@@ -113,6 +150,9 @@ func (UnimplementedJobRPCServer) UpdateJobTaskOutput(context.Context, *UpdateJob
 }
 func (UnimplementedJobRPCServer) DescribeJobTask(context.Context, *DescribeJobTaskRequest) (*JobTask, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method DescribeJobTask not implemented")
+}
+func (UnimplementedJobRPCServer) WatchJobTaskLog(*WatchJobTaskLogRequest, JobRPC_WatchJobTaskLogServer) error {
+	return status.Errorf(codes.Unimplemented, "method WatchJobTaskLog not implemented")
 }
 func (UnimplementedJobRPCServer) mustEmbedUnimplementedJobRPCServer() {}
 
@@ -199,6 +239,27 @@ func _JobRPC_DescribeJobTask_Handler(srv interface{}, ctx context.Context, dec f
 	return interceptor(ctx, in, info, handler)
 }
 
+func _JobRPC_WatchJobTaskLog_Handler(srv interface{}, stream grpc.ServerStream) error {
+	m := new(WatchJobTaskLogRequest)
+	if err := stream.RecvMsg(m); err != nil {
+		return err
+	}
+	return srv.(JobRPCServer).WatchJobTaskLog(m, &jobRPCWatchJobTaskLogServer{stream})
+}
+
+type JobRPC_WatchJobTaskLogServer interface {
+	Send(*WatchJobTaskLogReponse) error
+	grpc.ServerStream
+}
+
+type jobRPCWatchJobTaskLogServer struct {
+	grpc.ServerStream
+}
+
+func (x *jobRPCWatchJobTaskLogServer) Send(m *WatchJobTaskLogReponse) error {
+	return x.ServerStream.SendMsg(m)
+}
+
 // JobRPC_ServiceDesc is the grpc.ServiceDesc for JobRPC service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -223,6 +284,12 @@ var JobRPC_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _JobRPC_DescribeJobTask_Handler,
 		},
 	},
-	Streams:  []grpc.StreamDesc{},
+	Streams: []grpc.StreamDesc{
+		{
+			StreamName:    "WatchJobTaskLog",
+			Handler:       _JobRPC_WatchJobTaskLog_Handler,
+			ServerStreams: true,
+		},
+	},
 	Metadata: "mpaas/apps/task/pb/job_rpc.proto",
 }

@@ -20,7 +20,15 @@ func (h *handler) RegistryUserHandler(ws *restful.WebService) {
 		Writes(task.JobTask{}))
 
 	ws.Route(ws.POST("/{id}/output").To(h.UpdateJobTaskOutput).
-		Doc("保存任务输出").
+		Doc("更新任务输出").
+		Metadata(restfulspec.KeyOpenAPITags, tags).
+		Metadata(label.Resource, h.Name()).
+		Metadata(label.Action, label.Create.Value()).
+		Reads(task.UpdateJobTaskOutputRequest{}).
+		Writes(task.JobTask{}))
+
+	ws.Route(ws.GET("/{id}/log").To(h.WatchTaskLog).
+		Doc("查询任务日志").
 		Metadata(restfulspec.KeyOpenAPITags, tags).
 		Metadata(label.Resource, h.Name()).
 		Metadata(label.Action, label.Create.Value()).
@@ -56,4 +64,15 @@ func (h *handler) UpdateJobTaskStatus(r *restful.Request, w *restful.Response) {
 		return
 	}
 	response.Success(w, set)
+}
+
+func (h *handler) WatchTaskLog(r *restful.Request, w *restful.Response) {
+	in := task.NewWatchJobTaskLogRequest(r.PathParameter("id"))
+
+	req := task.NewWatchJobTaskLogHttpServerImpl(nil)
+	err := h.service.WatchJobTaskLog(in, req)
+	if err != nil {
+		response.Failed(w, err)
+		return
+	}
 }

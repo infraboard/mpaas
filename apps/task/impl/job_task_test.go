@@ -1,9 +1,11 @@
 package impl_test
 
 import (
+	"fmt"
 	"testing"
 
 	"github.com/infraboard/mcenter/apps/notify"
+	"github.com/infraboard/mcube/grpc/mock"
 	"github.com/infraboard/mpaas/apps/build"
 	"github.com/infraboard/mpaas/apps/job"
 	"github.com/infraboard/mpaas/apps/pipeline"
@@ -107,4 +109,29 @@ func TestDeleteJobTask(t *testing.T) {
 		t.Fatal(err)
 	}
 	t.Log(set)
+}
+
+func TestWatchJobTaskLog(t *testing.T) {
+	req := task.NewWatchJobTaskLogRequest(conf.C.MCENTER_BUILD_TASK_ID)
+	si := NewWatchJobTaskLogMockServerImpl()
+	err := impl.WatchJobTaskLog(req, si)
+	if err != nil {
+		t.Fatal(err)
+	}
+}
+
+func NewWatchJobTaskLogMockServerImpl() *WatchJobTaskLogMockServerImpl {
+	return &WatchJobTaskLogMockServerImpl{
+		ServerStreamBase: mock.NewServerStreamBase(),
+	}
+}
+
+// 使用一个mock来模拟测试
+type WatchJobTaskLogMockServerImpl struct {
+	*mock.ServerStreamBase
+}
+
+func (i *WatchJobTaskLogMockServerImpl) Send(resp *task.WatchJobTaskLogReponse) error {
+	fmt.Println(resp)
+	return nil
 }

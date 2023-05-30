@@ -3,6 +3,7 @@ package impl
 import (
 	"context"
 	"fmt"
+	"io"
 	"time"
 
 	"github.com/infraboard/mcube/exception"
@@ -19,6 +20,7 @@ import (
 	"github.com/infraboard/mpaas/apps/task/runner"
 	"github.com/infraboard/mpaas/provider/k8s/config"
 	"github.com/infraboard/mpaas/provider/k8s/meta"
+	"github.com/infraboard/mpaas/provider/k8s/workload"
 )
 
 func (i *impl) RunJob(ctx context.Context, in *pipeline.RunJobRequest) (
@@ -372,4 +374,69 @@ func (i *impl) CleanTaskResource(ctx context.Context, in *task.JobTask) error {
 	}
 
 	return nil
+}
+
+// 查询Task日志
+func (i *impl) WatchJobTaskLog(in *task.WatchJobTaskLogRequest, stream task.JobRPC_WatchJobTaskLogServer) error {
+	// 查询Task信息
+	t, err := i.DescribeJobTask(stream.Context(), task.NewDescribeJobTaskRequest(in.Id))
+	if err != nil {
+		return err
+	}
+
+	switch t.Job.Spec.RunnerType {
+	case job.RUNNER_TYPE_K8S_JOB:
+		jobParams, err := t.GetVersionedRunParam()
+		if err != nil {
+			return err
+		}
+		k8sParams := jobParams.K8SJobRunnerParams()
+
+		descReq := k8s.NewDescribeClusterRequest(k8sParams.ClusterId)
+		c, err := i.cluster.DescribeCluster(stream.Context(), descReq)
+		if err != nil {
+			return fmt.Errorf("find k8s cluster error, %s", err)
+		}
+
+		k8sClient, err := c.Client()
+		if err != nil {
+			return err
+		}
+		req := workload.NewWatchConainterLogRequest()
+		req.PodName = "mcenter-56d7d5f568-66xkt"
+		r, err := k8sClient.WorkLoad().WatchConainterLog(stream.Context(), req)
+		if err != nil {
+			return err
+		}
+		defer r.Close()
+
+		// copy日志流
+		_, err = io.Copy(NewWatchJobTaskLogServerWriter(stream), r)
+		return err
+	}
+
+	return nil
+}
+
+func NewWatchJobTaskLogServerWriter(
+	stream task.JobRPC_WatchJobTaskLogServer) *WatchJobTaskLogServerWriter {
+	return &WatchJobTaskLogServerWriter{
+		stream: stream,
+		buf:    task.NewWatchJobTaskLogReponse(),
+	}
+}
+
+type WatchJobTaskLogServerWriter struct {
+	stream task.JobRPC_WatchJobTaskLogServer
+	buf    *task.WatchJobTaskLogReponse
+}
+
+func (w *WatchJobTaskLogServerWriter) Write(p []byte) (n int, err error) {
+	w.buf.Data = p
+	err = w.stream.Send(w.buf)
+	if err != nil {
+		return 0, err
+	}
+	w.buf.ReSet()
+	return len(p), nil
 }

@@ -16,6 +16,20 @@ service JobRPC {
     rpc UpdateJobTaskOutput(UpdateJobTaskOutputRequest) returns(JobTask);
     // 任务执行详情
     rpc DescribeJobTask(DescribeJobTaskRequest) returns(JobTask);
+    // 查询Task日志
+    rpc WatchJobTaskLog(WatchJobTaskLogRequest) returns(stream WatchJobTaskLogReponse);
+}
+
+message WatchJobTaskLogRequest {
+	// 任务Id
+	// @gotags: json:"id"
+    string id = 1;
+}
+
+message WatchJobTaskLogReponse {
+	// 日志数据, 二进制格式
+	// @gotags: json:"data"
+    bytes data = 1;
 }
 
 message QueryJobTaskRequest {

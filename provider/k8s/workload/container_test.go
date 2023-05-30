@@ -13,7 +13,7 @@ import (
 func TestWatchConainterLog(t *testing.T) {
 	req := workload.NewWatchConainterLogRequest()
 	req.Namespace = "default"
-	req.PodName = "test-job-kscwv"
+	req.PodName = "mcenter-56d7d5f568-66xkt"
 	stream, err := impl.WatchConainterLog(ctx, req)
 	if err != nil {
 		t.Fatal(err)

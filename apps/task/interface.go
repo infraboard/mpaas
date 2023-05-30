@@ -5,11 +5,14 @@ import (
 	"fmt"
 	"strings"
 
+	"github.com/infraboard/mcube/grpc/mock"
 	"github.com/infraboard/mcube/http/request"
 	job "github.com/infraboard/mpaas/apps/job"
 	pipeline "github.com/infraboard/mpaas/apps/pipeline"
 	"github.com/infraboard/mpaas/provider/k8s/workload"
 	v1 "k8s.io/api/core/v1"
+
+	"github.com/gorilla/websocket"
 )
 
 const (
@@ -179,4 +182,37 @@ type MentionUserMessage interface {
 	TaskMessage
 	// 通知回调, 是否通知成功
 	AddNotifyStatus(items ...*CallbackStatus)
+}
+
+func NewWatchJobTaskLogReponse() *WatchJobTaskLogReponse {
+	return &WatchJobTaskLogReponse{
+		Data: make([]byte, 0, 512),
+	}
+}
+
+func (r *WatchJobTaskLogReponse) ReSet() {
+	r.Data = r.Data[:0]
+}
+
+func NewWatchJobTaskLogRequest(id string) *WatchJobTaskLogRequest {
+	return &WatchJobTaskLogRequest{
+		Id: id,
+	}
+}
+
+func NewWatchJobTaskLogHttpServerImpl(conn *websocket.Conn) *WatchJobTaskLogWebsocketServerImpl {
+	return &WatchJobTaskLogWebsocketServerImpl{
+		ServerStreamBase: mock.NewServerStreamBase(),
+		ws:               conn,
+	}
+}
+
+type WatchJobTaskLogWebsocketServerImpl struct {
+	*mock.ServerStreamBase
+	ws *websocket.Conn
+}
+
+func (i *WatchJobTaskLogWebsocketServerImpl) Send(*WatchJobTaskLogReponse) error {
+	// i.ws.WriteMessage()
+	return nil
 }
