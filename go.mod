@@ -20,7 +20,7 @@ require (
 	github.com/stretchr/testify v1.8.2
 	github.com/traefik/paerser v0.2.0
 	go.etcd.io/etcd/client/v3 v3.5.8
-	go.mongodb.org/mongo-driver v1.11.4
+	go.mongodb.org/mongo-driver v1.11.6
 	go.opentelemetry.io/contrib/instrumentation/github.com/emicklei/go-restful/otelrestful v0.41.1
 	go.opentelemetry.io/contrib/instrumentation/go.mongodb.org/mongo-driver/mongo/otelmongo v0.41.1
 	go.opentelemetry.io/contrib/instrumentation/google.golang.org/grpc/otelgrpc v0.41.1

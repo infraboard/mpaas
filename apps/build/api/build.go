@@ -26,7 +26,7 @@ func (h *handler) Registry(ws *restful.WebService) {
 		Metadata(restfulspec.KeyOpenAPITags, tags).
 		Metadata(label.Resource, h.Name()).
 		Metadata(label.Action, label.List.Value()).
-		Metadata(label.Auth, label.Disable).
+		Metadata(label.Auth, label.Enable).
 		Metadata(label.Permission, label.Enable).
 		Reads(build.QueryBuildConfigRequest{}).
 		Writes(build.BuildConfigSet{}).
@@ -38,7 +38,7 @@ func (h *handler) Registry(ws *restful.WebService) {
 		Metadata(restfulspec.KeyOpenAPITags, tags).
 		Metadata(label.Resource, h.Name()).
 		Metadata(label.Action, label.Get.Value()).
-		Metadata(label.Auth, label.Disable).
+		Metadata(label.Auth, label.Enable).
 		Metadata(label.Permission, label.Enable).
 		Writes(build.BuildConfig{}).
 		Returns(200, "OK", build.BuildConfig{}).
