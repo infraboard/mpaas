@@ -23,12 +23,12 @@ type Service interface {
 
 func NewCreateJobRequest() *CreateJobRequest {
 	return &CreateJobRequest{
-		Domain:         domain.DEFAULT_DOMAIN,
-		Namespace:      namespace.DEFAULT_NAMESPACE,
-		RunParams:      NewRunParamSet(),
-		RollbackParams: NewRunParamSet(),
-		Labels:         make(map[string]string),
-		Extra:          make(map[string]string),
+		Domain:        domain.DEFAULT_DOMAIN,
+		Namespace:     namespace.DEFAULT_NAMESPACE,
+		RunParam:      NewRunParamSet(),
+		RollbackParam: NewRunParamSet(),
+		Labels:        make(map[string]string),
+		Extra:         make(map[string]string),
 	}
 }
 

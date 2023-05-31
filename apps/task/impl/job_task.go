@@ -55,7 +55,7 @@ func (i *impl) RunJob(ctx context.Context, in *pipeline.RunJobRequest) (
 		// 2. 系统变量(默认禁止修改)
 		// 3. task变量
 		// 4. pipeline变量
-		params := j.Spec.RunParams
+		params := j.Spec.RunParam
 		params.Add(ins.SystemRunParam()...)
 		params.Merge(in.RunParams.Params...)
 		err = i.LoadPipelineRunParam(ctx, params)

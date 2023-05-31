@@ -35,7 +35,7 @@ func (r *CreateJobRequest) BuildSearchLabels() {
 		r.Labels = map[string]string{}
 	}
 
-	sl := r.RunParams.SearchLabels()
+	sl := r.RunParam.SearchLabels()
 	for k, v := range sl {
 		r.Labels[k] = v
 	}

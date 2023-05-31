@@ -36,7 +36,7 @@ func TestCreateTestJob(t *testing.T) {
 		NameDesc: "job运行时的namespace",
 		Value:    "default",
 	})
-	req.RunParams = param
+	req.RunParam = param
 
 	ins, err := impl.CreateJob(ctx, req)
 	if err != nil {
@@ -113,7 +113,7 @@ func TestUpdateDeployJob(t *testing.T) {
 		Example:     "v0.0.1",
 		SearchLabel: true,
 	})
-	req.Spec.RunParams = param
+	req.Spec.RunParam = param
 
 	ins, err := impl.UpdateJob(ctx, req)
 	if err != nil {
@@ -196,7 +196,7 @@ func TestUpdateBuildJob(t *testing.T) {
 		Example:   "kaniko-secret",
 		Value:     "kaniko-secret",
 	})
-	req.Spec.RunParams = param
+	req.Spec.RunParam = param
 
 	ins, err := impl.UpdateJob(ctx, req)
 	if err != nil {

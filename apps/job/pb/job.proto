@@ -90,15 +90,15 @@ message CreateJobRequest {
 	// @gotags: bson:"manual_update_status" json:"manual_update_status"
 	bool manual_update_status = 4;
 	// 运行时 用户传人的参数说明
-	// @gotags: bson:"run_params" json:"run_params"
-	RunParamSet run_params = 5;
+	// @gotags: bson:"run_param" json:"run_param"
+	RunParamSet run_param = 5;
 	// 是否允许回滚, 有些特殊的操作是不允许回滚的, 
 	// 能使用上次执行成功的结果 进行执行 该任务就支持回滚
 	// @gotags: bson:"allow_rollback" json:"allow_rollback"
 	bool allow_rollback = 6;
 	// 回滚参数, 当执行回滚时执行的参数, 往往由上次成功执行的参数进行填充
-	// @gotags: bson:"rollback_params" json:"rollback_params"
-	RunParamSet rollback_params = 7;
+	// @gotags: bson:"rollback_param" json:"rollback_param"
+	RunParamSet rollback_param = 7;
 	// 所属域
 	// @gotags: bson:"domain" json:"domain" validate:"required"
 	string domain = 8;
