@@ -12,8 +12,8 @@ require (
 	github.com/go-playground/validator/v10 v10.13.0
 	github.com/gorilla/websocket v1.5.0
 	github.com/imdario/mergo v0.3.15
-	github.com/infraboard/mcenter v0.0.11-0.20230524022757-6e9caa1faf67
-	github.com/infraboard/mcube v1.9.16-0.20230512085059-2a770e7f72b3
+	github.com/infraboard/mcenter v0.0.11-0.20230531080127-cd36d4a1bfe0
+	github.com/infraboard/mcube v1.9.16-0.20230531075907-e754a9a376b9
 	github.com/kvtools/valkeyrie v1.0.0
 	github.com/rs/xid v1.5.0
 	github.com/spf13/cobra v1.7.0
@@ -107,7 +107,7 @@ require (
 	golang.org/x/text v0.9.0 // indirect
 	golang.org/x/time v0.0.0-20220210224613-90d013bbcef8 // indirect
 	google.golang.org/appengine v1.6.7 // indirect
-	google.golang.org/genproto v0.0.0-20230110181048-76db0878b65f // indirect
+	google.golang.org/genproto v0.0.0-20230410155749-daa745c078e1 // indirect
 	gopkg.in/inf.v0 v0.9.1 // indirect
 	gopkg.in/tomb.v1 v1.0.0-20141024135613-dd632973f1e7 // indirect
 	gopkg.in/yaml.v2 v2.4.0 // indirect
