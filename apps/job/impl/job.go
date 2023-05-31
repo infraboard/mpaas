@@ -127,7 +127,7 @@ func (i *impl) UpdateJob(ctx context.Context, in *job.UpdateJobRequest) (
 
 func (i *impl) UpdateJobStatus(ctx context.Context, in *job.UpdateJobStatusRequest) (
 	*job.Job, error) {
-	ins, err := i.DescribeJob(ctx, job.NewDescribeJobRequest("#"+in.Id))
+	ins, err := i.DescribeJob(ctx, job.NewDescribeJobRequest(in.Id))
 	if err != nil {
 		return nil, err
 	}

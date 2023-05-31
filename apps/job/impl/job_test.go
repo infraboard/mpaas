@@ -214,6 +214,7 @@ func TestDescribeJob(t *testing.T) {
 	t.Log(tools.MustToJson(ins))
 }
 
+// 发布Job
 func TestUpdateJobStatus(t *testing.T) {
 	req := job.NewUpdateJobStatusRequest("docker_build@default.default")
 	req.Status.Stage = job.JOB_STAGE_PUBLISHED
