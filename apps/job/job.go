@@ -77,6 +77,14 @@ func (i *Job) MarshalJSON() ([]byte, error) {
 	}{i.Meta, i.Spec, i.Status})
 }
 
+// 只可以删除未发布的Job
+func (i *Job) CheckAllowDelete() error {
+	if !i.Status.Stage.Equal(JOB_STAGE_DRAFT) {
+		return fmt.Errorf("只有处于草稿状态的Job才允许删除")
+	}
+	return nil
+}
+
 func NewRunParamSet() *RunParamSet {
 	return &RunParamSet{
 		Params: []*RunParam{},
@@ -242,7 +250,7 @@ func (r *RunParamSet) SearchLabels() map[string]string {
 	labels := map[string]string{}
 	for i := range r.Params {
 		p := r.Params[i]
-		if p.SearchLabel {
+		if p.SearchLabel && p.Value != "" {
 			labels[p.Name] = p.Value
 		}
 	}

@@ -1,6 +1,7 @@
 package job
 
 import (
+	context "context"
 	"fmt"
 	"net/http"
 	"strings"
@@ -19,6 +20,8 @@ const (
 
 type Service interface {
 	RPCServer
+
+	DeleteJob(context.Context, *DeleteJobRequest) (*Job, error)
 }
 
 func NewCreateJobRequest() *CreateJobRequest {
@@ -143,4 +146,8 @@ func NewUpdateJobStatusRequest(id string) *UpdateJobStatusRequest {
 
 func (r *UpdateJobStatusRequest) Validate() error {
 	return validate.Validate(r)
+}
+
+func NewDeleteJobRequest(id string) *DeleteJobRequest {
+	return &DeleteJobRequest{Id: id}
 }

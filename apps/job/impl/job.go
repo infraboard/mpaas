@@ -152,3 +152,24 @@ func (i *impl) UpdateJobStatus(ctx context.Context, in *job.UpdateJobStatusReque
 
 	return ins, nil
 }
+
+func (i *impl) DeleteJob(ctx context.Context, in *job.DeleteJobRequest) (
+	*job.Job, error) {
+	// 查询删除Job
+	ins, err := i.DescribeJob(ctx, job.NewDescribeJobRequest("#"+in.Id))
+	if err != nil {
+		return nil, err
+	}
+
+	// 检查是否允许删除
+	err = ins.CheckAllowDelete()
+	if err != nil {
+		return nil, err
+	}
+
+	_, err = i.col.DeleteOne(ctx, bson.M{"_id": in.Id})
+	if err != nil {
+		return nil, exception.NewInternalServerError("delete  job(%s) error, %s", in.Id, err)
+	}
+	return ins, nil
+}

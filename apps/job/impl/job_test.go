@@ -205,6 +205,15 @@ func TestUpdateBuildJob(t *testing.T) {
 	t.Log(tools.MustToJson(ins))
 }
 
+func TestDeleteJob(t *testing.T) {
+	req := job.NewDeleteJobRequest(conf.C.BUILD_JOB_ID)
+	ins, err := impl.DeleteJob(ctx, req)
+	if err != nil {
+		t.Fatal(err)
+	}
+	t.Log(tools.MustToJson(ins))
+}
+
 func TestDescribeJob(t *testing.T) {
 	req := job.NewDescribeJobRequest("docker_build@default.default")
 	ins, err := impl.DescribeJob(ctx, req)

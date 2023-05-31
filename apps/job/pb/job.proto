@@ -49,6 +49,8 @@ enum JOB_STAGE {
 	DRAFT = 0;
 	// published 已发布, 已发布的job不允许修改
 	PUBLISHED = 1;
+	// deprecated 已废弃, 已废弃的Job不允许再被使用
+	DEPRECATED = 10;
 }
 
 message JobStatus {
@@ -67,6 +69,9 @@ message JobStatus {
     // 发布描述
     // @gotags: bson:"published_describe" json:"published_describe"
     string publish_describe = 5;
+    // 废弃说明
+    // @gotags: bson:"deprecated_describe" json:"deprecated_describe"
+    string deprecated_describe = 6;
 }
 
 enum RUN_MODE {

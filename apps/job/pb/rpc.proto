@@ -86,3 +86,9 @@ message UpdateJobStatusRequest {
 	// @gotags: bson:"status" json:"status"
     JobStatus status = 2;
 }
+
+message DeleteJobRequest {
+    // job id
+    // @gotags: json:"id" validate:"required"
+    string id = 1;
+}
