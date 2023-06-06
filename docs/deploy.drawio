@@ -1,0 +1,52 @@
+<mxfile host="65bd71144e">
+    <diagram id="XUw_ZiWBIEJh1opamOHj" name="第 1 页">
+        <mxGraphModel dx="1033" dy="1852" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+            <root>
+                <mxCell id="0"/>
+                <mxCell id="1" parent="0"/>
+                <mxCell id="7" value="" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+                    <mxGeometry x="190" y="100" width="360" height="180" as="geometry"/>
+                </mxCell>
+                <mxCell id="2" value="mcenter" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+                    <mxGeometry x="220" y="200" width="120" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="3" value="" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+                    <mxGeometry x="30" y="310" width="360" height="220" as="geometry"/>
+                </mxCell>
+                <mxCell id="4" value="Region: A" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
+                    <mxGeometry x="80" y="280" width="60" height="30" as="geometry"/>
+                </mxCell>
+                <mxCell id="5" value="" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+                    <mxGeometry x="430" y="310" width="360" height="220" as="geometry"/>
+                </mxCell>
+                <mxCell id="6" value="Region: B" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
+                    <mxGeometry x="450" y="280" width="60" height="30" as="geometry"/>
+                </mxCell>
+                <mxCell id="8" value="Region: C (中心服务)&amp;nbsp;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
+                    <mxGeometry x="190" y="60" width="150" height="30" as="geometry"/>
+                </mxCell>
+                <mxCell id="9" value="devcloud api gateway" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+                    <mxGeometry x="220" y="120" width="300" height="40" as="geometry"/>
+                </mxCell>
+                <mxCell id="10" value="mpaas" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+                    <mxGeometry x="390" y="200" width="120" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="11" value="mpaas" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+                    <mxGeometry x="70" y="390" width="120" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="12" value="mpaas" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+                    <mxGeometry x="470" y="380" width="120" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="13" value="devcloud ui" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+                    <mxGeometry x="140" y="-160" width="370" height="110" as="geometry"/>
+                </mxCell>
+                <mxCell id="14" value="devcloud api gateway" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+                    <mxGeometry x="70" y="330" width="300" height="40" as="geometry"/>
+                </mxCell>
+                <mxCell id="15" value="devcloud api gateway" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+                    <mxGeometry x="470" y="330" width="300" height="40" as="geometry"/>
+                </mxCell>
+            </root>
+        </mxGraphModel>
+    </diagram>
+</mxfile>

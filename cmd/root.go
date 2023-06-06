@@ -4,10 +4,10 @@ import (
 	"errors"
 	"fmt"
 
-	"github.com/infraboard/mcube/app"
 	"github.com/infraboard/mcube/cache"
 	"github.com/infraboard/mcube/cache/memory"
 	"github.com/infraboard/mcube/cache/redis"
+	"github.com/infraboard/mcube/ioc"
 	"github.com/infraboard/mcube/logger/zap"
 	"github.com/spf13/cobra"
 
@@ -132,7 +132,7 @@ func initail() {
 	cobra.CheckErr(err)
 
 	// 初始化全局app
-	err = app.InitAllApp()
+	err = ioc.InitIocObject()
 	cobra.CheckErr(err)
 
 	// 初始化Tracer

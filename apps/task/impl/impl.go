@@ -3,7 +3,7 @@ package impl
 import (
 	"go.mongodb.org/mongo-driver/mongo"
 
-	"github.com/infraboard/mcube/app"
+	"github.com/infraboard/mcube/ioc"
 	"github.com/infraboard/mcube/logger"
 	"github.com/infraboard/mcube/logger/zap"
 	"google.golang.org/grpc"
@@ -33,6 +33,7 @@ type impl struct {
 	log  logger.Logger
 	task.UnimplementedJobRPCServer
 	task.UnimplementedPipelineRPCServer
+	ioc.IocObjectImpl
 
 	job      job.Service
 	pipeline pipeline.Service
@@ -43,7 +44,7 @@ type impl struct {
 	mcenter *rpc.ClientSet
 }
 
-func (i *impl) Config() error {
+func (i *impl) Init() error {
 	db, err := conf.C().Mongo.GetDB()
 	if err != nil {
 		return err
@@ -51,10 +52,10 @@ func (i *impl) Config() error {
 	i.jcol = db.Collection("job_tasks")
 	i.pcol = db.Collection("pipeline_tasks")
 	i.log = zap.L().Named(i.Name())
-	i.job = app.GetInternalApp(job.AppName).(job.Service)
-	i.pipeline = app.GetInternalApp(pipeline.AppName).(pipeline.Service)
-	i.cluster = app.GetInternalApp(k8s.AppName).(k8s.Service)
-	i.approval = app.GetInternalApp(approval.AppName).(approval.Service)
+	i.job = ioc.GetController(job.AppName).(job.Service)
+	i.pipeline = ioc.GetController(pipeline.AppName).(pipeline.Service)
+	i.cluster = ioc.GetController(k8s.AppName).(k8s.Service)
+	i.approval = ioc.GetController(approval.AppName).(approval.Service)
 	i.mcenter = rpc.C()
 	if err := runner.Init(); err != nil {
 		return err
@@ -74,6 +75,5 @@ func (i *impl) Registry(server *grpc.Server) {
 }
 
 func init() {
-	app.RegistryInternalApp(svr)
-	app.RegistryGrpcApp(svr)
+	ioc.RegistryController(svr)
 }

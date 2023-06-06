@@ -4,7 +4,7 @@ import (
 	"fmt"
 
 	"github.com/emicklei/go-restful/v3"
-	"github.com/infraboard/mcube/app"
+	"github.com/infraboard/mcube/ioc"
 	"github.com/infraboard/mcube/logger"
 	"github.com/infraboard/mcube/logger/zap"
 
@@ -18,11 +18,12 @@ var (
 type handler struct {
 	service gateway.Service
 	log     logger.Logger
+	ioc.IocObjectImpl
 }
 
-func (h *handler) Config() error {
+func (h *handler) Init() error {
 	h.log = zap.L().Named(gateway.AppName)
-	h.service = app.GetInternalApp(gateway.AppName).(gateway.Service)
+	h.service = ioc.GetController(gateway.AppName).(gateway.Service)
 	return nil
 }
 
@@ -40,5 +41,5 @@ func (h *handler) Registry(ws *restful.WebService) {
 }
 
 func init() {
-	app.RegistryRESTfulApp(h)
+	ioc.RegistryApi(h)
 }

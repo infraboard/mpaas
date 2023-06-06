@@ -8,7 +8,7 @@ import (
 	"go.mongodb.org/mongo-driver/x/bsonx"
 
 	"github.com/infraboard/mcenter/client/rpc"
-	"github.com/infraboard/mcube/app"
+	"github.com/infraboard/mcube/ioc"
 	"github.com/infraboard/mcube/logger"
 	"github.com/infraboard/mcube/logger/zap"
 	"google.golang.org/grpc"
@@ -28,13 +28,14 @@ type impl struct {
 	col *mongo.Collection
 	log logger.Logger
 	approval.UnimplementedRPCServer
+	ioc.IocObjectImpl
 
 	pipeline pipeline.Service
 	task     task.PipelineService
 	mcenter  *rpc.ClientSet
 }
 
-func (s *impl) Config() error {
+func (s *impl) Init() error {
 	db, err := conf.C().Mongo.GetDB()
 	if err != nil {
 		return err
@@ -61,8 +62,8 @@ func (s *impl) Config() error {
 	}
 
 	s.log = zap.L().Named(s.Name())
-	s.pipeline = app.GetInternalApp(pipeline.AppName).(pipeline.Service)
-	s.task = app.GetInternalApp(task.AppName).(task.Service)
+	s.pipeline = ioc.GetController(pipeline.AppName).(pipeline.Service)
+	s.task = ioc.GetController(task.AppName).(task.Service)
 	s.mcenter = rpc.C()
 	return nil
 }
@@ -76,6 +77,5 @@ func (s *impl) Registry(server *grpc.Server) {
 }
 
 func init() {
-	app.RegistryInternalApp(svr)
-	app.RegistryGrpcApp(svr)
+	ioc.RegistryController(svr)
 }

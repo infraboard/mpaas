@@ -3,7 +3,7 @@ package impl
 import (
 	"go.mongodb.org/mongo-driver/mongo"
 
-	"github.com/infraboard/mcube/app"
+	"github.com/infraboard/mcube/ioc"
 	"github.com/infraboard/mcube/logger"
 	"github.com/infraboard/mcube/logger/zap"
 	"google.golang.org/grpc"
@@ -22,10 +22,11 @@ type service struct {
 	log     logger.Logger
 	cluster cluster.Service
 	cluster.UnimplementedRPCServer
+	ioc.IocObjectImpl
 	encryptoKey string
 }
 
-func (s *service) Config() error {
+func (s *service) Init() error {
 	db, err := conf.C().Mongo.GetDB()
 	if err != nil {
 		return err
@@ -35,7 +36,7 @@ func (s *service) Config() error {
 
 	s.encryptoKey = conf.C().App.EncryptKey
 	s.log = zap.L().Named(s.Name())
-	s.cluster = app.GetGrpcApp(cluster.AppName).(cluster.Service)
+	s.cluster = ioc.GetController(cluster.AppName).(cluster.Service)
 	return nil
 }
 
@@ -48,6 +49,5 @@ func (s *service) Registry(server *grpc.Server) {
 }
 
 func init() {
-	app.RegistryInternalApp(svr)
-	app.RegistryGrpcApp(svr)
+	ioc.RegistryController(svr)
 }

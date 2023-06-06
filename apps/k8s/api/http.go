@@ -1,10 +1,10 @@
 package api
 
 import (
+	"github.com/infraboard/mcube/ioc"
 	"github.com/infraboard/mcube/logger"
 	"github.com/infraboard/mcube/logger/zap"
 
-	"github.com/infraboard/mcube/app"
 	cluster "github.com/infraboard/mpaas/apps/k8s"
 )
 
@@ -15,11 +15,12 @@ var (
 type handler struct {
 	service cluster.Service
 	log     logger.Logger
+	ioc.IocObjectImpl
 }
 
-func (h *handler) Config() error {
+func (h *handler) Init() error {
 	h.log = zap.L().Named(cluster.AppName)
-	h.service = app.GetGrpcApp(cluster.AppName).(cluster.Service)
+	h.service = ioc.GetController(cluster.AppName).(cluster.Service)
 	return nil
 }
 
@@ -33,5 +34,5 @@ func (h *handler) Version() string {
 }
 
 func init() {
-	app.RegistryRESTfulApp(h)
+	ioc.RegistryApi(h)
 }

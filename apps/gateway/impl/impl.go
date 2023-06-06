@@ -3,11 +3,11 @@ package impl
 import (
 	"context"
 
-	"github.com/infraboard/mcube/app"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/x/bsonx"
 	"google.golang.org/grpc"
 
+	"github.com/infraboard/mcube/ioc"
 	"github.com/infraboard/mpaas/apps/gateway"
 	"github.com/infraboard/mpaas/conf"
 )
@@ -20,9 +20,10 @@ var (
 type impl struct {
 	col *mongo.Collection
 	gateway.UnimplementedRPCServer
+	ioc.IocObjectImpl
 }
 
-func (s *impl) Config() error {
+func (s *impl) Init() error {
 	db, err := conf.C().Mongo.GetDB()
 	if err != nil {
 		return err
@@ -54,6 +55,5 @@ func (s *impl) Registry(server *grpc.Server) {
 }
 
 func init() {
-	app.RegistryInternalApp(svr)
-	app.RegistryGrpcApp(svr)
+	ioc.RegistryController(svr)
 }

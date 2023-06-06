@@ -12,8 +12,8 @@ require (
 	github.com/go-playground/validator/v10 v10.13.0
 	github.com/gorilla/websocket v1.5.0
 	github.com/imdario/mergo v0.3.15
-	github.com/infraboard/mcenter v0.0.11-0.20230531080348-51c57833f80a
-	github.com/infraboard/mcube v1.9.16-0.20230531075907-e754a9a376b9
+	github.com/infraboard/mcenter v0.0.11-0.20230606060605-406bbae12546
+	github.com/infraboard/mcube v1.9.16-0.20230606060324-6a18705a6442
 	github.com/kvtools/valkeyrie v1.0.0
 	github.com/rs/xid v1.5.0
 	github.com/spf13/cobra v1.7.0
@@ -45,7 +45,6 @@ require (
 	github.com/coreos/go-systemd/v22 v22.3.2 // indirect
 	github.com/davecgh/go-spew v1.1.1 // indirect
 	github.com/felixge/httpsnoop v1.0.3 // indirect
-	github.com/fsnotify/fsnotify v1.6.0 // indirect
 	github.com/gin-contrib/sse v0.1.0 // indirect
 	github.com/gin-gonic/gin v1.9.0 // indirect
 	github.com/go-logr/logr v1.2.4 // indirect

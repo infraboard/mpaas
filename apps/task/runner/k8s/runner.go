@@ -1,7 +1,7 @@
 package k8s
 
 import (
-	"github.com/infraboard/mcube/app"
+	"github.com/infraboard/mcube/ioc"
 	"github.com/infraboard/mcube/logger"
 	"github.com/infraboard/mcube/logger/zap"
 	"github.com/infraboard/mpaas/apps/deploy"
@@ -22,9 +22,9 @@ type K8sRunner struct {
 }
 
 func (r *K8sRunner) Init() error {
-	r.cluster = app.GetInternalApp(cluster.AppName).(cluster.Service)
-	r.deploy = app.GetInternalApp(deploy.AppName).(deploy.Service)
-	r.task = app.GetInternalApp(task.AppName).(task.PipelineService)
+	r.cluster = ioc.GetController(cluster.AppName).(cluster.Service)
+	r.deploy = ioc.GetController(deploy.AppName).(deploy.Service)
+	r.task = ioc.GetController(task.AppName).(task.PipelineService)
 	r.log = zap.L().Named("runner.k8s")
 	return nil
 }

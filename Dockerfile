@@ -16,7 +16,7 @@ RUN make build
 FROM alpine
 
 WORKDIR /app
-EXPOSE 8080
+EXPOSE 80
 
 COPY --from=builder /src/dist/mpaas /app/mpaas-api
 COPY --from=builder /src/etc /app/etc

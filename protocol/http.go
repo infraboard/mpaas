@@ -6,9 +6,10 @@ import (
 	"net/http"
 	"time"
 
-	restfulspec "github.com/emicklei/go-restful-openapi/v2"
 	"github.com/emicklei/go-restful/v3"
-	"github.com/infraboard/mcube/app"
+	"github.com/infraboard/mcube/ioc"
+	"github.com/infraboard/mcube/ioc/apidoc"
+	"github.com/infraboard/mcube/ioc/health"
 	"github.com/infraboard/mcube/logger"
 	"github.com/infraboard/mcube/logger/zap"
 	"go.opentelemetry.io/contrib/instrumentation/github.com/emicklei/go-restful/otelrestful"
@@ -86,22 +87,12 @@ func (s *HTTPService) PathPrefix() string {
 // Start 启动服务
 func (s *HTTPService) Start() error {
 	// 装置子服务路由
-	app.LoadRESTfulApp(s.PathPrefix(), s.r)
+	ioc.LoadGoRestfulApi(s.PathPrefix(), s.r)
 
 	// API Doc
-	config := restfulspec.Config{
-		WebServices:                   restful.RegisteredWebServices(), // you control what services are visible
-		APIPath:                       "/apidocs.json",
-		PostBuildSwaggerObjectHandler: swagger.Docs,
-		DefinitionNameHandler: func(name string) string {
-			if name == "state" || name == "sizeCache" || name == "unknownFields" {
-				return ""
-			}
-			return name
-		},
-	}
-	s.r.Add(restfulspec.NewOpenAPIService(config))
-	s.l.Infof("Get the API using http://%s%s", s.c.App.HTTP.Addr(), config.APIPath)
+	s.r.Add(apidoc.APIDocs("/apidocs.json", swagger.Docs))
+	// HealthCheck
+	s.r.Add(health.NewDefaultHealthChecker().WebService())
 
 	// 注册路由条目
 	s.RegistryEndpoint()

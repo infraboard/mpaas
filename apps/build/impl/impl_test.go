@@ -3,7 +3,7 @@ package impl_test
 import (
 	"context"
 
-	"github.com/infraboard/mcube/app"
+	"github.com/infraboard/mcube/ioc"
 	"github.com/infraboard/mpaas/apps/build"
 	"github.com/infraboard/mpaas/test/tools"
 )
@@ -15,5 +15,5 @@ var (
 
 func init() {
 	tools.DevelopmentSetup()
-	impl = app.GetInternalApp(build.AppName).(build.Service)
+	impl = ioc.GetController(build.AppName).(build.Service)
 }

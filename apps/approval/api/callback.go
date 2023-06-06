@@ -7,27 +7,28 @@ import (
 	"github.com/infraboard/mcenter/client/rpc"
 	"github.com/infraboard/mcube/http/label"
 	"github.com/infraboard/mcube/http/restful/response"
+	"github.com/infraboard/mcube/ioc"
 	"github.com/infraboard/mcube/logger"
 	"github.com/infraboard/mcube/logger/zap"
 
-	"github.com/infraboard/mcube/app"
 	"github.com/infraboard/mpaas/apps/approval"
 	"github.com/infraboard/mpaas/apps/approval/api/callback"
 )
 
 func init() {
-	app.RegistryRESTfulApp(&callbackHandler{})
+	ioc.RegistryApi(&callbackHandler{})
 }
 
 type callbackHandler struct {
 	service approval.Service
 	log     logger.Logger
 	mcenter *rpc.ClientSet
+	ioc.IocObjectImpl
 }
 
-func (h *callbackHandler) Config() error {
+func (h *callbackHandler) Init() error {
 	h.log = zap.L().Named(approval.AppName)
-	h.service = app.GetGrpcApp(approval.AppName).(approval.Service)
+	h.service = ioc.GetController(approval.AppName).(approval.Service)
 	h.mcenter = rpc.C()
 	return nil
 }

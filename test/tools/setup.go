@@ -2,7 +2,7 @@ package tools
 
 import (
 	"github.com/emicklei/go-restful/v3"
-	"github.com/infraboard/mcube/app"
+	"github.com/infraboard/mcube/ioc"
 	"github.com/infraboard/mcube/logger/zap"
 	"github.com/infraboard/mpaas/conf"
 	test "github.com/infraboard/mpaas/test/conf"
@@ -29,7 +29,7 @@ func DevelopmentSetup() {
 	test.LoadConfigFromEnv()
 
 	// 初始化全局app
-	if err := app.InitAllApp(); err != nil {
+	if err := ioc.InitIocObject(); err != nil {
 		panic(err)
 	}
 }

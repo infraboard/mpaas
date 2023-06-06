@@ -1,10 +1,10 @@
 package api
 
 import (
+	"github.com/infraboard/mcube/ioc"
 	"github.com/infraboard/mcube/logger"
 	"github.com/infraboard/mcube/logger/zap"
 
-	"github.com/infraboard/mcube/app"
 	"github.com/infraboard/mpaas/apps/deploy"
 )
 
@@ -15,11 +15,12 @@ var (
 type downloadHandler struct {
 	service deploy.Service
 	log     logger.Logger
+	ioc.IocObjectImpl
 }
 
-func (h *downloadHandler) Config() error {
+func (h *downloadHandler) Init() error {
 	h.log = zap.L().Named(deploy.AppName)
-	h.service = app.GetGrpcApp(deploy.AppName).(deploy.Service)
+	h.service = ioc.GetController(deploy.AppName).(deploy.Service)
 	return nil
 }
 
@@ -32,5 +33,5 @@ func (h *downloadHandler) Version() string {
 }
 
 func init() {
-	app.RegistryRESTfulApp(dh)
+	ioc.RegistryApi(dh)
 }
