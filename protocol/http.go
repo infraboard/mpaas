@@ -30,11 +30,9 @@ func NewHTTPService() *HTTPService {
 		panic(err)
 	}
 
-	// 设置默认格式为Json
+	r := restful.DefaultContainer
 	restful.DefaultResponseContentType(restful.MIME_JSON)
 	restful.DefaultRequestContentType(restful.MIME_JSON)
-
-	r := restful.DefaultContainer
 
 	// CORS中间件
 	cors := restful.CrossOriginResourceSharing{
@@ -62,11 +60,12 @@ func NewHTTPService() *HTTPService {
 	}
 
 	return &HTTPService{
-		r:        r,
-		server:   server,
-		l:        zap.L().Named("server.http"),
-		c:        conf.C(),
-		endpoint: c.Endpoint(),
+		r:          r,
+		server:     server,
+		l:          zap.L().Named("server.http"),
+		c:          conf.C(),
+		endpoint:   c.Endpoint(),
+		apiDocPath: "/apidocs.json",
 	}
 }
 
@@ -77,7 +76,8 @@ type HTTPService struct {
 	c      *conf.Config
 	server *http.Server
 
-	endpoint endpoint.RPCClient
+	endpoint   endpoint.RPCClient
+	apiDocPath string
 }
 
 func (s *HTTPService) PathPrefix() string {
@@ -90,9 +90,13 @@ func (s *HTTPService) Start() error {
 	ioc.LoadGoRestfulApi(s.PathPrefix(), s.r)
 
 	// API Doc
-	s.r.Add(apidoc.APIDocs("/apidocs.json", swagger.Docs))
+	s.r.Add(apidoc.APIDocs(s.apiDocPath, swagger.Docs))
+	s.l.Infof("Get the API Doc using http://%s%s", s.c.App.HTTP.Addr(), s.apiDocPath)
+
 	// HealthCheck
-	s.r.Add(health.NewDefaultHealthChecker().WebService())
+	hc := health.NewDefaultHealthChecker()
+	s.r.Add(hc.WebService())
+	s.l.Infof("健康检查地址: http://%s%s", s.c.App.HTTP.Addr(), hc.HealthCheckPath)
 
 	// 注册路由条目
 	s.RegistryEndpoint()
