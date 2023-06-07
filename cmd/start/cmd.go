@@ -3,7 +3,6 @@ package start
 import (
 	"os"
 	"os/signal"
-	"strings"
 	"syscall"
 
 	"github.com/infraboard/mcube/ioc"
@@ -24,7 +23,7 @@ var Cmd = &cobra.Command{
 	Use:   "start",
 	Short: "mpaas API服务",
 	Long:  "mpaas API服务",
-	RunE: func(cmd *cobra.Command, args []string) error {
+	Run: func(cmd *cobra.Command, args []string) {
 		conf := conf.C()
 		// 启动服务
 		ch := make(chan os.Signal, 1)
@@ -32,31 +31,24 @@ var Cmd = &cobra.Command{
 
 		// 初始化服务
 		svr, err := newService(conf)
-		if err != nil {
-			return err
-		}
-
-		// 等待信号处理
-		go svr.waitSign(ch)
+		cobra.CheckErr(err)
 
 		// 启动服务
-		if err := svr.start(); err != nil {
-			if !strings.Contains(err.Error(), "http: Server closed") {
-				return err
-			}
-		}
-
-		return nil
+		svr.start()
 	},
 }
 
 func newService(cnf *conf.Config) (*service, error) {
 	http := protocol.NewHTTPService()
 	grpc := protocol.NewGRPCService()
+	// 处理信号量
+	ch := make(chan os.Signal, 1)
+	signal.Notify(ch, syscall.SIGTERM, syscall.SIGINT, syscall.SIGHUP, syscall.SIGQUIT)
 	svr := &service{
 		http: http,
 		grpc: grpc,
 		log:  zap.L().Named("cli"),
+		ch:   ch,
 	}
 
 	return svr, nil
@@ -65,16 +57,17 @@ func newService(cnf *conf.Config) (*service, error) {
 type service struct {
 	http *protocol.HTTPService
 	grpc *protocol.GRPCService
-
-	log logger.Logger
+	ch   chan os.Signal
+	log  logger.Logger
 }
 
-func (s *service) start() error {
+func (s *service) start() {
 	s.log.Infof("loaded controllers: %s", ioc.ListControllerObjectNames())
 	s.log.Infof("loaded apis: %s", ioc.ListApiObjectNames())
 
 	go s.grpc.Start()
-	return s.http.Start()
+	go s.http.Start()
+	s.waitSign(s.ch)
 }
 
 func (s *service) waitSign(sign chan os.Signal) {

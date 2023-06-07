@@ -2,7 +2,6 @@ package protocol
 
 import (
 	"context"
-	"fmt"
 	"net/http"
 	"time"
 
@@ -85,7 +84,7 @@ func (s *HTTPService) PathPrefix() string {
 }
 
 // Start 启动服务
-func (s *HTTPService) Start() error {
+func (s *HTTPService) Start() {
 	// 装置子服务路由
 	ioc.LoadGoRestfulApi(s.PathPrefix(), s.r)
 
@@ -106,10 +105,11 @@ func (s *HTTPService) Start() error {
 	if err := s.server.ListenAndServe(); err != nil {
 		if err == http.ErrServerClosed {
 			s.l.Info("service is stopped")
+			return
 		}
-		return fmt.Errorf("start service error, %s", err.Error())
+		s.l.Errorf("start service error, %s", err.Error())
 	}
-	return nil
+	return
 }
 
 // Stop 停止server
