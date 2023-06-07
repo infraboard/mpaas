@@ -197,6 +197,9 @@ message CreateDeploymentRequest {
     // 对象所在空间
     // @gotags: bson:"namespace" json:"namespace"
     string namespace = 20;
+    // 部署负责人, 当部署有异常时, 通知负责人
+    // @gotags: bson:"responsible_users" json:"responsible_users"
+    repeated string responsible_users = 24;
 	// 是否是模版
 	// @gotags: bson:"is_template" json:"is_template"
     bool is_template = 1;
