@@ -15,9 +15,9 @@ import (
 	"github.com/infraboard/mpaas/conf"
 )
 
-var (
-	h = &Handler{}
-)
+func init() {
+	ioc.RegistryApi(&Handler{})
+}
 
 type Handler struct {
 	log logger.Logger
@@ -67,8 +67,4 @@ func (h *Handler) Registry(ws *restful.WebService) {
 		Metadata(label.Action, label.Create.Value()).
 		Metadata(label.Auth, label.Enable).
 		Metadata(label.Permission, label.Enable))
-}
-
-func init() {
-	ioc.RegistryApi(h)
 }

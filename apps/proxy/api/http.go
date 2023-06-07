@@ -14,9 +14,9 @@ import (
 	"github.com/infraboard/mpaas/provider/k8s"
 )
 
-var (
-	h = &handler{}
-)
+func init() {
+	ioc.RegistryApi(&handler{})
+}
 
 type handler struct {
 	service cluster.Service
@@ -85,8 +85,4 @@ func (h *handler) ClusterMiddleware(
 	next.ProcessFilter(req, resp)
 
 	// 处理响应
-}
-
-func init() {
-	ioc.RegistryApi(h)
 }

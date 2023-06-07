@@ -8,9 +8,9 @@ import (
 	cluster "github.com/infraboard/mpaas/apps/k8s"
 )
 
-var (
-	h = &handler{}
-)
+func init() {
+	ioc.RegistryApi(&handler{})
+}
 
 type handler struct {
 	service cluster.Service
@@ -31,8 +31,4 @@ func (h *handler) Name() string {
 
 func (h *handler) Version() string {
 	return "v1"
-}
-
-func init() {
-	ioc.RegistryApi(h)
 }

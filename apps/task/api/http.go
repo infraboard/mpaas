@@ -9,9 +9,9 @@ import (
 	"github.com/infraboard/mpaas/apps/task"
 )
 
-var (
-	h = &handler{}
-)
+func init() {
+	ioc.RegistryApi(&handler{})
+}
 
 type handler struct {
 	service task.Service
@@ -35,8 +35,4 @@ func (h *handler) Version() string {
 
 func (h *handler) Registry(ws *restful.WebService) {
 	h.RegistryUserHandler(ws)
-}
-
-func init() {
-	ioc.RegistryApi(h)
 }

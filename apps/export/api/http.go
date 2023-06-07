@@ -8,9 +8,9 @@ import (
 	"github.com/infraboard/mpaas/apps/deploy"
 )
 
-var (
-	dh = &downloadHandler{}
-)
+func init() {
+	ioc.RegistryApi(&downloadHandler{})
+}
 
 type downloadHandler struct {
 	service deploy.Service
@@ -30,8 +30,4 @@ func (h *downloadHandler) Name() string {
 
 func (h *downloadHandler) Version() string {
 	return "v1"
-}
-
-func init() {
-	ioc.RegistryApi(dh)
 }

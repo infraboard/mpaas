@@ -8,9 +8,9 @@ import (
 	"github.com/infraboard/mpaas/apps/job"
 )
 
-var (
-	h = &handler{}
-)
+func init() {
+	ioc.RegistryApi(&handler{})
+}
 
 type handler struct {
 	service job.Service
@@ -30,8 +30,4 @@ func (h *handler) Name() string {
 
 func (h *handler) Version() string {
 	return "v1"
-}
-
-func init() {
-	ioc.RegistryApi(h)
 }

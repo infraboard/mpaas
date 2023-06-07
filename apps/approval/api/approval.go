@@ -4,10 +4,38 @@ import (
 	restfulspec "github.com/emicklei/go-restful-openapi/v2"
 	"github.com/emicklei/go-restful/v3"
 	"github.com/infraboard/mcube/http/label"
+	"github.com/infraboard/mcube/ioc"
+	"github.com/infraboard/mcube/logger"
+	"github.com/infraboard/mcube/logger/zap"
 
 	"github.com/infraboard/mcube/http/restful/response"
 	"github.com/infraboard/mpaas/apps/approval"
 )
+
+func init() {
+	ioc.RegistryApi(&handler{})
+}
+
+type handler struct {
+	service approval.Service
+	log     logger.Logger
+	ioc.IocObjectImpl
+}
+
+func (h *handler) Init() error {
+	h.log = zap.L().Named(approval.AppName)
+	h.service = ioc.GetController(approval.AppName).(approval.Service)
+	return nil
+}
+
+// /prifix/cluster/
+func (h *handler) Name() string {
+	return approval.AppName
+}
+
+func (h *handler) Version() string {
+	return "v1"
+}
 
 func (h *handler) Registry(ws *restful.WebService) {
 	tags := []string{"审核管理"}
