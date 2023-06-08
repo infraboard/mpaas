@@ -37,7 +37,7 @@ func NewClientSetFromConfig(conf *rpc.Config) (*ClientSet, error) {
 	conn, err := grpc.DialContext(
 		ctx,
 		fmt.Sprintf("%s://%s?%s", resolver.Scheme, "mpaas", conf.Resolver.ToQueryString()),
-		grpc.WithPerRPCCredentials(rpc.NewAuthenticationFromEnv()),
+		grpc.WithPerRPCCredentials(conf.Credentials()),
 		grpc.WithTransportCredentials(insecure.NewCredentials()),
 		grpc.WithDefaultServiceConfig(`{"loadBalancingPolicy":"round_robin"}`),
 		grpc.WithBlock(),
