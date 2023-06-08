@@ -4,14 +4,15 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/infraboard/mcenter/client/rpc"
-	"github.com/infraboard/mcenter/client/rpc/resolver"
+	"github.com/infraboard/mcenter/clients/rpc"
+	"github.com/infraboard/mcenter/clients/rpc/resolver"
 	"github.com/infraboard/mpaas/apps/deploy"
 	"github.com/infraboard/mpaas/apps/task"
 	"go.opentelemetry.io/contrib/instrumentation/google.golang.org/grpc/otelgrpc"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
 
+	"github.com/infraboard/mcube/grpc/middleware/exception"
 	"github.com/infraboard/mcube/logger"
 	"github.com/infraboard/mcube/logger/zap"
 )
@@ -41,6 +42,9 @@ func NewClientSetFromConfig(conf *rpc.Config) (*ClientSet, error) {
 		grpc.WithTransportCredentials(insecure.NewCredentials()),
 		grpc.WithDefaultServiceConfig(`{"loadBalancingPolicy":"round_robin"}`),
 		grpc.WithBlock(),
+
+		// 将异常转化为 API Exception
+		grpc.WithChainUnaryInterceptor(exception.NewUnaryClientInterceptor()),
 
 		// Grpc Trace
 		grpc.WithUnaryInterceptor(otelgrpc.UnaryClientInterceptor()),

@@ -14,8 +14,8 @@ import (
 	"go.opentelemetry.io/contrib/instrumentation/github.com/emicklei/go-restful/otelrestful"
 
 	"github.com/infraboard/mcenter/apps/endpoint"
-	"github.com/infraboard/mcenter/client/rpc"
-	"github.com/infraboard/mcenter/client/rpc/middleware"
+	"github.com/infraboard/mcenter/clients/rpc"
+	"github.com/infraboard/mcenter/clients/rpc/middleware"
 
 	"github.com/infraboard/mpaas/conf"
 	"github.com/infraboard/mpaas/swagger"

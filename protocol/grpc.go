@@ -8,8 +8,8 @@ import (
 	"google.golang.org/grpc"
 
 	"github.com/infraboard/mcenter/apps/instance"
-	"github.com/infraboard/mcenter/client/rpc"
-	"github.com/infraboard/mcenter/client/rpc/middleware"
+	"github.com/infraboard/mcenter/clients/rpc"
+	"github.com/infraboard/mcenter/clients/rpc/middleware"
 	"go.opentelemetry.io/contrib/instrumentation/google.golang.org/grpc/otelgrpc"
 
 	"github.com/infraboard/mcube/grpc/middleware/recovery"

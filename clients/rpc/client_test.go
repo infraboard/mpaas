@@ -8,7 +8,7 @@ import (
 
 	"github.com/infraboard/mpaas/apps/deploy"
 	"github.com/infraboard/mpaas/apps/task"
-	"github.com/infraboard/mpaas/client/rpc"
+	"github.com/infraboard/mpaas/clients/rpc"
 )
 
 var (

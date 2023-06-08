@@ -6,7 +6,7 @@ import (
 	"github.com/infraboard/mpaas/test/tools"
 
 	"github.com/infraboard/mcenter/apps/notify"
-	"github.com/infraboard/mcenter/client/rpc"
+	"github.com/infraboard/mcenter/clients/rpc"
 )
 
 var (

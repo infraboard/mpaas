@@ -6,7 +6,7 @@ import (
 
 	"github.com/infraboard/mcube/logger/zap"
 	cluster "github.com/infraboard/mpaas/apps/k8s"
-	"github.com/infraboard/mpaas/client/rest"
+	"github.com/infraboard/mpaas/clients/rest"
 	"github.com/infraboard/mpaas/test/tools"
 )
 

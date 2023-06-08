@@ -8,7 +8,7 @@ import (
 	"github.com/infraboard/mcube/logger/zap"
 	"google.golang.org/grpc"
 
-	"github.com/infraboard/mcenter/client/rpc"
+	"github.com/infraboard/mcenter/clients/rpc"
 	"github.com/infraboard/mpaas/apps/approval"
 	"github.com/infraboard/mpaas/apps/job"
 	"github.com/infraboard/mpaas/apps/k8s"

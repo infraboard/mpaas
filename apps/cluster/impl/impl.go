@@ -3,7 +3,7 @@ package impl
 import (
 	"go.mongodb.org/mongo-driver/mongo"
 
-	"github.com/infraboard/mcenter/client/rpc"
+	"github.com/infraboard/mcenter/clients/rpc"
 	"github.com/infraboard/mcube/ioc"
 	"github.com/infraboard/mcube/logger"
 	"github.com/infraboard/mcube/logger/zap"

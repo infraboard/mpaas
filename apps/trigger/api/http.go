@@ -10,7 +10,7 @@ import (
 	"github.com/infraboard/mcube/logger"
 	"github.com/infraboard/mcube/logger/zap"
 
-	"github.com/infraboard/mcenter/client/rpc"
+	"github.com/infraboard/mcenter/clients/rpc"
 	"github.com/infraboard/mpaas/apps/trigger"
 	"github.com/infraboard/mpaas/conf"
 )

@@ -4,7 +4,7 @@ import (
 	"github.com/BurntSushi/toml"
 	"github.com/caarlos0/env/v6"
 
-	"github.com/infraboard/mcenter/client/rpc"
+	"github.com/infraboard/mcenter/clients/rpc"
 )
 
 var (
