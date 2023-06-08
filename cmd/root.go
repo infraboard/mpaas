@@ -4,9 +4,6 @@ import (
 	"errors"
 	"fmt"
 
-	"github.com/infraboard/mcube/cache"
-	"github.com/infraboard/mcube/cache/memory"
-	"github.com/infraboard/mcube/cache/redis"
 	"github.com/infraboard/mcube/ioc"
 	"github.com/infraboard/mcube/logger/zap"
 	"github.com/spf13/cobra"
@@ -32,12 +29,12 @@ var RootCmd = &cobra.Command{
 	Use:   "mpaas",
 	Short: "微服务发布平台",
 	Long:  "微服务发布平台",
-	RunE: func(cmd *cobra.Command, args []string) error {
+	Run: func(cmd *cobra.Command, args []string) {
 		if vers {
 			fmt.Println(version.FullVersion())
-			return nil
+			return
 		}
-		return cmd.Help()
+		cmd.Help()
 	},
 }
 
@@ -57,26 +54,6 @@ func loadGlobalConfig(configType string) error {
 		}
 	default:
 		return errors.New("unknown config type")
-	}
-
-	return nil
-}
-
-func loadCache() error {
-	l := zap.L().Named("INIT")
-	c := conf.C()
-	// 设置全局缓存
-	switch c.Cache.Type {
-	case "memory", "":
-		ins := memory.NewCache(c.Cache.Memory)
-		cache.SetGlobal(ins)
-		l.Info("use cache in local memory")
-	case "redis":
-		ins := redis.NewCache(c.Cache.Redis)
-		cache.SetGlobal(ins)
-		l.Info("use redis to cache")
-	default:
-		return fmt.Errorf("unknown cache type: %s", c.Cache.Type)
 	}
 
 	return nil
@@ -125,10 +102,6 @@ func initail() {
 
 	// 初始化全局日志配置
 	err = loadGlobalLogger()
-	cobra.CheckErr(err)
-
-	// 加载缓存
-	err = loadCache()
 	cobra.CheckErr(err)
 
 	// 初始化全局app

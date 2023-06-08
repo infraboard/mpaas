@@ -8,8 +8,6 @@ import (
 	"time"
 
 	"github.com/infraboard/mcenter/client/rpc"
-	"github.com/infraboard/mcube/cache/memory"
-	"github.com/infraboard/mcube/cache/redis"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 	"go.opentelemetry.io/contrib/instrumentation/go.mongodb.org/mongo-driver/mongo/otelmongo"
@@ -29,7 +27,6 @@ func newConfig() *Config {
 		Log:     newDefaultLog(),
 		Mongo:   newDefaultMongoDB(),
 		Mcenter: rpc.NewDefaultConfig(),
-		Cache:   newDefaultCache(),
 		Image:   newDefaultImage(),
 		Jaeger:  newJaeger(),
 	}
@@ -41,7 +38,6 @@ type Config struct {
 	Log     *log        `toml:"log"`
 	Mongo   *mongodb    `toml:"mongodb"`
 	Mcenter *rpc.Config `toml:"mcenter"`
-	Cache   *_cache     `toml:"cache"`
 	Image   *image      `toml:"image"`
 	Jaeger  *jaeger     `toml:"jaeger"`
 }
@@ -227,20 +223,6 @@ func (m *mongodb) getClient() (*mongo.Client, error) {
 	}
 
 	return client, nil
-}
-
-func newDefaultCache() *_cache {
-	return &_cache{
-		Type:   "memory",
-		Memory: memory.NewDefaultConfig(),
-		Redis:  redis.NewDefaultConfig(),
-	}
-}
-
-type _cache struct {
-	Type   string         `toml:"type" json:"type" yaml:"type" env:"MCENTER_CACHE_TYPE"`
-	Memory *memory.Config `toml:"memory" json:"memory" yaml:"memory"`
-	Redis  *redis.Config  `toml:"redis" json:"redis" yaml:"redis"`
 }
 
 func newDefaultImage() *image {
