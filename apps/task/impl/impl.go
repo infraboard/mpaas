@@ -22,10 +22,9 @@ import (
 	"github.com/infraboard/mpaas/apps/task/webhook"
 )
 
-var (
-	// Service 服务实例
-	svr = &impl{}
-)
+func init() {
+	ioc.RegistryController(&impl{})
+}
 
 type impl struct {
 	jcol *mongo.Collection
@@ -70,10 +69,6 @@ func (i *impl) Name() string {
 }
 
 func (i *impl) Registry(server *grpc.Server) {
-	task.RegisterJobRPCServer(server, svr)
-	task.RegisterPipelineRPCServer(server, svr)
-}
-
-func init() {
-	ioc.RegistryController(svr)
+	task.RegisterJobRPCServer(server, i)
+	task.RegisterPipelineRPCServer(server, i)
 }

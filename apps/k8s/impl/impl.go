@@ -12,10 +12,9 @@ import (
 	"github.com/infraboard/mpaas/conf"
 )
 
-var (
-	// Service 服务实例
-	svr = &service{}
-)
+func init() {
+	ioc.RegistryController(&service{})
+}
 
 type service struct {
 	col     *mongo.Collection
@@ -45,9 +44,5 @@ func (s *service) Name() string {
 }
 
 func (s *service) Registry(server *grpc.Server) {
-	cluster.RegisterRPCServer(server, svr)
-}
-
-func init() {
-	ioc.RegistryController(svr)
+	cluster.RegisterRPCServer(server, s)
 }
