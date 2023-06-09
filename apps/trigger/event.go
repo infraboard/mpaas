@@ -50,9 +50,9 @@ func ParseGitLabEventFromRequest(r *restful.Request) (*Event, error) {
 
 	// 读取Header中的数据
 	e.Name = r.HeaderParameter(GITLAB_HEADER_EVENT_NAME)
-	e.Id = r.PathParameter(GITLAB_HEADER_EVENT_UUID)
-	e.Token = r.PathParameter(GITLAB_HEADER_EVENT_TOKEN)
-	e.From = r.PathParameter(GITLAB_HEADER_INSTANCE)
+	e.Id = r.HeaderParameter(GITLAB_HEADER_EVENT_UUID)
+	e.Token = r.HeaderParameter(GITLAB_HEADER_EVENT_TOKEN)
+	e.From = r.HeaderParameter(GITLAB_HEADER_INSTANCE)
 	e.UserAgent = r.Request.UserAgent()
 
 	// 读取URL参数
