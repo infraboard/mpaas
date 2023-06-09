@@ -59,6 +59,10 @@ message Event {
     // 事件提供方
     // @gotags: json:"provider" bson:"provider"
     EVENT_PROVIDER provider = 6;
+    // 提供方的版本, 比如gitlab 15.5.0, 不通版本有同步版本的API, 因此需要记录
+    // 这个值从user agent中获取
+    // @gotags: bson:"provider_version" json:"provider_version"
+    string provider_version = 11;
     // 事件名称
     // @gotags: bson:"name" json:"name"
     string name = 7;

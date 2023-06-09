@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
+	"strconv"
 	"strings"
 	"time"
 
@@ -54,6 +55,7 @@ func ParseGitLabEventFromRequest(r *restful.Request) (*Event, error) {
 	e.Token = r.HeaderParameter(GITLAB_HEADER_EVENT_TOKEN)
 	e.From = r.HeaderParameter(GITLAB_HEADER_INSTANCE)
 	e.UserAgent = r.Request.UserAgent()
+	e.ProviderVersion = ParseGitLabServerVersion(r.Request.UserAgent())
 
 	// 读取URL参数
 	e.SkipRunPipeline = r.QueryParameter("skip_run_pipeline") == "true"
@@ -127,6 +129,16 @@ func (e *Event) GitRunParams() *job.RunParamSet {
 	}
 
 	return params
+}
+
+// 获取主版本
+func (e *Event) ProviderMajorVersion() int64 {
+	if e.ProviderVersion != "" {
+		vs := strings.Split(e.ProviderVersion, ".")
+		v, _ := strconv.ParseInt(vs[0], 10, 64)
+		return v
+	}
+	return 0
 }
 
 func (e *Event) GetGitlabEvent() (*GitlabWebHookEvent, error) {
