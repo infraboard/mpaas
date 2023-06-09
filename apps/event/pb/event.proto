@@ -7,11 +7,69 @@ message Event  {
     // 创建信息
     // @gotags: bson:",inline" json:"spec"
     CreateEventRequest spec = 1;
+    // 事件状态
+    // @gotags: bson:"status" json:"status"
+    Status status = 2;
 }
 
 // 创建事件
 message CreateEventRequest {
-    // 对象Id, 如果不传会自动生成
+    // 事件Id, 如果不传会自动生成
     // @gotags: bson:"_id" json:"id"
     string id = 1;
+    // 事件触发的事件
+    // @gotags: bson:"time" json:"time"
+    int64 time = 2;
+    // 事件的级别
+    // @gotags: bson:"level" json:"level"
+    LEVEL level = 3;
+    // 是否是临时事件
+    // @gotags: bson:"is_temporary" json:"is_temporary"
+    bool is_temporary = 4;
+}
+
+// 事件的级别
+enum LEVEL {
+    TRACE = 0;
+    DEBUG = 1;
+    INFO = 2;
+    WARNN = 3;
+    ERROR = 4;
+    PANIC = 5;
+}
+
+// 事件状态
+message Status {
+    // 当前状态
+    // @gotags: bson:"stage" json:"stage"
+    STAGE stage = 1;
+    // 更新时间
+    // @gotags: bson:"update_at" json:"update_at"
+    int64 update_at = 2;
+    // 恢复时间
+    // @gotags: bson:"resolved_at" json:"resolved_at"
+    int64 resolved_at = 3;
+    // 过期时间
+    // @gotags: bson:"expired_at" json:"expired_at"
+    int64 expired_at = 4;
+}
+
+// 事件状态
+enum STAGE {
+    // 告警中
+    FIRING = 0;
+    // 告警恢复
+    RESOLVED = 1;
+    // 过期
+    EXPIRED = 2;
+}
+
+// 事件跟踪信息
+message TraceInfo {
+    // 跟进时间
+    // @gotags: bson:"trace_at" json:"trace_at"
+    int64 trace_at = 2;
+    // 根据人
+    // @gotags: bson:"trace_by" json:"trace_by"
+    string trace_by = 3;
 }

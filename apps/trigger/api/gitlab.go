@@ -35,7 +35,6 @@ func (h *Handler) HandleGitlabEvent(r *restful.Request, w *restful.Response) {
 		response.Failed(w, err)
 		return
 	}
-
 	response.Success(w, ins)
 }
 
