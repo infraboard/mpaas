@@ -18,21 +18,21 @@
 [如何拉取gcr.io的镜像](https://github.com/anjia0532/gcr.io_mirror/search?p=1&q=kaniko&type=issues)
 
 提前同步好的镜像:
-+ [gcr.io/kaniko-project/executor:v1.9.1](https://github.com/anjia0532/gcr.io_mirror/issues/1824)
-+ [gcr.io/kaniko-project/executor:v1.9.1-debug](https://github.com/anjia0532/gcr.io_mirror/issues/1906)
++ [gcr.io/kaniko-project/executor:v1.9.2](https://github.com/anjia0532/gcr.io_mirror/issues/2407)
++ [gcr.io/kaniko-project/executor:v1.9.2-debug](https://github.com/anjia0532/gcr.io_mirror/issues/2408)
 
 拉取最新版本的镜像:
 ```
-docker pull anjia0532/kaniko-project.executor:v1.9.1
-docker pull anjia0532/kaniko-project.executor:v1.9.1-debug
+docker pull anjia0532/kaniko-project.executor:v1.9.2
+docker pull anjia0532/kaniko-project.executor:v1.9.2-debug
 ```
 
 ### 手动操作
 
 启动一个deubg环境, 可以看看里面的工具(二进制可执行文件,工具的用法)
 ```sh
-docker run -it --entrypoint=/busybox/sh docker.io/anjia0532/kaniko-project.executor:v1.9.1-debug
-docker run -it --entrypoint=/busybox/sh registry.cn-hangzhou.aliyuncs.com/godev/kaniko-project.executor:v1.9.1-debug
+docker run -it --entrypoint=/busybox/sh docker.io/anjia0532/kaniko-project.executor:v1.9.2-debug
+docker run -it --entrypoint=/busybox/sh registry.cn-hangzhou.aliyuncs.com/godev/kaniko-project.executor:v1.9.2-debug
 
 / # ls -l /kaniko/
 total 75448
@@ -111,7 +111,7 @@ Use "executor [command] --help" for more information about a command.
 手动挂载并执行构建:
 ```sh
 # 挂在项目到workspace目录下, 注意指定工作目录:/workspace
-docker run -it -v ${PWD}/mpaas:/workspace -w /workspace --entrypoint=/busybox/sh docker.io/anjia0532/kaniko-project.executor:v1.9.1-debug
+docker run -it -v ${PWD}/mpaas:/workspace -w /workspace --entrypoint=/busybox/sh docker.io/anjia0532/kaniko-project.executor:v1.9.2-debug
 # 执行构建
 /kaniko/executor --no-push -v trace
 ```
@@ -149,7 +149,7 @@ YWRtaW46SGFyYm9yMTIzNDUK
 手动挂载并测试能否推送:
 ```sh
 # 挂在项目到workspace目录下, 注意指定工作目录:/workspace
-docker run -it -v ${HOME}/Workspace/mpaas:/workspace -v ${HOME}/Workspace/mpaas/apps/job/impl/test/kaniko_config.json:/kaniko/.docker/config.json -w /workspace --entrypoint=/busybox/sh docker.io/anjia0532/kaniko-project.executor:v1.9.1-debug
+docker run -it -v ${HOME}/Workspace/mpaas:/workspace -v ${HOME}/Workspace/mpaas/apps/job/impl/test/kaniko_config.json:/kaniko/.docker/config.json -w /workspace --entrypoint=/busybox/sh docker.io/anjia0532/kaniko-project.executor:v1.9.2-debug
 # 执行构建
 /kaniko/executor -v trace --destination=registry.cn-hangzhou.aliyuncs.com/infraboard/mpaas:v0.0.0
 ```
