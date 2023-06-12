@@ -14,6 +14,7 @@ import (
 	"github.com/infraboard/mpaas/apps/k8s"
 	"github.com/infraboard/mpaas/apps/pipeline"
 	"github.com/infraboard/mpaas/apps/task"
+	"github.com/infraboard/mpaas/apps/trigger"
 	"github.com/infraboard/mpaas/conf"
 
 	// 加载并初始化Runner
@@ -39,6 +40,7 @@ type impl struct {
 	cluster  k8s.Service
 	approval approval.Service
 	hook     *webhook.WebHook
+	trigger  trigger.Service
 
 	mcenter *rpc.ClientSet
 }
@@ -55,6 +57,7 @@ func (i *impl) Init() error {
 	i.pipeline = ioc.GetController(pipeline.AppName).(pipeline.Service)
 	i.cluster = ioc.GetController(k8s.AppName).(k8s.Service)
 	i.approval = ioc.GetController(approval.AppName).(approval.Service)
+	i.trigger = ioc.GetController(trigger.AppName).(trigger.Service)
 	i.mcenter = rpc.C()
 	if err := runner.Init(); err != nil {
 		return err

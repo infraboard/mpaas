@@ -21,3 +21,10 @@ message QueryRecordRequest {
     // @gotags: json:"service_id"
     string service_id = 2;
 }
+
+
+message EventQueueTaskCompleteRequest {
+    // 执行完成的PipelineTask任务Id
+    // @gotags: json:"pipeline_task_id"
+    string pipeline_task_id = 1;
+}

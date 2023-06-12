@@ -1,6 +1,7 @@
 package trigger
 
 import (
+	context "context"
 	"fmt"
 	"strings"
 
@@ -14,6 +15,12 @@ const (
 
 type Service interface {
 	RPCServer
+
+	// 事件队列任务执行完成通知
+	EventQueueTaskComplete(context.Context, *EventQueueTaskCompleteRequest) (*BuildStatus, error)
+}
+
+type EventQueueTaskComplete struct {
 }
 
 func NewGitlabWebHookEvent() *GitlabWebHookEvent {
@@ -76,5 +83,11 @@ func NewBuildStatus(bc *build.BuildConfig) *BuildStatus {
 func NewQueryRecordRequest() *QueryRecordRequest {
 	return &QueryRecordRequest{
 		Page: request.NewDefaultPageRequest(),
+	}
+}
+
+func NewEventQueueTaskCompleteRequest(pid string) *EventQueueTaskCompleteRequest {
+	return &EventQueueTaskCompleteRequest{
+		PipelineTaskId: pid,
 	}
 }

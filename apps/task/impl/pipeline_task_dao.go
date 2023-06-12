@@ -3,6 +3,7 @@ package impl
 import (
 	"context"
 	"fmt"
+	"time"
 
 	"github.com/infraboard/mcube/exception"
 	"github.com/infraboard/mpaas/apps/task"
@@ -53,7 +54,7 @@ func (r *queryPipelineTaskRequest) FindFilter() bson.M {
 	return filter
 }
 
-func (i *impl) deletecluster(ctx context.Context, ins *task.PipelineTask) error {
+func (i *impl) deletePipelineTask(ctx context.Context, ins *task.PipelineTask) error {
 	if ins == nil || ins.Meta.Id == "" {
 		return fmt.Errorf("pipeline is nil")
 	}
@@ -65,6 +66,16 @@ func (i *impl) deletecluster(ctx context.Context, ins *task.PipelineTask) error 
 
 	if result.DeletedCount == 0 {
 		return exception.NewNotFound("pipeline task %s not found", ins.Meta.Id)
+	}
+
+	return nil
+}
+
+func (i *impl) updatePiplineTaskStatus(ctx context.Context, in *task.PipelineTask) error {
+	in.Meta.UpdateAt = time.Now().Unix()
+	if _, err := i.pcol.UpdateByID(ctx, in.Meta.Id, bson.M{"$set": bson.M{"status": in.Status}}); err != nil {
+		return exception.NewInternalServerError("update task(%s) document error, %s",
+			in.Meta.Id, err)
 	}
 
 	return nil

@@ -3,12 +3,12 @@ package impl
 import (
 	"context"
 	"fmt"
-	"time"
 
 	"github.com/infraboard/mcube/exception"
 	"github.com/infraboard/mpaas/apps/approval"
 	"github.com/infraboard/mpaas/apps/pipeline"
 	"github.com/infraboard/mpaas/apps/task"
+	"github.com/infraboard/mpaas/apps/trigger"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
 )
@@ -143,7 +143,7 @@ func (i *impl) PipelineTaskStatusChanged(ctx context.Context, in *task.JobTask) 
 		// 更新当前任务的pipeline task状态
 		i.mustUpdatePipelineStatus(ctx, p)
 
-		// 如果有异常触发异常Job的更新
+		// 如果JobTask正常执行, 则等待回调更新, 如果执行失败 则需要立即更新JobTask状态
 		for index := range runErrorJobTasks {
 			_, err = i.UpdateJobTaskStatus(ctx, runErrorJobTasks[index])
 			if err != nil {
@@ -191,7 +191,7 @@ func (i *impl) PipelineTaskStatusChanged(ctx context.Context, in *task.JobTask) 
 	for index := range nexts.Items {
 		item := nexts.Items[index]
 		// 如果任务执行成功则等待任务的回调更新任务状态
-		// 如果任务允许失败, 直接更新任务状态
+		// 如果任务执行失败, 直接更新任务状态
 		t, err := i.RunJob(ctx, item.Spec)
 		if err != nil {
 			updateT := task.NewUpdateJobTaskStatusRequest(item.Spec.TaskId)
@@ -209,14 +209,14 @@ func (i *impl) PipelineTaskStatusChanged(ctx context.Context, in *task.JobTask) 
 
 // 更新Pipeline状态
 func (i *impl) updatePipelineStatus(ctx context.Context, in *task.PipelineTask) (*task.PipelineTask, error) {
-	// pipeline 状态更新回调
+	// 立即更新Pipeline Task状态
+	i.updatePiplineTaskStatus(ctx, in)
+
+	// 执行PipelineTask状态变更回调
 	i.PipelineStatusChangedCallback(ctx, in)
 
-	in.Meta.UpdateAt = time.Now().Unix()
-	if _, err := i.pcol.UpdateByID(ctx, in.Meta.Id, bson.M{"$set": bson.M{"status": in.Status}}); err != nil {
-		return nil, exception.NewInternalServerError("update task(%s) document error, %s",
-			in.Meta.Id, err)
-	}
+	// 补充回调执行状态
+	i.updatePiplineTaskStatus(ctx, in)
 	return in, nil
 }
 
@@ -243,6 +243,17 @@ func (i *impl) PipelineStatusChangedCallback(ctx context.Context, in *task.Pipel
 	if in.Pipeline.Spec.NextPipeline != "" {
 		// 如果有审核单则提交审核单, 没有则直接运行
 		i.log.Debugf("next pipeline: %s", in.Pipeline.Spec.NextPipeline)
+	}
+
+	// 事件队列回调通知, 通知事件队列该事件触发的PipelineTask已经执行完成
+	if in.IsComplete() {
+		tReq := trigger.NewEventQueueTaskCompleteRequest(in.Meta.Id)
+		bs, err := i.trigger.EventQueueTaskComplete(ctx, tReq)
+		if err != nil {
+			in.AddErrorEvent("触发队列回调失败: %s", err)
+		} else {
+			in.AddSuccessEvent("触发队列成功: %s", bs.BuildConfig.Spec.Name).SetDetail(bs.String())
+		}
 	}
 }
 
@@ -349,7 +360,7 @@ func (i *impl) DeletePipelineTask(ctx context.Context, in *task.DeletePipelineTa
 		}
 	}
 
-	if err := i.deletecluster(ctx, ins); err != nil {
+	if err := i.deletePipelineTask(ctx, ins); err != nil {
 		return nil, err
 	}
 

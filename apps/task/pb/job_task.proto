@@ -140,6 +140,12 @@ message Event {
 	// 事件描述
 	// @gotags: bson:"message" json:"message"
 	string message = 3;
+	// 事件的详情数据
+	// @gotags: bson:"detail" json:"detail"
+	string detail = 4;
+	// 标签
+	// @gotags: bson:"labels" json:"labels"
+	map<string, string> labels = 15;
 }
 
 // task 运行过程中 产生的临时环境变量, 即用记录Job的输出(将输出保存为环境变量)

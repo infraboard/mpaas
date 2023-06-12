@@ -421,3 +421,8 @@ func NewEvent(level EVENT_LEVEL, message string) *Event {
 		Message: message,
 	}
 }
+
+func (e *Event) SetDetail(detail string) *Event {
+	e.Detail = detail
+	return e
+}

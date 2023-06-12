@@ -34,6 +34,9 @@ message CreateBuildConfigRequest {
     // 满足条件后需要触发的流水线
     // @gotags: bson:"pipeline_id" json:"pipeline_id"
     string pipeline_id = 4;
+    // 队列配置
+    // @gotags: bson:"queue" json:"queue"
+    Queue queue = 14;
     // pipeline运行时注入的变量
     // @gotags: bson:"env_vars" json:"env_vars"
     map<string,string> env_vars = 5;
@@ -67,6 +70,16 @@ message CreateBuildConfigRequest {
     // 构建配置标签
     // @gotags: bson:"labels" json:"labels"
     map<string,string> labels = 15;
+}
+
+// 队列
+message Queue {
+    // 是否开启队列, 默认开启
+    // @gotags: bson:"enabled" json:"enabled"
+    bool enabled = 1;
+    // 队列最大长度
+    // @gotags: bson:"max_length" json:"max_length"
+    int64 MaxLength = 2;
 }
 
 enum VERSION_NAMED_RULE {

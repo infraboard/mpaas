@@ -29,6 +29,9 @@ message BuildStatus {
     // 构建信息, 由于可能修改, 因此需要保存整个对象
     // @gotags: bson:"build_config" json:"build_config"
     build.BuildConfig build_config = 1;
+    // 事件队列, 当前Task没有执行完成则放到队列中
+    // @gotags: bson:"event_queue" json:"event_queue"
+    repeated Event event_queue = 5;
     // 构建信息
     // @gotags: bson:"pipline_task_id" json:"pipline_task_id"
     string pipline_task_id = 2;

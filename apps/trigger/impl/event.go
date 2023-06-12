@@ -137,3 +137,9 @@ func (i *impl) QueryRecord(ctx context.Context, in *trigger.QueryRecordRequest) 
 	set.Total = count
 	return set, nil
 }
+
+// 事件队列任务执行完成通知
+func (i *impl) EventQueueTaskComplete(ctx context.Context, in *trigger.EventQueueTaskCompleteRequest) (
+	*trigger.BuildStatus, error) {
+	return nil, nil
+}

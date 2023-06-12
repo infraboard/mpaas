@@ -309,6 +309,10 @@ func (p *PipelineTask) AddErrorEvent(format string, a ...any) {
 	p.Status.AddErrorEvent(format, a...)
 }
 
+func (p *PipelineTask) AddSuccessEvent(format string, a ...any) *Event {
+	return p.Status.AddSuccessEvent(format, a...)
+}
+
 func (p *PipelineTask) AddWebhookStatus(items ...*CallbackStatus) {
 	p.Status.AddWebhookStatus(items...)
 }
@@ -387,6 +391,12 @@ func (s *PipelineTaskStatus) AddRuntimeEnv(items ...*RuntimeEnv) {
 
 func (t *PipelineTaskStatus) AddErrorEvent(format string, a ...any) {
 	t.Events = append(t.Events, NewEvent(EVENT_LEVEL_ERROR, fmt.Sprintf(format, a...)))
+}
+
+func (t *PipelineTaskStatus) AddSuccessEvent(format string, a ...any) *Event {
+	e := NewEvent(EVENT_LEVEL_INFO, fmt.Sprintf(format, a...))
+	t.Events = append(t.Events, e)
+	return e
 }
 
 func (t *PipelineTaskStatus) AddEvent(level EVENT_LEVEL, format string, a ...any) {
