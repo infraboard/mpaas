@@ -35,7 +35,11 @@ func (r *queryRequest) FindFilter() bson.M {
 	filter := bson.M{}
 
 	if r.ServiceId != "" {
-		filter["service_id"] = r.ServiceId
+		filter["token"] = r.ServiceId
+	}
+
+	if r.PipelineTaskId != "" {
+		filter["build_status.pipeline_task_id"] = r.PipelineTaskId
 	}
 
 	return filter

@@ -20,6 +20,9 @@ message QueryRecordRequest {
     // 服务Id, 查询某个服务的事件
     // @gotags: json:"service_id"
     string service_id = 2;
+    // 查询PipelineTask关联的事件
+    // @gotags: json:"pipeline_task_id"
+    string pipeline_task_id = 3;
 }
 
 
