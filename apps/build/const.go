@@ -13,3 +13,7 @@ const (
 const (
 	DEFAULT_DOCKER_FILE_PATH = "Dockerfile"
 )
+
+const (
+	PIPELINE_TASK_BUILD_CONFIG_LABLE_KEY = "_BUILD_CONFIG_ID"
+)

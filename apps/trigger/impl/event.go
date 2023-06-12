@@ -58,6 +58,8 @@ func (i *impl) RunBuildConf(ctx context.Context, in *trigger.Event, buildConf *b
 	runReq.RunBy = "@" + in.UUID()
 	runReq.TriggerMode = pipeline.TRIGGER_MODE_EVENT
 	runReq.DryRun = in.SkipRunPipeline
+	runReq.Labels[trigger.PIPELINE_TASK_EVENT_LABLE_KEY] = in.Id
+	runReq.Labels[build.PIPELINE_TASK_BUILD_CONFIG_LABLE_KEY] = buildConf.Meta.Id
 
 	// 补充Build用户自定义变量
 	runReq.AddRunParam(buildConf.BuildRunParams().Params...)
