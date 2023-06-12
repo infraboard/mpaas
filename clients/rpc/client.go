@@ -69,6 +69,11 @@ type ClientSet struct {
 	log  logger.Logger
 }
 
+// 关闭GRPC连接
+func (c *ClientSet) Stop() error {
+	return c.conn.Close()
+}
+
 // Job Task 管理接口
 func (s *ClientSet) JobTask() task.JobRPCClient {
 	return task.NewJobRPCClient(s.conn)

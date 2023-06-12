@@ -1,6 +1,7 @@
 package start
 
 import (
+	"context"
 	"os"
 	"os/signal"
 	"syscall"
@@ -87,6 +88,9 @@ func (s *service) waitSign(sign chan os.Signal) {
 			} else {
 				s.log.Infof("http service stop complete")
 			}
+
+			// 关闭依赖的全景配置对象
+			conf.C().Shutdown(context.Background())
 			return
 		}
 	}
