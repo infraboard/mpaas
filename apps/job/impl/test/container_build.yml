@@ -52,7 +52,7 @@ spec: # 详情描述
           args:
             [
               "-c",
-              "/kaniko/executor --cache --destination=${IMAGE_REPOSITORY}:${APP_VERSION} --dockerfile=${APP_DOCKERFILE}",
+              "/kaniko/executor --cache=${CACHE_ENABLE} --cache-repo=${CACHE_REPO} --compressed-caching=${CACHE_COMPRESS} --destination=${IMAGE_REPOSITORY}:${APP_VERSION} --dockerfile=${APP_DOCKERFILE}",
             ]
           volumeMounts:
             - name: workspace

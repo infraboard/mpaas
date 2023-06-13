@@ -176,6 +176,29 @@ func TestUpdateBuildJob(t *testing.T) {
 		Example:   "git-ssh-key",
 		Value:     "git-ssh-key",
 	})
+	// 构建缓存
+	param.Add(&job.RunParam{
+		Required:  false,
+		Name:      "CACHE_ENABLE",
+		NameDesc:  "是否启动缓存",
+		Example:   "true",
+		ValueType: job.PARAM_VALUE_TYPE_BOOLEAN,
+		Value:     "true",
+	})
+	param.Add(&job.RunParam{
+		Required: false,
+		Name:     "CACHE_REPO",
+		NameDesc: "构建缓存镜像的镜像仓库地址, 默认地址: [镜像推送地址/cache], 需要使用独立的缓存仓库时使用",
+		Example:  "registry.cn-hangzhou.aliyuncs.com/build_cache/mpaas",
+	})
+	param.Add(&job.RunParam{
+		Required:  false,
+		Name:      "CACHE_COMPRESS",
+		NameDesc:  "镜像缓存层压缩, 这可以降低缓存镜像的大小, 但是压缩时需要花费额外的内存, 对于大型构建特别有用, 默认为true, 但是如果出现内存不足错误, 请关闭",
+		Example:   "true",
+		ValueType: job.PARAM_VALUE_TYPE_BOOLEAN,
+		Value:     "true",
+	})
 	// docker push registry.cn-hangzhou.aliyuncs.com/infraboard/mpaas:[镜像版本号]
 	param.Add(&job.RunParam{
 		Required: true,
