@@ -180,7 +180,7 @@ func TestUpdateBuildJob(t *testing.T) {
 	param.Add(&job.RunParam{
 		Required:  false,
 		Name:      "CACHE_ENABLE",
-		NameDesc:  "是否启动缓存",
+		NameDesc:  "是否启动构建缓存, 构建缓存能有效加快构建的速度, 避免每次构建都通过远程网络下载构建依赖",
 		Example:   "true",
 		ValueType: job.PARAM_VALUE_TYPE_BOOLEAN,
 		Value:     "true",
@@ -188,7 +188,7 @@ func TestUpdateBuildJob(t *testing.T) {
 	param.Add(&job.RunParam{
 		Required: false,
 		Name:     "CACHE_REPO",
-		NameDesc: "构建缓存镜像的镜像仓库地址, 默认地址: [镜像推送地址/cache], 需要使用独立的缓存仓库时使用",
+		NameDesc: "构建缓存的镜像仓库地址, 默认为: [镜像推送地址/cache], 需要使用独立的缓存仓库时设置",
 		Example:  "registry.cn-hangzhou.aliyuncs.com/build_cache/mpaas",
 	})
 	param.Add(&job.RunParam{
