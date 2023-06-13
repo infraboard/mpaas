@@ -8,6 +8,10 @@ import (
 	"time"
 
 	"github.com/infraboard/mcenter/clients/rpc"
+	"github.com/infraboard/mcube/cache"
+	"github.com/infraboard/mcube/cache/memory"
+	"github.com/infraboard/mcube/cache/redis"
+	"github.com/infraboard/mcube/logger/zap"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 	"go.opentelemetry.io/contrib/instrumentation/go.mongodb.org/mongo-driver/mongo/otelmongo"
@@ -22,6 +26,7 @@ func newConfig() *Config {
 		App:     newDefaultAPP(),
 		Log:     newDefaultLog(),
 		Mongo:   newDefaultMongoDB(),
+		Cache:   newDefaultCache(),
 		Mcenter: rpc.NewDefaultConfig(),
 		Image:   newDefaultImage(),
 		Jaeger:  newJaeger(),
@@ -33,6 +38,7 @@ type Config struct {
 	App     *app        `toml:"app"`
 	Log     *log        `toml:"log"`
 	Mongo   *mongodb    `toml:"mongodb"`
+	Cache   *_cache     `toml:"cache"`
 	Mcenter *rpc.Config `toml:"mcenter"`
 	Image   *image      `toml:"image"`
 	Jaeger  *jaeger     `toml:"jaeger"`
@@ -46,13 +52,19 @@ func (c *Config) Shutdown(ctx context.Context) {
 	c.Mongo.Close(ctx)
 }
 
-// InitGloabl 注入全局变量
-func (c *Config) InitGloabl() error {
+// InitGlobal 注入全局变量
+func (c *Config) InitGlobal() error {
+	// 加载全局缓存
+	if err := c.Cache.LoadCache(); err != nil {
+		return fmt.Errorf("load cache error, %s", err)
+	}
+
 	// 提前加载好 mcenter客户端
 	err := rpc.LoadClientFromConfig(c.Mcenter)
 	if err != nil {
 		return fmt.Errorf("load mcenter client from config error: " + err.Error())
 	}
+
 	return nil
 }
 
@@ -257,4 +269,36 @@ func newJaeger() *jaeger {
 
 type jaeger struct {
 	Endpoint string `toml:"endpoint" json:"endpoint" yaml:"endpoint" env:"JAEGER_ENDPOINT"`
+}
+
+func newDefaultCache() *_cache {
+	return &_cache{
+		Type:   "memory",
+		Memory: memory.NewDefaultConfig(),
+		Redis:  redis.NewDefaultConfig(),
+	}
+}
+
+type _cache struct {
+	Type   string         `toml:"type" json:"type" yaml:"type" env:"MCENTER_CACHE_TYPE"`
+	Memory *memory.Config `toml:"memory" json:"memory" yaml:"memory"`
+	Redis  *redis.Config  `toml:"redis" json:"redis" yaml:"redis"`
+}
+
+func (c *_cache) LoadCache() error {
+	// 设置全局缓存
+	switch c.Type {
+	case "memory", "":
+		ins := memory.NewCache(c.Memory)
+		cache.SetGlobal(ins)
+		zap.L().Info("use cache in local memory")
+	case "redis":
+		ins := redis.NewCache(c.Redis)
+		cache.SetGlobal(ins)
+		zap.L().Info("use redis to cache")
+	default:
+		return fmt.Errorf("unknown cache type: %s", c.Type)
+	}
+
+	return nil
 }

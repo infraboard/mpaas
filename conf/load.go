@@ -32,7 +32,7 @@ func LoadConfigFromToml(filePath string) error {
 		return err
 	}
 
-	return conf.InitGloabl()
+	return conf.InitGlobal()
 }
 
 // LoadConfigFromEnv 从环境变量中加载配置
@@ -41,5 +41,5 @@ func LoadConfigFromEnv() error {
 	if err := env.Parse(conf); err != nil {
 		return err
 	}
-	return conf.InitGloabl()
+	return conf.InitGlobal()
 }
