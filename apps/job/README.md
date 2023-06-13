@@ -149,9 +149,9 @@ YWRtaW46SGFyYm9yMTIzNDUK
 手动挂载并测试能否推送:
 ```sh
 # 挂在项目到workspace目录下, 注意指定工作目录:/workspace
-docker run -it -v ${HOME}/Workspace/mpaas:/workspace -v ${HOME}/Workspace/mpaas/apps/job/impl/test/kaniko_config.json:/kaniko/.docker/config.json -w /workspace --entrypoint=/busybox/sh docker.io/anjia0532/kaniko-project.executor:v1.9.2-debug
+docker run --rm -it -v ${HOME}/Workspace/inforboard/mpaas:/workspace -v ${HOME}/Workspace/inforboard/mpaas/apps/job/impl/test/config.json:/kaniko/.docker/config.json -w /workspace --entrypoint=/busybox/sh docker.io/anjia0532/kaniko-project.executor:v1.9.2-debug
 # 执行构建
-/kaniko/executor -v trace --destination=registry.cn-hangzhou.aliyuncs.com/infraboard/mpaas:v0.0.0
+/kaniko/executor --cache=true -v trace --destination=registry.cn-hangzhou.aliyuncs.com/infraboard/mpaas:v0.0.1
 ```
 
 最后创建secret
