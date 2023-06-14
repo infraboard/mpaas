@@ -199,6 +199,21 @@ func TestUpdateBuildJob(t *testing.T) {
 		ValueType: job.PARAM_VALUE_TYPE_BOOLEAN,
 		Value:     "true",
 	})
+	param.Add(&job.RunParam{
+		Required:  false,
+		Name:      "CUSTOM_PLATFORM",
+		NameDesc:  "目标镜像的平台架构信息, 详情参考: https://github.com/GoogleContainerTools/kaniko#flag---custom-platform",
+		Example:   "linux/amd64",
+		ValueType: job.PARAM_VALUE_TYPE_ENUM,
+		EnumOptions: job.NewEnumOptionWithKVPaire(
+			"linux/386", "X86",
+			"linux/amd64", "AMD64",
+			"linux/arm", "ARM",
+			"linux/arm64", "ARM64",
+		),
+		Value: "linux/amd64",
+	})
+	//
 	// docker push registry.cn-hangzhou.aliyuncs.com/infraboard/mpaas:[镜像版本号]
 	param.Add(&job.RunParam{
 		Required: true,

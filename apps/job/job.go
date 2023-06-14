@@ -272,6 +272,23 @@ func NewRunParam(name, value string) *RunParam {
 	}
 }
 
+func NewEnumOption(label, value string) *EnumOption {
+	return &EnumOption{
+		Label:      label,
+		Value:      value,
+		Extensions: map[string]string{},
+	}
+}
+
+// label, value
+func NewEnumOptionWithKVPaire(kvs ...string) (options []*EnumOption) {
+	m := NewMapWithKVPaire(kvs...)
+	for k, v := range m {
+		options = append(options, NewEnumOption(v, k))
+	}
+	return nil
+}
+
 func NewParamScope() *ParamScope {
 	return &ParamScope{
 		Label: map[string]string{},
@@ -279,21 +296,9 @@ func NewParamScope() *ParamScope {
 }
 
 func NewRunParamWithKVPaire(kvs ...string) (params []*RunParam) {
-	if len(kvs)%2 != 0 {
-		panic("kvs must paire")
-	}
-
-	if len(kvs) == 0 {
-		return
-	}
-
-	kv := []string{}
-	for i, v := range kvs {
-		kv = append(kv, v)
-		if i%2 != 0 {
-			params = append(params, NewRunParam(kv[0], kv[1]))
-			kv = []string{}
-		}
+	m := NewMapWithKVPaire(kvs...)
+	for k, v := range m {
+		params = append(params, NewRunParam(k, v))
 	}
 
 	return
