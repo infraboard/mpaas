@@ -376,9 +376,7 @@ func (i *impl) WatchJobTaskLog(in *task.WatchJobTaskLogRequest, stream task.JobR
 
 	switch t.Job.Spec.RunnerType {
 	case job.RUNNER_TYPE_K8S_JOB:
-		jobParams := t.GetRunParamSet()
-		k8sParams := jobParams.K8SJobRunnerParams()
-
+		k8sParams := t.Status.RunParams.K8SJobRunnerParams()
 		descReq := k8s.NewDescribeClusterRequest(k8sParams.ClusterId)
 		c, err := i.cluster.DescribeCluster(stream.Context(), descReq)
 		if err != nil {
@@ -390,7 +388,8 @@ func (i *impl) WatchJobTaskLog(in *task.WatchJobTaskLogRequest, stream task.JobR
 			return err
 		}
 		req := workload.NewWatchConainterLogRequest()
-		req.PodName = "mcenter-56d7d5f568-66xkt"
+		req.PodName = "task-ci4hr3ro99m7irvib5jg-rjnk5"
+		req.Namespace = k8sParams.Namespace
 		r, err := k8sClient.WorkLoad().WatchConainterLog(stream.Context(), req)
 		if err != nil {
 			return err
