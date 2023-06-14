@@ -80,6 +80,7 @@ func (i *impl) RunJob(ctx context.Context, in *pipeline.RunJobRequest) (
 		if err != nil {
 			return nil, err
 		}
+		status.RunParams = params
 		ins.Status = status
 
 		// 添加搜索标签

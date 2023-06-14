@@ -213,7 +213,6 @@ func TestUpdateBuildJob(t *testing.T) {
 		),
 		Value: "linux/amd64",
 	})
-	//
 	// docker push registry.cn-hangzhou.aliyuncs.com/infraboard/mpaas:[镜像版本号]
 	param.Add(&job.RunParam{
 		Required: true,

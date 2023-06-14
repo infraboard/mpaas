@@ -62,6 +62,9 @@ enum STAGE {
 }
 
 message JobTaskStatus {
+	// 合并后的运行时参数(job默认参数, 系统默认参数, 用户传入参数)
+	// @gotags: bson:"run_params" json:"run_params"
+	job.RunParamSet run_params = 12;
 	// 任务当前状态
 	// @gotags: bson:"stage" json:"stage"
     STAGE stage = 1;
