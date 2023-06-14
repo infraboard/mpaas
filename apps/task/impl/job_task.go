@@ -311,8 +311,7 @@ func (i *impl) CleanTaskResource(ctx context.Context, in *task.JobTask) error {
 
 	switch in.Job.Spec.RunnerType {
 	case job.RUNNER_TYPE_K8S_JOB:
-		jobParams := in.GetRunParamSet()
-		k8sParams := jobParams.K8SJobRunnerParams()
+		k8sParams := in.Status.RunParams.K8SJobRunnerParams()
 
 		descReq := k8s.NewDescribeClusterRequest(k8sParams.ClusterId)
 		c, err := i.cluster.DescribeCluster(ctx, descReq)
