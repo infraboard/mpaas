@@ -13,6 +13,7 @@ import (
 	"github.com/infraboard/mpaas/apps/job"
 	pipeline "github.com/infraboard/mpaas/apps/pipeline"
 	"github.com/infraboard/mpaas/common/format"
+	"github.com/infraboard/mpaas/provider/k8s/workload"
 )
 
 func NewJobTaskSet() *JobTaskSet {
@@ -229,6 +230,18 @@ func (s *JobTask) HasJobSpec() bool {
 	}
 
 	return false
+}
+
+func (t *JobTask) WorkLoad() (*workload.WorkLoad, error) {
+	if t.Status == nil {
+		return nil, fmt.Errorf("")
+	}
+	switch t.Job.Spec.RunnerType {
+	case job.RUNNER_TYPE_K8S_JOB:
+		return workload.ParseWorkloadFromYaml("Job", t.Status.Detail)
+	default:
+		return nil, fmt.Errorf("unkonw runner type :%s", t.Job.Spec.RunnerType)
+	}
 }
 
 func (t *JobTask) Update(job *job.Job, status *JobTaskStatus) {

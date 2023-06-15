@@ -387,7 +387,20 @@ func (i *impl) WatchJobTaskLog(in *task.WatchJobTaskLogRequest, stream task.JobR
 			return err
 		}
 		req := workload.NewWatchConainterLogRequest()
-		req.PodName = "task-ci4hr3ro99m7irvib5jg-rjnk5"
+
+		// 找到Job执行的Pod
+		podReq := meta.NewListRequest().
+			SetNamespace(k8sParams.Namespace).
+			SetLabelSelector(meta.NewLabelSelector().Add("job-name", t.Spec.TaskId))
+		pods, err := k8sClient.WorkLoad().ListPod(stream.Context(), podReq)
+		if err != nil {
+			return err
+		}
+		if len(pods.Items) == 0 {
+			return fmt.Errorf("job's pod not found by lable job-name=%s", t.Spec.TaskId)
+		}
+
+		req.PodName = pods.Items[0].Name
 		req.Namespace = k8sParams.Namespace
 		r, err := k8sClient.WorkLoad().WatchConainterLog(stream.Context(), req)
 		if err != nil {

@@ -2,6 +2,7 @@ package meta
 
 import (
 	"net/http"
+	"net/url"
 
 	v1 "k8s.io/api/autoscaling/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
@@ -83,6 +84,31 @@ type ListRequest struct {
 	Namespace         string
 	SkipManagedFields bool
 	Opts              metav1.ListOptions
+}
+
+func (r *ListRequest) SetNamespace(ns string) *ListRequest {
+	r.Namespace = ns
+	return r
+}
+
+func NewLabelSelector() *LabelSelector {
+	return &LabelSelector{
+		values: url.Values{},
+	}
+}
+
+type LabelSelector struct {
+	values url.Values
+}
+
+func (l *LabelSelector) Add(key, value string) *LabelSelector {
+	l.values.Add(key, value)
+	return l
+}
+
+func (r *ListRequest) SetLabelSelector(l *LabelSelector) *ListRequest {
+	r.Opts.LabelSelector = l.values.Encode()
+	return r
 }
 
 func NewCreateRequest() *CreateRequest {
