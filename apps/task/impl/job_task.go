@@ -368,7 +368,7 @@ func (i *impl) CleanTaskResource(ctx context.Context, in *task.JobTask) error {
 // 查询Task日志
 func (i *impl) WatchJobTaskLog(in *task.WatchJobTaskLogRequest, stream task.JobRPC_WatchJobTaskLogServer) error {
 	// 查询Task信息
-	t, err := i.DescribeJobTask(stream.Context(), task.NewDescribeJobTaskRequest(in.Id))
+	t, err := i.DescribeJobTask(stream.Context(), task.NewDescribeJobTaskRequest(in.TaskId))
 	if err != nil {
 		return err
 	}

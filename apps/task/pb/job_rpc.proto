@@ -22,8 +22,8 @@ service JobRPC {
 
 message WatchJobTaskLogRequest {
 	// 任务Id
-	// @gotags: json:"id"
-    string id = 1;
+	// @gotags: json:"task_id"
+    string task_id = 1;
 	// 当一个任务有多个container时, 可以单独查询Container的日志
 	// @gotags: json:"container_name"
     string container_name = 2;

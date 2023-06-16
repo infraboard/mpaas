@@ -1,7 +1,6 @@
 package api
 
 import (
-	"fmt"
 	"net/http"
 	"time"
 
@@ -91,27 +90,20 @@ func (h *Handler) WatchTaskLog(r *restful.Request, w *restful.Response) {
 	}
 	defer ws.Close()
 
-	// 第一条消息为一个参数消息
-	fmt.Println(ws.ReadMessage())
-
 	in := task.NewWatchJobTaskLogRequest(r.PathParameter("id"))
 
-	req := task.NewWatchJobTaskLogHttpServerImpl(ws)
-	err = h.service.WatchJobTaskLog(in, req)
-
-	var (
-		code int
-		msg  string
-	)
-	if err != nil {
-		code = 500
-		msg = err.Error()
-		h.log.Errorf("watch job task log error, %s", err)
+	// 读取请求
+	term := task.NewTaskLogTerminal(ws)
+	if err = term.ReadReq(in); err != nil {
+		term.Failed(err)
+		return
 	}
 
-	ws.WriteControl(
-		websocket.CloseMessage,
-		websocket.FormatCloseMessage(code, msg),
-		time.Now().Add(3*time.Second),
-	)
+	// 输出日志到Term中
+	if err = h.service.WatchJobTaskLog(in, term); err != nil {
+		term.Failed(err)
+		return
+	}
+
+	term.Success("ok")
 }

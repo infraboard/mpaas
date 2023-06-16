@@ -10,6 +10,8 @@ import (
 
 	"github.com/emicklei/go-restful/v3"
 	"github.com/gorilla/websocket"
+	"github.com/infraboard/mpaas/apps/task"
+	"github.com/infraboard/mpaas/test/conf"
 )
 
 func TestWatchTaskLog(t *testing.T) {
@@ -26,19 +28,18 @@ func TestWatchTaskLog(t *testing.T) {
 		log.Fatalf("cannot make websocket connection: %v", err)
 	}
 
-	err = conn.WriteMessage(websocket.TextMessage, []byte("xxxx"))
+	req := task.NewWatchJobTaskLogRequest(conf.C.MCENTER_BUILD_TASK_ID)
+	err = conn.WriteMessage(websocket.TextMessage, []byte(req.ToJSON()))
 	if err != nil {
 		log.Fatalf("cannot write message: %v", err)
 	}
 
-	// err = conn.WriteMessage(websocket.BinaryMessage, []byte("world"))
-	// if err != nil {
-	// 	log.Fatalf("cannot write message: %v", err)
-	// }
-	_, p, err := conn.ReadMessage()
-	if err != nil {
-		log.Fatalf("cannot read message: %v", err)
-	}
+	for {
+		_, p, err := conn.ReadMessage()
+		if err != nil {
+			t.Fatal(err)
+		}
 
-	fmt.Printf("success: received response: %q\n", p)
+		fmt.Print(string(p))
+	}
 }
