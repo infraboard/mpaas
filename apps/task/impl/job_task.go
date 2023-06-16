@@ -386,7 +386,6 @@ func (i *impl) WatchJobTaskLog(in *task.WatchJobTaskLogRequest, stream task.JobR
 		if err != nil {
 			return err
 		}
-		req := workload.NewWatchConainterLogRequest()
 
 		// 找到Job执行的Pod
 		podReq := meta.NewListRequest().
@@ -400,6 +399,7 @@ func (i *impl) WatchJobTaskLog(in *task.WatchJobTaskLogRequest, stream task.JobR
 			return fmt.Errorf("job's pod not found by lable job-name=%s", t.Spec.TaskId)
 		}
 
+		req := workload.NewWatchConainterLogRequest()
 		req.PodName = pods.Items[0].Name
 		req.Namespace = k8sParams.Namespace
 		req.Container = in.ContainerName
@@ -417,17 +417,69 @@ func (i *impl) WatchJobTaskLog(in *task.WatchJobTaskLogRequest, stream task.JobR
 	return nil
 }
 
+// Task Debug
+func (i *impl) JobTaskDebug(stream task.JobRPC_JobTaskDebugServer) error {
+	in, err := stream.Recv()
+	if err != nil {
+		return err
+	}
+
+	// 查询Task信息
+	t, err := i.DescribeJobTask(stream.Context(), task.NewDescribeJobTaskRequest(in.TaskId))
+	if err != nil {
+		return err
+	}
+
+	switch t.Job.Spec.RunnerType {
+	case job.RUNNER_TYPE_K8S_JOB:
+		k8sParams := t.Status.RunParams.K8SJobRunnerParams()
+		descReq := k8s.NewDescribeClusterRequest(k8sParams.ClusterId)
+		c, err := i.cluster.DescribeCluster(stream.Context(), descReq)
+		if err != nil {
+			return fmt.Errorf("find k8s cluster error, %s", err)
+		}
+
+		k8sClient, err := c.Client()
+		if err != nil {
+			return err
+		}
+
+		// 找到Job执行的Pod
+		podReq := meta.NewListRequest().
+			SetNamespace(k8sParams.Namespace).
+			SetLabelSelector(meta.NewLabelSelector().Add("job-name", t.Spec.TaskId))
+		pods, err := k8sClient.WorkLoad().ListPod(stream.Context(), podReq)
+		if err != nil {
+			return err
+		}
+		if len(pods.Items) == 0 {
+			return fmt.Errorf("job's pod not found by lable job-name=%s", t.Spec.TaskId)
+		}
+
+		req := workload.NewLoginContainerRequest(nil)
+		req.PodName = pods.Items[0].Name
+		req.Namespace = k8sParams.Namespace
+		err = k8sClient.WorkLoad().LoginContainer(stream.Context(), req)
+		if err != nil {
+			return err
+		}
+		return err
+	}
+
+	return nil
+}
+
 func NewWatchJobTaskLogServerWriter(
 	stream task.JobRPC_WatchJobTaskLogServer) *WatchJobTaskLogServerWriter {
 	return &WatchJobTaskLogServerWriter{
 		stream: stream,
-		buf:    task.NewWatchJobTaskLogReponse(),
+		buf:    task.NewJobTaskStreamReponse(),
 	}
 }
 
 type WatchJobTaskLogServerWriter struct {
 	stream task.JobRPC_WatchJobTaskLogServer
-	buf    *task.WatchJobTaskLogReponse
+	buf    *task.JobTaskStreamReponse
 }
 
 func (w *WatchJobTaskLogServerWriter) Write(p []byte) (n int, err error) {

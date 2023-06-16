@@ -37,7 +37,7 @@ func (h *Handler) RegistryUserHandler(ws *restful.WebService) {
 		Metadata(label.Resource, h.Name()).
 		Metadata(label.Action, label.Get.Value()).
 		Reads(task.WatchJobTaskLogRequest{}).
-		Writes(task.WatchJobTaskLogReponse{}))
+		Writes(task.JobTaskStreamReponse{}))
 }
 
 func (h *Handler) UpdateJobTaskOutput(r *restful.Request, w *restful.Response) {
@@ -93,7 +93,7 @@ func (h *Handler) WatchTaskLog(r *restful.Request, w *restful.Response) {
 	in := task.NewWatchJobTaskLogRequest(r.PathParameter("id"))
 
 	// 读取请求
-	term := task.NewTaskLogTerminal(ws)
+	term := task.NewTaskLogWebsocketTerminal(ws)
 	if err = term.ReadReq(in); err != nil {
 		term.Failed(err)
 		return

@@ -133,7 +133,7 @@ type WatchJobTaskLogMockServerImpl struct {
 	*mock.ServerStreamBase
 }
 
-func (i *WatchJobTaskLogMockServerImpl) Send(resp *task.WatchJobTaskLogReponse) error {
+func (i *WatchJobTaskLogMockServerImpl) Send(resp *task.JobTaskStreamReponse) error {
 	fmt.Println(string(resp.Data))
 	return nil
 }

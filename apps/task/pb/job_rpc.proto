@@ -16,9 +16,34 @@ service JobRPC {
     rpc UpdateJobTaskOutput(UpdateJobTaskOutputRequest) returns(JobTask);
     // 任务执行详情
     rpc DescribeJobTask(DescribeJobTaskRequest) returns(JobTask);
+
     // 查询Task日志
-    rpc WatchJobTaskLog(WatchJobTaskLogRequest) returns(stream WatchJobTaskLogReponse);
+    rpc WatchJobTaskLog(WatchJobTaskLogRequest) returns(stream JobTaskStreamReponse);
+    // Task Debug
+    rpc JobTaskDebug(stream JobTaskDebugRequest) returns (stream JobTaskStreamReponse);
 }
+
+message JobTaskDebugRequest {
+	// 任务Id
+	// @gotags: json:"task_id"
+    string task_id = 1;
+	// 当一个任务有多个container时, 可以单独查询Container的日志
+	// @gotags: json:"container_name"
+    string container_name = 2;
+	// 终端设置
+	// @gotags: json:"terminal_config"
+    TerminalConfig terminal_config = 3;
+}
+
+message TerminalConfig {
+	// 终端的宽度
+	// @gotags: json:"width"
+    uint32 width = 3;
+	// 终端的高度
+	// @gotags: json:"heigh"
+    uint32 heigh = 4;
+}
+
 
 message WatchJobTaskLogRequest {
 	// 任务Id
@@ -29,7 +54,7 @@ message WatchJobTaskLogRequest {
     string container_name = 2;
 }
 
-message WatchJobTaskLogReponse {
+message JobTaskStreamReponse {
 	// 日志数据, 二进制格式
 	// @gotags: json:"data"
     bytes data = 1;

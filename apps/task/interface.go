@@ -2,21 +2,17 @@ package task
 
 import (
 	context "context"
-	"encoding/json"
 	"fmt"
 	"strings"
-	"time"
 
-	"github.com/infraboard/mcube/grpc/mock"
+	"github.com/gorilla/websocket"
 	"github.com/infraboard/mcube/http/request"
-	"github.com/infraboard/mcube/logger/zap"
 	"github.com/infraboard/mcube/tools/pretty"
 	job "github.com/infraboard/mpaas/apps/job"
 	pipeline "github.com/infraboard/mpaas/apps/pipeline"
+	"github.com/infraboard/mpaas/common/terminal"
 	"github.com/infraboard/mpaas/provider/k8s/workload"
 	v1 "k8s.io/api/core/v1"
-
-	"github.com/gorilla/websocket"
 )
 
 const (
@@ -188,13 +184,13 @@ type MentionUserMessage interface {
 	AddNotifyStatus(items ...*CallbackStatus)
 }
 
-func NewWatchJobTaskLogReponse() *WatchJobTaskLogReponse {
-	return &WatchJobTaskLogReponse{
+func NewJobTaskStreamReponse() *JobTaskStreamReponse {
+	return &JobTaskStreamReponse{
 		Data: make([]byte, 0, 512),
 	}
 }
 
-func (r *WatchJobTaskLogReponse) ReSet() {
+func (r *JobTaskStreamReponse) ReSet() {
 	r.Data = r.Data[:0]
 }
 
@@ -208,52 +204,17 @@ func (req *WatchJobTaskLogRequest) ToJSON() string {
 	return pretty.ToJSON(req)
 }
 
-func NewTaskLogTerminal(conn *websocket.Conn) *TaskLogTerminal {
-	return &TaskLogTerminal{
-		ServerStreamBase: mock.NewServerStreamBase(),
-		ws:               conn,
-		timeout:          3 * time.Second,
+func NewTaskLogWebsocketTerminal(conn *websocket.Conn) *TaskLogWebsocketTerminal {
+	return &TaskLogWebsocketTerminal{
+		terminal.NewWebSocketWriteTerminal(conn),
 	}
 }
 
-type TaskLogTerminal struct {
-	*mock.ServerStreamBase
-	ws      *websocket.Conn
-	timeout time.Duration
+type TaskLogWebsocketTerminal struct {
+	*terminal.WebSocketWriteTerminal
 }
 
-func (i *TaskLogTerminal) ReadReq(req *WatchJobTaskLogRequest) error {
-	mt, data, err := i.ws.ReadMessage()
-	if err != nil {
-		return err
-	}
-	if mt != websocket.TextMessage {
-		return fmt.Errorf("req must be TextMessage, but now not, is %d", mt)
-	}
-	if !json.Valid(data) {
-		return fmt.Errorf("req must be json data")
-	}
-
-	return json.Unmarshal(data, req)
-}
-
-func (i *TaskLogTerminal) Send(resp *WatchJobTaskLogReponse) error {
-	return i.ws.WriteMessage(websocket.BinaryMessage, resp.Data)
-}
-
-func (i *TaskLogTerminal) Failed(err error) error {
-	return i.close(websocket.CloseAbnormalClosure, err.Error())
-}
-
-func (i *TaskLogTerminal) Success(msg string) error {
-	return i.close(websocket.CloseNormalClosure, msg)
-}
-
-func (i *TaskLogTerminal) close(code int, msg string) error {
-	zap.L().Named("tasklog.term").Debugf("close code: %d, msg: %s", code, msg)
-	return i.ws.WriteControl(
-		websocket.CloseMessage,
-		websocket.FormatCloseMessage(code, msg),
-		time.Now().Add(i.timeout),
-	)
+func (r *TaskLogWebsocketTerminal) Send(in *JobTaskStreamReponse) (err error) {
+	_, err = r.Write(in.Data)
+	return
 }

@@ -12,12 +12,13 @@ import (
 )
 
 var (
-	validate = validator.New()
+	validate   = validator.New()
+	defaultCmd = `TERM=xterm-256color; export TERM; [ -x /bin/bash ] && ([ -x /usr/bin/script ] && /usr/bin/script -q -c "/bin/bash" /dev/null || exec /bin/bash) || exec /bin/sh`
 )
 
-func NewLoginContainerRequest(cmd []string, ce ContainerExecutor) *LoginContainerRequest {
+func NewLoginContainerRequest(ce ContainerTerminal) *LoginContainerRequest {
 	return &LoginContainerRequest{
-		Command: cmd,
+		Command: []string{"sh", "-c", defaultCmd},
 		Excutor: ce,
 	}
 }
@@ -27,14 +28,14 @@ type LoginContainerRequest struct {
 	PodName       string            `json:"pod_name" validate:"required"`
 	ContainerName string            `json:"container_name"`
 	Command       []string          `json:"command"`
-	Excutor       ContainerExecutor `json:"-"`
+	Excutor       ContainerTerminal `json:"-"`
 }
 
 func (req *LoginContainerRequest) Validate() error {
 	return validate.Struct(req)
 }
 
-type ContainerExecutor interface {
+type ContainerTerminal interface {
 	io.Reader
 	io.Writer
 	remotecommand.TerminalSizeQueue
