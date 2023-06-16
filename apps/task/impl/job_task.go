@@ -418,55 +418,56 @@ func (i *impl) WatchJobTaskLog(in *task.WatchJobTaskLogRequest, stream task.JobR
 }
 
 // Task Debug
-func (i *impl) JobTaskDebug(stream task.JobRPC_JobTaskDebugServer) error {
-	in, err := stream.Recv()
-	if err != nil {
-		return err
-	}
+func (i *impl) JobTaskDebug(ctx context.Context, in *task.JobTaskDebugRequest) {
+	term := in.WebTerminal()
 
 	// 查询Task信息
-	t, err := i.DescribeJobTask(stream.Context(), task.NewDescribeJobTaskRequest(in.TaskId))
+	t, err := i.DescribeJobTask(ctx, task.NewDescribeJobTaskRequest(in.TaskId))
 	if err != nil {
-		return err
+		term.Failed(err)
+		return
 	}
 
 	switch t.Job.Spec.RunnerType {
 	case job.RUNNER_TYPE_K8S_JOB:
 		k8sParams := t.Status.RunParams.K8SJobRunnerParams()
 		descReq := k8s.NewDescribeClusterRequest(k8sParams.ClusterId)
-		c, err := i.cluster.DescribeCluster(stream.Context(), descReq)
+		c, err := i.cluster.DescribeCluster(ctx, descReq)
 		if err != nil {
-			return fmt.Errorf("find k8s cluster error, %s", err)
+			term.Failed(fmt.Errorf("find k8s cluster error, %s", err))
+			return
 		}
 
 		k8sClient, err := c.Client()
 		if err != nil {
-			return err
+			term.Failed(err)
+			return
 		}
 
 		// 找到Job执行的Pod
 		podReq := meta.NewListRequest().
 			SetNamespace(k8sParams.Namespace).
 			SetLabelSelector(meta.NewLabelSelector().Add("job-name", t.Spec.TaskId))
-		pods, err := k8sClient.WorkLoad().ListPod(stream.Context(), podReq)
+		pods, err := k8sClient.WorkLoad().ListPod(ctx, podReq)
 		if err != nil {
-			return err
+			term.Failed(err)
+			return
 		}
 		if len(pods.Items) == 0 {
-			return fmt.Errorf("job's pod not found by lable job-name=%s", t.Spec.TaskId)
+			term.Failed(fmt.Errorf("job's pod not found by lable job-name=%s", t.Spec.TaskId))
+			return
 		}
 
-		req := workload.NewLoginContainerRequest(nil)
+		req := workload.NewLoginContainerRequest(term)
 		req.PodName = pods.Items[0].Name
 		req.Namespace = k8sParams.Namespace
-		err = k8sClient.WorkLoad().LoginContainer(stream.Context(), req)
+		err = k8sClient.WorkLoad().LoginContainer(ctx, req)
 		if err != nil {
-			return err
+			term.Failed(err)
+			return
 		}
-		return err
+		return
 	}
-
-	return nil
 }
 
 func NewWatchJobTaskLogServerWriter(

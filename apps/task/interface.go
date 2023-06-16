@@ -29,7 +29,22 @@ type JobService interface {
 	RunJob(context.Context, *pipeline.RunJobRequest) (*JobTask, error)
 	// 删除任务
 	DeleteJobTask(context.Context, *DeleteJobTaskRequest) (*JobTask, error)
+	// 任务Debug
+	JobTaskDebug(context.Context, *JobTaskDebugRequest)
 	JobRPCServer
+}
+
+type JobTaskDebugRequest struct {
+	// 任务Id
+	TaskId string `json:"task_id"`
+	// 容器名称
+	ContainerName string `json:"container_name"`
+	// Debug容器终端
+	terminal *terminal.WebSocketTerminal
+}
+
+func (r *JobTaskDebugRequest) WebTerminal() *terminal.WebSocketTerminal {
+	return r.terminal
 }
 
 func NewQueryTaskRequest() *QueryJobTaskRequest {
@@ -206,12 +221,12 @@ func (req *WatchJobTaskLogRequest) ToJSON() string {
 
 func NewTaskLogWebsocketTerminal(conn *websocket.Conn) *TaskLogWebsocketTerminal {
 	return &TaskLogWebsocketTerminal{
-		terminal.NewWebSocketTerminal(conn),
+		terminal.NewWebSocketWriter(conn),
 	}
 }
 
 type TaskLogWebsocketTerminal struct {
-	*terminal.WebSocketTerminal
+	*terminal.WebSocketWriter
 }
 
 func (r *TaskLogWebsocketTerminal) Send(in *JobTaskStreamReponse) (err error) {

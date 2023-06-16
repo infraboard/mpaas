@@ -16,3 +16,9 @@
 
 
 + [k8s debug](https://github.com/kubernetes/kubectl/blob/master/pkg/cmd/debug/debug.go)
+
+
+## Websocket
+
++ [JavaScript WebSocket使用说明](https://javascript.info/websocket)
++ [XtermJs](http://xtermjs.org/)

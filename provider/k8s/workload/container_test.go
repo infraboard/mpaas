@@ -26,14 +26,6 @@ func TestWatchConainterLog(t *testing.T) {
 	t.Log(string(b))
 }
 
-func TestLoginContainer(t *testing.T) {
-	req := workload.NewLoginContainerRequest(nil)
-	err := impl.LoginContainer(ctx, req)
-	if err != nil {
-		t.Fatal(err)
-	}
-}
-
 func TestInjectEnvVars(t *testing.T) {
 	obj := new(batchv1.Job)
 	tools.MustReadYamlFile("test/job.yml", obj)
