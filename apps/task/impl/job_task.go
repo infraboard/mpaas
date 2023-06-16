@@ -402,6 +402,7 @@ func (i *impl) WatchJobTaskLog(in *task.WatchJobTaskLogRequest, stream task.JobR
 
 		req.PodName = pods.Items[0].Name
 		req.Namespace = k8sParams.Namespace
+		req.Container = in.ContainerName
 		r, err := k8sClient.WorkLoad().WatchConainterLog(stream.Context(), req)
 		if err != nil {
 			return err

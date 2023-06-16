@@ -114,6 +114,7 @@ func TestDeleteJobTask(t *testing.T) {
 
 func TestWatchJobTaskLog(t *testing.T) {
 	req := task.NewWatchJobTaskLogRequest(conf.C.MCENTER_BUILD_TASK_ID)
+	// req.ContainerName = "download"
 	si := NewWatchJobTaskLogMockServerImpl()
 	err := impl.WatchJobTaskLog(req, si)
 	if err != nil {

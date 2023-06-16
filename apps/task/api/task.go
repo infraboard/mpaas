@@ -1,6 +1,7 @@
 package api
 
 import (
+	"fmt"
 	"net/http"
 	"time"
 
@@ -13,7 +14,7 @@ import (
 )
 
 // 用户自己手动管理任务状态相关接口
-func (h *handler) RegistryUserHandler(ws *restful.WebService) {
+func (h *Handler) RegistryUserHandler(ws *restful.WebService) {
 	tags := []string{"任务管理"}
 	ws.Route(ws.POST("/{id}/status").To(h.UpdateJobTaskStatus).
 		Doc("更新任务状态").
@@ -40,7 +41,7 @@ func (h *handler) RegistryUserHandler(ws *restful.WebService) {
 		Writes(task.WatchJobTaskLogReponse{}))
 }
 
-func (h *handler) UpdateJobTaskOutput(r *restful.Request, w *restful.Response) {
+func (h *Handler) UpdateJobTaskOutput(r *restful.Request, w *restful.Response) {
 	req := task.NewUpdateJobTaskOutputRequest(r.PathParameter("id"))
 	if err := r.ReadEntity(req); err != nil {
 		response.Failed(w, err)
@@ -55,7 +56,7 @@ func (h *handler) UpdateJobTaskOutput(r *restful.Request, w *restful.Response) {
 	response.Success(w, set)
 }
 
-func (h *handler) UpdateJobTaskStatus(r *restful.Request, w *restful.Response) {
+func (h *Handler) UpdateJobTaskStatus(r *restful.Request, w *restful.Response) {
 	req := task.NewUpdateJobTaskStatusRequest(r.PathParameter("id"))
 	if err := r.ReadEntity(req); err != nil {
 		response.Failed(w, err)
@@ -81,7 +82,7 @@ var (
 	}
 )
 
-func (h *handler) WatchTaskLog(r *restful.Request, w *restful.Response) {
+func (h *Handler) WatchTaskLog(r *restful.Request, w *restful.Response) {
 	// websocket handshake
 	ws, err := upgrader.Upgrade(w, r.Request, nil)
 	if err != nil {
@@ -90,7 +91,11 @@ func (h *handler) WatchTaskLog(r *restful.Request, w *restful.Response) {
 	}
 	defer ws.Close()
 
+	// 第一条消息为一个参数消息
+	fmt.Println(ws.ReadMessage())
+
 	in := task.NewWatchJobTaskLogRequest(r.PathParameter("id"))
+
 	req := task.NewWatchJobTaskLogHttpServerImpl(ws)
 	err = h.service.WatchJobTaskLog(in, req)
 
@@ -101,6 +106,7 @@ func (h *handler) WatchTaskLog(r *restful.Request, w *restful.Response) {
 	if err != nil {
 		code = 500
 		msg = err.Error()
+		h.log.Errorf("watch job task log error, %s", err)
 	}
 
 	ws.WriteControl(
