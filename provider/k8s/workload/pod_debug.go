@@ -9,7 +9,6 @@ import (
 
 	"github.com/infraboard/mpaas/provider/k8s/meta"
 	corev1 "k8s.io/api/core/v1"
-	v1 "k8s.io/api/core/v1"
 	"k8s.io/apimachinery/pkg/api/errors"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/fields"
@@ -27,8 +26,8 @@ import (
 
 type DebugPodRequest struct {
 	*meta.GetRequest
-	EphemeralContainer v1.EphemeralContainer `json:""`
-	Excutor            ContainerTerminal     `json:"-"`
+	EphemeralContainer corev1.EphemeralContainer `json:""`
+	Excutor            ContainerTerminal         `json:"-"`
 }
 
 func (c *Client) DebugPod(ctx context.Context, req *DebugPodRequest) error {
@@ -91,18 +90,18 @@ func (c *Client) DebugPod(ctx context.Context, req *DebugPodRequest) error {
 	}
 
 	// 判断临时容器是否正常启动
-	status := GetContainerStatusByName(pod, req.EphemeralContainer.Name)
+	status := GetContainerStatusByName(debugPod, req.EphemeralContainer.Name)
 	if status == nil {
 		return fmt.Errorf("error getting container status of container name %q: %+v", req.EphemeralContainer.Name, err)
 	}
 	if status.State.Terminated != nil {
-		return fmt.Errorf("Ephemeral container terminated, falling back to logs")
+		return fmt.Errorf("ephemeral container %s terminated, falling back to logs", req.EphemeralContainer.Name)
 	}
 
 	// 登录临时容器的终端
 	execReq := c.corev1.RESTClient().Post().Namespace(req.Namespace).
 		Resource("pods").Name(req.Name).SubResource("attach").
-		VersionedParams(&v1.PodAttachOptions{
+		VersionedParams(&corev1.PodAttachOptions{
 			TypeMeta: metav1.TypeMeta{
 				Kind:       "EphemeralContainers",
 				APIVersion: "v1",
@@ -130,7 +129,7 @@ func (c *Client) DebugPod(ctx context.Context, req *DebugPodRequest) error {
 
 // debugByEphemeralContainerLegacy adds debugContainer as an ephemeral container using the pre-1.22 /ephemeralcontainers API
 // This may be removed when we no longer wish to support releases prior to 1.22.
-func (c *Client) debugByEphemeralContainerLegacy(ctx context.Context, pod *v1.Pod, debugContainer *v1.EphemeralContainer) error {
+func (c *Client) debugByEphemeralContainerLegacy(ctx context.Context, pod *corev1.Pod, debugContainer *corev1.EphemeralContainer) error {
 	// We no longer have the v1.EphemeralContainers Kind since it was removed in 1.22, but
 	// we can present a JSON 6902 patch that the api server will apply.
 	patch, err := json.Marshal([]map[string]interface{}{{
