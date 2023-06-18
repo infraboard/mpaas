@@ -20,7 +20,7 @@ func (c *Client) GetPod(ctx context.Context, req *meta.GetRequest) (*v1.Pod, err
 }
 
 func (c *Client) DeletePod(ctx context.Context, req *meta.DeleteRequest) error {
-	return c.corev1.Pods("").Delete(ctx, "", req.Opts)
+	return c.corev1.Pods(req.Namespace).Delete(ctx, req.Name, req.Opts)
 }
 
 func InjectPodTemplateSpecAnnotations(pod *v1.PodTemplateSpec, key, value string) {
