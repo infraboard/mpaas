@@ -1,0 +1,42 @@
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="node_modules/xterm/css/xterm.css" />
+    <script src="node_modules/xterm/lib/xterm.js"></script>
+    <title>Document</title>
+</head>
+
+<body>
+    <div id="terminal"></div>
+    <script>
+        var term = new Terminal();
+        term.open(document.getElementById('terminal'));
+
+
+        let socket = new WebSocket("ws://127.0.0.1:8090/mpaas/api/v1/tasks/xxxx/debug");
+        socket.onopen = function (e) {
+            term.write("[open] Connection established");
+            term.write("Sending to server");
+            socket.send(JSON.stringify({task_id: "task-ci4p2cbo99mfif56p9e0"}));
+        };
+        socket.onmessage = function (event) {
+            term.write(`[message] Data received from server: ${event.data}`);
+        };
+        socket.onclose = function (event) {
+            if (event.wasClean) {
+                term.write(`[close] Connection closed cleanly, code=${event.code} reason=${event.reason}`);
+            } else {
+                // e.g. server process killed or network down
+                // event.code is usually 1006 in this case
+                term.write('[close] Connection died');
+            }
+        };
+        socket.onerror = function (error) {
+            term.write(`[error]`);
+        };
+    </script>
+</body>
+
+</html>

@@ -37,7 +37,7 @@ func (i *WebSocketWriter) ReadReq(req any) error {
 		return fmt.Errorf("req must be TextMessage, but now not, is %d", mt)
 	}
 	if !json.Valid(data) {
-		return fmt.Errorf("req must be json data")
+		return fmt.Errorf("req must be json data, but %s", string(data))
 	}
 
 	return json.Unmarshal(data, req)
@@ -54,8 +54,15 @@ func (i *WebSocketWriter) Write(p []byte) (n int, err error) {
 	return
 }
 
+func (i *WebSocketWriter) WriteText(msg string) {
+	err := i.ws.WriteMessage(websocket.TextMessage, []byte(msg))
+	if err != nil {
+		i.l.Infof("write message error, %s", err)
+	}
+}
+
 func (i *WebSocketWriter) Failed(err error) {
-	i.close(websocket.CloseAbnormalClosure, err.Error())
+	i.close(websocket.CloseGoingAway, err.Error())
 }
 
 func (i *WebSocketWriter) Success(msg string) {
@@ -71,5 +78,6 @@ func (i *WebSocketWriter) close(code int, msg string) {
 	)
 	if err != nil {
 		i.l.Errorf("close error, %s", err)
+		i.WriteText("\n" + msg)
 	}
 }

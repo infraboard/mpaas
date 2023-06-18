@@ -19,6 +19,7 @@ testbin/*
 
 cover.out
 coverage.txt
+node_modules
 
 etc/mpaas.toml
 etc/mpaas.env

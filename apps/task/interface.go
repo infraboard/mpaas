@@ -64,6 +64,11 @@ func (r *JobTaskDebugRequest) WebTerminal() *terminal.WebSocketTerminal {
 	return r.terminal
 }
 
+func (r *JobTaskDebugRequest) SetWebTerminal(term *terminal.WebSocketTerminal) {
+	r.terminal = term
+	r.terminal.SetSize(r.Terminal.Width, r.Terminal.Heigh)
+}
+
 func NewQueryTaskRequest() *QueryJobTaskRequest {
 	return &QueryJobTaskRequest{
 		Page: request.NewDefaultPageRequest(),

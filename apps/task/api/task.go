@@ -126,18 +126,16 @@ func (h *Handler) JobTaskDebug(r *restful.Request, w *restful.Response) {
 	}
 	defer ws.Close()
 
-	in := task.NewJobTaskDebugRequest(r.PathParameter("id"))
+	term := terminal.NewWebSocketTerminal(ws)
 
 	// 读取请求
-	term := terminal.NewWebSocketTerminal(ws)
+	in := task.NewJobTaskDebugRequest(r.PathParameter("id"))
 	if err = term.ReadReq(in); err != nil {
 		term.Failed(err)
 		return
 	}
 
-	// 设置终端窗口大小
-	term.SetSize(in.Terminal.Width, in.Terminal.Heigh)
-
 	// 进入容器
+	in.SetWebTerminal(term)
 	h.service.JobTaskDebug(r.Request.Context(), in)
 }
