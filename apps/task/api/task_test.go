@@ -16,7 +16,7 @@ import (
 
 func TestWatchTaskLog(t *testing.T) {
 	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		impl.WatchTaskLog(restful.NewRequest(r), restful.NewResponse(w))
+		impl.JobTaskLog(restful.NewRequest(r), restful.NewResponse(w))
 	}))
 	u, _ := url.Parse(srv.URL)
 	u.Scheme = "ws"

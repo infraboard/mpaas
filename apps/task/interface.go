@@ -34,13 +34,30 @@ type JobService interface {
 	JobRPCServer
 }
 
+func NewJobTaskDebugRequest(taskId string) *JobTaskDebugRequest {
+	return &JobTaskDebugRequest{
+		TaskId: taskId,
+	}
+}
+
 type JobTaskDebugRequest struct {
 	// 任务Id
 	TaskId string `json:"task_id"`
 	// 容器名称
 	ContainerName string `json:"container_name"`
+	// 终端配置
+	Terminal TerminalConfig `json:"terminal"`
 	// Debug容器终端
 	terminal *terminal.WebSocketTerminal
+}
+
+type TerminalConfig struct {
+	// 终端的宽度
+	// @gotags: json:"width"
+	Width uint16 `json:"width"`
+	// 终端的高度
+	// @gotags: json:"heigh"
+	Heigh uint16 `json:"heigh"`
 }
 
 func (r *JobTaskDebugRequest) WebTerminal() *terminal.WebSocketTerminal {

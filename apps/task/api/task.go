@@ -10,6 +10,7 @@ import (
 	"github.com/infraboard/mcube/http/label"
 	"github.com/infraboard/mcube/http/restful/response"
 	"github.com/infraboard/mpaas/apps/task"
+	"github.com/infraboard/mpaas/common/terminal"
 )
 
 // 用户自己手动管理任务状态相关接口
@@ -31,12 +32,20 @@ func (h *Handler) RegistryUserHandler(ws *restful.WebService) {
 		Reads(task.UpdateJobTaskOutputRequest{}).
 		Writes(task.JobTask{}))
 
-	ws.Route(ws.GET("/{id}/log").To(h.WatchTaskLog).
-		Doc("查询任务日志").
+	ws.Route(ws.GET("/{id}/log").To(h.JobTaskLog).
+		Doc("查询任务日志[WebSocket]").
 		Metadata(restfulspec.KeyOpenAPITags, tags).
 		Metadata(label.Resource, h.Name()).
 		Metadata(label.Action, label.Get.Value()).
 		Reads(task.WatchJobTaskLogRequest{}).
+		Writes(task.JobTaskStreamReponse{}))
+
+	ws.Route(ws.GET("/{id}/debug").To(h.JobTaskDebug).
+		Doc("任务在线Debug[WebSocket]").
+		Metadata(restfulspec.KeyOpenAPITags, tags).
+		Metadata(label.Resource, h.Name()).
+		Metadata(label.Action, label.Get.Value()).
+		Reads(task.JobTaskDebugRequest{}).
 		Writes(task.JobTaskStreamReponse{}))
 }
 
@@ -81,7 +90,7 @@ var (
 	}
 )
 
-func (h *Handler) WatchTaskLog(r *restful.Request, w *restful.Response) {
+func (h *Handler) JobTaskLog(r *restful.Request, w *restful.Response) {
 	// websocket handshake
 	ws, err := upgrader.Upgrade(w, r.Request, nil)
 	if err != nil {
@@ -106,4 +115,29 @@ func (h *Handler) WatchTaskLog(r *restful.Request, w *restful.Response) {
 	}
 
 	term.Success("ok")
+}
+
+func (h *Handler) JobTaskDebug(r *restful.Request, w *restful.Response) {
+	// websocket handshake
+	ws, err := upgrader.Upgrade(w, r.Request, nil)
+	if err != nil {
+		response.Failed(w, err)
+		return
+	}
+	defer ws.Close()
+
+	in := task.NewJobTaskDebugRequest(r.PathParameter("id"))
+
+	// 读取请求
+	term := terminal.NewWebSocketTerminal(ws)
+	if err = term.ReadReq(in); err != nil {
+		term.Failed(err)
+		return
+	}
+
+	// 设置终端窗口大小
+	term.SetSize(in.Terminal.Width, in.Terminal.Heigh)
+
+	// 进入容器
+	h.service.JobTaskDebug(r.Request.Context(), in)
 }

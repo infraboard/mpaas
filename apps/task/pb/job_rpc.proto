@@ -21,16 +21,6 @@ service JobRPC {
     rpc WatchJobTaskLog(WatchJobTaskLogRequest) returns(stream JobTaskStreamReponse);
 }
 
-message TerminalConfig {
-	// 终端的宽度
-	// @gotags: json:"width"
-    uint32 width = 3;
-	// 终端的高度
-	// @gotags: json:"heigh"
-    uint32 heigh = 4;
-}
-
-
 message WatchJobTaskLogRequest {
 	// 任务Id
 	// @gotags: json:"task_id"

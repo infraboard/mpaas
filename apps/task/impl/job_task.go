@@ -466,6 +466,8 @@ func (i *impl) JobTaskDebug(ctx context.Context, in *task.JobTaskDebugRequest) {
 			term.Failed(err)
 			return
 		}
+	default:
+		term.Failed(fmt.Errorf("unknonw runner type %s", t.Job.Spec.RunnerType))
 		return
 	}
 }

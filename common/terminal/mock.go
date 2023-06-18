@@ -9,7 +9,7 @@ import (
 
 func NewStdTerminal(width, height uint16) *StdTerminal {
 	return &StdTerminal{
-		TerminalSize: NewTerminalSize(width, height),
+		TerminalSize: NewTerminalSize(),
 	}
 }
 
