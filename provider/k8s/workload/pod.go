@@ -148,8 +148,12 @@ func NewVolumeMount(readonly bool, vs []MountVolume) []v1.VolumeMount {
 }
 
 func GetContainerFromPodTemplate(temp v1.PodTemplateSpec, name string) *v1.Container {
-	for i := range temp.Spec.Containers {
-		c := temp.Spec.Containers[i]
+	return GetContainerFromPodSpec(temp.Spec, name)
+}
+
+func GetContainerFromPodSpec(spec v1.PodSpec, name string) *v1.Container {
+	for i := range spec.Containers {
+		c := spec.Containers[i]
 		if c.Name == name {
 			return &c
 		}

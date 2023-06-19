@@ -12,13 +12,18 @@ import (
 )
 
 var (
-	validate   = validator.New()
-	defaultCmd = `TERM=xterm-256color; export TERM; [ -x /bin/bash ] && ([ -x /usr/bin/script ] && /usr/bin/script -q -c "/bin/bash" /dev/null || exec /bin/bash) || exec /bin/sh`
+	validate = validator.New()
+	shellCmd = []string{
+		"sh",
+		"-c",
+		`TERM=xterm-256color; export TERM; [ -x /bin/bash ] && ([ -x /usr/bin/script ] && /usr/bin/script -q -c "/bin/bash" /dev/null || exec /bin/bash) || exec /bin/sh`,
+	}
+	sleepCmd = []string{"sleep infinity"}
 )
 
 func NewLoginContainerRequest(ce ContainerTerminal) *LoginContainerRequest {
 	return &LoginContainerRequest{
-		Command: []string{"sh", "-c", defaultCmd},
+		Command: shellCmd,
 		Excutor: ce,
 	}
 }

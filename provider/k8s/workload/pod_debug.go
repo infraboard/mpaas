@@ -4,7 +4,6 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"io"
 	"time"
 
 	"github.com/infraboard/mpaas/provider/k8s/meta"
@@ -79,18 +78,46 @@ func (c *Client) DebugPod(ctx context.Context, req *DebugPodRequest) error {
 	}
 
 	// 等待临时容器启动完成
-	debugPod, err = c.WaitForContainer(ctx, &WaitForContainerRequest{
+	debugPod, err = c.WaitForPodCondition(ctx, &WaitForContainerRequest{
 		Namespace:     req.Namespace,
 		PodName:       req.Name,
 		ContainerName: req.EphemeralContainer.Name,
-		EventNotifier: req.Excutor,
+		ExitCondition: func(ev watch.Event) (bool, error) {
+			c.l.Infof("watch received event %q with object %T", ev.Type, ev.Object)
+			switch ev.Type {
+			case watch.Deleted:
+				return false, errors.NewNotFound(schema.GroupResource{Resource: "pods"}, "")
+			}
+
+			p, ok := ev.Object.(*corev1.Pod)
+			if !ok {
+				return false, fmt.Errorf("watch did not return a pod: %v", ev.Object)
+			}
+
+			s := GetPodContainerStatusByName(p, req.EphemeralContainer.Name)
+			if s == nil {
+				return false, nil
+			}
+			c.l.Infof("debug container status is %v", s)
+			if s.State.Running != nil || s.State.Terminated != nil {
+				return true, nil
+			}
+			if s.State.Waiting != nil && s.State.Waiting.Message != "" {
+
+				_, err := req.Excutor.Write([]byte(fmt.Sprintf("container %s: %s", req.EphemeralContainer.Name, s.State.Waiting.Message)))
+				if err != nil {
+					c.l.Errorf("write event error, %s", err)
+				}
+			}
+			return false, nil
+		},
 	})
 	if err != nil {
 		return err
 	}
 
 	// 判断临时容器是否正常启动
-	status := GetContainerStatusByName(debugPod, req.EphemeralContainer.Name)
+	status := GetPodContainerStatusByName(debugPod, req.EphemeralContainer.Name)
 	if status == nil {
 		return fmt.Errorf("error getting container status of container name %q: %+v", req.EphemeralContainer.Name, err)
 	}
@@ -160,13 +187,13 @@ type WaitForContainerRequest struct {
 	Namespace     string `json:"namespace" validate:"required"`
 	PodName       string `json:"pod_name" validate:"required"`
 	ContainerName string `json:"container_name"`
-	EventNotifier io.Writer
+	TimoutSecond  int    `json:"timeout_second"`
+	ExitCondition watchtools.ConditionFunc
 }
 
-// waitForContainer watches the given pod until the container is running
-func (c *Client) WaitForContainer(ctx context.Context, req *WaitForContainerRequest) (*corev1.Pod, error) {
-	// TODO: expose the timeout
-	ctx, cancel := watchtools.ContextWithOptionalTimeout(ctx, 0*time.Second)
+// WaitForPodCondition watches the given pod until the container is running
+func (c *Client) WaitForPodCondition(ctx context.Context, req *WaitForContainerRequest) (*corev1.Pod, error) {
+	ctx, cancel := watchtools.ContextWithOptionalTimeout(ctx, time.Duration(req.TimoutSecond)*time.Second)
 	defer cancel()
 
 	fieldSelector := fields.OneTermEqualSelector("metadata.name", req.PodName).String()
@@ -184,34 +211,7 @@ func (c *Client) WaitForContainer(ctx context.Context, req *WaitForContainerRequ
 	intr := interrupt.New(nil, cancel)
 	var result *corev1.Pod
 	err := intr.Run(func() error {
-		ev, err := watchtools.UntilWithSync(ctx, lw, &corev1.Pod{}, nil, func(ev watch.Event) (bool, error) {
-			c.l.Infof("watch received event %q with object %T", ev.Type, ev.Object)
-			switch ev.Type {
-			case watch.Deleted:
-				return false, errors.NewNotFound(schema.GroupResource{Resource: "pods"}, "")
-			}
-
-			p, ok := ev.Object.(*corev1.Pod)
-			if !ok {
-				return false, fmt.Errorf("watch did not return a pod: %v", ev.Object)
-			}
-
-			s := GetContainerStatusByName(p, req.ContainerName)
-			if s == nil {
-				return false, nil
-			}
-			c.l.Infof("debug container status is %v", s)
-			if s.State.Running != nil || s.State.Terminated != nil {
-				return true, nil
-			}
-			if s.State.Waiting != nil && s.State.Waiting.Message != "" {
-				_, err := req.EventNotifier.Write([]byte(fmt.Sprintf("container %s: %s", req.ContainerName, s.State.Waiting.Message)))
-				if err != nil {
-					c.l.Errorf("write event error, %s", err)
-				}
-			}
-			return false, nil
-		})
+		ev, err := watchtools.UntilWithSync(ctx, lw, &corev1.Pod{}, nil, req.ExitCondition)
 		if ev != nil {
 			result = ev.Object.(*corev1.Pod)
 		}
@@ -221,7 +221,7 @@ func (c *Client) WaitForContainer(ctx context.Context, req *WaitForContainerRequ
 	return result, err
 }
 
-func GetContainerStatusByName(pod *corev1.Pod, containerName string) *corev1.ContainerStatus {
+func GetPodContainerStatusByName(pod *corev1.Pod, containerName string) *corev1.ContainerStatus {
 	allContainerStatus := [][]corev1.ContainerStatus{
 		pod.Status.InitContainerStatuses,
 		pod.Status.ContainerStatuses,
