@@ -13,7 +13,7 @@ ENV GOPROXY https://goproxy.cn,direct
 WORKDIR /src
 RUN make build
 
-FROM alpine
+FROM registry.cn-hangzhou.aliyuncs.com/godev/alpine:latest
 
 WORKDIR /app
 EXPOSE 80

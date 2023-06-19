@@ -36,7 +36,7 @@ func TestRunBuildJob(t *testing.T) {
 	version.Params = job.NewRunParamWithKVPaire(
 		"GIT_SSH_URL", "git@github.com:infraboard/mcenter.git",
 		"GIT_BRANCH", "master",
-		"GIT_COMMIT_ID", "a265b7a52809e07a48d081c2660c55550f366f0d",
+		"GIT_COMMIT_ID", "ff533afb86d35862789003f1d51bf356c7cf13ac",
 		build.SYSTEM_VARIABLE_IMAGE_REPOSITORY, "registry.cn-hangzhou.aliyuncs.com/infraboard/mcenter",
 		"CACHE_REPO", "registry.cn-hangzhou.aliyuncs.com/build_cache/mpaas",
 		build.SYSTEM_VARIABLE_APP_VERSION, "v0.0.7",
