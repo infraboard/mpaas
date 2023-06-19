@@ -4,6 +4,7 @@ import (
 	context "context"
 	"fmt"
 	"strings"
+	"time"
 
 	"github.com/gorilla/websocket"
 	"github.com/infraboard/mcube/http/request"
@@ -49,6 +50,16 @@ type JobTaskDebugRequest struct {
 	Terminal TerminalConfig `json:"terminal"`
 	// Debug容器终端
 	terminal *terminal.WebSocketTerminal
+}
+
+func (r *JobTaskDebugRequest) CopyPodRunRequest(namespace, name string) *workload.CopyPodRunRequest {
+	req := workload.NewCopyPodRunRequest()
+	req.SourcePod.Name = name
+	req.SourcePod.Namespace = namespace
+	req.TargetPodMeta.Namespace = namespace
+	req.TargetPodMeta.Name = fmt.Sprintf("%s-debug", req.SourcePod.Name)
+	req.ExecHoldCmd = workload.HoldContaienrCmd(1 * time.Hour)
+	return req
 }
 
 type TerminalConfig struct {

@@ -458,10 +458,8 @@ func (i *impl) JobTaskDebug(ctx context.Context, in *task.JobTaskDebugRequest) {
 			return
 		}
 
-		req := workload.NewLoginContainerRequest(term)
-		req.PodName = pods.Items[0].Name
-		req.Namespace = k8sParams.Namespace
-		err = k8sClient.WorkLoad().LoginContainer(ctx, req)
+		req := in.CopyPodRunRequest(k8sParams.Namespace, pods.Items[0].Name)
+		_, err = k8sClient.WorkLoad().CopyPodRun(ctx, req)
 		if err != nil {
 			term.Failed(err)
 			return
