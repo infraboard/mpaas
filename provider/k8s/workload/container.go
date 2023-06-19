@@ -2,7 +2,9 @@ package workload
 
 import (
 	"context"
+	"fmt"
 	"io"
+	"time"
 
 	"github.com/go-playground/validator/v10"
 	"github.com/infraboard/mpaas/common/format"
@@ -18,8 +20,15 @@ var (
 		"-c",
 		`TERM=xterm-256color; export TERM; [ -x /bin/bash ] && ([ -x /usr/bin/script ] && /usr/bin/script -q -c "/bin/bash" /dev/null || exec /bin/bash) || exec /bin/sh`,
 	}
-	sleepCmd = []string{"sleep infinity"}
 )
+
+func HoldContaienrCmd(d time.Duration) []string {
+	return []string{
+		"sh",
+		"-c",
+		fmt.Sprintf("while sleep %f; do :; done", d.Seconds()),
+	}
+}
 
 func NewLoginContainerRequest(ce ContainerTerminal) *LoginContainerRequest {
 	return &LoginContainerRequest{

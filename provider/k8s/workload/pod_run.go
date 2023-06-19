@@ -31,6 +31,8 @@ type CopyPodRunRequest struct {
 	ExecRunCmd []string
 	// 是否登录目录容器
 	Attach bool
+	// 当登录终端后,退出终端是否删除容器
+	Romove bool
 	// 登录终端
 	Excutor ContainerTerminal `json:"-"`
 }
@@ -51,13 +53,12 @@ func (c *Client) CopyPodRun(ctx context.Context, req *CopyPodRunRequest) (*v1.Po
 
 	// 需要Debug的容器 Hold住
 	execContainer := &targetPod.Spec.Containers[0]
-	if req.ExecContainer == "" {
+	if req.ExecContainer != "" {
 		execContainer = GetContainerFromPodSpec(targetPod.Spec, req.ExecContainer)
 		if execContainer == nil {
 			return nil, fmt.Errorf("container not found")
 		}
 	}
-	execContainer.Command = sleepCmd
 	if len(req.ExecHoldCmd) > 0 {
 		execContainer.Command = req.ExecHoldCmd
 	}
@@ -69,6 +70,18 @@ func (c *Client) CopyPodRun(ctx context.Context, req *CopyPodRunRequest) (*v1.Po
 	}
 
 	if req.Attach {
+		// 自动删除Pod
+		if req.Romove {
+			defer func() {
+				delReq := meta.NewDeleteRequest(req.TargetPodMeta.Name).
+					WithNamespace(req.TargetPodMeta.Namespace)
+				err := c.DeletePod(ctx, delReq)
+				if err != nil {
+					c.l.Error("delete pod error, %s", err)
+				}
+			}()
+		}
+
 		// 登录目标容器启动
 		pod, err = c.WaitForPodCondition(ctx, &WaitForContainerRequest{
 			Namespace:     req.TargetPodMeta.Namespace,
