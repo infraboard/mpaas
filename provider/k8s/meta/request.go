@@ -118,8 +118,7 @@ func NewCreateRequest() *CreateRequest {
 }
 
 type CreateRequest struct {
-	Namespace string
-	Opts      metav1.CreateOptions
+	Opts metav1.CreateOptions
 }
 
 func NewScaleRequest() *ScaleRequest {

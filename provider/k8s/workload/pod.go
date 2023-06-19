@@ -8,7 +8,7 @@ import (
 )
 
 func (c *Client) CreatePod(ctx context.Context, pod *v1.Pod, req *meta.CreateRequest) (*v1.Pod, error) {
-	return c.corev1.Pods(req.Namespace).Create(ctx, pod, req.Opts)
+	return c.corev1.Pods(pod.Namespace).Create(ctx, pod, req.Opts)
 }
 
 func (c *Client) ListPod(ctx context.Context, req *meta.ListRequest) (*v1.PodList, error) {
