@@ -52,12 +52,13 @@ type JobTaskDebugRequest struct {
 	terminal *terminal.WebSocketTerminal
 }
 
-func (r *JobTaskDebugRequest) CopyPodRunRequest(namespace, name string) *workload.CopyPodRunRequest {
+func (r *JobTaskDebugRequest) CopyPodRunRequest(namespace, podName string) *workload.CopyPodRunRequest {
 	req := workload.NewCopyPodRunRequest()
-	req.SourcePod.Name = name
+	req.SourcePod.Name = podName
 	req.SourcePod.Namespace = namespace
 	req.TargetPodMeta.Namespace = namespace
 	req.TargetPodMeta.Name = fmt.Sprintf("%s-debug", req.SourcePod.Name)
+	req.ExecContainer = r.ContainerName
 	req.ExecHoldCmd = workload.HoldContaienrCmd(1 * time.Hour)
 	return req
 }

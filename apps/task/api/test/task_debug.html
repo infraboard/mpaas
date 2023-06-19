@@ -19,10 +19,11 @@
         socket.onopen = function (e) {
             term.write("[open] Connection established");
             term.write("Sending to server");
-            socket.send(JSON.stringify({task_id: "task-ci4hr3ro99m7irvib5jg"}));
+            socket.send(JSON.stringify({task_id: "task-ci85q2ro99m31pv5pho0", container_name: "build-and-push"}));
         };
         socket.onmessage = function (event) {
-            term.write(`[message] Data received from server: ${event.data}`);
+            console.log(event);
+            term.write(event.data);
         };
         socket.onclose = function (event) {
             if (event.wasClean) {

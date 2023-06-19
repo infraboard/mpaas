@@ -459,6 +459,8 @@ func (i *impl) JobTaskDebug(ctx context.Context, in *task.JobTaskDebugRequest) {
 		}
 
 		req := in.CopyPodRunRequest(k8sParams.Namespace, pods.Items[0].Name)
+		req.SetAttachTerminal(term)
+		req.Remove = true
 		_, err = k8sClient.WorkLoad().CopyPodRun(ctx, req)
 		if err != nil {
 			term.Failed(err)

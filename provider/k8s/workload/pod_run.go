@@ -24,17 +24,22 @@ type CopyPodRunRequest struct {
 	// 目标创建容器的创建选项
 	TargetPodOpts *meta.CreateRequest
 	// 登录目标容器的名称
-	ExecContainer string
+	ExecContainer string `json:"exec_container"`
 	// 用于Hold主Container的命令, 默认 sleep infinity
-	ExecHoldCmd []string
+	ExecHoldCmd []string `json:"exec_hold_cmd"`
 	// 登录目标容器的命令
-	ExecRunCmd []string
+	ExecRunCmd []string `json:"exec_run_cmd"`
 	// 是否登录目录容器
-	Attach bool
+	Attach bool `json:"attach"`
 	// 当登录终端后,退出终端是否删除容器
-	Romove bool
+	Remove bool `json:"remove"`
 	// 登录终端
-	Excutor ContainerTerminal `json:"-"`
+	Terminal ContainerTerminal `json:"-"`
+}
+
+func (r *CopyPodRunRequest) SetAttachTerminal(term ContainerTerminal) {
+	r.Attach = true
+	r.Terminal = term
 }
 
 func (c *Client) CopyPodRun(ctx context.Context, req *CopyPodRunRequest) (*v1.Pod, error) {
@@ -71,7 +76,7 @@ func (c *Client) CopyPodRun(ctx context.Context, req *CopyPodRunRequest) (*v1.Po
 
 	if req.Attach {
 		// 自动删除Pod
-		if req.Romove {
+		if req.Remove {
 			defer func() {
 				delReq := meta.NewDeleteRequest(req.TargetPodMeta.Name).
 					WithNamespace(req.TargetPodMeta.Namespace)
@@ -82,12 +87,12 @@ func (c *Client) CopyPodRun(ctx context.Context, req *CopyPodRunRequest) (*v1.Po
 			}()
 		}
 
-		// 登录目标容器启动
+		// 等待目标容器启动
 		pod, err = c.WaitForPodCondition(ctx, &WaitForContainerRequest{
 			Namespace:     req.TargetPodMeta.Namespace,
 			PodName:       req.TargetPodMeta.Name,
 			ContainerName: req.ExecContainer,
-			ExitCondition: WaitForContainerRunning(req.ExecContainer, req.Excutor),
+			ExitCondition: WaitForContainerRunning(req.ExecContainer, req.Terminal),
 		})
 		if err != nil {
 			return nil, err
@@ -99,7 +104,7 @@ func (c *Client) CopyPodRun(ctx context.Context, req *CopyPodRunRequest) (*v1.Po
 			PodName:       req.TargetPodMeta.Name,
 			ContainerName: req.ExecContainer,
 			Command:       shellCmd,
-			Excutor:       req.Excutor,
+			Excutor:       req.Terminal,
 		})
 		if err != nil {
 			return nil, err

@@ -130,7 +130,7 @@ func (c *Client) DebugPod(ctx context.Context, req *DebugPodRequest) error {
 
 func WaitForContainerRunning(containerName string, printer io.Writer) watchtools.ConditionFunc {
 	return func(ev watch.Event) (bool, error) {
-		zap.L().Infof("watch received event %q with object %T", ev.Type, ev.Object)
+		zap.L().Infof("watch container: [%s], received event %q with object %T", containerName, ev.Type, ev.Object)
 		switch ev.Type {
 		case watch.Deleted:
 			return false, errors.NewNotFound(schema.GroupResource{Resource: "pods"}, "")
