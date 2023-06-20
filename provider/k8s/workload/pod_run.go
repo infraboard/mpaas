@@ -33,6 +33,8 @@ type CopyPodRunRequest struct {
 	Attach bool `json:"attach"`
 	// 当登录终端后,退出终端是否删除容器
 	Remove bool `json:"remove"`
+	// 目标容器的优雅关闭时间, 默认5秒
+	TerminationGracePeriodSeconds int64
 	// 登录终端
 	Terminal ContainerTerminal `json:"-"`
 }
@@ -51,12 +53,17 @@ func (c *Client) CopyPodRun(ctx context.Context, req *CopyPodRunRequest) (*v1.Po
 	targetPod := &v1.Pod{}
 	targetPod.Spec = sourcePod.DeepCopy().Spec
 	targetPod.ObjectMeta = req.TargetPodMeta
+	// 调整Pod关闭操时时长
+	if req.TerminationGracePeriodSeconds != 0 {
+		targetPod.Spec.TerminationGracePeriodSeconds = &req.TerminationGracePeriodSeconds
+	}
 
 	if len(targetPod.Spec.Containers) == 0 {
 		return nil, fmt.Errorf("no container found in spec")
 	}
 
 	// 需要Debug的容器 Hold住
+
 	execContainer := &targetPod.Spec.Containers[0]
 	if req.ExecContainer != "" {
 		execContainer = GetContainerFromPodSpec(targetPod.Spec, req.ExecContainer)

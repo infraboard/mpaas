@@ -60,6 +60,7 @@ func (r *JobTaskDebugRequest) CopyPodRunRequest(namespace, podName string) *work
 	req.TargetPodMeta.Name = fmt.Sprintf("%s-debug", req.SourcePod.Name)
 	req.ExecContainer = r.ContainerName
 	req.ExecHoldCmd = workload.HoldContaienrCmd(1 * time.Hour)
+	req.TerminationGracePeriodSeconds = 1
 	return req
 }
 
