@@ -9,51 +9,13 @@
 </head>
 
 <body>
-    <div id="terminal"></div>
+    <div id="terminal" style="height: 100vh;"></div>
     <script>
         var term = new Terminal();
         term.open(document.getElementById('terminal'));
 
-        let socket = new WebSocket("ws://127.0.0.1:8090/mpaas/api/v1/tasks/xxxx/debug");
-        socket.onopen = function (e) {
-            term.write("[open] Connection established");
-            term.write("Sending to server");
-            socket.send(JSON.stringify({ task_id: "task-ci85q2ro99m31pv5pho0", container_name: "build-and-push" }));
-        };
-        socket.onmessage = function (event) {
-            if (event.data instanceof Blob) {
-                let reader = new FileReader();
-                reader.onload = e => {
-                    term.write(e.target.result)
-                };
-                reader.readAsText(event.data)
-            } else {
-                term.write(event.data);
-            }
-        };
-        socket.onclose = function (event) {
-            if (event.wasClean) {
-                term.write(`[close] Connection closed cleanly, code=${event.code} reason=${event.reason}`);
-            } else {
-                // e.g. server process killed or network down
-                // event.code is usually 1006 in this case
-                term.write('[close] Connection died');
-            }
-        };
-        socket.onerror = function (error) {
-            term.write(`[error]`);
-        };
-
-        // 终端设置
-        term.onData(send => {
-            // 数据都使用bytes
-            const encoder = new TextEncoder();
-            const arrayBuffer = encoder.encode(send).buffer;
-            socket.send(arrayBuffer)
-        } )
-
-        // 终端大小调整
-        window.onresize = () => {
+        // 调整窗口
+        const fitSize = () => {
             const MINIMUM_COLS = 2;
             const MINIMUM_ROWS = 1;
             const core = term._core;
@@ -83,10 +45,58 @@
                 rows: Math.max(MINIMUM_ROWS, Math.floor(availableHeight / dims.css.cell.height))
             };
             console.log(geometry)
-
             term.resize(geometry.cols, geometry.rows)
-            socket.send(JSON.stringify({cmd: "resize", config: {}}))
+            socket.send(JSON.stringify({ command: "resize", params: { width: geometry.cols, heigh: geometry.rows } }))
         }
+        // 终端大小调整
+        window.onresize = fitSize
+
+        let socket = new WebSocket("ws://127.0.0.1:8090/mpaas/api/v1/tasks/xxxx/debug");
+        socket.onopen = function (e) {
+            term.write("[open] Connection established\r\n");
+            term.write("Sending to server\r\n");
+            socket.send(JSON.stringify({ task_id: "task-ci85q2ro99m31pv5pho0", container_name: "build-and-push" }));
+            fitSize()
+        };
+        socket.onmessage = function (event) {
+            if (event.data instanceof Blob) {
+                // 数据
+                let reader = new FileReader();
+                reader.onload = e => {
+                    term.write(e.target.result)
+                };
+                reader.readAsText(event.data)
+            } else {
+                // 指令响应
+                console.log(event.data)
+            }
+        };
+        socket.onclose = function (event) {
+            if (event.wasClean) {
+                term.write(`[close] Connection closed cleanly, code=${event.code} reason=${event.reason}`);
+            } else {
+                // e.g. server process killed or network down
+                // event.code is usually 1006 in this case
+                term.write('[close] Connection died');
+            }
+        };
+        socket.onerror = function (error) {
+            term.write(`[error]`);
+        };
+
+        // 终端设置
+        term.onData(send => {
+            // 数据都使用bytes
+            const encoder = new TextEncoder();
+            const arrayBuffer = encoder.encode(send).buffer;
+            socket.send(arrayBuffer)
+        })
+
+
+
+
+
+
 
     </script>
 </body>

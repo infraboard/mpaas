@@ -56,7 +56,11 @@ func (t *WebSocketTerminal) HandleCmd(m []byte) {
 	switch req.Command {
 	case "resize":
 		payload := NewTerminalSzie()
-		json.Unmarshal(req.Params, payload)
+		err := json.Unmarshal(req.Params, payload)
+		if err != nil {
+			resp.Message = err.Error()
+			return
+		}
 		t.SetSize(*payload)
 		return
 	}
