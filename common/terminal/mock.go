@@ -9,13 +9,13 @@ import (
 
 func NewStdTerminal(width, height uint16) *StdTerminal {
 	return &StdTerminal{
-		TerminalSize: NewTerminalSize(),
+		TerminalResizer: NewTerminalSize(),
 	}
 }
 
 type StdTerminal struct {
 	*mock.ServerStreamBase
-	*TerminalSize
+	*TerminalResizer
 }
 
 func (i *StdTerminal) Write(p []byte) (n int, err error) {

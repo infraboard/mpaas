@@ -1,7 +1,7 @@
 package terminal
 
 import (
-	"fmt"
+	"encoding/json"
 
 	"github.com/gorilla/websocket"
 	"k8s.io/client-go/tools/remotecommand"
@@ -10,13 +10,13 @@ import (
 func NewWebSocketTerminal(conn *websocket.Conn) *WebSocketTerminal {
 	return &WebSocketTerminal{
 		WebSocketWriter: NewWebSocketWriter(conn),
-		TerminalSize:    NewTerminalSize(),
+		TerminalResizer: NewTerminalSize(),
 	}
 }
 
 type WebSocketTerminal struct {
 	*WebSocketWriter
-	*TerminalSize
+	*TerminalResizer
 }
 
 func (t *WebSocketTerminal) Close() {
@@ -32,19 +32,7 @@ func (t *WebSocketTerminal) Read(p []byte) (n int, err error) {
 	// 注意文本消息和关闭消息专门被设计为了指令通道
 	switch mt {
 	case websocket.TextMessage:
-		req, err := ParseRequest(m)
-		if err != nil {
-			t.Failed(err)
-			return 0, nil
-		}
-		fn := GetCmdHandleFunc(req.Command)
-		if fn == nil {
-			t.Failed(fmt.Errorf("command not found"))
-			return 0, nil
-		}
-		resp := NewResponse()
-		fn(req, resp)
-		t.Success(resp.ToJSON())
+		t.HandleCmd(m)
 	case websocket.CloseMessage:
 		t.l.Debugf("receive client close: %s", m)
 	default:
@@ -54,8 +42,37 @@ func (t *WebSocketTerminal) Read(p []byte) (n int, err error) {
 	return n, nil
 }
 
-func NewTerminalSize() *TerminalSize {
-	size := &TerminalSize{
+func (t *WebSocketTerminal) HandleCmd(m []byte) {
+	resp := NewResponse()
+	defer t.WriteText(resp.ToJSON())
+
+	req, err := ParseRequest(m)
+	if err != nil {
+		resp.Message = err.Error()
+		return
+	}
+
+	// 单独处理Resize请求
+	switch req.Command {
+	case "resize":
+		payload := NewTerminalSzie()
+		json.Unmarshal(req.Params, payload)
+		t.SetSize(*payload)
+		return
+	}
+
+	// 其他业务请求
+	fn := GetCmdHandleFunc(req.Command)
+	if fn == nil {
+		resp.Message = "command not found"
+		return
+	}
+
+	fn(req, resp)
+}
+
+func NewTerminalSize() *TerminalResizer {
+	size := &TerminalResizer{
 		sizeChan: make(chan remotecommand.TerminalSize, 1),
 		doneChan: make(chan struct{}),
 	}
@@ -63,18 +80,31 @@ func NewTerminalSize() *TerminalSize {
 	return size
 }
 
+func NewTerminalSzie() *TerminalSize {
+	return &TerminalSize{}
+}
+
 type TerminalSize struct {
+	// 终端的宽度
+	// @gotags: json:"width"
+	Width uint16 `json:"width"`
+	// 终端的高度
+	// @gotags: json:"heigh"
+	Heigh uint16 `json:"heigh"`
+}
+
+type TerminalResizer struct {
 	sizeChan chan remotecommand.TerminalSize
 	doneChan chan struct{}
 }
 
-func (i *TerminalSize) SetSize(width, height uint16) {
-	i.sizeChan <- remotecommand.TerminalSize{Width: width, Height: height}
+func (i *TerminalResizer) SetSize(ts TerminalSize) {
+	i.sizeChan <- remotecommand.TerminalSize{Width: ts.Width, Height: ts.Heigh}
 }
 
 // Next returns the new terminal size after the terminal has been resized. It returns nil when
 // monitoring has been stopped.
-func (i *TerminalSize) Next() *remotecommand.TerminalSize {
+func (i *TerminalResizer) Next() *remotecommand.TerminalSize {
 	select {
 	case size := <-i.sizeChan:
 		return &size

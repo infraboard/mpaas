@@ -47,7 +47,7 @@ type JobTaskDebugRequest struct {
 	// 容器名称
 	ContainerName string `json:"container_name"`
 	// 终端配置
-	Terminal TerminalConfig `json:"terminal"`
+	Terminal terminal.TerminalSize `json:"terminal_size"`
 	// Debug容器终端
 	terminal *terminal.WebSocketTerminal
 }
@@ -64,22 +64,13 @@ func (r *JobTaskDebugRequest) CopyPodRunRequest(namespace, podName string) *work
 	return req
 }
 
-type TerminalConfig struct {
-	// 终端的宽度
-	// @gotags: json:"width"
-	Width uint16 `json:"width"`
-	// 终端的高度
-	// @gotags: json:"heigh"
-	Heigh uint16 `json:"heigh"`
-}
-
 func (r *JobTaskDebugRequest) WebTerminal() *terminal.WebSocketTerminal {
 	return r.terminal
 }
 
 func (r *JobTaskDebugRequest) SetWebTerminal(term *terminal.WebSocketTerminal) {
 	r.terminal = term
-	r.terminal.SetSize(r.Terminal.Width, r.Terminal.Heigh)
+	r.terminal.SetSize(r.Terminal)
 }
 
 func NewQueryTaskRequest() *QueryJobTaskRequest {
