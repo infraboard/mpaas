@@ -145,12 +145,11 @@ func WaitForContainerRunning(containerName string, printer io.Writer) watchtools
 		if s == nil {
 			return false, nil
 		}
-		zap.L().Infof("debug container status is %v", s)
+		zap.L().Infof("debug container status is %v", s.State)
 		if s.State.Running != nil || s.State.Terminated != nil {
 			return true, nil
 		}
 		if s.State.Waiting != nil && s.State.Waiting.Message != "" {
-
 			_, err := printer.Write([]byte(fmt.Sprintf("container %s: %s", containerName, s.State.Waiting.Message)))
 			if err != nil {
 				zap.L().Errorf("write event error, %s", err)

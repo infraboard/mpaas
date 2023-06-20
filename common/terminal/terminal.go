@@ -28,9 +28,29 @@ func (t *WebSocketTerminal) Read(p []byte) (n int, err error) {
 	if err != nil {
 		return 0, err
 	}
-	fmt.Println(mt, string(m))
 
-	n = copy(p, m)
+	// 注意文本消息和关闭消息专门被设计为了指令通道
+	switch mt {
+	case websocket.TextMessage:
+		req, err := ParseRequest(m)
+		if err != nil {
+			t.Failed(err)
+			return 0, nil
+		}
+		fn := GetCmdHandleFunc(req.Command)
+		if fn == nil {
+			t.Failed(fmt.Errorf("command not found"))
+			return 0, nil
+		}
+		resp := NewResponse()
+		fn(req, resp)
+		t.Success(resp.ToJSON())
+	case websocket.CloseMessage:
+		t.l.Debugf("receive client close: %s", m)
+	default:
+		n = copy(p, m)
+	}
+
 	return n, nil
 }
 

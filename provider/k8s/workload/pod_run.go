@@ -33,7 +33,7 @@ type CopyPodRunRequest struct {
 	Attach bool `json:"attach"`
 	// 当登录终端后,退出终端是否删除容器
 	Remove bool `json:"remove"`
-	// 目标容器的优雅关闭时间, 默认5秒
+	// 目标容器的优雅关闭时间, 默认30秒
 	TerminationGracePeriodSeconds int64
 	// 登录终端
 	Terminal ContainerTerminal `json:"-"`
