@@ -45,7 +45,12 @@
         };
 
         // 终端设置
-        term.onData(send => socket.send(send))
+        term.onData(send => {
+            // 数据都使用bytes
+            const encoder = new TextEncoder();
+            const arrayBuffer = encoder.encode(send).buffer;
+            socket.send(arrayBuffer)
+        } )
 
         // 终端大小调整
         window.onresize = () => {

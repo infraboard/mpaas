@@ -1,6 +1,8 @@
 package terminal
 
 import (
+	"fmt"
+
 	"github.com/gorilla/websocket"
 	"k8s.io/client-go/tools/remotecommand"
 )
@@ -22,10 +24,11 @@ func (t *WebSocketTerminal) Close() {
 }
 
 func (t *WebSocketTerminal) Read(p []byte) (n int, err error) {
-	_, m, err := t.ws.ReadMessage()
+	mt, m, err := t.ws.ReadMessage()
 	if err != nil {
 		return 0, err
 	}
+	fmt.Println(mt, string(m))
 
 	n = copy(p, m)
 	return n, nil
