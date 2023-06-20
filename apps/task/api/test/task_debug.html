@@ -14,16 +14,22 @@
         var term = new Terminal();
         term.open(document.getElementById('terminal'));
 
-
         let socket = new WebSocket("ws://127.0.0.1:8090/mpaas/api/v1/tasks/xxxx/debug");
         socket.onopen = function (e) {
             term.write("[open] Connection established");
             term.write("Sending to server");
-            socket.send(JSON.stringify({task_id: "task-ci85q2ro99m31pv5pho0", container_name: "build-and-push"}));
+            socket.send(JSON.stringify({ task_id: "task-ci85q2ro99m31pv5pho0", container_name: "build-and-push" }));
         };
         socket.onmessage = function (event) {
-            console.log(event);
-            term.write(event.data);
+            if (event.data instanceof Blob) {
+                let reader = new FileReader();
+                reader.onload = e => {
+                    term.write(e.target.result)
+                };
+                reader.readAsText(event.data)
+            } else {
+                term.write(event.data);
+            }
         };
         socket.onclose = function (event) {
             if (event.wasClean) {
@@ -37,6 +43,46 @@
         socket.onerror = function (error) {
             term.write(`[error]`);
         };
+
+        // 终端设置
+        term.onData(send => socket.send(send))
+
+        // 终端大小调整
+        window.onresize = () => {
+            const MINIMUM_COLS = 2;
+            const MINIMUM_ROWS = 1;
+            const core = term._core;
+            const dims = core._renderService.dimensions;
+
+            if (dims.css.cell.width === 0 || dims.css.cell.height === 0) {
+                return undefined;
+            }
+
+            const scrollbarWidth = term.options.scrollback === 0 ? 0 : core.viewport.scrollBarWidth;
+            const parentElementStyle = window.getComputedStyle(term.element.parentElement);
+            const parentElementHeight = parseInt(parentElementStyle.getPropertyValue('height'));
+            const parentElementWidth = Math.max(0, parseInt(parentElementStyle.getPropertyValue('width')));
+            const elementStyle = window.getComputedStyle(term.element);
+            const elementPadding = {
+                top: parseInt(elementStyle.getPropertyValue('padding-top')),
+                bottom: parseInt(elementStyle.getPropertyValue('padding-bottom')),
+                right: parseInt(elementStyle.getPropertyValue('padding-right')),
+                left: parseInt(elementStyle.getPropertyValue('padding-left'))
+            };
+            const elementPaddingVer = elementPadding.top + elementPadding.bottom;
+            const elementPaddingHor = elementPadding.right + elementPadding.left;
+            const availableHeight = parentElementHeight - elementPaddingVer;
+            const availableWidth = parentElementWidth - elementPaddingHor - scrollbarWidth;
+            const geometry = {
+                cols: Math.max(MINIMUM_COLS, Math.floor(availableWidth / dims.css.cell.width)),
+                rows: Math.max(MINIMUM_ROWS, Math.floor(availableHeight / dims.css.cell.height))
+            };
+            console.log(geometry)
+
+            term.resize(geometry.cols, geometry.rows)
+            socket.send(JSON.stringify({cmd: "resize", config: {}}))
+        }
+
     </script>
 </body>
 
