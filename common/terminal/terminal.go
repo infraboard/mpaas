@@ -44,7 +44,7 @@ func (t *WebSocketTerminal) Read(p []byte) (n int, err error) {
 
 func (t *WebSocketTerminal) HandleCmd(m []byte) {
 	resp := NewResponse()
-	defer t.WriteText(resp.ToJSON())
+	defer t.Response(resp)
 
 	req, err := ParseRequest(m)
 	if err != nil {

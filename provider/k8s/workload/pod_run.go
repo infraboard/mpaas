@@ -4,9 +4,14 @@ import (
 	"context"
 	"fmt"
 
+	"github.com/infraboard/mpaas/common/terminal"
 	"github.com/infraboard/mpaas/provider/k8s/meta"
 	v1 "k8s.io/api/core/v1"
+	"k8s.io/apimachinery/pkg/api/errors"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+	"k8s.io/apimachinery/pkg/runtime/schema"
+	watch "k8s.io/apimachinery/pkg/watch"
+	watchtools "k8s.io/client-go/tools/watch"
 )
 
 func NewCopyPodRunRequest() *CopyPodRunRequest {
@@ -31,15 +36,15 @@ type CopyPodRunRequest struct {
 	ExecRunCmd []string `json:"exec_run_cmd"`
 	// 是否登录目录容器
 	Attach bool `json:"attach"`
-	// 当登录终端后,退出终端是否删除容器
+	// 当登录终端后,退出终端是否删除Pod
 	Remove bool `json:"remove"`
 	// 目标容器的优雅关闭时间, 默认30秒
 	TerminationGracePeriodSeconds int64
 	// 登录终端
-	Terminal ContainerTerminal `json:"-"`
+	Terminal *terminal.WebSocketTerminal `json:"-"`
 }
 
-func (r *CopyPodRunRequest) SetAttachTerminal(term ContainerTerminal) {
+func (r *CopyPodRunRequest) SetAttachTerminal(term *terminal.WebSocketTerminal) {
 	r.Attach = true
 	r.Terminal = term
 }
@@ -50,6 +55,7 @@ func (c *Client) CopyPodRun(ctx context.Context, req *CopyPodRunRequest) (*v1.Po
 		return nil, err
 	}
 
+	req.Terminal.WriteTextln("开始Copy目标Pod相关信息")
 	targetPod := &v1.Pod{}
 	targetPod.Spec = sourcePod.DeepCopy().Spec
 	targetPod.ObjectMeta = req.TargetPodMeta
@@ -63,7 +69,6 @@ func (c *Client) CopyPodRun(ctx context.Context, req *CopyPodRunRequest) (*v1.Po
 	}
 
 	// 需要Debug的容器 Hold住
-
 	execContainer := &targetPod.Spec.Containers[0]
 	if req.ExecContainer != "" {
 		execContainer = GetContainerFromPodSpec(targetPod.Spec, req.ExecContainer)
@@ -76,6 +81,7 @@ func (c *Client) CopyPodRun(ctx context.Context, req *CopyPodRunRequest) (*v1.Po
 	}
 
 	// 创建目标Pod
+	req.Terminal.WriteTextln("开始创建Debug Pod: 【%s】,位于Namespace: %s", targetPod.Name, targetPod.Namespace)
 	pod, err := c.CreatePod(ctx, targetPod, req.TargetPodOpts)
 	if err != nil {
 		return nil, err
@@ -95,6 +101,7 @@ func (c *Client) CopyPodRun(ctx context.Context, req *CopyPodRunRequest) (*v1.Po
 		}
 
 		// 等待目标容器启动
+		req.Terminal.WriteTextln("等待Debug Pod启动 ...")
 		pod, err = c.WaitForPodCondition(ctx, &WaitForContainerRequest{
 			Namespace:     req.TargetPodMeta.Namespace,
 			PodName:       req.TargetPodMeta.Name,
@@ -106,6 +113,7 @@ func (c *Client) CopyPodRun(ctx context.Context, req *CopyPodRunRequest) (*v1.Po
 		}
 
 		// 登录容器
+		req.Terminal.WriteTextln("正在登录到Debug Pod ...")
 		err = c.LoginContainer(ctx, &LoginContainerRequest{
 			Namespace:     req.TargetPodMeta.Namespace,
 			PodName:       req.TargetPodMeta.Name,
@@ -119,4 +127,28 @@ func (c *Client) CopyPodRun(ctx context.Context, req *CopyPodRunRequest) (*v1.Po
 	}
 
 	return pod, nil
+}
+
+func WaitForContainerRunning(containerName string, printer terminal.Logger) watchtools.ConditionFunc {
+	return func(ev watch.Event) (bool, error) {
+		switch ev.Type {
+		case watch.Deleted:
+			return false, errors.NewNotFound(schema.GroupResource{Resource: "pods"}, "")
+		}
+
+		p, ok := ev.Object.(*v1.Pod)
+		if !ok {
+			return false, fmt.Errorf("watch did not return a pod: %v", ev.Object)
+		}
+
+		s := GetPodContainerStatusByName(p, containerName)
+		if s == nil {
+			return false, nil
+		}
+		printer.WriteTextln("container 【%s】: Event %s, Status: %s", containerName, ev.Type, FormatContainerState(s.State))
+		if s.State.Running != nil || s.State.Terminated != nil {
+			return true, nil
+		}
+		return false, nil
+	}
 }

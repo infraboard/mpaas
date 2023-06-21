@@ -14,6 +14,7 @@ import (
 	"github.com/infraboard/mpaas/common/terminal"
 	"github.com/infraboard/mpaas/provider/k8s/workload"
 	v1 "k8s.io/api/core/v1"
+	utilrand "k8s.io/apimachinery/pkg/util/rand"
 )
 
 const (
@@ -57,7 +58,7 @@ func (r *JobTaskDebugRequest) CopyPodRunRequest(namespace, podName string) *work
 	req.SourcePod.Name = podName
 	req.SourcePod.Namespace = namespace
 	req.TargetPodMeta.Namespace = namespace
-	req.TargetPodMeta.Name = fmt.Sprintf("%s-debug", req.SourcePod.Name)
+	req.TargetPodMeta.Name = fmt.Sprintf("%s-d%s", req.SourcePod.Name, utilrand.String(5))
 	req.ExecContainer = r.ContainerName
 	req.ExecHoldCmd = workload.HoldContaienrCmd(1 * time.Hour)
 	req.TerminationGracePeriodSeconds = 1

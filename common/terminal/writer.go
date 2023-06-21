@@ -54,11 +54,28 @@ func (i *WebSocketWriter) Write(p []byte) (n int, err error) {
 	return
 }
 
-func (i *WebSocketWriter) WriteText(msg string) {
-	err := i.ws.WriteMessage(websocket.TextMessage, []byte(msg))
+// 命令的返回
+func (i *WebSocketWriter) Response(resp *Response) {
+	err := i.ws.WriteMessage(websocket.TextMessage, []byte(resp.ToJSON()))
 	if err != nil {
 		i.l.Infof("write message error, %s", err)
 	}
+}
+
+func (i *WebSocketWriter) WriteTextln(format string, a ...any) {
+	i.WriteTextf(format, a...)
+	i.WriteText("\r\n")
+}
+
+func (i *WebSocketWriter) WriteText(msg string) {
+	err := i.ws.WriteMessage(websocket.BinaryMessage, []byte(msg))
+	if err != nil {
+		i.l.Infof("write message error, %s", err)
+	}
+}
+
+func (i *WebSocketWriter) WriteTextf(format string, a ...any) {
+	i.WriteText(fmt.Sprintf(format, a...))
 }
 
 func (i *WebSocketWriter) Failed(err error) {

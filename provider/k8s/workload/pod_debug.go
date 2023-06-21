@@ -4,17 +4,15 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"io"
 	"time"
 
-	"github.com/infraboard/mcube/logger/zap"
+	"github.com/infraboard/mpaas/common/terminal"
 	"github.com/infraboard/mpaas/provider/k8s/meta"
 	corev1 "k8s.io/api/core/v1"
 	"k8s.io/apimachinery/pkg/api/errors"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/fields"
 	"k8s.io/apimachinery/pkg/runtime"
-	"k8s.io/apimachinery/pkg/runtime/schema"
 	"k8s.io/apimachinery/pkg/types"
 	"k8s.io/apimachinery/pkg/util/strategicpatch"
 	watch "k8s.io/apimachinery/pkg/watch"
@@ -27,8 +25,8 @@ import (
 
 type DebugPodRequest struct {
 	*meta.GetRequest
-	EphemeralContainer corev1.EphemeralContainer `json:""`
-	Excutor            ContainerTerminal         `json:"-"`
+	EphemeralContainer corev1.EphemeralContainer   `json:""`
+	Excutor            *terminal.WebSocketTerminal `json:"-"`
 }
 
 func (c *Client) DebugPod(ctx context.Context, req *DebugPodRequest) error {
@@ -128,37 +126,6 @@ func (c *Client) DebugPod(ctx context.Context, req *DebugPodRequest) error {
 	})
 }
 
-func WaitForContainerRunning(containerName string, printer io.Writer) watchtools.ConditionFunc {
-	return func(ev watch.Event) (bool, error) {
-		zap.L().Infof("watch container: [%s], received event %q with object %T", containerName, ev.Type, ev.Object)
-		switch ev.Type {
-		case watch.Deleted:
-			return false, errors.NewNotFound(schema.GroupResource{Resource: "pods"}, "")
-		}
-
-		p, ok := ev.Object.(*corev1.Pod)
-		if !ok {
-			return false, fmt.Errorf("watch did not return a pod: %v", ev.Object)
-		}
-
-		s := GetPodContainerStatusByName(p, containerName)
-		if s == nil {
-			return false, nil
-		}
-		zap.L().Infof("debug container status is %v", s.State)
-		if s.State.Running != nil || s.State.Terminated != nil {
-			return true, nil
-		}
-		if s.State.Waiting != nil && s.State.Waiting.Message != "" {
-			_, err := printer.Write([]byte(fmt.Sprintf("container %s: %s", containerName, s.State.Waiting.Message)))
-			if err != nil {
-				zap.L().Errorf("write event error, %s", err)
-			}
-		}
-		return false, nil
-	}
-}
-
 // debugByEphemeralContainerLegacy adds debugContainer as an ephemeral container using the pre-1.22 /ephemeralcontainers API
 // This may be removed when we no longer wish to support releases prior to 1.22.
 func (c *Client) debugByEphemeralContainerLegacy(ctx context.Context, pod *corev1.Pod, debugContainer *corev1.EphemeralContainer) error {
@@ -240,4 +207,17 @@ func GetPodContainerStatusByName(pod *corev1.Pod, containerName string) *corev1.
 		}
 	}
 	return nil
+}
+
+func FormatContainerState(stage corev1.ContainerState) string {
+	if stage.Terminated != nil {
+		return fmt.Sprintf("Terminated, %s", stage.Terminated.Reason)
+	}
+	if stage.Running != nil {
+		return "Running"
+	}
+	if stage.Waiting != nil {
+		return fmt.Sprintf("Waiting, %s %s", stage.Waiting.Reason, stage.Waiting.Message)
+	}
+	return stage.String()
 }

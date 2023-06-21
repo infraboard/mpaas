@@ -438,6 +438,7 @@ func (i *impl) JobTaskDebug(ctx context.Context, in *task.JobTaskDebugRequest) {
 			return
 		}
 
+		term.WriteTextln("正在登录到k8s集群: %s", c.Spec.Name)
 		k8sClient, err := c.Client()
 		if err != nil {
 			term.Failed(err)
@@ -445,6 +446,7 @@ func (i *impl) JobTaskDebug(ctx context.Context, in *task.JobTaskDebugRequest) {
 		}
 
 		// 找到Job执行的Pod
+		term.WriteTextln("正在查询Job Task【%s】运行的Pod", t.Spec.TaskId)
 		podReq := meta.NewListRequest().
 			SetNamespace(k8sParams.Namespace).
 			SetLabelSelector(meta.NewLabelSelector().Add("job-name", t.Spec.TaskId))
@@ -458,9 +460,16 @@ func (i *impl) JobTaskDebug(ctx context.Context, in *task.JobTaskDebugRequest) {
 			return
 		}
 
-		req := in.CopyPodRunRequest(k8sParams.Namespace, pods.Items[0].Name)
+		targetCopyPod := pods.Items[0]
+		term.WriteTextln("Job Task【%s】位于Namespace: %s, PodName: %s",
+			t.Spec.TaskId, targetCopyPod.Namespace,
+			targetCopyPod.Name,
+		)
+
+		req := in.CopyPodRunRequest(k8sParams.Namespace, targetCopyPod.Name)
 		req.SetAttachTerminal(term)
 		req.Remove = true
+
 		_, err = k8sClient.WorkLoad().CopyPodRun(ctx, req)
 		if err != nil {
 			term.Failed(err)
