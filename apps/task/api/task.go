@@ -7,6 +7,7 @@ import (
 	restfulspec "github.com/emicklei/go-restful-openapi/v2"
 	"github.com/emicklei/go-restful/v3"
 	"github.com/gorilla/websocket"
+	"github.com/infraboard/mcenter/clients/rpc/middleware"
 	"github.com/infraboard/mcube/http/label"
 	"github.com/infraboard/mcube/http/restful/response"
 	"github.com/infraboard/mpaas/apps/task"
@@ -99,10 +100,17 @@ func (h *Handler) JobTaskLog(r *restful.Request, w *restful.Response) {
 	}
 	defer ws.Close()
 
-	in := task.NewWatchJobTaskLogRequest(r.PathParameter("id"))
+	term := task.NewTaskLogWebsocketTerminal(ws)
+
+	// 认证
+	err = middleware.GetHttpAuther().PermissionCheck(r, w)
+	if err != nil {
+		term.Failed(err)
+		return
+	}
 
 	// 读取请求
-	term := task.NewTaskLogWebsocketTerminal(ws)
+	in := task.NewWatchJobTaskLogRequest(r.PathParameter("id"))
 	if err = term.ReadReq(in); err != nil {
 		term.Failed(err)
 		return
@@ -127,6 +135,13 @@ func (h *Handler) JobTaskDebug(r *restful.Request, w *restful.Response) {
 	defer ws.Close()
 
 	term := terminal.NewWebSocketTerminal(ws)
+
+	// 认证
+	err = middleware.GetHttpAuther().PermissionCheck(r, w)
+	if err != nil {
+		term.Failed(err)
+		return
+	}
 
 	// 读取请求
 	in := task.NewJobTaskDebugRequest(r.PathParameter("id"))

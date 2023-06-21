@@ -34,6 +34,8 @@ func NewRequest() *Request {
 }
 
 type Request struct {
+	// 请求Id
+	Id string `json:"id"`
 	// 指令名称
 	Command string `json:"command"`
 	// 指令参数
@@ -41,10 +43,13 @@ type Request struct {
 }
 
 func NewResponse() *Response {
-	return &Response{}
+	return &Response{
+		Request: NewRequest(),
+	}
 }
 
 type Response struct {
+	Request *Request `json:"request"`
 	// 异常信息
 	Message string `json:"message"`
 	// 处理成功后的数据
@@ -53,4 +58,13 @@ type Response struct {
 
 func (resp *Response) ToJSON() string {
 	return pretty.ToJSON(resp)
+}
+
+// 处理来源客户端实现的自定义Ping, 因为浏览器并没有实现客户端Ping功能
+func PingHandleFunc(r *Request, w *Response) {
+	w.Data = "pong"
+}
+
+func init() {
+	RegistryCmdHandleFunc("ping", PingHandleFunc)
 }

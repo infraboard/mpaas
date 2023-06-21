@@ -51,6 +51,7 @@ func (t *WebSocketTerminal) HandleCmd(m []byte) {
 		resp.Message = err.Error()
 		return
 	}
+	resp.Request = req
 
 	// 单独处理Resize请求
 	switch req.Command {
