@@ -22,3 +22,5 @@
 
 + [JavaScript WebSocket使用说明](https://javascript.info/websocket)
 + [XtermJs](http://xtermjs.org/)
++ [gin-xterm样例](https://github.com/lflxp/gin-xterm)
++ [xterm-theme样例](https://github.com/ysk2014/xterm-theme/blob/master/src/iterm/Molokai.js)
