@@ -20,47 +20,30 @@
         var term = new Terminal({
             theme: Solarized_Darcula,
             fontSize: 13,
-            convertEol: true
+            convertEol: true,
+            disableStdin: false
         });
         term.open(document.getElementById('terminal'));
 
-
-
+        // 调整窗口
+        const fitSize = () => {
+            var geometry = getTermSize(term)
+            term.resize(geometry.cols, geometry.rows)
+        }
+        // 终端大小调整
+        window.onresize = fitSize
         const connBtn = document.getElementById("connect")
+
         const connect = () => {
             const inputs = document.getElementsByTagName("input")
             const task_id = inputs['task_id'].value
             const container_name = inputs['container_name'].value
-
-            let socket = new WebSocket("ws://127.0.0.1:8090/mpaas/api/v1/tasks/xxxx/debug");
-            //心跳检测
-            var heartCheck = {
-                timeout: 10000,        //10秒发一次心跳
-                timeoutObj: null,
-                reset: function () {
-                    clearTimeout(this.timeoutObj);
-                    return this;
-                },
-                start: function () {
-                    this.timeoutObj = setTimeout(function () {
-                        //这里发送一个心跳，后端收到后，返回一个心跳消息，
-                        //onmessage拿到返回的心跳就说明连接正常
-                        socket.send(JSON.stringify({"command":"ping","params":{}}));
-                    }, this.timeout)
-                }
-            }
-
+            let socket = new WebSocket("ws://127.0.0.1:8090/mpaas/api/v1/tasks/xxxx/log");
             socket.onopen = function (e) {
-                connBtn.disabled = true
                 socket.send(JSON.stringify({ task_id, container_name }));
                 fitSize()
-
-                heartCheck.reset().start();      //心跳检测重置
             };
             socket.onmessage = function (event) {
-                //如果获取到消息，心跳检测重置, 拿到任何消息都说明当前连接是正常的
-                heartCheck.reset().start();
-
                 if (event.data instanceof Blob) {
                     // 数据
                     let reader = new FileReader();
@@ -74,8 +57,6 @@
                 }
             };
             socket.onclose = function (event) {
-                heartCheck.reset()
-                connBtn.disabled = false
                 if (event.wasClean) {
                     term.write(`[close] Connection closed cleanly, code=${event.code} reason=${event.reason}`);
                 } else {
@@ -87,28 +68,9 @@
             socket.onerror = function (error) {
                 term.write(`[error]`);
             };
-
-
-
-            // 终端设置
-            term.onData(send => {
-                // 数据都使用bytes
-                const encoder = new TextEncoder();
-                const arrayBuffer = encoder.encode(send).buffer;
-                socket.send(arrayBuffer)
-            })
-
-            // 调整窗口
-            const fitSize = () => {
-                var geometry = getTermSize(term)
-                term.resize(geometry.cols, geometry.rows)
-                socket.send(JSON.stringify({ command: "resize", params: { width: geometry.cols, heigh: geometry.rows } }))
-            }
-            // 终端大小调整
-            window.onresize = fitSize
-
-
+            connBtn.disabled = true
         }
+
     </script>
 </body>
 

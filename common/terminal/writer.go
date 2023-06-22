@@ -56,7 +56,11 @@ func (i *WebSocketWriter) Write(p []byte) (n int, err error) {
 
 // 命令的返回
 func (i *WebSocketWriter) Response(resp *Response) {
-	err := i.ws.WriteMessage(websocket.TextMessage, []byte(resp.ToJSON()))
+	if resp.Message != "" {
+		i.l.Debugf("response error, %s", resp.Message)
+	}
+
+	err := i.ws.WriteJSON(resp)
 	if err != nil {
 		i.l.Infof("write message error, %s", err)
 	}

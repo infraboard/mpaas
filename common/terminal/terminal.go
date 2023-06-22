@@ -46,6 +46,11 @@ func (t *WebSocketTerminal) HandleCmd(m []byte) {
 	resp := NewResponse()
 	defer t.Response(resp)
 
+	if !json.Valid(m) {
+		resp.Message = "command must be json"
+		return
+	}
+
 	req, err := ParseRequest(m)
 	if err != nil {
 		resp.Message = err.Error()
@@ -63,6 +68,7 @@ func (t *WebSocketTerminal) HandleCmd(m []byte) {
 			return
 		}
 		t.SetSize(*payload)
+		t.l.Debugf("resize add to queue success: %s", req)
 		return
 	}
 
@@ -78,7 +84,7 @@ func (t *WebSocketTerminal) HandleCmd(m []byte) {
 
 func NewTerminalSize() *TerminalResizer {
 	size := &TerminalResizer{
-		sizeChan: make(chan remotecommand.TerminalSize, 1),
+		sizeChan: make(chan remotecommand.TerminalSize, 10),
 		doneChan: make(chan struct{}),
 	}
 

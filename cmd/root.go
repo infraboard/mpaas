@@ -8,6 +8,7 @@ import (
 	"github.com/infraboard/mcube/logger/zap"
 	"github.com/spf13/cobra"
 
+	"github.com/infraboard/mcube/validator"
 	"github.com/infraboard/mpaas/cmd/initial"
 	"github.com/infraboard/mpaas/cmd/start"
 	"github.com/infraboard/mpaas/conf"
@@ -96,8 +97,11 @@ func loadGlobalLogger() error {
 }
 
 func initail() {
+	err := validator.Init()
+	cobra.CheckErr(err)
+
 	// 初始化全局变量
-	err := loadGlobalConfig(confType)
+	err = loadGlobalConfig(confType)
 	cobra.CheckErr(err)
 
 	// 初始化全局日志配置

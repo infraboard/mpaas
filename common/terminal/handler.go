@@ -2,8 +2,10 @@ package terminal
 
 import (
 	"encoding/json"
+	"fmt"
 
 	"github.com/infraboard/mcube/tools/pretty"
+	"github.com/infraboard/mcube/validator"
 )
 
 var handleFuncs = map[string]HandleFunc{}
@@ -26,6 +28,11 @@ func ParseRequest(payload []byte) (*Request, error) {
 	if err != nil {
 		return nil, err
 	}
+
+	if err := req.Validate(); err != nil {
+		return nil, fmt.Errorf("validate cmd request error, %s", err)
+	}
+
 	return req, nil
 }
 
@@ -42,6 +49,14 @@ type Request struct {
 	Params json.RawMessage `json:"params"`
 }
 
+func (r *Request) Validate() error {
+	return validator.Validate(r)
+}
+
+func (r *Request) String() string {
+	return pretty.ToJSON(r)
+}
+
 func NewResponse() *Response {
 	return &Response{
 		Request: NewRequest(),
@@ -54,6 +69,16 @@ type Response struct {
 	Message string `json:"message"`
 	// 处理成功后的数据
 	Data any `json:"data"`
+}
+
+func (resp *Response) SetMessage(msg string) *Response {
+	resp.Message = msg
+	return resp
+}
+
+func (resp *Response) SetData(data any) *Response {
+	resp.Data = data
+	return resp
 }
 
 func (resp *Response) ToJSON() string {
