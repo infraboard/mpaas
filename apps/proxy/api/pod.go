@@ -1,18 +1,22 @@
 package api
 
 import (
+	"io"
 	"net/http"
 	"time"
 
 	restfulspec "github.com/emicklei/go-restful-openapi/v2"
 	"github.com/emicklei/go-restful/v3"
 	"github.com/gorilla/websocket"
+	"github.com/infraboard/mcenter/clients/rpc/middleware"
 	"github.com/infraboard/mcube/http/label"
 	"github.com/infraboard/mcube/http/restful/response"
 	cluster "github.com/infraboard/mpaas/apps/k8s"
 	"github.com/infraboard/mpaas/apps/proxy"
+	"github.com/infraboard/mpaas/common/terminal"
 	"github.com/infraboard/mpaas/provider/k8s"
 	"github.com/infraboard/mpaas/provider/k8s/meta"
+	"github.com/infraboard/mpaas/provider/k8s/workload"
 
 	corev1 "k8s.io/api/core/v1"
 )
@@ -64,7 +68,7 @@ func (h *handler) registryPodHandler(ws *restful.WebService) {
 		Writes(corev1.Pod{}).
 		Returns(200, "OK", corev1.Pod{}))
 
-	ws.Route(ws.GET("/{cluster_id}/pods/{name}/login").To(h.WatchConainterLog).
+	ws.Route(ws.GET("/{cluster_id}/pods/{name}/log").To(h.WatchConainterLog).
 		Doc("查看Pod日志").
 		Metadata(restfulspec.KeyOpenAPITags, tags).
 		Metadata(label.Resource, h.Name()).
@@ -133,75 +137,76 @@ var (
 	}
 )
 
-var (
-	defaultCmd = `TERM=xterm-256color; export TERM; [ -x /bin/bash ] && ([ -x /usr/bin/script ] && /usr/bin/script -q -c "/bin/bash" /dev/null || exec /bin/bash) || exec /bin/sh`
-)
-
 // Login Container Websocket
 func (h *handler) LoginContainer(r *restful.Request, w *restful.Response) {
-	// term, err := h.newWebsocketTerminal(w, r.Request)
-	// if err != nil {
-	// 	h.log.Errorf("new websocket terminal error, %s", err)
-	// 	response.Failed(w, err)
-	// 	return
-	// }
-	// defer term.Close()
+	ws, err := upgrader.Upgrade(w, r.Request, nil)
+	if err != nil {
+		response.Failed(w, err)
+		return
+	}
+	defer ws.Close()
 
-	// client := r.Attribute(proxy.ATTRIBUTE_K8S_CLIENT).(*k8s.Client)
+	term := terminal.NewWebSocketTerminal(ws)
 
-	// // 获取参数
-	// req := workload.NewLoginContainerRequest([]string{"sh", "-c", defaultCmd}, term)
-	// term.ParseParame(req)
+	// 认证
+	err = middleware.GetHttpAuther().PermissionCheck(r, w)
+	if err != nil {
+		term.Failed(err)
+		return
+	}
 
-	// err = client.WorkLoad().LoginContainer(r.Request.Context(), req)
-	// if err != nil {
-	// 	// term.WriteMessage(k8s.NewOperatinonParamMessage(err.Error()))
-	// 	return
-	// }
+	// 获取参数
+	req := workload.NewLoginContainerRequest(term)
+	if err = term.ReadReq(req); err != nil {
+		term.Failed(err)
+		return
+	}
+
+	// 登录容器
+	client := r.Attribute(proxy.ATTRIBUTE_K8S_CLIENT).(*k8s.Client)
+	err = client.WorkLoad().LoginContainer(r.Request.Context(), req)
+	if err != nil {
+		term.Failed(err)
+		return
+	}
 }
 
 // Watch Container Log Websocket
 func (h *handler) WatchConainterLog(r *restful.Request, w *restful.Response) {
-	// term, err := h.newWebsocketTerminal(w, r.Request)
-	// if err != nil {
-	// 	h.log.Errorf("new websocket terminal error, %s", err)
-	// 	response.Failed(w, err)
-	// 	return
-	// }
-	// defer term.Close()
+	ws, err := upgrader.Upgrade(w, r.Request, nil)
+	if err != nil {
+		response.Failed(w, err)
+		return
+	}
+	defer ws.Close()
 
-	// client := r.Attribute(proxy.ATTRIBUTE_K8S_CLIENT).(*k8s.Client)
+	term := terminal.NewWebSocketWriter(ws)
 
-	// // 获取参数
-	// req := workload.NewWatchConainterLogRequest()
-	// term.ParseParame(req)
+	// 认证
+	err = middleware.GetHttpAuther().PermissionCheck(r, w)
+	if err != nil {
+		term.Failed(err)
+		return
+	}
 
-	// reader, err := client.WorkLoad().WatchConainterLog(r.Request.Context(), req)
-	// if err != nil {
-	// 	// term.WriteMessage(k8s.NewOperatinonParamMessage(err.Error()))
-	// 	return
-	// }
+	// 获取参数
+	req := workload.NewWatchConainterLogRequest()
+	if err = term.ReadReq(req); err != nil {
+		term.Failed(err)
+		return
+	}
 
-	// // 读取出来的数据流 copy到term
-	// _, err = io.Copy(term, reader)
-	// if err != nil {
-	// 	h.log.Errorf("copy log to weboscket error, %s", err)
-	// }
-}
+	client := r.Attribute(proxy.ATTRIBUTE_K8S_CLIENT).(*k8s.Client)
+	reader, err := client.WorkLoad().WatchConainterLog(r.Request.Context(), req)
+	if err != nil {
+		term.Failed(err)
+		return
+	}
 
-// func (h *handler) newWebsocketTerminal(w http.ResponseWriter, r *http.Request) (*k8s.WebsocketTerminal, error) {
-// 	// websocket handshake
-// 	ws, err := upgrader.Upgrade(w, r, nil)
-// 	if err != nil {
-// 		return nil, err
-// 	}
-
-// 	term := k8s.NewWebsocketTerminal(ws)
-// 	term.Auth(h.websocketAuth)
-// 	return term, nil
-// }
-
-func (h *handler) websocketAuth(payload string) error {
-	h.log.Debugf("auth payload: %s", payload)
-	return nil
+	// 读取出来的数据流 copy到term
+	_, err = io.Copy(term, reader)
+	if err != nil {
+		term.Failed(err)
+		return
+	}
 }
