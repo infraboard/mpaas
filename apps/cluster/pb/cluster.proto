@@ -17,27 +17,27 @@ message Cluster  {
     // 元信息
     // @gotags: bson:",inline" json:"meta"
     infraboard.mcube.resource.Meta meta = 1;
+    // 元信息
+    // @gotags: bson:",inline" json:"scope"
+    infraboard.mcube.resource.Scope scope = 2;
     // 创建信息
     // @gotags: bson:",inline" json:"spec"
-    CreateClusterRequest spec = 2;
+    CreateClusterRequest spec = 3;
 }
 
 message CreateClusterRequest {
-    // 对象所在域
-    // @gotags: bson:"domain" json:"domain"
-    string domain = 1;
-    // 对象所在空间
-    // @gotags: bson:"namespace" json:"namespace"
-    string namespace = 2;
-    // 集群所属环境
+    // 服务Id
+    // @gotags: bson:"service_id" json:"service_id" validate:"required"
+    string service_id = 1;
+    // 对象所属环境
     // @gotags: bson:"environment" json:"environment" validate:"required"
-    string environment = 3;
+    string environment = 2;
     // 集群名称
     // @gotags: bson:"name" json:"name"
-    string name = 4;
+    string name = 3;
     // 集群描述
     // @gotags: bson:"describe" json:"describe"
-    string describe = 5;
+    string describe = 4;
     // 部署标签
     // @gotags: bson:"labels" json:"labels"
     map<string,string> labels = 15;

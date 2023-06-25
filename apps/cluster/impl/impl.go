@@ -23,7 +23,6 @@ type impl struct {
 	cluster.UnimplementedRPCServer
 
 	mcenter *rpc.ClientSet
-	cluster cluster.Service
 	ioc.IocObjectImpl
 }
 
@@ -35,7 +34,6 @@ func (i *impl) Init() error {
 	i.col = db.Collection(i.Name())
 	i.log = zap.L().Named(i.Name())
 	i.mcenter = rpc.C()
-	i.cluster = ioc.GetController(cluster.AppName).(cluster.Service)
 	return nil
 }
 

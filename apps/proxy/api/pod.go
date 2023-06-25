@@ -180,6 +180,7 @@ func (h *handler) WatchConainterLog(r *restful.Request, w *restful.Response) {
 		return
 	}
 
+	websocket.Subprotocols(r.Request)
 	term := terminal.NewWebSocketWriter(ws)
 
 	// 开启认证与鉴权
