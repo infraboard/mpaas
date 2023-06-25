@@ -58,7 +58,7 @@
                 <mxCell id="19" value="Stage C&lt;br&gt;并行" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" parent="1" vertex="1">
                     <mxGeometry x="451" y="230" width="60" height="30" as="geometry"/>
                 </mxCell>
-                <mxCell id="72" style="edgeStyle=orthogonalEdgeStyle;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.485;entryY=-0.007;entryDx=0;entryDy=0;entryPerimeter=0;" edge="1" parent="1" source="26" target="71">
+                <mxCell id="72" style="edgeStyle=orthogonalEdgeStyle;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.485;entryY=-0.007;entryDx=0;entryDy=0;entryPerimeter=0;" parent="1" source="26" target="71" edge="1">
                     <mxGeometry relative="1" as="geometry">
                         <Array as="points">
                             <mxPoint x="171" y="570"/>
@@ -111,52 +111,52 @@
                 <mxCell id="70" value="取消" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
                     <mxGeometry x="522.5" y="480" width="90" height="40" as="geometry"/>
                 </mxCell>
-                <mxCell id="71" value="" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+                <mxCell id="71" value="" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
                     <mxGeometry x="44" y="620" width="740" height="320" as="geometry"/>
                 </mxCell>
-                <mxCell id="73" value="Job 选择弹窗" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
+                <mxCell id="73" value="Job 选择弹窗" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" parent="1" vertex="1">
                     <mxGeometry x="44" y="590" width="106" height="30" as="geometry"/>
                 </mxCell>
-                <mxCell id="75" value="Logo" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+                <mxCell id="75" value="Logo" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
                     <mxGeometry x="121" y="720" width="79" height="50" as="geometry"/>
                 </mxCell>
-                <mxCell id="76" value="名称&lt;br&gt;描述" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+                <mxCell id="76" value="名称&lt;br&gt;描述" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
                     <mxGeometry x="201" y="720" width="199" height="50" as="geometry"/>
                 </mxCell>
-                <mxCell id="77" value="Logo" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+                <mxCell id="77" value="Logo" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
                     <mxGeometry x="451" y="720" width="79" height="50" as="geometry"/>
                 </mxCell>
-                <mxCell id="78" value="名称&lt;br&gt;描述" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+                <mxCell id="78" value="名称&lt;br&gt;描述" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
                     <mxGeometry x="531" y="720" width="199" height="50" as="geometry"/>
                 </mxCell>
-                <mxCell id="79" value="Logo" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+                <mxCell id="79" value="Logo" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
                     <mxGeometry x="121" y="790" width="79" height="50" as="geometry"/>
                 </mxCell>
-                <mxCell id="80" value="名称&lt;br&gt;描述" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+                <mxCell id="80" value="名称&lt;br&gt;描述" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
                     <mxGeometry x="201" y="790" width="199" height="50" as="geometry"/>
                 </mxCell>
-                <mxCell id="81" value="Logo" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+                <mxCell id="81" value="Logo" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
                     <mxGeometry x="451" y="790" width="79" height="50" as="geometry"/>
                 </mxCell>
-                <mxCell id="82" value="名称&lt;br&gt;描述" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+                <mxCell id="82" value="名称&lt;br&gt;描述" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
                     <mxGeometry x="531" y="790" width="199" height="50" as="geometry"/>
                 </mxCell>
-                <mxCell id="83" value="Logo" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+                <mxCell id="83" value="Logo" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
                     <mxGeometry x="121" y="860" width="79" height="50" as="geometry"/>
                 </mxCell>
-                <mxCell id="84" value="名称&lt;br&gt;描述" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+                <mxCell id="84" value="名称&lt;br&gt;描述" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
                     <mxGeometry x="201" y="860" width="199" height="50" as="geometry"/>
                 </mxCell>
-                <mxCell id="85" value="Logo" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+                <mxCell id="85" value="Logo" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
                     <mxGeometry x="451" y="860" width="79" height="50" as="geometry"/>
                 </mxCell>
-                <mxCell id="86" value="名称&lt;br&gt;描述" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+                <mxCell id="86" value="名称&lt;br&gt;描述" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
                     <mxGeometry x="531" y="860" width="199" height="50" as="geometry"/>
                 </mxCell>
-                <mxCell id="88" value="全部&amp;lt;分类&amp;gt;" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+                <mxCell id="88" value="全部&amp;lt;分类&amp;gt;" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
                     <mxGeometry x="220" y="640" width="80" height="60" as="geometry"/>
                 </mxCell>
-                <mxCell id="89" value="Job名称或者描述 进行Job搜索" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+                <mxCell id="89" value="Job名称或者描述 进行Job搜索" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
                     <mxGeometry x="300" y="640" width="340" height="60" as="geometry"/>
                 </mxCell>
             </root>

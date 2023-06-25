@@ -1,0 +1,112 @@
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="node_modules/xterm/css/xterm.css" />
+    <script src="node_modules/xterm/lib/xterm.js"></script>
+    <script src="./term.js"></script>
+    <title>Document</title>
+</head>
+
+<body>
+    <dir style="    margin: 8;padding: 0;">
+        <span>Cluster Id: <input name="cluster_id" type="text" value="k8s-test"></span>
+        <span>Namespace: <input name="namespace" type="text" value="default"></span>
+        <span>Pod Name: <input type="text" name="pod_name" value="mcenter-56d7d5f568-66xkt"></span>
+        <span>Container Name: <input type="text" name="container_name" value="mcenter"></span>
+        <span><button onclick="connect()" id="connect">确认</button></span>
+    </dir>
+    <div id="terminal" style="height: 95vh;"></div>
+    <script>
+        var term = new Terminal({
+            theme: Solarized_Darcula,
+            fontSize: 13,
+            convertEol: true
+        });
+        term.open(document.getElementById('terminal'));
+
+        const connBtn = document.getElementById("connect")
+        const connect = () => {
+            const inputs = document.getElementsByTagName("input")
+            const cluster_id = inputs['cluster_id'].value
+            const namespace = inputs['namespace'].value
+            const pod_name = inputs['pod_name'].value
+            const container_name = inputs['container_name'].value
+            let socket = new WebSocket(`ws://127.0.0.1:8090/mpaas/api/v1/proxy/${cluster_id}/pods/${pod_name}/login`);
+            //心跳检测
+            var heartCheck = {
+                timeout: 10000,        //10秒发一次心跳
+                timeoutObj: null,
+                reset: function () {
+                    clearTimeout(this.timeoutObj);
+                    return this;
+                },
+                start: function () {
+                    this.timeoutObj = setTimeout(function () {
+                        //这里发送一个心跳，后端收到后，返回一个心跳消息，
+                        //onmessage拿到返回的心跳就说明连接正常
+                        socket.send(JSON.stringify({command:"ping",params: {}}))
+                    }, this.timeout)
+                }
+            }
+
+            socket.onopen = function (e) {
+                connBtn.disabled = true
+                socket.send(JSON.stringify({ namespace, pod_name, container:container_name }));
+                fitSize()
+            };
+            socket.onmessage = function (event) {
+                //如果获取到消息，心跳检测重置, 拿到任何消息都说明当前连接是正常的
+                heartCheck.reset().start();
+
+                if (event.data instanceof Blob) {
+                    // 数据
+                    let reader = new FileReader();
+                    reader.onload = e => {
+                        term.write(e.target.result)
+                    };
+                    reader.readAsText(event.data)
+                } else {
+                    // 指令响应
+                    console.log(event.data)
+                }
+            };
+            socket.onclose = function (event) {
+                heartCheck.reset()
+                connBtn.disabled = false
+                if (event.wasClean) {
+                    term.write(`[close] Connection closed cleanly, code=${event.code} reason=${event.reason}`);
+                } else {
+                    // e.g. server process killed or network down
+                    // event.code is usually 1006 in this case
+                    term.write('[close] Connection died');
+                }
+            };
+            socket.onerror = function (error) {
+                term.write(`[error]`);
+            };
+
+            // 终端设置
+            term.onData(send => {
+                // 数据都使用bytes
+                const encoder = new TextEncoder();
+                const arrayBuffer = encoder.encode(send).buffer;
+                socket.send(arrayBuffer)
+            })
+
+            // 调整窗口
+            const fitSize = () => {
+                var geometry = getTermSize(term)
+                term.resize(geometry.cols, geometry.rows)
+                socket.send(JSON.stringify({ command: "resize", params: { width: geometry.cols, heigh: geometry.rows } }))
+            }
+            // 终端大小调整
+            window.onresize = fitSize
+
+
+        }
+    </script>
+</body>
+
+</html>

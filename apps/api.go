@@ -9,6 +9,7 @@ import (
 	_ "github.com/infraboard/mpaas/apps/job/api"
 	_ "github.com/infraboard/mpaas/apps/k8s/api"
 	_ "github.com/infraboard/mpaas/apps/pipeline/api"
+	_ "github.com/infraboard/mpaas/apps/proxy/api"
 	_ "github.com/infraboard/mpaas/apps/task/api"
 	_ "github.com/infraboard/mpaas/apps/trigger/api"
 )

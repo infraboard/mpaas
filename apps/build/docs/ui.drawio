@@ -1,0 +1,93 @@
+<mxfile host="65bd71144e">
+    <diagram id="5lRAmJ8KvifKWlNm3fIc" name="第 1 页">
+        <mxGraphModel dx="1097" dy="560" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+            <root>
+                <mxCell id="0"/>
+                <mxCell id="1" parent="0"/>
+                <mxCell id="2" value="" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+                    <mxGeometry x="54" y="110" width="720" height="320" as="geometry"/>
+                </mxCell>
+                <mxCell id="3" value="&amp;nbsp;部署构建记录页面" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
+                    <mxGeometry x="340" y="70" width="126" height="30" as="geometry"/>
+                </mxCell>
+                <mxCell id="4" value="触发配置｜&amp;nbsp; 触发方式 ｜ 触发事件&amp;nbsp;" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+                    <mxGeometry x="110" y="270" width="580" height="25" as="geometry"/>
+                </mxCell>
+                <mxCell id="7" value="触发记录" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#006633;" vertex="1" parent="1">
+                    <mxGeometry x="110" y="160" width="120" height="30" as="geometry"/>
+                </mxCell>
+                <mxCell id="8" value="触发配置" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+                    <mxGeometry x="230" y="160" width="120" height="30" as="geometry"/>
+                </mxCell>
+                <mxCell id="9" value="" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+                    <mxGeometry x="110" y="295" width="580" height="25" as="geometry"/>
+                </mxCell>
+                <mxCell id="10" value="" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+                    <mxGeometry x="110" y="320" width="580" height="25" as="geometry"/>
+                </mxCell>
+                <mxCell id="11" value="" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+                    <mxGeometry x="110" y="345" width="580" height="25" as="geometry"/>
+                </mxCell>
+                <mxCell id="14" value="" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+                    <mxGeometry x="64" y="500" width="720" height="320" as="geometry"/>
+                </mxCell>
+                <mxCell id="16" value="构建记录" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#17141d;" vertex="1" parent="1">
+                    <mxGeometry x="120" y="550" width="120" height="30" as="geometry"/>
+                </mxCell>
+                <mxCell id="17" value="触发配置" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#006633;" vertex="1" parent="1">
+                    <mxGeometry x="240" y="550" width="120" height="30" as="geometry"/>
+                </mxCell>
+                <mxCell id="21" value="&amp;nbsp;触发配置列表页" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
+                    <mxGeometry x="330" y="460" width="126" height="30" as="geometry"/>
+                </mxCell>
+                <mxCell id="22" value="" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#17141d;" vertex="1" parent="1">
+                    <mxGeometry x="97" y="650" width="210" height="130" as="geometry"/>
+                </mxCell>
+                <mxCell id="36" style="edgeStyle=orthogonalEdgeStyle;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="23" target="35">
+                    <mxGeometry relative="1" as="geometry">
+                        <Array as="points">
+                            <mxPoint x="646" y="850"/>
+                            <mxPoint x="434" y="850"/>
+                        </Array>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="23" value="+ 添加触发配置" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#17141d;" vertex="1" parent="1">
+                    <mxGeometry x="541" y="650" width="210" height="130" as="geometry"/>
+                </mxCell>
+                <mxCell id="25" value="事件" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#17141d;" vertex="1" parent="1">
+                    <mxGeometry x="110" y="680" width="90" height="30" as="geometry"/>
+                </mxCell>
+                <mxCell id="26" value="流水线" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#17141d;" vertex="1" parent="1">
+                    <mxGeometry x="110" y="730" width="90" height="30" as="geometry"/>
+                </mxCell>
+                <mxCell id="27" value="详情&amp;gt;&amp;gt;&amp;gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
+                    <mxGeometry x="240" y="740" width="60" height="30" as="geometry"/>
+                </mxCell>
+                <mxCell id="28" value="编辑 ｜ 删除" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
+                    <mxGeometry x="230" y="660" width="70" height="30" as="geometry"/>
+                </mxCell>
+                <mxCell id="30" value="" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#17141d;" vertex="1" parent="1">
+                    <mxGeometry x="319" y="650" width="210" height="130" as="geometry"/>
+                </mxCell>
+                <mxCell id="31" value="事件" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#17141d;" vertex="1" parent="1">
+                    <mxGeometry x="332" y="680" width="90" height="30" as="geometry"/>
+                </mxCell>
+                <mxCell id="32" value="流水线" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#17141d;" vertex="1" parent="1">
+                    <mxGeometry x="332" y="730" width="90" height="30" as="geometry"/>
+                </mxCell>
+                <mxCell id="33" value="详情&amp;gt;&amp;gt;&amp;gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
+                    <mxGeometry x="462" y="740" width="60" height="30" as="geometry"/>
+                </mxCell>
+                <mxCell id="34" value="编辑 ｜ 删除" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
+                    <mxGeometry x="452" y="660" width="70" height="30" as="geometry"/>
+                </mxCell>
+                <mxCell id="35" value="" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+                    <mxGeometry x="74" y="890" width="720" height="320" as="geometry"/>
+                </mxCell>
+                <mxCell id="37" value="添加触发配置页面" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
+                    <mxGeometry x="70" y="850" width="126" height="30" as="geometry"/>
+                </mxCell>
+            </root>
+        </mxGraphModel>
+    </diagram>
+</mxfile>

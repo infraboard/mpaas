@@ -62,8 +62,6 @@ func (h *handler) registryPodHandler(ws *restful.WebService) {
 		Metadata(restfulspec.KeyOpenAPITags, tags).
 		Metadata(label.Resource, h.Name()).
 		Metadata(label.Action, label.List.Value()).
-		Metadata(label.Auth, label.Enable).
-		Metadata(label.Permission, label.Enable).
 		Reads(cluster.QueryClusterRequest{}).
 		Writes(corev1.Pod{}).
 		Returns(200, "OK", corev1.Pod{}))
@@ -73,8 +71,6 @@ func (h *handler) registryPodHandler(ws *restful.WebService) {
 		Metadata(restfulspec.KeyOpenAPITags, tags).
 		Metadata(label.Resource, h.Name()).
 		Metadata(label.Action, label.List.Value()).
-		Metadata(label.Auth, label.Enable).
-		Metadata(label.Permission, label.Enable).
 		Reads(cluster.QueryClusterRequest{}).
 		Writes(corev1.Pod{}).
 		Returns(200, "OK", corev1.Pod{}))
@@ -195,6 +191,7 @@ func (h *handler) WatchConainterLog(r *restful.Request, w *restful.Response) {
 		term.Failed(err)
 		return
 	}
+	req.PodName = r.PathParameter("name")
 
 	client := r.Attribute(proxy.ATTRIBUTE_K8S_CLIENT).(*k8s.Client)
 	reader, err := client.WorkLoad().WatchConainterLog(r.Request.Context(), req)
