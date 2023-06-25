@@ -45,7 +45,7 @@
                     this.timeoutObj = setTimeout(function () {
                         //这里发送一个心跳，后端收到后，返回一个心跳消息，
                         //onmessage拿到返回的心跳就说明连接正常
-                        socket.send(JSON.stringify({"command":"ping","params":{}}));
+                        socket.send(JSON.stringify({command:"ping",params: {}}))
                     }, this.timeout)
                 }
             }
@@ -54,8 +54,6 @@
                 connBtn.disabled = true
                 socket.send(JSON.stringify({ task_id, container_name }));
                 fitSize()
-
-                heartCheck.reset().start();      //心跳检测重置
             };
             socket.onmessage = function (event) {
                 //如果获取到消息，心跳检测重置, 拿到任何消息都说明当前连接是正常的
