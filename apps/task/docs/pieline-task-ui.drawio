@@ -1,0 +1,100 @@
+<mxfile host="65bd71144e">
+    <diagram id="3VpXmf_W37IYMtnsPkJW" name="第 1 页">
+        <mxGraphModel dx="1097" dy="560" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+            <root>
+                <mxCell id="0"/>
+                <mxCell id="1" parent="0"/>
+                <mxCell id="2" value="" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+                    <mxGeometry x="40" y="85" width="740" height="490" as="geometry"/>
+                </mxCell>
+                <mxCell id="3" value="piplineTask 展示页面" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" parent="1" vertex="1">
+                    <mxGeometry x="325" y="40" width="126" height="30" as="geometry"/>
+                </mxCell>
+                <mxCell id="4" value="基础信息展示" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+                    <mxGeometry x="92.5" y="100" width="669" height="100" as="geometry"/>
+                </mxCell>
+                <mxCell id="5" value="" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+                    <mxGeometry x="92.5" y="265" width="630" height="240" as="geometry"/>
+                </mxCell>
+                <mxCell id="6" value="Job" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+                    <mxGeometry x="112.5" y="335" width="120" height="30" as="geometry"/>
+                </mxCell>
+                <mxCell id="7" value="Job" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+                    <mxGeometry x="112.5" y="375" width="120" height="30" as="geometry"/>
+                </mxCell>
+                <mxCell id="8" value="Job" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+                    <mxGeometry x="272.5" y="335" width="120" height="30" as="geometry"/>
+                </mxCell>
+                <mxCell id="9" value="Job" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+                    <mxGeometry x="272.5" y="375" width="120" height="30" as="geometry"/>
+                </mxCell>
+                <mxCell id="10" value="Job" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+                    <mxGeometry x="272.5" y="415" width="120" height="30" as="geometry"/>
+                </mxCell>
+                <mxCell id="11" value="Job" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+                    <mxGeometry x="422.5" y="335" width="120" height="30" as="geometry"/>
+                </mxCell>
+                <mxCell id="12" value="Job" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+                    <mxGeometry x="422.5" y="375" width="120" height="30" as="geometry"/>
+                </mxCell>
+                <mxCell id="13" value="Job" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+                    <mxGeometry x="422.5" y="415" width="120" height="30" as="geometry"/>
+                </mxCell>
+                <mxCell id="14" value="" style="endArrow=none;html=1;entryX=0.25;entryY=0;entryDx=0;entryDy=0;exitX=0.25;exitY=1;exitDx=0;exitDy=0;" parent="1" source="5" target="5" edge="1">
+                    <mxGeometry width="50" height="50" relative="1" as="geometry">
+                        <mxPoint x="262.5" y="365" as="sourcePoint"/>
+                        <mxPoint x="312.5" y="315" as="targetPoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="15" value="Stage A&lt;br&gt;(串行)" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" parent="1" vertex="1">
+                    <mxGeometry x="122.5" y="285" width="80" height="30" as="geometry"/>
+                </mxCell>
+                <mxCell id="16" value="" style="endArrow=none;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;exitX=0.5;exitY=1;exitDx=0;exitDy=0;" parent="1" source="5" target="5" edge="1">
+                    <mxGeometry width="50" height="50" relative="1" as="geometry">
+                        <mxPoint x="407.5" y="495" as="sourcePoint"/>
+                        <mxPoint x="452.5" y="375" as="targetPoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="17" value="Stage B&lt;br&gt;并行" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" parent="1" vertex="1">
+                    <mxGeometry x="302.5" y="275" width="60" height="30" as="geometry"/>
+                </mxCell>
+                <mxCell id="18" value="Stage C&lt;br&gt;并行" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" parent="1" vertex="1">
+                    <mxGeometry x="452.5" y="275" width="60" height="30" as="geometry"/>
+                </mxCell>
+                <mxCell id="19" value="" style="endArrow=none;html=1;entryX=0.75;entryY=0;entryDx=0;entryDy=0;exitX=0.75;exitY=1;exitDx=0;exitDy=0;" parent="1" source="5" target="5" edge="1">
+                    <mxGeometry width="50" height="50" relative="1" as="geometry">
+                        <mxPoint x="552.5" y="325" as="sourcePoint"/>
+                        <mxPoint x="602.5" y="275" as="targetPoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="20" value="Job" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+                    <mxGeometry x="582.5" y="335" width="120" height="30" as="geometry"/>
+                </mxCell>
+                <mxCell id="21" value="Job" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+                    <mxGeometry x="582.5" y="375" width="120" height="30" as="geometry"/>
+                </mxCell>
+                <mxCell id="22" value="Job" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+                    <mxGeometry x="582.5" y="415" width="120" height="30" as="geometry"/>
+                </mxCell>
+                <mxCell id="23" value="Stage D&lt;br&gt;串行" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" parent="1" vertex="1">
+                    <mxGeometry x="612.5" y="275" width="60" height="30" as="geometry"/>
+                </mxCell>
+                <mxCell id="25" value="任务状态" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#006600;" parent="1" vertex="1">
+                    <mxGeometry x="92.5" y="216" width="120" height="35" as="geometry"/>
+                </mxCell>
+                <mxCell id="26" value="运行参数" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+                    <mxGeometry x="212.5" y="216" width="120" height="35" as="geometry"/>
+                </mxCell>
+                <mxCell id="27" value="回调状态" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+                    <mxGeometry x="332.5" y="216" width="120" height="35" as="geometry"/>
+                </mxCell>
+                <mxCell id="28" value="通知状态" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+                    <mxGeometry x="452.5" y="216" width="120" height="35" as="geometry"/>
+                </mxCell>
+                <mxCell id="29" value="运行事件" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+                    <mxGeometry x="572.5" y="216" width="120" height="35" as="geometry"/>
+                </mxCell>
+            </root>
+        </mxGraphModel>
+    </diagram>
+</mxfile>

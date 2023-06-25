@@ -1,0 +1,43 @@
+<mxfile host="65bd71144e">
+    <diagram id="fldtAu4QRuiZbxxW8ELq" name="第 1 页">
+        <mxGraphModel dx="1097" dy="560" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+            <root>
+                <mxCell id="0"/>
+                <mxCell id="1" parent="0"/>
+                <mxCell id="2" value="" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+                    <mxGeometry x="80" y="80" width="730" height="360" as="geometry"/>
+                </mxCell>
+                <mxCell id="3" value="参数1" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+                    <mxGeometry x="100" y="110" width="150" height="40" as="geometry"/>
+                </mxCell>
+                <mxCell id="4" value="参数1" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+                    <mxGeometry x="100" y="170" width="145" height="40" as="geometry"/>
+                </mxCell>
+                <mxCell id="5" value="参数1" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+                    <mxGeometry x="100" y="235" width="140" height="40" as="geometry"/>
+                </mxCell>
+                <mxCell id="6" value="" style="endArrow=none;html=1;entryX=0.25;entryY=0;entryDx=0;entryDy=0;exitX=0.25;exitY=1;exitDx=0;exitDy=0;" edge="1" parent="1" source="2" target="2">
+                    <mxGeometry width="50" height="50" relative="1" as="geometry">
+                        <mxPoint x="300" y="150" as="sourcePoint"/>
+                        <mxPoint x="340" y="110" as="targetPoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="7" value="运行" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+                    <mxGeometry x="141.25" y="380" width="67.5" height="40" as="geometry"/>
+                </mxCell>
+                <mxCell id="9" value="任务状态" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+                    <mxGeometry x="300" y="100" width="380" height="90" as="geometry"/>
+                </mxCell>
+                <mxCell id="10" value="任务日志/调试控制台" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+                    <mxGeometry x="300" y="200" width="480" height="220" as="geometry"/>
+                </mxCell>
+                <mxCell id="12" value="调试" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+                    <mxGeometry x="690" y="150" width="90" height="40" as="geometry"/>
+                </mxCell>
+                <mxCell id="13" value="job task 展示页面" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
+                    <mxGeometry x="360" y="30" width="100" height="30" as="geometry"/>
+                </mxCell>
+            </root>
+        </mxGraphModel>
+    </diagram>
+</mxfile>
