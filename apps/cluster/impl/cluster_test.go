@@ -15,3 +15,12 @@ func TestQueryCluster(t *testing.T) {
 	}
 	t.Log(tools.MustToJson(ds))
 }
+
+func TestCreateCluster(t *testing.T) {
+	req := cluster.NewCreateClusterRequest()
+	ds, err := impl.CreateCluster(ctx, req)
+	if err != nil {
+		t.Fatal(err)
+	}
+	t.Log(tools.MustToJson(ds))
+}

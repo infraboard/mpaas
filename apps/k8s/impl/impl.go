@@ -8,7 +8,7 @@ import (
 	"github.com/infraboard/mcube/logger/zap"
 	"google.golang.org/grpc"
 
-	cluster "github.com/infraboard/mpaas/apps/k8s"
+	"github.com/infraboard/mpaas/apps/k8s"
 	"github.com/infraboard/mpaas/conf"
 )
 
@@ -19,8 +19,8 @@ func init() {
 type service struct {
 	col     *mongo.Collection
 	log     logger.Logger
-	cluster cluster.Service
-	cluster.UnimplementedRPCServer
+	cluster k8s.Service
+	k8s.UnimplementedRPCServer
 	ioc.IocObjectImpl
 	encryptoKey string
 }
@@ -35,14 +35,14 @@ func (s *service) Init() error {
 
 	s.encryptoKey = conf.C().App.EncryptKey
 	s.log = zap.L().Named(s.Name())
-	s.cluster = ioc.GetController(cluster.AppName).(cluster.Service)
+	s.cluster = ioc.GetController(k8s.AppName).(k8s.Service)
 	return nil
 }
 
 func (s *service) Name() string {
-	return cluster.AppName
+	return k8s.AppName
 }
 
 func (s *service) Registry(server *grpc.Server) {
-	cluster.RegisterRPCServer(server, s)
+	k8s.RegisterRPCServer(server, s)
 }

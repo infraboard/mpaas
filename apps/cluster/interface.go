@@ -22,3 +22,9 @@ func NewQueryClusterRequest() *QueryClusterRequest {
 		Page: request.NewDefaultPageRequest(),
 	}
 }
+
+func NewCreateClusterRequest() *CreateClusterRequest {
+	return &CreateClusterRequest{
+		Labels: map[string]string{},
+	}
+}
