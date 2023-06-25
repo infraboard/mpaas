@@ -98,7 +98,6 @@ func (h *Handler) JobTaskLog(r *restful.Request, w *restful.Response) {
 		response.Failed(w, err)
 		return
 	}
-	defer ws.Close()
 
 	term := task.NewTaskLogWebsocketTerminal(ws)
 
@@ -134,7 +133,6 @@ func (h *Handler) JobTaskDebug(r *restful.Request, w *restful.Response) {
 		response.Failed(w, err)
 		return
 	}
-	defer ws.Close()
 
 	term := terminal.NewWebSocketTerminal(ws)
 
@@ -158,4 +156,6 @@ func (h *Handler) JobTaskDebug(r *restful.Request, w *restful.Response) {
 	// 进入容器
 	in.SetWebTerminal(term)
 	h.service.JobTaskDebug(r.Request.Context(), in)
+
+	term.Success("ok")
 }

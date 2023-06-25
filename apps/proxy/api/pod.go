@@ -141,7 +141,6 @@ func (h *handler) LoginContainer(r *restful.Request, w *restful.Response) {
 		response.Failed(w, err)
 		return
 	}
-	defer ws.Close()
 
 	term := terminal.NewWebSocketTerminal(ws)
 
@@ -169,6 +168,8 @@ func (h *handler) LoginContainer(r *restful.Request, w *restful.Response) {
 		term.Failed(err)
 		return
 	}
+
+	term.Success("ok")
 }
 
 // Watch Container Log Websocket
@@ -178,7 +179,6 @@ func (h *handler) WatchConainterLog(r *restful.Request, w *restful.Response) {
 		response.Failed(w, err)
 		return
 	}
-	defer ws.Close()
 
 	term := terminal.NewWebSocketWriter(ws)
 
@@ -213,4 +213,6 @@ func (h *handler) WatchConainterLog(r *restful.Request, w *restful.Response) {
 		term.Failed(err)
 		return
 	}
+
+	term.Success("ok")
 }

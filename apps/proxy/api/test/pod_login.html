@@ -15,6 +15,7 @@
         <span>Namespace: <input name="namespace" type="text" value="default"></span>
         <span>Pod Name: <input type="text" name="pod_name" value="mcenter-56d7d5f568-66xkt"></span>
         <span>Container Name: <input type="text" name="container_name" value="mcenter"></span>
+        <span>Token: <input type="text" name="token" value="JnOf3ezUweAmjG3ynjxGYtv5"></span>
         <span><button onclick="connect()" id="connect">确认</button></span>
     </dir>
     <div id="terminal" style="height: 95vh;"></div>
@@ -33,7 +34,8 @@
             const namespace = inputs['namespace'].value
             const pod_name = inputs['pod_name'].value
             const container_name = inputs['container_name'].value
-            let socket = new WebSocket(`ws://127.0.0.1:8090/mpaas/api/v1/proxy/${cluster_id}/pods/${pod_name}/login`);
+            const token = inputs['token'].value
+            let socket = new WebSocket(`ws://127.0.0.1:8090/mpaas/api/v1/proxy/${cluster_id}/pods/${pod_name}/login?mcenter_access_token=${token}`);
             //心跳检测
             var heartCheck = {
                 timeout: 10000,        //10秒发一次心跳

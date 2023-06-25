@@ -13,6 +13,7 @@
     <dir style="    margin: 8;padding: 0;">
         <span>Task Id: <input name="task_id" type="text" value="task-ci85q2ro99m31pv5pho0"></span>
         <span>Container Name: <input type="text" name="container_name" value="build-and-push"></span>
+        <span>Token: <input type="text" name="token" value="JnOf3ezUweAmjG3ynjxGYtv5"></span>
         <span><button onclick="connect()" id="connect">确认</button></span>
     </dir>
     <div id="terminal" style="height: 95vh;"></div>
@@ -38,7 +39,9 @@
             const inputs = document.getElementsByTagName("input")
             const task_id = inputs['task_id'].value
             const container_name = inputs['container_name'].value
-            let socket = new WebSocket("ws://127.0.0.1:8090/mpaas/api/v1/tasks/xxxx/log");
+            const token = inputs['token'].value
+
+            let socket = new WebSocket(`ws://127.0.0.1:8090/mpaas/api/v1/tasks/xxxx/log?mcenter_access_token=${token}`);
             socket.onopen = function (e) {
                 socket.send(JSON.stringify({ task_id, container_name }));
                 fitSize()
