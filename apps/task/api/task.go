@@ -7,6 +7,7 @@ import (
 	restfulspec "github.com/emicklei/go-restful-openapi/v2"
 	"github.com/emicklei/go-restful/v3"
 	"github.com/gorilla/websocket"
+	"github.com/infraboard/mcenter/apps/endpoint"
 	"github.com/infraboard/mcenter/clients/rpc/middleware"
 	"github.com/infraboard/mcube/http/label"
 	"github.com/infraboard/mcube/http/restful/response"
@@ -92,7 +93,6 @@ var (
 )
 
 func (h *Handler) JobTaskLog(r *restful.Request, w *restful.Response) {
-	// websocket handshake
 	ws, err := upgrader.Upgrade(w, r.Request, nil)
 	if err != nil {
 		response.Failed(w, err)
@@ -102,8 +102,11 @@ func (h *Handler) JobTaskLog(r *restful.Request, w *restful.Response) {
 
 	term := task.NewTaskLogWebsocketTerminal(ws)
 
-	// 认证
-	err = middleware.GetHttpAuther().PermissionCheck(r, w)
+	// 开启认证与鉴权
+	entry := endpoint.NewEntryFromRestRequest(r).
+		SetAuthEnable(true).
+		SetPermissionEnable(true)
+	err = middleware.GetHttpAuther().PermissionCheck(r, w, entry)
 	if err != nil {
 		term.Failed(err)
 		return
@@ -126,7 +129,6 @@ func (h *Handler) JobTaskLog(r *restful.Request, w *restful.Response) {
 }
 
 func (h *Handler) JobTaskDebug(r *restful.Request, w *restful.Response) {
-	// websocket handshake
 	ws, err := upgrader.Upgrade(w, r.Request, nil)
 	if err != nil {
 		response.Failed(w, err)
@@ -136,8 +138,11 @@ func (h *Handler) JobTaskDebug(r *restful.Request, w *restful.Response) {
 
 	term := terminal.NewWebSocketTerminal(ws)
 
-	// 认证
-	err = middleware.GetHttpAuther().PermissionCheck(r, w)
+	// 开启认证与鉴权
+	entry := endpoint.NewEntryFromRestRequest(r).
+		SetAuthEnable(true).
+		SetPermissionEnable(true)
+	err = middleware.GetHttpAuther().PermissionCheck(r, w, entry)
 	if err != nil {
 		term.Failed(err)
 		return

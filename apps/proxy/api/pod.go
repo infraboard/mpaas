@@ -8,6 +8,7 @@ import (
 	restfulspec "github.com/emicklei/go-restful-openapi/v2"
 	"github.com/emicklei/go-restful/v3"
 	"github.com/gorilla/websocket"
+	"github.com/infraboard/mcenter/apps/endpoint"
 	"github.com/infraboard/mcenter/clients/rpc/middleware"
 	"github.com/infraboard/mcube/http/label"
 	"github.com/infraboard/mcube/http/restful/response"
@@ -144,8 +145,11 @@ func (h *handler) LoginContainer(r *restful.Request, w *restful.Response) {
 
 	term := terminal.NewWebSocketTerminal(ws)
 
-	// 认证
-	err = middleware.GetHttpAuther().PermissionCheck(r, w)
+	// 开启认证与鉴权
+	entry := endpoint.NewEntryFromRestRequest(r).
+		SetAuthEnable(true).
+		SetPermissionEnable(true)
+	err = middleware.GetHttpAuther().PermissionCheck(r, w, entry)
 	if err != nil {
 		term.Failed(err)
 		return
@@ -178,8 +182,11 @@ func (h *handler) WatchConainterLog(r *restful.Request, w *restful.Response) {
 
 	term := terminal.NewWebSocketWriter(ws)
 
-	// 认证
-	err = middleware.GetHttpAuther().PermissionCheck(r, w)
+	// 开启认证与鉴权
+	entry := endpoint.NewEntryFromRestRequest(r).
+		SetAuthEnable(true).
+		SetPermissionEnable(true)
+	err = middleware.GetHttpAuther().PermissionCheck(r, w, entry)
 	if err != nil {
 		term.Failed(err)
 		return
