@@ -8,6 +8,7 @@ import (
 	"github.com/infraboard/mcenter/apps/service"
 	"github.com/infraboard/mcube/exception"
 	"github.com/infraboard/mcube/pb/request"
+	deploy_cluster "github.com/infraboard/mpaas/apps/cluster"
 	"github.com/infraboard/mpaas/apps/deploy"
 	cluster "github.com/infraboard/mpaas/apps/k8s"
 	"github.com/infraboard/mpaas/common/yaml"
@@ -28,6 +29,12 @@ func (i *impl) CreateDeployment(ctx context.Context, in *deploy.CreateDeployment
 
 	ins := deploy.New(in)
 	ins.Spec.SetDefault()
+
+	// 检查Cluster是否存在
+	_, err = i.cluster.DescribeCluster(ctx, deploy_cluster.NewDescribeClusterRequest(in.Cluster))
+	if err != nil {
+		return nil, err
+	}
 
 	// 因为有WebHook 需要提前保存好集群信息
 	ins.Meta.Id = ins.Spec.UUID()
@@ -281,7 +288,7 @@ func (i *impl) DeleteDeployment(ctx context.Context, in *deploy.DeleteDeployment
 
 func (i *impl) GetDeployK8sClient(ctx context.Context, k8sClusterId string) (*k8s.Client, error) {
 	descReq := cluster.NewDescribeClusterRequest(k8sClusterId)
-	c, err := i.cluster.DescribeCluster(ctx, descReq)
+	c, err := i.k8s.DescribeCluster(ctx, descReq)
 	if err != nil {
 		return nil, err
 	}

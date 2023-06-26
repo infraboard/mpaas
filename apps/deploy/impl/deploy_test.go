@@ -12,6 +12,7 @@ import (
 
 func TestQueryDeploy(t *testing.T) {
 	req := deploy.NewQueryDeploymentRequest()
+	req.Domain = domain.DEFAULT_DOMAIN
 	ds, err := impl.QueryDeployment(ctx, req)
 	if err != nil {
 		t.Fatal(err)
@@ -37,6 +38,7 @@ func TestCreateMongoDeployment(t *testing.T) {
 	k8sConf.ClusterId = "k8s-test"
 
 	req := deploy.NewCreateDeploymentRequest()
+	req.Cluster = conf.C.DEPLOY_CLUSTER_ID
 	req.Kind = deploy.KIND_MIDDLEWARE
 	req.ServiceName = "mongodb"
 	req.K8STypeConfig = k8sConf

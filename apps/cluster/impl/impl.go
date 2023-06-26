@@ -10,6 +10,7 @@ import (
 	"google.golang.org/grpc"
 
 	"github.com/infraboard/mpaas/apps/cluster"
+	"github.com/infraboard/mpaas/apps/deploy"
 	"github.com/infraboard/mpaas/conf"
 )
 
@@ -21,9 +22,10 @@ type impl struct {
 	col *mongo.Collection
 	log logger.Logger
 	cluster.UnimplementedRPCServer
+	ioc.IocObjectImpl
 
 	mcenter *rpc.ClientSet
-	ioc.IocObjectImpl
+	deploy  deploy.Service
 }
 
 func (i *impl) Init() error {
@@ -34,6 +36,7 @@ func (i *impl) Init() error {
 	i.col = db.Collection(i.Name())
 	i.log = zap.L().Named(i.Name())
 	i.mcenter = rpc.C()
+	i.deploy = ioc.GetController(deploy.AppName).(deploy.Service)
 	return nil
 }
 

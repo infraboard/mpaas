@@ -8,8 +8,10 @@ import "mpaas/apps/event/pb/event.proto";
 
 message DeploymentSet {
     // 总数
+    // @gotags: bson:"total" json:"total"
     int64 total = 1;
     // 清单
+    // @gotags: bson:"items" json:"items"
     repeated Deployment items = 2;
 }
 

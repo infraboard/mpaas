@@ -10,6 +10,7 @@ import (
 
 func TestQueryCluster(t *testing.T) {
 	req := cluster.NewQueryClusterRequest()
+	req.WithDeployment = true
 	ds, err := impl.QueryCluster(ctx, req)
 	if err != nil {
 		t.Fatal(err)
@@ -30,7 +31,7 @@ func TestCreateCluster(t *testing.T) {
 }
 
 func TestDescribeCluster(t *testing.T) {
-	req := cluster.NewDescribeClusterRequest("xxx")
+	req := cluster.NewDescribeClusterRequest(conf.C.DEPLOY_CLUSTER_ID)
 	ds, err := impl.DescribeCluster(ctx, req)
 	if err != nil {
 		t.Fatal(err)

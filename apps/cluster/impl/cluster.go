@@ -6,6 +6,7 @@ import (
 	"github.com/infraboard/mcenter/apps/service"
 	"github.com/infraboard/mcube/exception"
 	"github.com/infraboard/mpaas/apps/cluster"
+	"github.com/infraboard/mpaas/apps/deploy"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
 )
@@ -36,6 +37,17 @@ func (i *impl) QueryCluster(ctx context.Context, in *cluster.QueryClusterRequest
 		return nil, exception.NewInternalServerError("get cluster count error, error is %s", err)
 	}
 	set.Total = count
+
+	// 查询集群关联的部署
+	if in.WithDeployment && set.Len() > 0 {
+		dquery := deploy.NewQueryDeploymentRequest()
+		dquery.Clusters = set.ClusterIds()
+		ds, err := i.deploy.QueryDeployment(ctx, dquery)
+		if err != nil {
+			return nil, err
+		}
+		set.UpdateDeploymens(ds)
+	}
 
 	return set, nil
 }

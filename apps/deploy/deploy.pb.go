@@ -252,9 +252,11 @@ type DeploymentSet struct {
 	unknownFields protoimpl.UnknownFields
 
 	// 总数
-	Total int64 `protobuf:"varint,1,opt,name=total,proto3" json:"total,omitempty"`
+	// @gotags: bson:"total" json:"total"
+	Total int64 `protobuf:"varint,1,opt,name=total,proto3" json:"total" bson:"total"`
 	// 清单
-	Items []*Deployment `protobuf:"bytes,2,rep,name=items,proto3" json:"items,omitempty"`
+	// @gotags: bson:"items" json:"items"
+	Items []*Deployment `protobuf:"bytes,2,rep,name=items,proto3" json:"items" bson:"items"`
 }
 
 func (x *DeploymentSet) Reset() {

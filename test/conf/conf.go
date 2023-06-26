@@ -9,11 +9,12 @@ type Config struct {
 	DINGDING_BOT_URL string `env:"DINGDING_BOT_URL"`
 	WECHAT_BOT_URL   string `env:"WECHAT_BOT_URL"`
 
-	DEPLOY_ID        string `env:"DEPLOY_ID"`
-	BUILD_ID         string `env:"BUILD_ID"`
-	MCENTER_BUILD_ID string `env:"MCENTER_BUILD_ID"`
-	SERVICE_ID       string `env:"SERVICE_ID"`
-	PIPELINE_TASK_ID string `env:"PIPELINE_TASK_ID"`
+	DEPLOY_CLUSTER_ID string `env:"DEPLOY_CLUSTER_ID"`
+	DEPLOY_ID         string `env:"DEPLOY_ID"`
+	BUILD_ID          string `env:"BUILD_ID"`
+	MCENTER_BUILD_ID  string `env:"MCENTER_BUILD_ID"`
+	SERVICE_ID        string `env:"SERVICE_ID"`
+	PIPELINE_TASK_ID  string `env:"PIPELINE_TASK_ID"`
 
 	DEPLOY_JOB_ID     string `env:"DEPLOY_JOB_ID"`
 	BUILD_JOB_ID      string `env:"BUILD_JOB_ID"`

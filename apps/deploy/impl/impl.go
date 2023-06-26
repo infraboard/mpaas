@@ -9,8 +9,9 @@ import (
 	"github.com/infraboard/mcube/logger/zap"
 	"google.golang.org/grpc"
 
+	"github.com/infraboard/mpaas/apps/cluster"
 	"github.com/infraboard/mpaas/apps/deploy"
-	cluster "github.com/infraboard/mpaas/apps/k8s"
+	"github.com/infraboard/mpaas/apps/k8s"
 	"github.com/infraboard/mpaas/conf"
 )
 
@@ -25,6 +26,7 @@ type impl struct {
 	ioc.IocObjectImpl
 
 	mcenter *rpc.ClientSet
+	k8s     k8s.Service
 	cluster cluster.Service
 }
 
@@ -36,6 +38,7 @@ func (i *impl) Init() error {
 	i.col = db.Collection(i.Name())
 	i.log = zap.L().Named(i.Name())
 	i.mcenter = rpc.C()
+	i.k8s = ioc.GetController(k8s.AppName).(k8s.Service)
 	i.cluster = ioc.GetController(cluster.AppName).(cluster.Service)
 	return nil
 }

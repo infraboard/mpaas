@@ -4,6 +4,7 @@ package infraboard.mpaas.cluster;
 option go_package = "github.com/infraboard/mpaas/apps/cluster";
 
 import "mcube/pb/resource/meta.proto";
+import "mpaas/apps/deploy/pb/deploy.proto";
 
 message ClusterSet {
     // 总数
@@ -23,6 +24,9 @@ message Cluster  {
     // 创建信息
     // @gotags: bson:",inline" json:"spec"
     CreateClusterRequest spec = 3;
+    // 关联的部署
+    // @gotags: bson:"-" json:"deployments"
+    deploy.DeploymentSet deployments = 4;
 }
 
 message CreateClusterRequest {

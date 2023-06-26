@@ -91,7 +91,6 @@ func NewCreateDeploymentRequest() *CreateDeploymentRequest {
 		Provider:       instance.DEFAULT_PROVIDER,
 		Region:         instance.DEFAULT_REGION,
 		Environment:    instance.DEFAULT_ENV,
-		Cluster:        instance.DEFAULT_CLUSTER,
 		Group:          instance.DEFAULT_GROUP,
 	}
 }
