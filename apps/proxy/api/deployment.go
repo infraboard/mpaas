@@ -15,7 +15,7 @@ import (
 )
 
 func (h *handler) registryDeploymentHandler(ws *restful.WebService) {
-	tags := []string{"Deployment管理"}
+	tags := []string{"[Proxy] Deployment管理"}
 	ws.Route(ws.POST("/{cluster_id}/deployments").To(h.CreateDeployment).
 		Doc("创建Deployment").
 		Metadata(restfulspec.KeyOpenAPITags, tags).

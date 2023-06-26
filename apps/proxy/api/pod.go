@@ -23,7 +23,7 @@ import (
 )
 
 func (h *handler) registryPodHandler(ws *restful.WebService) {
-	tags := []string{"Pod管理"}
+	tags := []string{"[Proxy] Pod管理"}
 
 	ws.Route(ws.POST("/{cluster_id}/pods").To(h.CreatePod).
 		Doc("创建Pod").

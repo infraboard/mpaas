@@ -14,7 +14,7 @@ import (
 )
 
 func (h *handler) registryStatefulSetHandler(ws *restful.WebService) {
-	tags := []string{"StatefulSet管理"}
+	tags := []string{"[Proxy] StatefulSet管理"}
 	ws.Route(ws.POST("/{cluster_id}/statefulsets").To(h.CreateStatefulSet).
 		Doc("创建StatefulSet").
 		Metadata(restfulspec.KeyOpenAPITags, tags).

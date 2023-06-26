@@ -13,7 +13,7 @@ import (
 )
 
 func (h *handler) registryNodeHandler(ws *restful.WebService) {
-	tags := []string{"Node管理"}
+	tags := []string{"[Proxy] Node管理"}
 	ws.Route(ws.GET("/{cluster_id}/nodes").To(h.QueryNodes).
 		Doc("查询节点列表").
 		Metadata(restfulspec.KeyOpenAPITags, tags).

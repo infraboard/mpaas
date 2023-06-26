@@ -7,7 +7,6 @@ import (
 	"github.com/emicklei/go-restful/v3"
 	"github.com/infraboard/mcube/http/label"
 	"github.com/infraboard/mcube/http/restful/response"
-	cluster "github.com/infraboard/mpaas/apps/k8s"
 	"github.com/infraboard/mpaas/apps/proxy"
 	"github.com/infraboard/mpaas/provider/k8s"
 	"github.com/infraboard/mpaas/provider/k8s/meta"
@@ -17,7 +16,7 @@ import (
 )
 
 func (h *handler) registrySecretHandler(ws *restful.WebService) {
-	tags := []string{"密钥管理"}
+	tags := []string{"[Proxy] 密钥管理"}
 
 	ws.Route(ws.POST("/{cluster_id}/secrets").To(h.CreateSecret).
 		Doc("创建密钥").
@@ -26,7 +25,7 @@ func (h *handler) registrySecretHandler(ws *restful.WebService) {
 		Metadata(label.Action, label.List.Value()).
 		Metadata(label.Auth, label.Enable).
 		Metadata(label.Permission, label.Enable).
-		Reads(cluster.QueryClusterRequest{}).
+		Reads(v1.Secret{}).
 		Writes(v1.Secret{}).
 		Returns(200, "OK", v1.Secret{}))
 
@@ -37,7 +36,7 @@ func (h *handler) registrySecretHandler(ws *restful.WebService) {
 		Metadata(label.Action, label.List.Value()).
 		Metadata(label.Auth, label.Enable).
 		Metadata(label.Permission, label.Enable).
-		Reads(cluster.QueryClusterRequest{}).
+		Reads(v1.Secret{}).
 		Writes(v1.SecretList{}).
 		Returns(200, "OK", v1.SecretList{}))
 
@@ -48,7 +47,7 @@ func (h *handler) registrySecretHandler(ws *restful.WebService) {
 		Metadata(label.Action, label.List.Value()).
 		Metadata(label.Auth, label.Enable).
 		Metadata(label.Permission, label.Enable).
-		Reads(cluster.QueryClusterRequest{}).
+		Reads(v1.Secret{}).
 		Writes(v1.Secret{}).
 		Returns(200, "OK", v1.Secret{}))
 }

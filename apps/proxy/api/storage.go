@@ -14,7 +14,7 @@ import (
 )
 
 func (h *handler) registryPVHandler(ws *restful.WebService) {
-	tags := []string{"存储管理"}
+	tags := []string{"[Proxy] 存储管理"}
 
 	ws.Route(ws.GET("/{cluster_id}/pv").To(h.QueryPersistentVolumes).
 		Doc("查询卷列表").

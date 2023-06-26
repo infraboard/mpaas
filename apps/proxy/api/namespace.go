@@ -14,7 +14,7 @@ import (
 )
 
 func (h *handler) registryNamespaceHandler(ws *restful.WebService) {
-	tags := []string{"Namespace管理"}
+	tags := []string{"[Proxy] Namespace管理"}
 	ws.Route(ws.POST("/{cluster_id}/namespace").To(h.CreateNamespaces).
 		Doc("创建Namespace").
 		Metadata(restfulspec.KeyOpenAPITags, tags).

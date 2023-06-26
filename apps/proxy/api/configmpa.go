@@ -16,7 +16,7 @@ import (
 )
 
 func (h *handler) registryConfigMapHandler(ws *restful.WebService) {
-	tags := []string{"Config Map管理"}
+	tags := []string{"[Proxy] Config Map管理"}
 	ws.Route(ws.POST("/{cluster_id}/configmaps").To(h.CreateConfigMap).
 		Doc("创建ConfigMap").
 		Metadata(restfulspec.KeyOpenAPITags, tags).

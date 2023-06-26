@@ -14,7 +14,7 @@ import (
 )
 
 func (h *handler) registryServiceHandler(ws *restful.WebService) {
-	tags := []string{"服务管理"}
+	tags := []string{"[Proxy] 服务管理"}
 
 	ws.Route(ws.POST("/{cluster_id}/services").To(h.CreateService).
 		Doc("创建服务").
