@@ -4,6 +4,7 @@ package infraboard.mpaas.deploy;
 option go_package = "github.com/infraboard/mpaas/apps/deploy";
 
 import "mcube/pb/resource/meta.proto";
+import "mpaas/apps/event/pb/event.proto";
 
 message DeploymentSet {
     // 总数
@@ -197,9 +198,15 @@ message CreateDeploymentRequest {
     // 对象所在空间
     // @gotags: bson:"namespace" json:"namespace"
     string namespace = 20;
-    // 部署负责人, 当部署有异常时, 通知负责人
-    // @gotags: bson:"responsible_users" json:"responsible_users"
-    repeated string responsible_users = 24;
+    // 是否开启集群事件通知
+    // @gotags: bson:"enable_event_notify" json:"enable_event_notify"
+    bool enable_event_notify = 26;
+    // 需要通知的事件等级
+    // @gotags: bson:"notify_level" json:"notify_level"
+    event.LEVEL notify_level = 27;
+    // 部署有异常事件时需要被通知的人
+    // @gotags: bson:"notify_users" json:"notify_users"
+    repeated string notify_users = 24;
 	// 是否是模版
 	// @gotags: bson:"is_template" json:"is_template"
     bool is_template = 1;
