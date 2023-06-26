@@ -28,3 +28,13 @@ func NewCreateClusterRequest() *CreateClusterRequest {
 		Labels: map[string]string{},
 	}
 }
+
+func NewDescribeClusterRequest(id string) *DescribeClusterRequest {
+	return &DescribeClusterRequest{
+		Id: id,
+	}
+}
+
+func (r *DescribeClusterRequest) Validate() error {
+	return nil
+}

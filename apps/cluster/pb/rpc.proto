@@ -37,11 +37,13 @@ message QueryClusterRequest {
 }
 
 message DescribeClusterRequest {
-
+    // 集群Id
+    // @gotags: json:"id"
+    string id = 1;
 }
 
 message UpdateClusterRequest {
-    // 部署Id
+    // 集群Id
     // @gotags: json:"id"
     string id = 1;
     // 更新人

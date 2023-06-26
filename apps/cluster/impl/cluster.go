@@ -5,6 +5,8 @@ import (
 
 	"github.com/infraboard/mcube/exception"
 	"github.com/infraboard/mpaas/apps/cluster"
+	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/mongo"
 )
 
 // 查询集群列表
@@ -53,7 +55,18 @@ func (i *impl) CreateCluster(ctx context.Context, in *cluster.CreateClusterReque
 // 查询集群详情
 func (i *impl) DescribeCluster(ctx context.Context, in *cluster.DescribeClusterRequest) (
 	*cluster.Cluster, error) {
-	return nil, nil
+	if err := in.Validate(); err != nil {
+		return nil, exception.NewBadRequest(err.Error())
+	}
+	ins := cluster.NewDefaultCluster()
+	if err := i.col.FindOne(ctx, bson.M{"_id": in.Id}).Decode(ins); err != nil {
+		if err == mongo.ErrNoDocuments {
+			return nil, exception.NewNotFound("cluster %s not found", in.Id)
+		}
+
+		return nil, exception.NewInternalServerError("find cluster %s error, %s", in.Id, err)
+	}
+	return ins, nil
 }
 
 func (i *impl) UpdateCluster(ctx context.Context, in *cluster.UpdateClusterRequest) (
@@ -63,5 +76,14 @@ func (i *impl) UpdateCluster(ctx context.Context, in *cluster.UpdateClusterReque
 
 func (i *impl) DeleteCluster(ctx context.Context, in *cluster.DeleteClusterRequest) (
 	*cluster.Cluster, error) {
-	return nil, nil
+	req := cluster.NewDescribeClusterRequest(in.Id)
+	ins, err := i.DescribeCluster(ctx, req)
+	if err != nil {
+		return nil, err
+	}
+	_, err = i.col.DeleteOne(ctx, bson.M{"_id": ins.Meta.Id})
+	if err != nil {
+		return nil, exception.NewInternalServerError("delete cluster(%s) error, %s", in.Id, err)
+	}
+	return ins, nil
 }
