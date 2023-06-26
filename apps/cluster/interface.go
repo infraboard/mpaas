@@ -38,3 +38,9 @@ func NewDescribeClusterRequest(id string) *DescribeClusterRequest {
 func (r *DescribeClusterRequest) Validate() error {
 	return nil
 }
+
+func NewDeleteClusterRequest(id string) *DeleteClusterRequest {
+	return &DeleteClusterRequest{
+		Id: id,
+	}
+}

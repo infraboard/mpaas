@@ -24,3 +24,21 @@ func TestCreateCluster(t *testing.T) {
 	}
 	t.Log(tools.MustToJson(ds))
 }
+
+func TestDescribeCluster(t *testing.T) {
+	req := cluster.NewDescribeClusterRequest("xxx")
+	ds, err := impl.DescribeCluster(ctx, req)
+	if err != nil {
+		t.Fatal(err)
+	}
+	t.Log(tools.MustToJson(ds))
+}
+
+func TestDeleteCluster(t *testing.T) {
+	req := cluster.NewDeleteClusterRequest("xxx")
+	ds, err := impl.DeleteCluster(ctx, req)
+	if err != nil {
+		t.Fatal(err)
+	}
+	t.Log(tools.MustToJson(ds))
+}
