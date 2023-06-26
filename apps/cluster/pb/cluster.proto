@@ -33,7 +33,7 @@ message CreateClusterRequest {
     // @gotags: bson:"environment" json:"environment" validate:"required"
     string environment = 2;
     // 集群名称
-    // @gotags: bson:"name" json:"name"
+    // @gotags: bson:"name" json:"name" validate:"required"
     string name = 3;
     // 集群描述
     // @gotags: bson:"describe" json:"describe"

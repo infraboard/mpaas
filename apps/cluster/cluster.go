@@ -1,6 +1,8 @@
 package cluster
 
 import (
+	"encoding/json"
+
 	"github.com/infraboard/mcenter/common/validate"
 	"github.com/infraboard/mcube/pb/resource"
 )
@@ -21,8 +23,9 @@ func New(req *CreateClusterRequest) (*Cluster, error) {
 	}
 
 	return &Cluster{
-		Meta: resource.NewMeta(),
-		Spec: req,
+		Meta:  resource.NewMeta(),
+		Scope: resource.NewScope(),
+		Spec:  req,
 	}, nil
 }
 
@@ -32,4 +35,12 @@ func (req *CreateClusterRequest) Validate() error {
 
 func NewDefaultCluster() *Cluster {
 	return &Cluster{}
+}
+
+func (n *Cluster) MarshalJSON() ([]byte, error) {
+	return json.Marshal(struct {
+		*resource.Meta
+		*resource.Scope
+		*CreateClusterRequest
+	}{n.Meta, n.Scope, n.Spec})
 }

@@ -4,6 +4,7 @@ import (
 	"testing"
 
 	"github.com/infraboard/mpaas/apps/cluster"
+	"github.com/infraboard/mpaas/test/conf"
 	"github.com/infraboard/mpaas/test/tools"
 )
 
@@ -18,6 +19,9 @@ func TestQueryCluster(t *testing.T) {
 
 func TestCreateCluster(t *testing.T) {
 	req := cluster.NewCreateClusterRequest()
+	req.ServiceId = conf.C.MCENTER_SERVICE_ID
+	req.Environment = "生产"
+	req.Name = "默认集群"
 	ds, err := impl.CreateCluster(ctx, req)
 	if err != nil {
 		t.Fatal(err)

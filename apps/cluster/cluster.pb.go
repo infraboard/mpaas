@@ -160,8 +160,8 @@ type CreateClusterRequest struct {
 	// @gotags: bson:"environment" json:"environment" validate:"required"
 	Environment string `protobuf:"bytes,2,opt,name=environment,proto3" json:"environment" bson:"environment" validate:"required"`
 	// 集群名称
-	// @gotags: bson:"name" json:"name"
-	Name string `protobuf:"bytes,3,opt,name=name,proto3" json:"name" bson:"name"`
+	// @gotags: bson:"name" json:"name" validate:"required"
+	Name string `protobuf:"bytes,3,opt,name=name,proto3" json:"name" bson:"name" validate:"required"`
 	// 集群描述
 	// @gotags: bson:"describe" json:"describe"
 	Describe string `protobuf:"bytes,4,opt,name=describe,proto3" json:"describe" bson:"describe"`
