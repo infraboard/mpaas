@@ -47,6 +47,15 @@ message QueryDeploymentRequest {
     // 部署Id列表
     // @gotags: json:"ids"
     repeated string ids = 2;
+    // 查询服务相关的部署
+    // @gotags: json:"service_ids"
+    repeated string service_ids = 3;
+    // 查询环境相关的部署
+    // @gotags: json:"envs"
+    repeated string environments = 4;
+    // 查询集群相关的部署
+    // @gotags: json:"clusters"
+    repeated string clusters = 5;
 }
 
 enum DESCRIBE_BY {
