@@ -6,6 +6,8 @@ option go_package = "github.com/infraboard/mpaas/apps/pipeline";
 import "mpaas/apps/pipeline/pb/pipeline.proto";
 import "mcube/pb/page/page.proto";
 import "mcube/pb/request/request.proto";
+import "mcube/pb/resource/meta.proto";
+import "mcube/pb/resource/label.proto";
 
 // RPC Pipeline管理
 service RPC {
@@ -22,15 +24,15 @@ service RPC {
 }
 
 message QueryPipelineRequest {
+    // 资源范围
+    // @gotags: json:"scope"
+    mcube.resource.Scope scope = 1;
+    // 资源标签过滤
+    // @gotags: json:"filters"
+    repeated mcube.resource.LabelRequirement filters = 2;
     // 分页请求
     // @gotags: json:"page"
-    infraboard.mcube.page.PageRequest page = 1;
-    // pipeline 所属域
-    // @gotags: json:"domain"
-    string domain = 2;
-    // pipeline 所属空间
-    // @gotags: json:"namespace"
-    string namespace = 3;
+    infraboard.mcube.page.PageRequest page = 3;
 	// 是否是模版, 用于快速继承模版参数进行修改, 模版不能用于执行
 	// @gotags: json:"is_template"
 	optional bool is_template = 4;

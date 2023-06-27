@@ -27,7 +27,7 @@ func (h *handler) Registry(ws *restful.WebService) {
 		Metadata(label.Resource, h.Name()).
 		Metadata(label.Action, label.List.Value()).
 		Metadata(label.Auth, label.Enable).
-		Metadata(label.Permission, label.Enable).
+		Metadata(label.Permission, label.Disable).
 		Reads(build.QueryBuildConfigRequest{}).
 		Writes(build.BuildConfigSet{}).
 		Returns(200, "OK", build.BuildConfigSet{}))
@@ -39,7 +39,7 @@ func (h *handler) Registry(ws *restful.WebService) {
 		Metadata(label.Resource, h.Name()).
 		Metadata(label.Action, label.Get.Value()).
 		Metadata(label.Auth, label.Enable).
-		Metadata(label.Permission, label.Enable).
+		Metadata(label.Permission, label.Disable).
 		Writes(build.BuildConfig{}).
 		Returns(200, "OK", build.BuildConfig{}).
 		Returns(404, "Not Found", nil))
@@ -77,7 +77,6 @@ func (h *handler) Registry(ws *restful.WebService) {
 		Metadata(label.Action, label.Delete.Value()).
 		Metadata(label.Auth, label.Enable).
 		Metadata(label.Permission, label.Enable))
-
 }
 
 func (h *handler) CreateBuildConfig(r *restful.Request, w *restful.Response) {

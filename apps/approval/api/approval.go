@@ -55,7 +55,7 @@ func (h *handler) Registry(ws *restful.WebService) {
 		Metadata(label.Resource, h.Name()).
 		Metadata(label.Action, label.List.Value()).
 		Metadata(label.Auth, label.Enable).
-		Metadata(label.Permission, label.Enable).
+		Metadata(label.Permission, label.Disable).
 		Reads(approval.QueryApprovalRequest{}).
 		Writes(approval.ApprovalSet{}).
 		Returns(200, "OK", approval.ApprovalSet{}))
@@ -66,8 +66,8 @@ func (h *handler) Registry(ws *restful.WebService) {
 		Metadata(restfulspec.KeyOpenAPITags, tags).
 		Metadata(label.Resource, h.Name()).
 		Metadata(label.Action, label.Get.Value()).
-		Metadata(label.Auth, label.Disable).
-		Metadata(label.Permission, label.Enable).
+		Metadata(label.Auth, label.Enable).
+		Metadata(label.Permission, label.Disable).
 		Writes(approval.Approval{}).
 		Returns(200, "OK", approval.Approval{}).
 		Returns(404, "Not Found", nil))
@@ -90,7 +90,7 @@ func (h *handler) Registry(ws *restful.WebService) {
 		Metadata(restfulspec.KeyOpenAPITags, tags).
 		Metadata(label.Resource, h.Name()).
 		Metadata(label.Action, label.Get.Value()).
-		Metadata(label.Auth, label.Disable).
+		Metadata(label.Auth, label.Enable).
 		Metadata(label.Permission, label.Enable).
 		Reads(approval.UpdateApprovalStatusRequest{}).
 		Writes(approval.Approval{}).

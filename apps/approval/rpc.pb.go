@@ -29,8 +29,8 @@ type QueryApprovalRequest struct {
 	unknownFields protoimpl.UnknownFields
 
 	// 资源范围
-	// @gotags: json:"mscopeeta"
-	Scope *resource.Scope `protobuf:"bytes,5,opt,name=scope,proto3" json:"mscopeeta"`
+	// @gotags: json:"scope"
+	Scope *resource.Scope `protobuf:"bytes,5,opt,name=scope,proto3" json:"scope"`
 	// 资源标签过滤
 	// @gotags: json:"filters"
 	Filters []*resource.LabelRequirement `protobuf:"bytes,6,rep,name=filters,proto3" json:"filters"`

@@ -7,6 +7,8 @@ import "mpaas/apps/job/pb/job.proto";
 import "mcube/pb/page/page.proto";
 import "mcube/pb/resource/base.proto";
 import "mcube/pb/request/request.proto";
+import "mcube/pb/resource/meta.proto";
+import "mcube/pb/resource/label.proto";
 
 // RPC Job定义
 service RPC {
@@ -20,18 +22,18 @@ service RPC {
 }
 
 message QueryJobRequest {
+    // 资源范围
+    // @gotags: json:"mscopeeta"
+    mcube.resource.Scope scope = 1;
+    // 资源标签过滤
+    // @gotags: json:"filters"
+    repeated mcube.resource.LabelRequirement filters = 2;
     // 分页请求
     // @gotags: json:"page"
-    infraboard.mcube.page.PageRequest page = 1;
+    infraboard.mcube.page.PageRequest page = 3;
     // 是否是公开Job, 默认只能本空间内访问
 	// @gotags: bson:"visiable_mode" json:"visiable_mode"
-	optional mcube.resource.VISIABLE_MODE visiable_mode = 2;
-    // job 所属域
-    // @gotags: json:"domain"
-    string domain = 3;
-    // job 所属空间
-    // @gotags: json:"namespace"
-    string namespace = 4;
+	optional mcube.resource.VISIABLE_MODE visiable_mode = 4;
     // job Id列表
     // @gotags: json:"ids"
     repeated string ids = 5;

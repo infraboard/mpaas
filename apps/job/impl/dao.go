@@ -3,6 +3,8 @@ package impl
 import (
 	"context"
 
+	"github.com/infraboard/mcenter/apps/policy"
+	"github.com/infraboard/mcenter/apps/token"
 	"github.com/infraboard/mcube/exception"
 	"github.com/infraboard/mpaas/apps/job"
 	"go.mongodb.org/mongo-driver/bson"
@@ -36,17 +38,11 @@ func (r *queryRequest) FindOptions() *options.FindOptions {
 
 func (r *queryRequest) FindFilter() bson.M {
 	filter := bson.M{}
+	token.MakeMongoFilter(filter, r.Scope)
+	policy.MakeMongoFilter(filter, "labels", r.Filters)
 
 	if r.VisiableMode != nil {
 		filter["visiable_mode"] = *r.VisiableMode
-	}
-
-	if r.Domain != "" {
-		filter["domain"] = r.Domain
-	}
-
-	if r.Namespace != "" {
-		filter["namespace"] = r.Namespace
 	}
 
 	if r.Label != nil && len(r.Label) > 0 {

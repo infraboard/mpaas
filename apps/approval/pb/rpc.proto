@@ -25,7 +25,7 @@ service RPC {
 
 message QueryApprovalRequest {
     // 资源范围
-    // @gotags: json:"mscopeeta"
+    // @gotags: json:"scope"
     mcube.resource.Scope scope = 5;
     // 资源标签过滤
     // @gotags: json:"filters"

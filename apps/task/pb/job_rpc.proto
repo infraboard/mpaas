@@ -5,6 +5,8 @@ option go_package = "github.com/infraboard/mpaas/apps/task";
 
 import "mpaas/apps/task/pb/job_task.proto";
 import "mcube/pb/page/page.proto";
+import "mcube/pb/resource/meta.proto";
+import "mcube/pb/resource/label.proto";
 
 // RPC 执行Job
 service JobRPC {
@@ -37,21 +39,27 @@ message JobTaskStreamReponse {
 }
 
 message QueryJobTaskRequest {
+    // 资源范围
+    // @gotags: json:"scope"
+    mcube.resource.Scope scope = 1;
+    // 资源标签过滤
+    // @gotags: json:"filters"
+    repeated mcube.resource.LabelRequirement filters = 2;
     // 分页请求
     // @gotags: json:"page"
-    mcube.page.PageRequest page = 1;
+    mcube.page.PageRequest page = 3;
     // 任务Id列表
     // @gotags: json:"ids"
-    repeated string ids = 2;
+    repeated string ids = 4;
 	// 与该pipeline task关联的任务
 	// @gotags: json:"id"
-    string pipeline_task_id = 3;
+    string pipeline_task_id = 5;
 	// 任务当前状态
 	// @gotags: json:"stage"
-    optional STAGE stage = 4;
+    optional STAGE stage = 6;
     // 任务标签
     // @gotags: json:"labels"
-    map<string,string> labels = 5;
+    map<string,string> labels = 15;
 }
 
 message UpdateJobTaskStatusRequest {

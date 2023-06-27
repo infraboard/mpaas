@@ -27,8 +27,8 @@ func (h *handler) Registry(ws *restful.WebService) {
 		Metadata(restfulspec.KeyOpenAPITags, tags).
 		Metadata(label.Resource, h.Name()).
 		Metadata(label.Action, label.List.Value()).
-		Metadata(label.Auth, label.Enable).
-		Metadata(label.Permission, label.Enable).
+		Metadata(label.Auth, label.Disable).
+		Metadata(label.Permission, label.Disable).
 		Reads(job.QueryJobRequest{}).
 		Writes(job.JobSet{}).
 		Returns(200, "OK", job.JobSet{}))
@@ -40,7 +40,7 @@ func (h *handler) Registry(ws *restful.WebService) {
 		Metadata(label.Resource, h.Name()).
 		Metadata(label.Action, label.Get.Value()).
 		Metadata(label.Auth, label.Disable).
-		Metadata(label.Permission, label.Enable).
+		Metadata(label.Permission, label.Disable).
 		Writes(job.Job{}).
 		Returns(200, "OK", job.Job{}).
 		Returns(404, "Not Found", nil))

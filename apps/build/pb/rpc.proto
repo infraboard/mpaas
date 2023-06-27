@@ -39,7 +39,7 @@ message AutoDeployOptions {
 
 message QueryBuildConfigRequest {
     // 资源范围
-    // @gotags: json:"mscopeeta"
+    // @gotags: json:"scope"
     mcube.resource.Scope scope = 1;
     // 资源标签过滤
     // @gotags: json:"filters"
