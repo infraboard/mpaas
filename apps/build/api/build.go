@@ -98,7 +98,7 @@ func (h *handler) CreateBuildConfig(r *restful.Request, w *restful.Response) {
 }
 
 func (h *handler) QueryBuildConfig(r *restful.Request, w *restful.Response) {
-	req := build.NewQueryBuildConfigRequestFromHTTP(r.Request)
+	req := build.NewQueryBuildConfigRequestFromHTTP(r)
 	set, err := h.service.QueryBuildConfig(r.Request.Context(), req)
 	if err != nil {
 		response.Failed(w, err)

@@ -3,8 +3,10 @@ package approval
 import (
 	context "context"
 	"fmt"
-	"net/http"
 
+	"github.com/emicklei/go-restful/v3"
+	"github.com/infraboard/mcenter/apps/policy"
+	"github.com/infraboard/mcenter/apps/token"
 	"github.com/infraboard/mcenter/common/validate"
 	"github.com/infraboard/mcube/http/request"
 	"github.com/infraboard/mcube/pb/resource"
@@ -97,8 +99,10 @@ func NewDescribeApprovalRequest(id string) *DescribeApprovalRequest {
 	}
 }
 
-func NewQueryApprovalRequestFromHTTP(r *http.Request) *QueryApprovalRequest {
+func NewQueryApprovalRequestFromHTTP(r *restful.Request) *QueryApprovalRequest {
 	req := NewQueryApprovalRequest()
-	req.Page = request.NewPageRequestFromHTTP(r)
+	req.Page = request.NewPageRequestFromHTTP(r.Request)
+	req.Scope = token.GetTokenFromRequest(r).GenScope()
+	req.Filters = policy.GetScopeFilterFromRequest(r)
 	return req
 }

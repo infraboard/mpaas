@@ -1,8 +1,9 @@
 package build
 
 import (
-	"net/http"
-
+	"github.com/emicklei/go-restful/v3"
+	"github.com/infraboard/mcenter/apps/policy"
+	"github.com/infraboard/mcenter/apps/token"
 	"github.com/infraboard/mcenter/common/validate"
 	"github.com/infraboard/mcube/http/request"
 	pb_request "github.com/infraboard/mcube/pb/request"
@@ -23,10 +24,12 @@ func (req *CreateBuildConfigRequest) Validate() error {
 	return validate.Validate(req)
 }
 
-func NewQueryBuildConfigRequestFromHTTP(r *http.Request) *QueryBuildConfigRequest {
-	return &QueryBuildConfigRequest{
-		Page: request.NewPageRequestFromHTTP(r),
-	}
+func NewQueryBuildConfigRequestFromHTTP(r *restful.Request) *QueryBuildConfigRequest {
+	req := NewQueryBuildConfigRequest()
+	req.Page = request.NewPageRequestFromHTTP(r.Request)
+	req.Scope = token.GetTokenFromRequest(r).GenScope()
+	req.Filters = policy.GetScopeFilterFromRequest(r)
+	return req
 }
 
 func NewQueryBuildConfigRequest() *QueryBuildConfigRequest {

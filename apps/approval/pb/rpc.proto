@@ -5,7 +5,7 @@ option go_package = "github.com/infraboard/mpaas/apps/approval";
 
 import "mcube/pb/request/request.proto";
 import "mcube/pb/resource/meta.proto";
-import "mcube/pb/label/label.proto";
+import "mcube/pb/resource/label.proto";
 import "mcube/pb/page/page.proto";
 import "mpaas/apps/approval/pb/approval.proto";
 
@@ -29,7 +29,7 @@ message QueryApprovalRequest {
     mcube.resource.Scope scope = 5;
     // 资源标签过滤
     // @gotags: json:"filters"
-    repeated mcube.label.LabelRequirement filters = 6;
+    repeated mcube.resource.LabelRequirement filters = 6;
     // 分页请求
     // @gotags: json:"page"
     mcube.page.PageRequest page = 1;

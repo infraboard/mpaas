@@ -1,6 +1,8 @@
 package impl
 
 import (
+	"github.com/infraboard/mcenter/apps/policy"
+	"github.com/infraboard/mcenter/apps/token"
 	"github.com/infraboard/mpaas/apps/build"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo/options"
@@ -33,13 +35,8 @@ func (r *queryRequest) FindOptions() *options.FindOptions {
 
 func (r *queryRequest) FindFilter() bson.M {
 	filter := bson.M{}
-
-	if r.Domain != "" {
-		filter["domain"] = r.Domain
-	}
-	if r.Namespace != "" {
-		filter["namespace"] = r.Namespace
-	}
+	token.MakeMongoFilter(filter, r.Scope)
+	policy.MakeMongoFilter(filter, "labels", r.Filters)
 
 	if len(r.ServiceIds) > 0 {
 		filter["service_id"] = bson.M{"$in": r.ServiceIds}
