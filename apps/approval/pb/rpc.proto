@@ -26,22 +26,22 @@ service RPC {
 message QueryApprovalRequest {
     // 资源范围
     // @gotags: json:"scope"
-    mcube.resource.Scope scope = 5;
+    mcube.resource.Scope scope = 1;
     // 资源标签过滤
     // @gotags: json:"filters"
-    repeated mcube.resource.LabelRequirement filters = 6;
+    repeated mcube.resource.LabelRequirement filters = 2;
     // 分页请求
     // @gotags: json:"page"
-    mcube.page.PageRequest page = 1;
+    mcube.page.PageRequest page = 3;
     // Id列表
     // @gotags: json:"ids"
-    repeated string ids = 2;
+    repeated string ids = 4;
     // 创建开始时间
     // @gotags: json:"begin_create_at"
-    int64 begin_create_at = 3;
+    int64 begin_create_at = 5;
     // 创建结束时间
     // @gotags: json:"end_create_at"
-    int64 end_create_at = 4;
+    int64 end_create_at = 6;
 }
 
 message DescribeApprovalRequest {
