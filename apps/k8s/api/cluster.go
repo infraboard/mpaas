@@ -99,8 +99,7 @@ func (h *handler) CreateCluster(r *restful.Request, w *restful.Response) {
 }
 
 func (h *handler) QueryCluster(r *restful.Request, w *restful.Response) {
-	req := cluster.NewQueryClusterRequestFromHTTP(r.Request)
-	req.UpdateNamespace()
+	req := cluster.NewQueryClusterRequestFromHTTP(r)
 
 	set, err := h.service.QueryCluster(r.Request.Context(), req)
 	if err != nil {

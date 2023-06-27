@@ -4,12 +4,14 @@ import (
 	"encoding/base64"
 	"encoding/json"
 	"fmt"
-	"net/http"
 	"strings"
 	"time"
 
+	"github.com/emicklei/go-restful/v3"
 	"github.com/go-playground/validator/v10"
 	"github.com/imdario/mergo"
+	"github.com/infraboard/mcenter/apps/policy"
+	"github.com/infraboard/mcenter/apps/token"
 	"github.com/infraboard/mcube/crypto/cbc"
 	"github.com/infraboard/mcube/http/request"
 	pb_request "github.com/infraboard/mcube/pb/request"
@@ -209,20 +211,15 @@ func NewQueryClusterRequest() *QueryClusterRequest {
 	}
 }
 
-func NewQueryClusterRequestFromHTTP(r *http.Request) *QueryClusterRequest {
-	qs := r.URL.Query()
-
-	return &QueryClusterRequest{
-		Page:     request.NewPageRequestFromHTTP(r),
-		Keywords: qs.Get("keywords"),
-		Vendor:   qs.Get("vendor"),
-		Region:   qs.Get("region"),
-	}
-}
-
-func (req *QueryClusterRequest) UpdateNamespace() {
-	req.Domain = "default"
-	req.Namespace = "default"
+func NewQueryClusterRequestFromHTTP(r *restful.Request) *QueryClusterRequest {
+	req := NewQueryClusterRequest()
+	req.Page = request.NewPageRequestFromHTTP(r.Request)
+	req.Scope = token.GetTokenFromRequest(r).GenScope()
+	req.Filters = policy.GetScopeFilterFromRequest(r)
+	req.Keywords = r.QueryParameter("keywords")
+	req.Vendor = r.QueryParameter("vendor")
+	req.Region = r.QueryParameter("region")
+	return req
 }
 
 func NewPutClusterRequest(id string) *UpdateClusterRequest {

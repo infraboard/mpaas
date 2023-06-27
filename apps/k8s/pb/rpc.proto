@@ -6,6 +6,8 @@ option go_package = "github.com/infraboard/mpaas/apps/k8s";
 import "mcube/pb/page/page.proto";
 import "mcube/pb/request/request.proto";
 import "mpaas/apps/k8s/pb/cluster.proto";
+import "mcube/pb/resource/meta.proto";
+import "mcube/pb/resource/label.proto";
 
 service RPC {
     rpc QueryCluster(QueryClusterRequest) returns(ClusterSet);
@@ -13,18 +15,18 @@ service RPC {
 }
 
 message QueryClusterRequest {
+    // 资源范围
+    // @gotags: json:"scope"
+    mcube.resource.Scope scope = 1;
+    // 资源标签过滤
+    // @gotags: json:"filters"
+    repeated mcube.resource.LabelRequirement filters = 2;
     // 分页参数
     // @gotags: json:"page" 
-    infraboard.mcube.page.PageRequest page = 1;
+    mcube.page.PageRequest page = 3;
     // 关键字参数
     // @gotags: json:"keywords"
-    string keywords = 2;
-    // 集群所属域
-    // @gotags: json:"domain"
-    string domain = 3;
-    // 集群所属空间
-    // @gotags: json:"namespace"
-    string namespace = 4;
+    string keywords = 4;
     // 集群所属厂商
     // @gotags: json:"vendor"
     string vendor = 5;

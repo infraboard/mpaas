@@ -5,6 +5,8 @@ option go_package = "github.com/infraboard/mpaas/apps/cluster";
 
 import "mpaas/apps/cluster/pb/cluster.proto";
 import "mcube/pb/page/page.proto";
+import "mcube/pb/resource/meta.proto";
+import "mcube/pb/resource/label.proto";
 
 
 // RPC 应用集群管理
@@ -16,27 +18,27 @@ service RPC {
 }
 
 message QueryClusterRequest {
+    // 资源范围
+    // @gotags: json:"scope"
+    mcube.resource.Scope scope = 1;
+    // 资源标签过滤
+    // @gotags: json:"filters"
+    repeated mcube.resource.LabelRequirement filters = 2;
     // 分页请求
     // @gotags: json:"page"
-    mcube.page.PageRequest page = 1;
-    // 集群 所属域
-    // @gotags: json:"domain"
-    string domain = 3;
-    // 集群 所属空间
-    // @gotags: json:"namespace"
-    string namespace = 4;
+    mcube.page.PageRequest page = 3;
     // 集群 Id列表
     // @gotags: json:"ids"
-    repeated string ids = 5;
+    repeated string ids = 4;
     // 集群 名称列表
     // @gotags: json:"names"
-    repeated string names = 6;
+    repeated string names = 5;
     // 查询查询集群管理的部署
     // @gotags: json:"with_deployment"
-    bool with_deployment = 8;
+    bool with_deployment = 6;
     // 集群 标签
     // @gotags: json:"label"
-    map<string,string> label = 7;
+    map<string,string> label = 15;
 }
 
 message DescribeClusterRequest {

@@ -4,6 +4,8 @@ import (
 	"context"
 	"fmt"
 
+	"github.com/infraboard/mcenter/apps/policy"
+	"github.com/infraboard/mcenter/apps/token"
 	cluster "github.com/infraboard/mpaas/apps/k8s"
 
 	"github.com/infraboard/mcube/exception"
@@ -62,13 +64,9 @@ func (r *queryclusterRequest) FindOptions() *options.FindOptions {
 
 func (r *queryclusterRequest) FindFilter() bson.M {
 	filter := bson.M{}
+	token.MakeMongoFilter(filter, r.Scope)
+	policy.MakeMongoFilter(filter, "labels", r.Filters)
 
-	if r.Domain != "" {
-		filter["domain"] = r.Domain
-	}
-	if r.Namespace != "" {
-		filter["namespace"] = r.Namespace
-	}
 	if r.Vendor != "" {
 		filter["vendor"] = r.Vendor
 	}
