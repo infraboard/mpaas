@@ -32,7 +32,13 @@ func (r *queryRequest) FindOptions() *options.FindOptions {
 }
 
 func (r *queryRequest) FindFilter() bson.M {
-	filter := bson.M{}
+	filter := bson.M{
+		"domain": r.Scope.Domain,
+	}
+
+	if r.Scope.Namespace != "" {
+		filter["namespace"] = r.Scope.Namespace
+	}
 
 	if len(r.Ids) > 0 {
 		filter["_id"] = bson.M{"$in": r.Ids}

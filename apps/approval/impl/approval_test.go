@@ -13,6 +13,7 @@ import (
 
 func TestQueryApproval(t *testing.T) {
 	req := approval.NewQueryApprovalRequest()
+	req.Scope.Domain = domain.DEFAULT_DOMAIN
 	set, err := impl.QueryApproval(ctx, req)
 	if err != nil {
 		t.Fatal(err)

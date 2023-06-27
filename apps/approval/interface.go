@@ -7,6 +7,7 @@ import (
 
 	"github.com/infraboard/mcenter/common/validate"
 	"github.com/infraboard/mcube/http/request"
+	"github.com/infraboard/mcube/pb/resource"
 	"github.com/infraboard/mpaas/apps/job"
 	pipeline "github.com/infraboard/mpaas/apps/pipeline"
 )
@@ -33,7 +34,8 @@ type DeleteApprovalRequest struct {
 
 func NewQueryApprovalRequest() *QueryApprovalRequest {
 	return &QueryApprovalRequest{
-		Page: request.NewDefaultPageRequest(),
+		Scope: resource.NewScope(),
+		Page:  request.NewDefaultPageRequest(),
 	}
 }
 
@@ -96,7 +98,7 @@ func NewDescribeApprovalRequest(id string) *DescribeApprovalRequest {
 }
 
 func NewQueryApprovalRequestFromHTTP(r *http.Request) *QueryApprovalRequest {
-	return &QueryApprovalRequest{
-		Page: request.NewPageRequestFromHTTP(r),
-	}
+	req := NewQueryApprovalRequest()
+	req.Page = request.NewPageRequestFromHTTP(r)
+	return req
 }
