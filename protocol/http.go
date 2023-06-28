@@ -109,7 +109,6 @@ func (s *HTTPService) Start() {
 		}
 		s.l.Errorf("start service error, %s", err.Error())
 	}
-	return
 }
 
 // Stop 停止server
@@ -132,7 +131,7 @@ func (s *HTTPService) RegistryEndpoint() {
 	wss := s.r.RegisteredWebServices()
 	for i := range wss {
 		es := endpoint.TransferRoutesToEntry(wss[i].Routes())
-		entries = append(entries, es...)
+		entries = append(entries, endpoint.GetPRBACEntry(es)...)
 	}
 
 	req := endpoint.NewRegistryRequest(version.Short(), entries)
