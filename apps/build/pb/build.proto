@@ -15,7 +15,7 @@ message BuildConfigSet {
 message BuildConfig  {
     // 元信息
     // @gotags: bson:",inline" json:"meta"
-    infraboard.mcube.resource.Meta meta = 1;
+    mcube.resource.Meta meta = 1;
     // 创建信息
     // @gotags: bson:",inline" json:"spec"
     CreateBuildConfigRequest spec = 6;

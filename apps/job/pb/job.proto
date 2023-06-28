@@ -230,6 +230,12 @@ message RunParam {
 	// 是否是敏感信息, 比如密码之类的, 如果是，显示的时候需要做脱敏处理
 	// @gotags: bson:"is_sensitive" json:"is_sensitive"
 	bool is_sensitive = 13;
+	// 是否废弃
+	// @gotags: bson:"deprecate" json:"deprecate"
+	bool deprecate = 16;
+	// 废弃说明
+	// @gotags: bson:"deprecate_desc" json:"deprecate_desc"
+	string deprecate_desc = 17;
 
 	// 扩展属性
 	// @gotags: bson:"extensions" json:"extensions"
