@@ -3,7 +3,7 @@ syntax = "proto3";
 package infraboard.mpaas.job;
 option go_package = "github.com/infraboard/mpaas/apps/job";
 
-import "mcube/pb/resource/base.proto";
+import "mcube/pb/resource/visiable.proto";
 import "mcube/pb/resource/meta.proto";
 
 // 执行方式
@@ -127,7 +127,7 @@ message CreateJobRequest {
 	string display_name = 13;
 	// 是否是公开Job, 默认只能本空间内访问
 	// @gotags: bson:"visiable_mode" json:"visiable_mode"
-	mcube.resource.VISIABLE_MODE visiable_mode = 14;
+	mcube.resource.VISIABLE visiable_mode = 14;
 	// 描述
 	// @gotags: bson:"description" json:"description"
 	string description = 15;
