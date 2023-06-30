@@ -6,8 +6,8 @@ import (
 
 	"github.com/infraboard/mcenter/common/validate"
 	"github.com/infraboard/mcube/pb/resource"
+	"github.com/infraboard/mcube/tools/hash"
 	deploy "github.com/infraboard/mpaas/apps/deploy"
-	"github.com/infraboard/mpaas/common/hash"
 )
 
 func NewClusterSet() *ClusterSet {

@@ -25,7 +25,7 @@ type impl struct {
 	ioc.IocObjectImpl
 
 	mcenter *rpc.ClientSet
-	deploy  deploy.Service
+	deploy  deploy.RPCServer
 }
 
 func (i *impl) Init() error {

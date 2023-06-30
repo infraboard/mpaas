@@ -10,7 +10,7 @@ import (
 	"github.com/infraboard/mcube/http/request"
 	pb_request "github.com/infraboard/mcube/pb/request"
 	resource "github.com/infraboard/mcube/pb/resource"
-	"github.com/infraboard/mpaas/common/hash"
+	"github.com/infraboard/mcube/tools/hash"
 	"github.com/infraboard/mpaas/provider/k8s/workload"
 )
 
