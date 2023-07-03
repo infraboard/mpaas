@@ -82,7 +82,7 @@ func InjectPodSecretVolume(pod *v1.PodSpec, ss ...*v1.Secret) {
 	}
 }
 
-// 把secret注入到Pod中 挂载成卷使用
+// 把configmap注入到Pod中 挂载成卷使用
 func InjectPodConfigMapVolume(pod *v1.PodSpec, cs ...*v1.ConfigMap) {
 	vm := []MountVolume{}
 	// 注入volume 声明
