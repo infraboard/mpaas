@@ -8,6 +8,7 @@ import (
 	"github.com/infraboard/mpaas/apps/k8s"
 	"github.com/infraboard/mpaas/provider/k8s/workload"
 	v1 "k8s.io/api/batch/v1"
+	core_v1 "k8s.io/api/core/v1"
 )
 
 // 对系统变量进行处理
@@ -32,15 +33,23 @@ func (r *K8sRunner) handleDeployment(ctx context.Context, in *job.RunParamSet, j
 
 	switch dc.Spec.Type {
 	case deploy.TYPE_KUBERNETES:
-		// 容器部署需要注入的信息
-		descReq := k8s.NewDescribeClusterRequest(dc.Spec.K8STypeConfig.ClusterId)
-		c, err := r.cluster.DescribeCluster(ctx, descReq)
-		if err != nil {
-			return err
+
+		params := in.K8SJobRunnerParams()
+		var secret *core_v1.Secret
+		if params.KubeConfig != "" {
+			secret = params.KubeConfSecret(in.GetJobId(), "/.kube")
+		} else {
+			// 容器部署需要注入的信息
+			descReq := k8s.NewDescribeClusterRequest(dc.Spec.K8STypeConfig.ClusterId)
+			c, err := r.cluster.DescribeCluster(ctx, descReq)
+			if err != nil {
+				return err
+			}
+			// 如果没有则创建Secret 并挂载到/.kube, 注意secret要声明挂载注解
+			secret = c.KubeConfSecret("/.kube")
 		}
-		// 如果没有则创建Secret 并挂载到/.kube, 注意secret要声明挂载注解
-		secret := c.KubeConfSecret("/.kube")
-		secret.Namespace = in.K8SJobRunnerParams().Namespace
+
+		secret.Namespace = params.Namespace
 		err = r.k8sClient.Config().FindOrCreateSecret(ctx, secret)
 		if err != nil {
 			return err

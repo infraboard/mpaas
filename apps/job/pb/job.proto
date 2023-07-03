@@ -17,9 +17,12 @@ message K8sJobRunnerParams {
     // 集群Id
 	// @gotags: bson:"cluster_id" json:"cluster_id" param:"cluster_id"
     string cluster_id = 1;
+    // 默认使用cluster提供的集群凭证, 但是往往由于集群托管凭证权限过大, 也可以单独给自定义的凭证
+	// @gotags: bson:"kube_config" json:"kube_config" param:"kube_config"
+	string kube_config = 2;
     // Job运行的集群空间
 	// @gotags: bson:"namespace" json:"namespace" param:"namespace"
-	string namespace = 2;
+	string namespace = 3;
 }
 
 // JobSet 列表

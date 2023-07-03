@@ -16,6 +16,8 @@ const (
 	SYSTEM_VARIABLE_PIPELINE_TASK_ID = "_PIPELINE_TASK_ID"
 	// 任务运行的Job Task Id, 由Job 运行时创建, runner注入
 	SYSTEM_VARIABLE_JOB_TASK_ID = "_JOB_TASK_ID"
+	// 任务运行的Job Id, 由Job 运行时创建, runner注入
+	SYSTEM_VARIABLE_JOB_ID = "_JOB_ID"
 	// 用于Task内部使用Update Token 回写OUTPUT任务的输出信息
 	SYSTEM_VARIABLE_JOB_TASK_UPDATE_TOKEN = "_JOB_TASK_UPDATE_TOKEN"
 	// 部署工作负载类型

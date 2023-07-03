@@ -192,6 +192,15 @@ func (p *JobTask) SystemRunParam() (items []*job.RunParam) {
 		).SetReadOnly(true).SetRequired(true),
 	)
 
+	if p.Job != nil {
+		items = append(items,
+			job.NewRunParam(
+				job.SYSTEM_VARIABLE_JOB_ID,
+				p.Job.Meta.Id,
+			).SetReadOnly(true).SetRequired(true),
+		)
+	}
+
 	if p.Spec.PipelineTask != "" {
 		items = append(items,
 			job.NewRunParam(

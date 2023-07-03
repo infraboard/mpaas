@@ -11,6 +11,7 @@ import (
 	"github.com/imdario/mergo"
 	"github.com/infraboard/mcube/logger/zap"
 	"github.com/infraboard/mcube/pb/resource"
+	"github.com/infraboard/mpaas/provider/k8s/workload"
 	v1 "k8s.io/api/core/v1"
 )
 
@@ -168,6 +169,10 @@ func (r *RunParamSet) GetJobTaskId() string {
 	return r.GetParamValue(SYSTEM_VARIABLE_JOB_TASK_ID)
 }
 
+func (r *RunParamSet) GetJobId() string {
+	return r.GetParamValue(SYSTEM_VARIABLE_JOB_ID)
+}
+
 func (r *RunParamSet) GetPipelineTaskId() string {
 	return r.GetParamValue(SYSTEM_VARIABLE_PIPELINE_TASK_ID)
 }
@@ -260,6 +265,18 @@ func (r *RunParamSet) SearchLabels() map[string]string {
 
 func NewK8SJobRunnerParams() *K8SJobRunnerParams {
 	return &K8SJobRunnerParams{}
+}
+
+func (p *K8SJobRunnerParams) KubeConfSecret(name string, mountPath string) *v1.Secret {
+	secret := new(v1.Secret)
+	secret.Name = name
+	secret.StringData = map[string]string{
+		"config": p.KubeConfig,
+	}
+	secret.Annotations = map[string]string{
+		workload.ANNOTATION_SECRET_MOUNT: mountPath,
+	}
+	return secret
 }
 
 func NewRunParam(name, value string) *RunParam {

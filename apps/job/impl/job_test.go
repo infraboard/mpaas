@@ -50,6 +50,7 @@ func TestCreateBuildJob(t *testing.T) {
 	req.Name = "docker_build"
 	req.CreateBy = "test"
 	req.RunnerSpec = tools.MustReadContentFile("test/container_build.yml")
+	req.Description = "使用git拉取源代码, 然后使用kaniko完成应用容器镜像的构建与推送"
 
 	ins, err := impl.CreateJob(ctx, req)
 	if err != nil {
@@ -63,6 +64,7 @@ func TestCreateDeployJob(t *testing.T) {
 	req.Name = "docker_deploy"
 	req.CreateBy = "test"
 	req.RunnerSpec = tools.MustReadContentFile("test/container_deploy.yml")
+	req.Description = "通过kubectl 的set image命令来更新部署镜像的版本"
 
 	ins, err := impl.CreateJob(ctx, req)
 	if err != nil {
@@ -100,9 +102,9 @@ func TestUpdateDeployJob(t *testing.T) {
 		SearchLabel: true,
 	})
 	param.Add(&job.RunParam{
-		Required:    true,
+		Required:    false,
 		Name:        build.SYSTEM_VARIABLE_IMAGE_REPOSITORY,
-		NameDesc:    "应用部署的镜像仓库地址",
+		NameDesc:    "应用部署的镜像仓库地址, 默认沿用原有的镜像仓库地址",
 		Example:     "registry.cn-hangzhou.aliyuncs.com/infraboard/mcenter",
 		SearchLabel: true,
 	})
