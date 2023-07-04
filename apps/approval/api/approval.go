@@ -100,7 +100,6 @@ func (h *handler) Registry(ws *restful.WebService) {
 
 func (h *handler) CreateApproval(r *restful.Request, w *restful.Response) {
 	req := approval.NewCreateApprovalRequest()
-
 	if err := r.ReadEntity(req); err != nil {
 		response.Failed(w, err)
 		return
@@ -117,7 +116,6 @@ func (h *handler) CreateApproval(r *restful.Request, w *restful.Response) {
 
 func (h *handler) QueryApproval(r *restful.Request, w *restful.Response) {
 	req := approval.NewQueryApprovalRequestFromHTTP(r)
-
 	set, err := h.service.QueryApproval(r.Request.Context(), req)
 	if err != nil {
 		response.Failed(w, err)
