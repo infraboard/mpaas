@@ -13,7 +13,7 @@ import (
 )
 
 func init() {
-	ioc.RegistryApi(&JobTaskHandler{})
+	ioc.RegistryApi(&PipelineTaskHandler{})
 }
 
 type PipelineTaskHandler struct {
