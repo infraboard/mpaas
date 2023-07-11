@@ -44,6 +44,7 @@ func (i *impl) QueryBuildConfig(ctx context.Context, in *build.QueryBuildConfigR
 	*build.BuildConfigSet, error) {
 	r := newQueryRequest(in)
 	resp, err := i.col.Find(ctx, r.FindFilter(), r.FindOptions())
+	i.log.Debugf("query build filter: %s", r.FindFilter())
 
 	if err != nil {
 		return nil, exception.NewInternalServerError("find build error, error is %s", err)

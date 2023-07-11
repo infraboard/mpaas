@@ -8,10 +8,10 @@ import (
 )
 
 var (
-	impl *api.Handler
+	impl *api.JobTaskHandler
 )
 
 func init() {
 	tools.DevelopmentSetup()
-	impl = ioc.GetApi(task.AppName).(*api.Handler)
+	impl = ioc.GetApi(task.AppName).(*api.JobTaskHandler)
 }

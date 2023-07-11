@@ -13,30 +13,30 @@ import (
 )
 
 func init() {
-	ioc.RegistryApi(&Handler{})
+	ioc.RegistryApi(&JobTaskHandler{})
 }
 
-type Handler struct {
+type JobTaskHandler struct {
 	service task.Service
 	log     logger.Logger
 	ioc.IocObjectImpl
 }
 
-func (h *Handler) Init() error {
+func (h *JobTaskHandler) Init() error {
 	h.log = zap.L().Named(task.AppName)
 	h.service = ioc.GetController(task.AppName).(task.Service)
 	return nil
 }
 
-func (h *Handler) Name() string {
-	return task.AppName
+func (h *JobTaskHandler) Name() string {
+	return "job_tasks"
 }
 
-func (h *Handler) Version() string {
+func (h *JobTaskHandler) Version() string {
 	return "v1"
 }
 
-func (h *Handler) APIPrefix() string {
+func (h *JobTaskHandler) APIPrefix() string {
 	return fmt.Sprintf("%s/%s/%s",
 		conf.C().App.HTTPPrefix(),
 		h.Version(),
@@ -44,6 +44,6 @@ func (h *Handler) APIPrefix() string {
 	)
 }
 
-func (h *Handler) Registry(ws *restful.WebService) {
+func (h *JobTaskHandler) Registry(ws *restful.WebService) {
 	h.RegistryUserHandler(ws)
 }

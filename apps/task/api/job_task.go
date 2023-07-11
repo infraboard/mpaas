@@ -16,8 +16,8 @@ import (
 )
 
 // 用户自己手动管理任务状态相关接口
-func (h *Handler) RegistryUserHandler(ws *restful.WebService) {
-	tags := []string{"任务管理"}
+func (h *JobTaskHandler) RegistryUserHandler(ws *restful.WebService) {
+	tags := []string{"Job任务管理"}
 	ws.Route(ws.POST("/{id}/status").To(h.UpdateJobTaskStatus).
 		Doc("更新任务状态").
 		Metadata(restfulspec.KeyOpenAPITags, tags).
@@ -51,7 +51,7 @@ func (h *Handler) RegistryUserHandler(ws *restful.WebService) {
 		Writes(task.JobTaskStreamReponse{}))
 }
 
-func (h *Handler) UpdateJobTaskOutput(r *restful.Request, w *restful.Response) {
+func (h *JobTaskHandler) UpdateJobTaskOutput(r *restful.Request, w *restful.Response) {
 	req := task.NewUpdateJobTaskOutputRequest(r.PathParameter("id"))
 	if err := r.ReadEntity(req); err != nil {
 		response.Failed(w, err)
@@ -66,7 +66,7 @@ func (h *Handler) UpdateJobTaskOutput(r *restful.Request, w *restful.Response) {
 	response.Success(w, set)
 }
 
-func (h *Handler) UpdateJobTaskStatus(r *restful.Request, w *restful.Response) {
+func (h *JobTaskHandler) UpdateJobTaskStatus(r *restful.Request, w *restful.Response) {
 	req := task.NewUpdateJobTaskStatusRequest(r.PathParameter("id"))
 	if err := r.ReadEntity(req); err != nil {
 		response.Failed(w, err)
@@ -92,7 +92,7 @@ var (
 	}
 )
 
-func (h *Handler) JobTaskLog(r *restful.Request, w *restful.Response) {
+func (h *JobTaskHandler) JobTaskLog(r *restful.Request, w *restful.Response) {
 	ws, err := upgrader.Upgrade(w, r.Request, nil)
 	if err != nil {
 		response.Failed(w, err)
@@ -127,7 +127,7 @@ func (h *Handler) JobTaskLog(r *restful.Request, w *restful.Response) {
 	term.Success("ok")
 }
 
-func (h *Handler) JobTaskDebug(r *restful.Request, w *restful.Response) {
+func (h *JobTaskHandler) JobTaskDebug(r *restful.Request, w *restful.Response) {
 	ws, err := upgrader.Upgrade(w, r.Request, nil)
 	if err != nil {
 		response.Failed(w, err)
