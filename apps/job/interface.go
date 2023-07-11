@@ -107,11 +107,18 @@ func ParseUniqName(name string) (version, jobname, namespace, domain string) {
 	return
 }
 
-func NewDescribeJobRequest(name string) *DescribeJobRequest {
+func NewDescribeJobRequestByName(name string) *DescribeJobRequest {
 	by, v := ParseDescribeName(name)
 	return &DescribeJobRequest{
 		DescribeBy:    by,
 		DescribeValue: v,
+	}
+}
+
+func NewDescribeJobRequestById(id string) *DescribeJobRequest {
+	return &DescribeJobRequest{
+		DescribeBy:    DESCRIBE_BY_JOB_ID,
+		DescribeValue: id,
 	}
 }
 

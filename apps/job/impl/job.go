@@ -97,7 +97,7 @@ func (i *impl) DescribeJob(ctx context.Context, in *job.DescribeJobRequest) (
 
 func (i *impl) UpdateJob(ctx context.Context, in *job.UpdateJobRequest) (
 	*job.Job, error) {
-	ins, err := i.DescribeJob(ctx, job.NewDescribeJobRequest("#"+in.Id))
+	ins, err := i.DescribeJob(ctx, job.NewDescribeJobRequestByName("#"+in.Id))
 	if err != nil {
 		return nil, err
 	}
@@ -127,7 +127,7 @@ func (i *impl) UpdateJob(ctx context.Context, in *job.UpdateJobRequest) (
 
 func (i *impl) UpdateJobStatus(ctx context.Context, in *job.UpdateJobStatusRequest) (
 	*job.Job, error) {
-	ins, err := i.DescribeJob(ctx, job.NewDescribeJobRequest(in.Id))
+	ins, err := i.DescribeJob(ctx, job.NewDescribeJobRequestByName(in.Id))
 	if err != nil {
 		return nil, err
 	}
@@ -156,7 +156,7 @@ func (i *impl) UpdateJobStatus(ctx context.Context, in *job.UpdateJobStatusReque
 func (i *impl) DeleteJob(ctx context.Context, in *job.DeleteJobRequest) (
 	*job.Job, error) {
 	// 查询删除Job
-	ins, err := i.DescribeJob(ctx, job.NewDescribeJobRequest("#"+in.Id))
+	ins, err := i.DescribeJob(ctx, job.NewDescribeJobRequestByName("#"+in.Id))
 	if err != nil {
 		return nil, err
 	}

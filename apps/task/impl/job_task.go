@@ -40,7 +40,7 @@ func (i *impl) RunJob(ctx context.Context, in *pipeline.RunJobRequest) (
 	// 忽略执行
 	if in.Enabled() {
 		// 查询需要执行的Job
-		req := job.NewDescribeJobRequest(in.JobName)
+		req := job.NewDescribeJobRequestByName(in.JobName)
 
 		j, err := i.job.DescribeJob(ctx, req)
 		if err != nil {

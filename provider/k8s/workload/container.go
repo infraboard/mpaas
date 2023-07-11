@@ -116,8 +116,11 @@ func InjectContainerEnvVars(c *v1.Container, envs []v1.EnvVar) {
 	set := NewEnvVarSet(c.Env)
 	for _, env := range envs {
 		e := set.GetOrNewEnv(env.Name)
-		e.Value = env.Value
-		e.ValueFrom = nil
+		if env.ValueFrom != nil {
+			e.ValueFrom = env.ValueFrom
+		} else {
+			e.Value = env.Value
+		}
 	}
 	c.Env = set.EnvVars()
 }

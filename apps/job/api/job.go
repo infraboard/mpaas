@@ -99,7 +99,7 @@ func (h *handler) QueryJob(r *restful.Request, w *restful.Response) {
 }
 
 func (h *handler) DescribeJob(r *restful.Request, w *restful.Response) {
-	req := job.NewDescribeJobRequest(r.PathParameter("id"))
+	req := job.NewDescribeJobRequestById(r.PathParameter("id"))
 	ins, err := h.service.DescribeJob(r.Request.Context(), req)
 	if err != nil {
 		response.Failed(w, err)
