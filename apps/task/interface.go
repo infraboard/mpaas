@@ -6,7 +6,10 @@ import (
 	"strings"
 	"time"
 
+	"github.com/emicklei/go-restful/v3"
 	"github.com/gorilla/websocket"
+	"github.com/infraboard/mcenter/apps/policy"
+	"github.com/infraboard/mcenter/apps/token"
 	"github.com/infraboard/mcube/http/request"
 	"github.com/infraboard/mcube/tools/pretty"
 	job "github.com/infraboard/mpaas/apps/job"
@@ -72,6 +75,14 @@ func (r *JobTaskDebugRequest) WebTerminal() *terminal.WebSocketTerminal {
 func (r *JobTaskDebugRequest) SetWebTerminal(term *terminal.WebSocketTerminal) {
 	r.terminal = term
 	r.terminal.SetSize(r.Terminal)
+}
+
+func NewQueryTaskRequestFromHttp(r *restful.Request) *QueryJobTaskRequest {
+	req := NewQueryTaskRequest()
+	req.Page = request.NewPageRequestFromHTTP(r.Request)
+	req.Scope = token.GetTokenFromRequest(r).GenScope()
+	req.Filters = policy.GetScopeFilterFromRequest(r)
+	return req
 }
 
 func NewQueryTaskRequest() *QueryJobTaskRequest {
@@ -179,6 +190,14 @@ func NewQueryPipelineTaskRequest() *QueryPipelineTaskRequest {
 	return &QueryPipelineTaskRequest{
 		Page: request.NewDefaultPageRequest(),
 	}
+}
+
+func NewQueryPipelineTaskRequestFromHttp(r *restful.Request) *QueryPipelineTaskRequest {
+	req := NewQueryPipelineTaskRequest()
+	req.Page = request.NewPageRequestFromHTTP(r.Request)
+	req.Scope = token.GetTokenFromRequest(r).GenScope()
+	req.Filters = policy.GetScopeFilterFromRequest(r)
+	return req
 }
 
 func NewDeletePipelineTaskRequest(id string) *DeletePipelineTaskRequest {

@@ -3,6 +3,7 @@ package api
 import (
 	restfulspec "github.com/emicklei/go-restful-openapi/v2"
 	"github.com/emicklei/go-restful/v3"
+	"github.com/infraboard/mcenter/apps/token"
 	"github.com/infraboard/mcube/http/label"
 	"github.com/infraboard/mcube/http/restful/response"
 	"github.com/infraboard/mpaas/apps/pipeline"
@@ -48,7 +49,7 @@ func (h *PipelineTaskHandler) RegistryUserHandler(ws *restful.WebService) {
 }
 
 func (h *PipelineTaskHandler) QueryPipelineTask(r *restful.Request, w *restful.Response) {
-	req := task.NewQueryPipelineTaskRequest()
+	req := task.NewQueryPipelineTaskRequestFromHttp(r)
 	set, err := h.service.QueryPipelineTask(r.Request.Context(), req)
 	if err != nil {
 		response.Failed(w, err)
@@ -74,6 +75,7 @@ func (h *PipelineTaskHandler) RunPipeline(r *restful.Request, w *restful.Respons
 		return
 	}
 
+	req.UpdateFromToken(token.GetTokenFromRequest(r))
 	req.PipelineId = r.PathParameter("id")
 	set, err := h.service.RunPipeline(r.Request.Context(), req)
 	if err != nil {

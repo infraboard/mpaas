@@ -9,6 +9,7 @@ import (
 
 	"github.com/imdario/mergo"
 	"github.com/infraboard/mcenter/apps/notify"
+	"github.com/infraboard/mcenter/apps/token"
 	"github.com/infraboard/mcenter/common/validate"
 	"github.com/infraboard/mcube/http/request"
 	"github.com/infraboard/mcube/pb/resource"
@@ -146,6 +147,16 @@ func NewRunJobRequest(jobName string) *RunJobRequest {
 	}
 }
 
+func (r *RunJobRequest) UpdateFromToken(tk *token.Token) {
+	if tk == nil {
+		return
+	}
+
+	r.Domain = tk.Domain
+	r.Namespace = tk.Namespace
+	r.RunBy = tk.UserId
+}
+
 func (r *RunJobRequest) VersionName(version string) string {
 	if strings.Contains(r.JobName, job.UNIQ_VERSION_SPLITER) {
 		return r.JobName
@@ -239,6 +250,16 @@ func NewRunPipelineRequest(pipelineId string) *RunPipelineRequest {
 		RunParams:  []*job.RunParam{},
 		Labels:     make(map[string]string),
 	}
+}
+
+func (req *RunPipelineRequest) UpdateFromToken(tk *token.Token) {
+	if tk == nil {
+		return
+	}
+
+	req.Domain = tk.Domain
+	req.Namespace = tk.Namespace
+	req.RunBy = tk.UserId
 }
 
 func (req *RunPipelineRequest) AddRunParam(params ...*job.RunParam) {

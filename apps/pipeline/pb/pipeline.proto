@@ -103,6 +103,9 @@ message RunJobRequest {
     // 任务唯一ID, 如果不传，则由系统自动生成
 	// @gotags: bson:"_id" json:"task_id,omitempty"
     string task_id = 1;
+    // 任务是谁运行的
+	// @gotags: bson:"run_by" json:"run_by"
+    string run_by = 18;
     // 任务状态需要手动更新时的Token
 	// @gotags: bson:"token" json:"token"
     string update_token = 2;

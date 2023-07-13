@@ -9,6 +9,7 @@ import (
 	"github.com/emicklei/go-restful/v3"
 	"github.com/gorilla/websocket"
 	"github.com/infraboard/mcenter/apps/endpoint"
+	"github.com/infraboard/mcenter/apps/token"
 	"github.com/infraboard/mcenter/clients/rpc/middleware"
 	"github.com/infraboard/mcube/http/label"
 	"github.com/infraboard/mcube/http/restful/response"
@@ -24,7 +25,8 @@ var (
 // 用户自己手动管理任务状态相关接口
 func (h *JobTaskHandler) RegistryUserHandler(ws *restful.WebService) {
 	tags := []string{"Job任务管理"}
-	ws.Route(ws.GET("/").To(h.QueryJobTask).
+	ws.Route(ws.GET("/").
+		To(h.QueryJobTask).
 		Doc("查询JobTask运行任务列表").
 		Metadata(restfulspec.KeyOpenAPITags, tags).
 		Metadata(label.Resource, JOB_TASK_RESOURCE_NAME).
@@ -34,7 +36,8 @@ func (h *JobTaskHandler) RegistryUserHandler(ws *restful.WebService) {
 		Reads(task.QueryJobTaskRequest{}).
 		Writes(task.JobTaskSet{}))
 
-	ws.Route(ws.GET("/{id}").To(h.DescribeJobTask).
+	ws.Route(ws.GET("/{id}").
+		To(h.DescribeJobTask).
 		Doc("查询JobTask运行任务详情").
 		Metadata(restfulspec.KeyOpenAPITags, tags).
 		Metadata(label.Resource, JOB_TASK_RESOURCE_NAME).
@@ -44,7 +47,8 @@ func (h *JobTaskHandler) RegistryUserHandler(ws *restful.WebService) {
 		Reads(task.DescribeJobTaskRequest{}).
 		Writes(task.JobTask{}))
 
-	ws.Route(ws.GET("/{id}").To(h.RunJob).
+	ws.Route(ws.GET("/{id}").
+		To(h.RunJob).
 		Doc("运行JobTask").
 		Metadata(restfulspec.KeyOpenAPITags, tags).
 		Metadata(label.Resource, JOB_TASK_RESOURCE_NAME).
@@ -55,7 +59,8 @@ func (h *JobTaskHandler) RegistryUserHandler(ws *restful.WebService) {
 		Writes(task.JobTask{}))
 
 	// 通过Job自身的Token进行认证
-	ws.Route(ws.POST("/{id}/status").To(h.UpdateJobTaskStatus).
+	ws.Route(ws.POST("/{id}/status").
+		To(h.UpdateJobTaskStatus).
 		Doc("更新任务状态").
 		Metadata(restfulspec.KeyOpenAPITags, tags).
 		Metadata(label.Resource, JOB_TASK_RESOURCE_NAME).
@@ -64,7 +69,8 @@ func (h *JobTaskHandler) RegistryUserHandler(ws *restful.WebService) {
 		Writes(task.JobTask{}))
 
 	// 通过Job自身的Token进行认证
-	ws.Route(ws.POST("/{id}/output").To(h.UpdateJobTaskOutput).
+	ws.Route(ws.POST("/{id}/output").
+		To(h.UpdateJobTaskOutput).
 		Doc("更新任务输出").
 		Metadata(restfulspec.KeyOpenAPITags, tags).
 		Metadata(label.Resource, JOB_TASK_RESOURCE_NAME).
@@ -73,7 +79,8 @@ func (h *JobTaskHandler) RegistryUserHandler(ws *restful.WebService) {
 		Writes(task.JobTask{}))
 
 	// Socket内鉴权
-	ws.Route(ws.GET("/{id}/log").To(h.JobTaskLog).
+	ws.Route(ws.GET("/{id}/log").
+		To(h.JobTaskLog).
 		Doc("查询任务日志[WebSocket]").
 		Metadata(restfulspec.KeyOpenAPITags, tags).
 		Metadata(label.Resource, JOB_TASK_RESOURCE_NAME).
@@ -82,7 +89,8 @@ func (h *JobTaskHandler) RegistryUserHandler(ws *restful.WebService) {
 		Writes(task.JobTaskStreamReponse{}))
 
 	// Socket内鉴权
-	ws.Route(ws.GET("/{id}/debug").To(h.JobTaskDebug).
+	ws.Route(ws.GET("/{id}/debug").
+		To(h.JobTaskDebug).
 		Doc("任务在线Debug[WebSocket]").
 		Metadata(restfulspec.KeyOpenAPITags, tags).
 		Metadata(label.Resource, JOB_TASK_RESOURCE_NAME).
@@ -92,7 +100,7 @@ func (h *JobTaskHandler) RegistryUserHandler(ws *restful.WebService) {
 }
 
 func (h *JobTaskHandler) QueryJobTask(r *restful.Request, w *restful.Response) {
-	req := task.NewQueryTaskRequest()
+	req := task.NewQueryTaskRequestFromHttp(r)
 	set, err := h.service.QueryJobTask(r.Request.Context(), req)
 	if err != nil {
 		response.Failed(w, err)
@@ -118,13 +126,13 @@ func (h *JobTaskHandler) RunJob(r *restful.Request, w *restful.Response) {
 		return
 	}
 
+	req.UpdateFromToken(token.GetTokenFromRequest(r))
 	req.JobName = fmt.Sprintf("#%s", r.PathParameter("id"))
 	set, err := h.service.RunJob(r.Request.Context(), req)
 	if err != nil {
 		response.Failed(w, err)
 		return
 	}
-
 	response.Success(w, set)
 }
 
