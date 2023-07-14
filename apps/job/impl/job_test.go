@@ -80,15 +80,16 @@ func TestUpdateDeployJob(t *testing.T) {
 	param := job.NewRunParamSet()
 	param.Add(&job.RunParam{
 		Required:    true,
-		Name:        "cluster_id",
-		NameDesc:    "job运行时的k8s集群",
-		Value:       "k8s-test",
-		SearchLabel: true,
+		Name:        "kube_config",
+		NameDesc:    "用于运行k8s job的访问配置",
+		Value:       tools.MustReadContentFile("test/kube_config.yml"),
+		IsSensitive: true,
+		SearchLabel: false,
 	})
 	param.Add(&job.RunParam{
 		Required:    true,
 		Name:        "namespace",
-		NameDesc:    "job运行时的namespace",
+		NameDesc:    "k8s job运行时的namespace",
 		Value:       "default",
 		SearchLabel: true,
 	})
@@ -131,10 +132,11 @@ func TestUpdateBuildJob(t *testing.T) {
 	param := job.NewRunParamSet()
 	param.Add(&job.RunParam{
 		Required:    true,
-		Name:        "cluster_id",
-		NameDesc:    "job运行时的k8s集群",
-		Value:       "k8s-test",
-		SearchLabel: true,
+		Name:        "kube_config",
+		NameDesc:    "用于运行k8s job的访问配置",
+		Value:       tools.MustReadContentFile("test/kube_config.yml"),
+		IsSensitive: true,
+		SearchLabel: false,
 	})
 	param.Add(&job.RunParam{
 		Required:    true,

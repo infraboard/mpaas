@@ -11,6 +11,7 @@ import (
 	"github.com/imdario/mergo"
 	"github.com/infraboard/mcube/logger/zap"
 	"github.com/infraboard/mcube/pb/resource"
+	"github.com/infraboard/mcube/tools/sense"
 	"github.com/infraboard/mpaas/provider/k8s/workload"
 	v1 "k8s.io/api/core/v1"
 )
@@ -52,6 +53,12 @@ func (s *JobSet) Add(item *Job) {
 	s.Items = append(s.Items, item)
 }
 
+func (s *JobSet) Dense() {
+	for i := range s.Items {
+		s.Items[i].Dense()
+	}
+}
+
 func NewDefaultJob() *Job {
 	return &Job{
 		Spec: NewCreateJobRequest(),
@@ -86,9 +93,30 @@ func (i *Job) CheckAllowDelete() error {
 	return nil
 }
 
+func (i *Job) Dense() {
+	if i.Spec == nil {
+		return
+	}
+
+	if i.Spec.RunParam != nil {
+		i.Spec.RunParam.Densense()
+	}
+
+	if i.Spec.RollbackParam != nil {
+		i.Spec.RollbackParam.Densense()
+	}
+}
+
 func NewRunParamSet() *RunParamSet {
 	return &RunParamSet{
 		Params: []*RunParam{},
+	}
+}
+
+// 参数脱敏, 注意 不能在运行过程中脱敏, 仅仅在需要显示时，调用该方法
+func (r *RunParamSet) Densense() {
+	for i := range r.Params {
+		r.Params[i].Desense()
 	}
 }
 
@@ -338,6 +366,14 @@ func (p *RunParam) IsEdit() bool {
 // 设置ReadOnly
 func (p *RunParam) SetReadOnly(v bool) *RunParam {
 	p.ReadOnly = v
+	return p
+}
+
+// 值脱敏
+func (p *RunParam) Desense() *RunParam {
+	if p.IsSensitive {
+		p.Value = sense.DeSense(p.Value)
+	}
 	return p
 }
 
