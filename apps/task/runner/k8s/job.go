@@ -3,9 +3,11 @@ package k8s
 import (
 	"context"
 
-	"github.com/infraboard/mpaas/apps/k8s"
+	"github.com/infraboard/mpaas/apps/job"
+	cluster "github.com/infraboard/mpaas/apps/k8s"
 	"github.com/infraboard/mpaas/apps/task"
 	"github.com/infraboard/mpaas/common/format"
+	"github.com/infraboard/mpaas/provider/k8s"
 	"github.com/infraboard/mpaas/provider/k8s/workload"
 	v1 "k8s.io/api/batch/v1"
 	"sigs.k8s.io/yaml"
@@ -14,19 +16,14 @@ import (
 func (r *K8sRunner) Run(ctx context.Context, in *task.RunTaskRequest) (
 	*task.JobTaskStatus, error) {
 
+	// 获取k8s集群参数
 	runnerParams := in.Params.K8SJobRunnerParams()
-	cReq := k8s.NewDescribeClusterRequest(runnerParams.ClusterId)
-	c, err := r.cluster.DescribeCluster(ctx, cReq)
+	k8sClient, err := r.GetK8sClient(ctx, runnerParams)
 	if err != nil {
 		return nil, err
 	}
-	k8sClient, err := c.Client()
-	if err != nil {
-		return nil, err
-	}
-	r.k8sClient = k8sClient
-	r.log.Infof("get k8s cluster ok, %s [%s]", c.Spec.Name, c.Meta.Id)
 
+	// 获取Job定义
 	obj := new(v1.Job)
 	jobYamlSpec := in.RenderJobSpec()
 	r.log.Debugf("job rendered yaml spec: %s", jobYamlSpec)
@@ -35,7 +32,8 @@ func (r *K8sRunner) Run(ctx context.Context, in *task.RunTaskRequest) (
 	}
 
 	// 处理系统变量
-	if err := r.HanleSystemVariable(ctx, in.Params, obj); err != nil {
+	hr := NewHanleSystemVariableRequest(k8sClient, in.Params, obj)
+	if err := r.HanleSystemVariable(ctx, hr); err != nil {
 		return nil, err
 	}
 
@@ -68,4 +66,18 @@ func (r *K8sRunner) Run(ctx context.Context, in *task.RunTaskRequest) (
 	}
 	status.Detail = string(objYaml)
 	return status, nil
+}
+
+func (r *K8sRunner) GetK8sClient(ctx context.Context, req *job.K8SJobRunnerParams) (*k8s.Client, error) {
+	if req.KubeConfig != "" {
+		return req.Client()
+	}
+
+	cReq := cluster.NewDescribeClusterRequest(req.ClusterId)
+	c, err := r.cluster.DescribeCluster(ctx, cReq)
+	if err != nil {
+		return nil, err
+	}
+	r.log.Infof("get k8s cluster ok, %s [%s]", c.Spec.Name, c.Meta.Id)
+	return c.Client()
 }

@@ -12,6 +12,7 @@ import (
 	"github.com/infraboard/mcube/logger/zap"
 	"github.com/infraboard/mcube/pb/resource"
 	"github.com/infraboard/mcube/tools/sense"
+	"github.com/infraboard/mpaas/provider/k8s"
 	"github.com/infraboard/mpaas/provider/k8s/workload"
 	v1 "k8s.io/api/core/v1"
 )
@@ -305,6 +306,13 @@ func (p *K8SJobRunnerParams) KubeConfSecret(name string, mountPath string) *v1.S
 		workload.ANNOTATION_SECRET_MOUNT: mountPath,
 	}
 	return secret
+}
+
+func (p *K8SJobRunnerParams) Client() (*k8s.Client, error) {
+	if p.KubeConfig == "" {
+		return nil, fmt.Errorf("kube config not config")
+	}
+	return k8s.NewClient(p.KubeConfig)
 }
 
 func NewRunParam(name, value string) *RunParam {

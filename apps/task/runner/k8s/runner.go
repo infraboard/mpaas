@@ -9,7 +9,6 @@ import (
 	cluster "github.com/infraboard/mpaas/apps/k8s"
 	"github.com/infraboard/mpaas/apps/task"
 	"github.com/infraboard/mpaas/apps/task/runner"
-	"github.com/infraboard/mpaas/provider/k8s"
 )
 
 type K8sRunner struct {
@@ -17,8 +16,6 @@ type K8sRunner struct {
 	deploy  deploy.Service
 	task    task.PipelineService
 	log     logger.Logger
-
-	k8sClient *k8s.Client
 }
 
 func (r *K8sRunner) Init() error {
