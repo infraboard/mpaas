@@ -53,9 +53,9 @@ func (s *JobSet) Add(item *Job) {
 	s.Items = append(s.Items, item)
 }
 
-func (s *JobSet) Dense() {
+func (s *JobSet) Desense() {
 	for i := range s.Items {
-		s.Items[i].Dense()
+		s.Items[i].Desense()
 	}
 }
 
@@ -93,7 +93,7 @@ func (i *Job) CheckAllowDelete() error {
 	return nil
 }
 
-func (i *Job) Dense() {
+func (i *Job) Desense() {
 	if i.Spec == nil {
 		return
 	}
