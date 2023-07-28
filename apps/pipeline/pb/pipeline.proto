@@ -6,6 +6,7 @@ option go_package = "github.com/infraboard/mpaas/apps/pipeline";
 import "mcube/pb/resource/meta.proto";
 import "mpaas/apps/job/pb/job.proto";
 import "mcenter/apps/notify/pb/notify.proto";
+import "mcube/pb/resource/visiable.proto";
 
 message PipelineSet {
 	// 总数量
@@ -54,6 +55,9 @@ message CreatePipelineRequest {
 	// 是否是模版, 用于快速继承模版参数进行修改, 模版不能用于执行
 	// @gotags: bson:"is_template" json:"is_template"
 	bool is_template = 8;
+	// 是否是公开Job, 默认只能本空间内访问
+	// @gotags: bson:"visiable_mode" json:"visiable_mode"
+	mcube.resource.VISIABLE visiable_mode = 16;
 	// 运行时 全局参数, 会传递给每个stage的每个Task
 	// @gotags: bson:"with" json:"with"
 	repeated job.RunParam with = 9;

@@ -3,6 +3,7 @@ package impl
 import (
 	"context"
 
+	"github.com/infraboard/mcenter/apps/service"
 	"github.com/infraboard/mcube/exception"
 	"github.com/infraboard/mpaas/apps/build"
 	"github.com/infraboard/mpaas/apps/job"
@@ -18,6 +19,16 @@ func (i *impl) HandleEvent(ctx context.Context, in *trigger.Event) (
 	}
 
 	ins := trigger.NewRecord(in)
+
+	// 查询服务相关信息
+	svc, err := i.mcenter.Service().DescribeService(
+		ctx,
+		service.NewDescribeServiceRequest(in.Token),
+	)
+	if err != nil {
+		return nil, exception.NewBadRequest("查询服务%s异常, %s", in.Token, err)
+	}
+	ins.Event.ServiceInfo = svc.Desense().ToJSON()
 
 	// 获取该服务对应事件的触发配置
 	req := build.NewQueryBuildConfigRequest()

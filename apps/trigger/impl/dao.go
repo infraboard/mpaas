@@ -22,12 +22,11 @@ func (r *queryRequest) FindOptions() *options.FindOptions {
 
 	opt := &options.FindOptions{
 		Sort: bson.D{
-			{Key: "create_at", Value: -1},
+			{Key: "time", Value: -1},
 		},
 		Limit: &pageSize,
 		Skip:  &skip,
 	}
-
 	return opt
 }
 

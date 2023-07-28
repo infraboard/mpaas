@@ -6,6 +6,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/infraboard/mcenter/apps/token"
 	"github.com/infraboard/mcube/pb/resource"
 	"github.com/infraboard/mpaas/apps/approval/impl/notify"
 	job "github.com/infraboard/mpaas/apps/job"
@@ -22,6 +23,12 @@ func New(req *CreateApprovalRequest) (*Approval, error) {
 		Spec:   req,
 		Status: NewStatus(),
 	}, nil
+}
+
+func (req *CreateApprovalRequest) UpdateFromToken(tk *token.Token) {
+	req.Domain = tk.Domain
+	req.Namespace = tk.Namespace
+	req.CreateBy = tk.UserId
 }
 
 func (req *CreateApprovalRequest) AddOperator(userIds ...string) {

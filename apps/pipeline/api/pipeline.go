@@ -81,6 +81,7 @@ func (h *handler) CreatePipeline(r *restful.Request, w *restful.Response) {
 		return
 	}
 
+	req.UpdateFromToken(token.GetTokenFromRequest(r))
 	ins, err := h.service.CreatePipeline(r.Request.Context(), req)
 	if err != nil {
 		response.Failed(w, err)
@@ -91,7 +92,7 @@ func (h *handler) CreatePipeline(r *restful.Request, w *restful.Response) {
 }
 
 func (h *handler) QueryPipeline(r *restful.Request, w *restful.Response) {
-	req := pipeline.NewQueryPipelineRequestFromHTTP(r.Request)
+	req := pipeline.NewQueryPipelineRequestFromHTTP(r)
 
 	set, err := h.service.QueryPipeline(r.Request.Context(), req)
 	if err != nil {

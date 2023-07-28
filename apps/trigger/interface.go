@@ -3,7 +3,9 @@ package trigger
 import (
 	context "context"
 	"fmt"
+	"net/http"
 	"strings"
+	"time"
 
 	"github.com/infraboard/mcube/http/request"
 	"github.com/infraboard/mpaas/apps/build"
@@ -70,6 +72,7 @@ func (e *GitlabWebHookEvent) GetLatestCommitShortId() string {
 func NewGitlabEvent(raw string) *Event {
 	return &Event{
 		Provider: EVENT_PROVIDER_GITLAB,
+		Time:     time.Now().UnixMilli(),
 		Raw:      raw,
 	}
 }
@@ -77,6 +80,12 @@ func NewGitlabEvent(raw string) *Event {
 func NewBuildStatus(bc *build.BuildConfig) *BuildStatus {
 	return &BuildStatus{
 		BuildConfig: bc,
+	}
+}
+
+func NewQueryRecordRequestFromHTTP(r *http.Request) *QueryRecordRequest {
+	return &QueryRecordRequest{
+		Page: request.NewPageRequestFromHTTP(r),
 	}
 }
 

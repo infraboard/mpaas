@@ -234,6 +234,13 @@ func (e *Record) AddBuildStatus(bs *BuildStatus) {
 	e.BuildStatus = append(e.BuildStatus, bs)
 }
 
+func (i *Record) MarshalJSON() ([]byte, error) {
+	return json.Marshal(struct {
+		*Event
+		BuildStatus []*BuildStatus `json:"build_status"`
+	}{i.Event, i.BuildStatus})
+}
+
 func NewDefaultRecord() *Record {
 	return NewRecord(&Event{})
 }

@@ -3,7 +3,6 @@ package pipeline
 import (
 	"encoding/json"
 	"fmt"
-	"net/http"
 	"strings"
 	"time"
 
@@ -11,7 +10,6 @@ import (
 	"github.com/infraboard/mcenter/apps/notify"
 	"github.com/infraboard/mcenter/apps/token"
 	"github.com/infraboard/mcenter/common/validate"
-	"github.com/infraboard/mcube/http/request"
 	"github.com/infraboard/mcube/pb/resource"
 	job "github.com/infraboard/mpaas/apps/job"
 	"github.com/infraboard/mpaas/common/format"
@@ -114,6 +112,12 @@ func NewCreatePipelineRequest() *CreatePipelineRequest {
 		MentionUsers: []*MentionUser{},
 		Labels:       map[string]string{},
 	}
+}
+
+func (req *CreatePipelineRequest) UpdateFromToken(tk *token.Token) {
+	req.Domain = tk.Domain
+	req.Namespace = tk.Namespace
+	req.CreateBy = tk.UserId
 }
 
 func (req *CreatePipelineRequest) ToYAML() string {
@@ -230,26 +234,6 @@ func (r *RunJobRequest) GetJobShortName() string {
 	}
 
 	return r.JobName
-}
-
-func NewQueryPipelineRequestFromHTTP(r *http.Request) *QueryPipelineRequest {
-	return &QueryPipelineRequest{
-		Page: request.NewPageRequestFromHTTP(r),
-	}
-}
-
-func NewQueryPipelineRequest() *QueryPipelineRequest {
-	return &QueryPipelineRequest{
-		Page: request.NewDefaultPageRequest(),
-	}
-}
-
-func NewRunPipelineRequest(pipelineId string) *RunPipelineRequest {
-	return &RunPipelineRequest{
-		PipelineId: pipelineId,
-		RunParams:  []*job.RunParam{},
-		Labels:     make(map[string]string),
-	}
 }
 
 func (req *RunPipelineRequest) UpdateFromToken(tk *token.Token) {

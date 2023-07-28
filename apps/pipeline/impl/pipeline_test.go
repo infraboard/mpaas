@@ -3,6 +3,7 @@ package impl_test
 import (
 	"testing"
 
+	"github.com/infraboard/mcube/pb/resource"
 	"github.com/infraboard/mpaas/apps/job"
 	"github.com/infraboard/mpaas/apps/pipeline"
 	"github.com/infraboard/mpaas/test/conf"
@@ -40,6 +41,7 @@ func TestDescribePipeline(t *testing.T) {
 func TestUpdateTestPipeline(t *testing.T) {
 	req := pipeline.NewPutPipelineRequest(conf.C.CICD_PIPELINE_ID)
 	tools.MustReadYamlFile("test/image_build_deploy.yml", req.Spec)
+	req.Spec.VisiableMode = resource.VISIABLE_GLOBAL
 	ins, err := impl.UpdatePipeline(ctx, req)
 	if err != nil {
 		t.Fatal(err)

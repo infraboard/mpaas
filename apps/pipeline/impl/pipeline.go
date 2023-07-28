@@ -28,7 +28,9 @@ func (i *impl) CreatePipeline(ctx context.Context, in *pipeline.CreatePipelineRe
 func (i *impl) QueryPipeline(ctx context.Context, in *pipeline.QueryPipelineRequest) (
 	*pipeline.PipelineSet, error) {
 	r := newQueryRequest(in)
-	resp, err := i.col.Find(ctx, r.FindFilter(), r.FindOptions())
+	filter := r.FindFilter()
+	i.log.Debugf("find filter: %v", filter)
+	resp, err := i.col.Find(ctx, filter, r.FindOptions())
 
 	if err != nil {
 		return nil, exception.NewInternalServerError("find pipeline error, error is %s", err)

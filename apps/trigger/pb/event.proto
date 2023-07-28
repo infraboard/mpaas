@@ -56,6 +56,9 @@ message Event {
     // 事件来源, 对于gitlab而言有 发送事件的gitlab服务地址, 比如 "https://gitlab.com"
     // @gotags: bson:"from" json:"from"
     string from = 4;
+    // 事件时间
+    // @gotags: bson:"time" json:"time"
+    int64 time = 12;
     // 发送者的user agent信息, 比如 "GitLab/15.5.0-pre"
     // @gotags: bson:"user_agent" json:"user_agent"
     string user_agent = 5;
@@ -75,6 +78,9 @@ message Event {
     // 事件Token, 一般固定为 服务Id
     // @gotags: json:"token" bson:"token"
     string token = 9;
+    // 服务相关信息
+    // @gotags: bson:"service_info" json:"service_info"
+    string service_info = 13;
     // 事件原始数据
     // @gotags: json:"raw" bson:"raw"
     string raw = 10;

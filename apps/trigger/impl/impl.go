@@ -8,6 +8,7 @@ import (
 	"github.com/infraboard/mcube/logger/zap"
 	"google.golang.org/grpc"
 
+	"github.com/infraboard/mcenter/clients/rpc"
 	"github.com/infraboard/mpaas/apps/build"
 	"github.com/infraboard/mpaas/apps/task"
 	"github.com/infraboard/mpaas/apps/trigger"
@@ -28,6 +29,8 @@ type impl struct {
 	build build.Service
 	// 执行流水线
 	task task.PipelineService
+	// mcenter客户端
+	mcenter *rpc.ClientSet
 }
 
 func (i *impl) Init() error {
@@ -37,8 +40,10 @@ func (i *impl) Init() error {
 	}
 	i.col = db.Collection(i.Name())
 	i.log = zap.L().Named(i.Name())
+
 	i.build = ioc.GetController(build.AppName).(build.Service)
 	i.task = ioc.GetController(task.AppName).(task.Service)
+	i.mcenter = rpc.C()
 	return nil
 }
 

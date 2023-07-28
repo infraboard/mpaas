@@ -3,6 +3,7 @@ package impl
 import (
 	"github.com/infraboard/mcenter/apps/policy"
 	"github.com/infraboard/mcenter/apps/token"
+	"github.com/infraboard/mcube/pb/resource"
 	"github.com/infraboard/mpaas/apps/pipeline"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo/options"
@@ -41,6 +42,13 @@ func (r *queryRequest) FindFilter() bson.M {
 	if len(r.Ids) > 0 {
 		filter["_id"] = bson.M{"$in": r.Ids}
 	}
+	if r.IsTemplate != nil {
+		filter["is_template"] = *r.IsTemplate
+	}
 
-	return filter
+	return bson.M{"$or": bson.A{
+		filter,
+		bson.M{"visiable_mode": resource.VISIABLE_GLOBAL},
+		bson.M{"visiable_mode": resource.VISIABLE_DOMAIN, "domain": r.Scope.Domain},
+	}}
 }

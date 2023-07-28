@@ -53,6 +53,13 @@ func (h *Handler) APIPrefix() string {
 func (h *Handler) Registry(ws *restful.WebService) {
 	tags := []string{"事件处理"}
 
+	ws.Route(ws.GET("records").To(h.QueryRecord).
+		Doc("查询触发记录").
+		Metadata(restfulspec.KeyOpenAPITags, tags).
+		Metadata(label.Resource, "trigger_records").
+		Metadata(label.Action, label.List.Value()).
+		Metadata(label.Auth, label.Enable).
+		Metadata(label.Permission, label.Enable))
 	ws.Route(ws.POST("gitlab").To(h.HandleGitlabEvent).
 		Doc("处理Gitlab Webhook事件").
 		Metadata(restfulspec.KeyOpenAPITags, tags).

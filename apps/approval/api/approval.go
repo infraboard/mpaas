@@ -3,6 +3,7 @@ package api
 import (
 	restfulspec "github.com/emicklei/go-restful-openapi/v2"
 	"github.com/emicklei/go-restful/v3"
+	"github.com/infraboard/mcenter/apps/token"
 	"github.com/infraboard/mcube/http/label"
 	"github.com/infraboard/mcube/ioc"
 	"github.com/infraboard/mcube/logger"
@@ -105,6 +106,7 @@ func (h *handler) CreateApproval(r *restful.Request, w *restful.Response) {
 		return
 	}
 
+	req.UpdateFromToken(token.GetTokenFromRequest(r))
 	ins, err := h.service.CreateApproval(r.Request.Context(), req)
 	if err != nil {
 		response.Failed(w, err)

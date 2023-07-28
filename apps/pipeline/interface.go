@@ -4,8 +4,13 @@ import (
 	"fmt"
 	"time"
 
+	"github.com/emicklei/go-restful/v3"
+	"github.com/infraboard/mcenter/apps/policy"
+	"github.com/infraboard/mcenter/apps/token"
 	"github.com/infraboard/mcenter/common/validate"
+	"github.com/infraboard/mcube/http/request"
 	pb_request "github.com/infraboard/mcube/pb/request"
+	job "github.com/infraboard/mpaas/apps/job"
 )
 
 const (
@@ -62,5 +67,35 @@ func (req *CreatePipelineRequest) AddLabel(key, value string) {
 func NewDeletePipelineRequest(id string) *DeletePipelineRequest {
 	return &DeletePipelineRequest{
 		Id: id,
+	}
+}
+
+func NewQueryPipelineRequestFromHTTP(r *restful.Request) *QueryPipelineRequest {
+	req := NewQueryPipelineRequest()
+	req.Page = request.NewPageRequestFromHTTP(r.Request)
+	req.Scope = token.GetTokenFromRequest(r).GenScope()
+	req.Filters = policy.GetScopeFilterFromRequest(r)
+	isTemp := r.QueryParameter("is_template")
+	if isTemp != "" {
+		req.SetIsTemplate(isTemp == "true")
+	}
+	return req
+}
+
+func NewQueryPipelineRequest() *QueryPipelineRequest {
+	return &QueryPipelineRequest{
+		Page: request.NewDefaultPageRequest(),
+	}
+}
+
+func (r *QueryPipelineRequest) SetIsTemplate(v bool) {
+	r.IsTemplate = &v
+}
+
+func NewRunPipelineRequest(pipelineId string) *RunPipelineRequest {
+	return &RunPipelineRequest{
+		PipelineId: pipelineId,
+		RunParams:  []*job.RunParam{},
+		Labels:     make(map[string]string),
 	}
 }
