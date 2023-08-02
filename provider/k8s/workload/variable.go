@@ -41,8 +41,9 @@ func (w *WorkLoad) SystemVaraible(serviceName string) *SystemVaraible {
 	return m
 }
 
-func (w *WorkLoad) GetServiceContainerVersion(serviceName string) string {
-	c := w.GetServiceContainer(serviceName)
+// 获取主容器的镜像版本
+func (w *WorkLoad) GetMainContainerVersion() string {
+	c := w.GetMainContainer()
 	if c != nil && c.Image != "" {
 		image := strings.Split(c.Image, ":")
 		count := len(image)
@@ -68,6 +69,15 @@ func (w *WorkLoad) GetServiceContainer(serviceName string) *v1.Container {
 		container = GetContainerFromPodTemplate(w.Job.Spec.Template, serviceName)
 	}
 	return container
+}
+
+// 约定第一个容器为主容器, 其他容器为辅助容器
+func (w *WorkLoad) GetMainContainer() *v1.Container {
+	spec := w.GetPodTemplateSpec()
+	if len(spec.Spec.Containers) == 0 {
+		return nil
+	}
+	return &spec.Spec.Containers[0]
 }
 
 func (w *WorkLoad) GetObjectMeta() *metav1.ObjectMeta {

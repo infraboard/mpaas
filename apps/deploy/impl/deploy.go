@@ -90,14 +90,21 @@ func (i *impl) validate(ctx context.Context, in *deploy.CreateDeploymentRequest)
 
 	// 获取部署名称
 	in.Name = wl.GetObjectMeta().Name
-	// 从镜像中获取部署的版本信息
-	in.ServiceVersion = wl.GetServiceContainerVersion(in.ServiceName)
-
 	// 检查主容器是否存在
-	serviceContainer := wl.GetServiceContainer(in.ServiceName)
+	serviceContainer := wl.GetMainContainer()
 	if serviceContainer == nil {
-		return fmt.Errorf("部署配置必须包含一个服务名称同名的容器 作为主容器")
+		return fmt.Errorf("无主容器[第一个容器]配置")
 	}
+	// 检查主容器名称
+	if serviceContainer.Name == in.ServiceName {
+		return fmt.Errorf("主容器[第一个容器]名称(%s)与服务名称(%s)不相同, 请修改主容器名称为服务名称",
+			serviceContainer.Name,
+			in.ServiceName,
+		)
+	}
+
+	// 从镜像中获取部署的版本信息
+	in.ServiceVersion = wl.GetMainContainerVersion()
 	return nil
 }
 
@@ -345,7 +352,7 @@ func (i *impl) UpdateK8sDeployStatus(ctx context.Context, ins *deploy.Deployment
 			return err
 		}
 		// 从镜像中获取部署的版本信息
-		ins.Spec.ServiceVersion = wl.GetServiceContainerVersion(ins.Spec.ServiceName)
+		ins.Spec.ServiceVersion = wl.GetMainContainerVersion()
 		// 更新部署状态
 		ins.Status.UpdateK8sWorkloadStatus(wl.Status())
 	}
