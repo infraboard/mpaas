@@ -172,6 +172,7 @@ func (i *impl) PipelineTaskStatusChanged(ctx context.Context, in *task.JobTask) 
 		}
 	case task.STAGE_SUCCEEDED:
 		// 任务运行成功, pipeline继续执行
+		i.log.Infof("task: %s run successed", in.Spec.TaskId)
 	}
 
 	// task执行成功或者忽略执行失败, 此时pipeline 仍然处于运行中, 需要获取下一个任务执行

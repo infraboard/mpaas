@@ -91,9 +91,6 @@ message CreateJobRequest {
 	// 执行器定义, 比如 k8s job 定义
 	// @gotags: bson:"runner_spec" json:"runner_spec"
 	string runner_spec = 2;
-	// Job 的Readme说明文档, 支持Markdown格式
-	// @gotags: bson:"readme" json:"readme"
-	string readme = 3;
 	// 手动更新Job的状态, 默认由job runner的operator更新
 	// @gotags: bson:"manual_update_status" json:"manual_update_status"
 	bool manual_update_status = 4;
@@ -131,9 +128,12 @@ message CreateJobRequest {
 	// 是否是公开Job, 默认只能本空间内访问
 	// @gotags: bson:"visiable_mode" json:"visiable_mode"
 	mcube.resource.VISIABLE visiable_mode = 14;
-	// 描述
+	// 描述, Job功能概述
 	// @gotags: bson:"description" json:"description"
 	string description = 15;
+	// Job 的Readme说明文档, 支持Markdown格式
+	// @gotags: bson:"readme" json:"readme"
+	string readme = 3;
 	// 标签
 	// @gotags: bson:"labels" json:"labels"
 	map<string, string> labels = 24;
