@@ -2,7 +2,6 @@ package api_test
 
 import (
 	"github.com/infraboard/mcube/ioc"
-	"github.com/infraboard/mpaas/apps/task"
 	"github.com/infraboard/mpaas/apps/task/api"
 	"github.com/infraboard/mpaas/test/tools"
 )
@@ -13,5 +12,5 @@ var (
 
 func init() {
 	tools.DevelopmentSetup()
-	impl = ioc.GetApi(task.AppName).(*api.JobTaskHandler)
+	impl = ioc.GetApi("job_tasks").(*api.JobTaskHandler)
 }

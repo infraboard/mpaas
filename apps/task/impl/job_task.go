@@ -7,6 +7,7 @@ import (
 	"time"
 
 	"github.com/infraboard/mcube/exception"
+	"github.com/infraboard/mcube/logger/zap"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
@@ -367,6 +368,8 @@ func (i *impl) CleanTaskResource(ctx context.Context, in *task.JobTask) error {
 
 // 查询Task日志
 func (i *impl) WatchJobTaskLog(in *task.WatchJobTaskLogRequest, stream task.JobRPC_WatchJobTaskLogServer) error {
+	writer := NewWatchJobTaskLogServerWriter(stream)
+	writer.WriteMessagef("正在查询Task[%s]的日志 请稍等...", in.TaskId)
 	// 查询Task信息
 	t, err := i.DescribeJobTask(stream.Context(), task.NewDescribeJobTaskRequest(in.TaskId))
 	if err != nil {
@@ -410,7 +413,7 @@ func (i *impl) WatchJobTaskLog(in *task.WatchJobTaskLogRequest, stream task.JobR
 		defer r.Close()
 
 		// copy日志流
-		_, err = io.Copy(NewWatchJobTaskLogServerWriter(stream), r)
+		_, err = io.Copy(writer, r)
 		return err
 	}
 
@@ -502,4 +505,11 @@ func (w *WatchJobTaskLogServerWriter) Write(p []byte) (n int, err error) {
 	}
 	w.buf.ReSet()
 	return len(p), nil
+}
+
+func (w *WatchJobTaskLogServerWriter) WriteMessagef(format string, a ...any) {
+	_, err := w.Write([]byte(fmt.Sprintf(format+"\n", a...)))
+	if err != nil {
+		zap.L().Errorf("write message error, %s", err)
+	}
 }

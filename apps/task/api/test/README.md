@@ -4,5 +4,5 @@ websocekt 测试
 
 安装xterm
 ```
-npm install
+npm install xterm
 ```

@@ -187,13 +187,15 @@ func (h *JobTaskHandler) JobTaskLog(r *restful.Request, w *restful.Response) {
 	term := task.NewTaskLogWebsocketTerminal(ws)
 
 	// 开启认证与鉴权
-	entry := endpoint.NewEntryFromRestRequest(r).
-		SetAuthEnable(true).
-		SetPermissionEnable(true)
-	err = middleware.GetHttpAuther().PermissionCheck(r, w, entry)
-	if err != nil {
-		term.Failed(err)
-		return
+	entry := endpoint.NewEntryFromRestRequest(r)
+	if entry != nil {
+		entry.SetAuthEnable(true)
+		entry.SetPermissionEnable(true)
+		err = middleware.GetHttpAuther().PermissionCheck(r, w, entry)
+		if err != nil {
+			term.Failed(err)
+			return
+		}
 	}
 
 	// 读取请求
