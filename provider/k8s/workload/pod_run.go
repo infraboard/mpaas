@@ -44,6 +44,12 @@ type CopyPodRunRequest struct {
 	Terminal *terminal.WebSocketTerminal `json:"-"`
 }
 
+func (r *CopyPodRunRequest) SetDefaultExecContainer(containerName string) {
+	if r.ExecContainer == "" {
+		r.ExecContainer = containerName
+	}
+}
+
 func (r *CopyPodRunRequest) SetAttachTerminal(term *terminal.WebSocketTerminal) {
 	r.Attach = true
 	r.Terminal = term
@@ -86,6 +92,7 @@ func (c *Client) CopyPodRun(ctx context.Context, req *CopyPodRunRequest) (*v1.Po
 	if err != nil {
 		return nil, err
 	}
+	req.SetDefaultExecContainer(GetPrimaryContainerName(pod.Spec))
 
 	if req.Attach {
 		// 自动删除Pod

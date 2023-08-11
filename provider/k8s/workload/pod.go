@@ -154,9 +154,16 @@ func GetContainerFromPodTemplate(temp v1.PodTemplateSpec, name string) *v1.Conta
 func GetContainerFromPodSpec(spec v1.PodSpec, name string) *v1.Container {
 	for i := range spec.Containers {
 		c := spec.Containers[i]
-		if c.Name == name {
+		if name == "" || c.Name == name {
 			return &c
 		}
 	}
 	return nil
+}
+
+func GetPrimaryContainerName(spec v1.PodSpec) string {
+	if c := GetContainerFromPodSpec(spec, ""); c != nil {
+		return c.Name
+	}
+	return ""
 }
