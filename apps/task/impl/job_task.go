@@ -52,12 +52,14 @@ func (i *impl) RunJob(ctx context.Context, in *pipeline.RunJobRequest) (
 
 		// 合并允许参数(Job里面有默认值), 并检查参数合法性
 		// 注意Param的合并是有顺序的，也就是参数优先级(低-->高):
-		// 1. job默认变量
-		// 2. 系统变量(默认禁止修改)
-		// 3. task变量
-		// 4. pipeline变量
-		params := j.Spec.RunParam
+		// 1. 系统变量(默认禁止修改)
+		// 2. job默认变量
+		// 3. job运行变量
+		// 4. pipeline 运行变量
+		// 5. pipeline 运行时变量
+		params := job.NewRunParamSet()
 		params.Add(ins.SystemRunParam()...)
+		params.Add(j.Spec.RunParam.Params...)
 		params.Merge(in.RunParams.Params...)
 		err = i.LoadPipelineRunParam(ctx, params)
 		if err != nil {
@@ -191,8 +193,8 @@ func (i *impl) UpdateJobTaskOutput(ctx context.Context, in *task.UpdateJobTaskOu
 	}
 	ins.Status.UpdateOutput(in)
 
-	// 更新数据库
-	if _, err := i.jcol.UpdateByID(ctx, ins.Spec.TaskId, bson.M{"$set": ins}); err != nil {
+	// 只更新任务状态
+	if _, err := i.jcol.UpdateByID(ctx, ins.Spec.TaskId, bson.M{"$set": bson.M{"status": ins.Status}}); err != nil {
 		return nil, exception.NewInternalServerError("update task(%s) document error, %s",
 			in.Id, err)
 	}

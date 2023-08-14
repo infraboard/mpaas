@@ -167,12 +167,12 @@ func NewDeleteJobTaskRequest(id string) *DeleteJobTaskRequest {
 func NewUpdateJobTaskOutputRequest(id string) *UpdateJobTaskOutputRequest {
 	return &UpdateJobTaskOutputRequest{
 		Id:          id,
-		RuntimeEnvs: []*RuntimeEnv{},
+		RuntimeEnvs: []*job.RunParam{},
 	}
 }
 
 func (req *UpdateJobTaskOutputRequest) AddRuntimeEnv(name, value string) {
-	req.RuntimeEnvs = append(req.RuntimeEnvs, NewRuntimeEnv(name, value))
+	req.RuntimeEnvs = append(req.RuntimeEnvs, job.NewRunParam(name, value))
 }
 
 func NewUpdateJobTaskStatusRequest(id string) *UpdateJobTaskStatusRequest {

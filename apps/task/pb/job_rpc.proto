@@ -5,6 +5,7 @@ option go_package = "github.com/infraboard/mpaas/apps/task";
 
 import "mpaas/apps/task/pb/job_task.proto";
 import "mcube/pb/page/page.proto";
+import "mpaas/apps/job/pb/job.proto";
 import "mcube/pb/resource/meta.proto";
 import "mcube/pb/resource/label.proto";
 
@@ -95,14 +96,14 @@ message UpdateJobTaskOutputRequest {
     // 任务状态需要手动更新时的Token
 	// @gotags: json:"token"
     string update_token = 2;
-    // 强制更新任务状态, 默认已经完成的任务状态不能再修改
+    // 强制更新, 默认已经完成的任务状态不能再修改
     // 用于任务重新运行
 	// @gotags: bson:"force" json:"force"
     bool force = 3;
 	// Job Task运行时环境变量, 大写开头的变量会更新到pipline中, 注入到后续执行的任务中
 	// 小写开头的变量, 作为Task运行后的输出, task自己保留
 	// @gotags: json:"runtime_envs"
-	repeated RuntimeEnv runtime_envs = 4;
+	repeated job.RunParam runtime_envs = 4;
 	// 任务运行后的产物信息, 用于界面展示
 	// @gotags: json:"markdown_output"
 	string markdown_output = 5;

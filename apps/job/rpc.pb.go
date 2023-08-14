@@ -28,7 +28,7 @@ type DESCRIBE_BY int32
 const (
 	// Job的ID
 	DESCRIBE_BY_JOB_ID DESCRIBE_BY = 0
-	// Job的唯一名称, <job_name>.<namespace>.<domain>
+	// Job的唯一名称, <job_name>@<namespace>.<domain>:<job_version>
 	DESCRIBE_BY_JOB_UNIQ_NAME DESCRIBE_BY = 1
 )
 

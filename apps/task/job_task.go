@@ -5,9 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"html/template"
-	"strings"
 	"time"
-	"unicode"
 
 	"github.com/infraboard/mcenter/apps/notify"
 	"github.com/infraboard/mpaas/apps/job"
@@ -185,11 +183,13 @@ func (p *JobTask) SystemRunParam() (items []*job.RunParam) {
 		job.NewRunParam(
 			job.SYSTEM_VARIABLE_JOB_TASK_ID,
 			p.Spec.TaskId,
-		).SetReadOnly(true).SetRequired(true),
+		).SetReadOnly(true).
+			SetRequired(true),
 		job.NewRunParam(
 			job.SYSTEM_VARIABLE_JOB_TASK_UPDATE_TOKEN,
 			p.Spec.UpdateToken,
-		).SetReadOnly(true).SetRequired(true),
+		).SetReadOnly(true).
+			SetRequired(true),
 	)
 
 	if p.Job != nil {
@@ -197,7 +197,8 @@ func (p *JobTask) SystemRunParam() (items []*job.RunParam) {
 			job.NewRunParam(
 				job.SYSTEM_VARIABLE_JOB_ID,
 				p.Job.Meta.Id,
-			).SetReadOnly(true).SetRequired(true),
+			).SetReadOnly(true).
+				SetRequired(true),
 		)
 	}
 
@@ -206,7 +207,8 @@ func (p *JobTask) SystemRunParam() (items []*job.RunParam) {
 			job.NewRunParam(
 				job.SYSTEM_VARIABLE_PIPELINE_TASK_ID,
 				p.Spec.PipelineTask,
-			).SetReadOnly(true).SetRequired(true),
+			).SetReadOnly(true).
+				SetRequired(true),
 		)
 	}
 	return
@@ -338,7 +340,6 @@ func (t *JobTaskStatus) UpdateStatus(req *UpdateJobTaskStatusRequest) {
 }
 
 func (t *JobTaskStatus) UpdateOutput(req *UpdateJobTaskOutputRequest) {
-	t.RuntimeEnvs = req.RuntimeEnvs
 	if req.MarkdownOutput != "" {
 		t.MarkdownOutput = req.MarkdownOutput
 	}
@@ -376,49 +377,6 @@ func NewTemporaryResource(kind, name string) *TemporaryResource {
 
 func (r *TemporaryResource) IsReleased() bool {
 	return r.ReleaseAt != 0
-}
-
-func ParseRuntimeEnvFromBytes(content []byte) ([]*RuntimeEnv, error) {
-	envs := []*RuntimeEnv{}
-	lines := []string{}
-	line := []byte{}
-	for _, c := range content {
-		if c == '\n' {
-			lines = append(lines, string(line))
-			line = []byte{}
-		} else {
-			line = append(line, c)
-		}
-	}
-
-	for _, l := range lines {
-		l := strings.TrimSpace(l)
-		if l == "" || strings.HasPrefix(l, "#") {
-			continue
-		}
-
-		kvs := strings.Split(l, "=")
-		if len(kvs) != 2 {
-			return nil, fmt.Errorf("环境变量格式错误: %s", kvs)
-		}
-		k, v := kvs[0], kvs[1]
-
-		env := NewRuntimeEnv(k, strings.Trim(v, `"`))
-		envs = append(envs, env)
-	}
-
-	return envs, nil
-}
-
-func (r *RuntimeEnv) FileLine() (line []byte) {
-	return []byte(fmt.Sprintf("%s=%s\n", r.Name, r.Value))
-}
-
-func (r *RuntimeEnv) IsExport() bool {
-	if r.Name == "" && unicode.IsUpper(rune(r.Name[0])) {
-		return true
-	}
-	return false
 }
 
 func NewMentionUser(username string, nt notify.NOTIFY_TYPE) *pipeline.MentionUser {

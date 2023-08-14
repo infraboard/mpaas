@@ -29,7 +29,6 @@ func New(req *CreateJobRequest) (*Job, error) {
 		Spec:   req,
 		Status: NewJobStatus(),
 	}
-
 	return d, nil
 }
 
@@ -404,4 +403,47 @@ func (p *RunParam) MarkdownShortShow() string {
 
 func NewJobStatus() *JobStatus {
 	return &JobStatus{}
+}
+
+func ParseRunParamFromBytes(content []byte) ([]*RunParam, error) {
+	envs := []*RunParam{}
+	lines := []string{}
+	line := []byte{}
+	for _, c := range content {
+		if c == '\n' {
+			lines = append(lines, string(line))
+			line = []byte{}
+		} else {
+			line = append(line, c)
+		}
+	}
+
+	for _, l := range lines {
+		l := strings.TrimSpace(l)
+		if l == "" || strings.HasPrefix(l, "#") {
+			continue
+		}
+
+		kvs := strings.Split(l, "=")
+		if len(kvs) != 2 {
+			return nil, fmt.Errorf("环境变量格式错误: %s", kvs)
+		}
+		k, v := kvs[0], kvs[1]
+
+		env := NewRunParam(k, strings.Trim(v, `"`))
+		envs = append(envs, env)
+	}
+
+	return envs, nil
+}
+
+func (r *RunParam) FileLine() (line []byte) {
+	return []byte(fmt.Sprintf("%s=%s\n", r.Name, r.Value))
+}
+
+func (r *RunParam) IsExport() bool {
+	if r.Name == "" && unicode.IsUpper(rune(r.Name[0])) {
+		return true
+	}
+	return false
 }
