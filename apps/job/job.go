@@ -279,6 +279,16 @@ func (r *RunParamSet) Merge(targets ...*RunParam) {
 	}
 }
 
+// 脱敏后的数据还原
+func (r *RunParamSet) RestoreSensitive(set *RunParamSet) {
+	for i := range set.Params {
+		param := set.Params[i]
+		if param.IsSensitive && r.GetParamValue(param.Name) != param.Value {
+			r.Merge(param)
+		}
+	}
+}
+
 func (r *RunParamSet) SearchLabels() map[string]string {
 	labels := map[string]string{}
 	for i := range r.Params {
