@@ -4,6 +4,7 @@ import (
 	"testing"
 
 	"github.com/infraboard/mpaas/apps/job"
+	"github.com/infraboard/mpaas/test/tools"
 )
 
 func TestK8SJobRunnerParams(t *testing.T) {
@@ -37,4 +38,13 @@ func TestCheckDuplicate(t *testing.T) {
 func TestNewRunParamWithKVPaire(t *testing.T) {
 	param := job.NewRunParamWithKVPaire("key1", "value1", "key2", "value2")
 	t.Log(param)
+}
+
+func TestParseRuntimeEnvFromBytes(t *testing.T) {
+	data := tools.MustReadContentFile("test/pipeline.env")
+	envs, err := job.ParseRunParamFromBytes([]byte(data))
+	if err != nil {
+		t.Fatal(err)
+	}
+	t.Log(envs)
 }

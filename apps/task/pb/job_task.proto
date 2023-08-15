@@ -83,7 +83,7 @@ message JobTaskStatus {
 	// Job Task运行时环境变量, 大写开头的变量会更新到pipline中, 注入到后续执行的任务中
 	// 小写开头的变量, 作为Task运行后的输出, task自己保留
 	// @gotags: bson:"runtime_envs" json:"runtime_envs"
-	repeated RuntimeEnv runtime_envs = 6;
+	job.RunParamSet runtime_envs = 6;
 	// 任务运行后的产物信息, 用于界面展示
 	// @gotags: bson:"markdown_output" json:"markdown_output"
 	string markdown_output = 7;
@@ -149,27 +149,6 @@ message Event {
 	// 标签
 	// @gotags: bson:"labels" json:"labels"
 	map<string, string> labels = 15;
-}
-
-// task 运行过程中 产生的临时环境变量, 即用记录Job的输出(将输出保存为环境变量)
-// 在Task结束时同步到Pipeline Task中, 后续Task执行时 读取并注入
-// 注意只有大写的变量才会被导出
-message RuntimeEnv {
-	// 环境变量名称
-	// @gotags: bson:"name" json:"name"
-	string name = 1;
-	// 环境变量值
-	// @gotags: bson:"value" json:"value"
-	string value = 2;
-	// 是否只读 不允许修改
-	// @gotags: bson:"read_only" json:"read_only"
-	bool read_only = 3;
-	// 更新时间
-	// @gotags: bson:"update_at" json:"update_at"
-	int64 update_at = 4;
-	// 被谁更新的, 当值被修改后，追踪下谁修改的
-	// @gotags: bson:"update_task_id" json:"update_task_id"
-	string update_task_id = 5;
 }
 
 // 临时资源, 在Pipline允许结束时,调用释放

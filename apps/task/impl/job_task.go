@@ -19,6 +19,7 @@ import (
 	"github.com/infraboard/mpaas/apps/pipeline"
 	"github.com/infraboard/mpaas/apps/task"
 	"github.com/infraboard/mpaas/apps/task/runner"
+	k8s_provider "github.com/infraboard/mpaas/provider/k8s"
 	"github.com/infraboard/mpaas/provider/k8s/config"
 	"github.com/infraboard/mpaas/provider/k8s/meta"
 	"github.com/infraboard/mpaas/provider/k8s/workload"
@@ -50,14 +51,19 @@ func (i *impl) RunJob(ctx context.Context, in *pipeline.RunJobRequest) (
 		ins.Job = j
 		i.log.Infof("describe job success, %s[%s]", j.Spec.Name, j.Meta.Id)
 
+		// 脱敏参数动态还原
+		in.RunParams.RestoreSensitive(j.Spec.RunParam)
+
 		// 合并允许参数(Job里面有默认值), 并检查参数合法性
 		// 注意Param的合并是有顺序的，也就是参数优先级(低-->高):
-		// 1. job默认变量
-		// 2. 系统变量(默认禁止修改)
-		// 3. task变量
-		// 4. pipeline变量
-		params := j.Spec.RunParam
+		// 1. 系统变量(默认禁止修改)
+		// 2. job默认变量
+		// 3. job运行变量
+		// 4. pipeline 运行变量
+		// 5. pipeline 运行时变量
+		params := job.NewRunParamSet()
 		params.Add(ins.SystemRunParam()...)
+		params.Add(j.Spec.RunParam.Params...)
 		params.Merge(in.RunParams.Params...)
 		err = i.LoadPipelineRunParam(ctx, params)
 		if err != nil {
@@ -95,6 +101,20 @@ func (i *impl) RunJob(ctx context.Context, in *pipeline.RunJobRequest) (
 		return nil, exception.NewInternalServerError("inserted a job task document error, %s", err)
 	}
 	return ins, nil
+}
+
+func (r *impl) GetK8sClient(ctx context.Context, req *job.K8SJobRunnerParams) (*k8s_provider.Client, error) {
+	if req.KubeConfig != "" {
+		return req.Client()
+	}
+
+	cReq := k8s.NewDescribeClusterRequest(req.ClusterId)
+	c, err := r.cluster.DescribeCluster(ctx, cReq)
+	if err != nil {
+		return nil, err
+	}
+	r.log.Infof("get k8s cluster ok, %s [%s]", c.Spec.Name, c.Meta.Id)
+	return c.Client()
 }
 
 // 加载Pipeline 提供的运行时参数
@@ -191,8 +211,8 @@ func (i *impl) UpdateJobTaskOutput(ctx context.Context, in *task.UpdateJobTaskOu
 	}
 	ins.Status.UpdateOutput(in)
 
-	// 更新数据库
-	if _, err := i.jcol.UpdateByID(ctx, ins.Spec.TaskId, bson.M{"$set": ins}); err != nil {
+	// 只更新任务状态
+	if _, err := i.jcol.UpdateByID(ctx, ins.Spec.TaskId, bson.M{"$set": bson.M{"status": ins.Status}}); err != nil {
 		return nil, exception.NewInternalServerError("update task(%s) document error, %s",
 			in.Id, err)
 	}
@@ -313,14 +333,10 @@ func (i *impl) CleanTaskResource(ctx context.Context, in *task.JobTask) error {
 	switch in.Job.Spec.RunnerType {
 	case job.RUNNER_TYPE_K8S_JOB:
 		k8sParams := in.Status.RunParams.K8SJobRunnerParams()
-
-		descReq := k8s.NewDescribeClusterRequest(k8sParams.ClusterId)
-		c, err := i.cluster.DescribeCluster(ctx, descReq)
-		if err != nil {
-			return fmt.Errorf("find k8s cluster error, %s", err)
-		}
-
-		k8sClient, err := c.Client()
+		k8sClient, err := i.GetK8sClient(
+			ctx,
+			k8sParams,
+		)
 		if err != nil {
 			return err
 		}
@@ -378,14 +394,8 @@ func (i *impl) WatchJobTaskLog(in *task.WatchJobTaskLogRequest, stream task.JobR
 
 	switch t.Job.Spec.RunnerType {
 	case job.RUNNER_TYPE_K8S_JOB:
-		k8sParams := t.Status.RunParams.K8SJobRunnerParams()
-		descReq := k8s.NewDescribeClusterRequest(k8sParams.ClusterId)
-		c, err := i.cluster.DescribeCluster(stream.Context(), descReq)
-		if err != nil {
-			return fmt.Errorf("find k8s cluster error, %s", err)
-		}
-
-		k8sClient, err := c.Client()
+		k8sParams := t.Job.Spec.RunParam.K8SJobRunnerParams()
+		k8sClient, err := i.GetK8sClient(stream.Context(), k8sParams)
 		if err != nil {
 			return err
 		}
@@ -434,15 +444,11 @@ func (i *impl) JobTaskDebug(ctx context.Context, in *task.JobTaskDebugRequest) {
 	switch t.Job.Spec.RunnerType {
 	case job.RUNNER_TYPE_K8S_JOB:
 		k8sParams := t.Status.RunParams.K8SJobRunnerParams()
-		descReq := k8s.NewDescribeClusterRequest(k8sParams.ClusterId)
-		c, err := i.cluster.DescribeCluster(ctx, descReq)
+		k8sClient, err := i.GetK8sClient(ctx, k8sParams)
 		if err != nil {
-			term.Failed(fmt.Errorf("find k8s cluster error, %s", err))
+			term.Failed(fmt.Errorf("初始化k8s客户端失败, %s", err))
 			return
 		}
-
-		term.WriteTextln("正在登录到k8s集群: %s", c.Spec.Name)
-		k8sClient, err := c.Client()
 		if err != nil {
 			term.Failed(err)
 			return

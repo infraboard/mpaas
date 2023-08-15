@@ -4,6 +4,7 @@ package infraboard.mpaas.task;
 option go_package = "github.com/infraboard/mpaas/apps/task";
 
 import "mcube/pb/resource/meta.proto";
+import "mpaas/apps/job/pb/job.proto";
 import "mpaas/apps/task/pb/job_task.proto";
 import "mpaas/apps/pipeline/pb/pipeline.proto";
 
@@ -44,9 +45,9 @@ message PipelineTaskStatus {
 	// 状态描述
 	// @gotags: bson:"message" json:"message"
 	string message = 4;
-	// Pipeline 运行时环境变量
+	// Pipeline 运行时环境变量, 运行过程中 动态更新
 	// @gotags: bson:"runtime_envs" json:"runtime_envs"
-	repeated RuntimeEnv runtime_envs = 5;
+	job.RunParamSet runtime_envs = 5;
 	// 任务状态详细描述, 用于Debug
 	// @gotags: bson:"stage_status" json:"stage_status"
 	repeated StageStatus stage_status = 6;

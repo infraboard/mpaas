@@ -1,7 +1,6 @@
 package api
 
 import (
-	"fmt"
 	"net/http"
 	"time"
 
@@ -36,6 +35,17 @@ func (h *JobTaskHandler) RegistryUserHandler(ws *restful.WebService) {
 		Reads(task.QueryJobTaskRequest{}).
 		Writes(task.JobTaskSet{}))
 
+	ws.Route(ws.POST("/").
+		To(h.RunJob).
+		Doc("运行JobTask").
+		Metadata(restfulspec.KeyOpenAPITags, tags).
+		Metadata(label.Resource, JOB_TASK_RESOURCE_NAME).
+		Metadata(label.Action, label.Create.Value()).
+		Metadata(label.Auth, label.Enable).
+		Metadata(label.Permission, label.Enable).
+		Reads(pipeline.RunJobRequest{}).
+		Writes(task.JobTask{}))
+
 	ws.Route(ws.GET("/{id}").
 		To(h.DescribeJobTask).
 		Doc("查询JobTask运行任务详情").
@@ -45,17 +55,6 @@ func (h *JobTaskHandler) RegistryUserHandler(ws *restful.WebService) {
 		Metadata(label.Auth, label.Enable).
 		Metadata(label.Permission, label.Enable).
 		Reads(task.DescribeJobTaskRequest{}).
-		Writes(task.JobTask{}))
-
-	ws.Route(ws.GET("/{id}").
-		To(h.RunJob).
-		Doc("运行JobTask").
-		Metadata(restfulspec.KeyOpenAPITags, tags).
-		Metadata(label.Resource, JOB_TASK_RESOURCE_NAME).
-		Metadata(label.Action, label.Create.Value()).
-		Metadata(label.Auth, label.Enable).
-		Metadata(label.Permission, label.Enable).
-		Reads(pipeline.RunJobRequest{}).
 		Writes(task.JobTask{}))
 
 	// 通过Job自身的Token进行认证
@@ -127,7 +126,6 @@ func (h *JobTaskHandler) RunJob(r *restful.Request, w *restful.Response) {
 	}
 
 	req.UpdateFromToken(token.GetTokenFromRequest(r))
-	req.JobName = fmt.Sprintf("#%s", r.PathParameter("id"))
 	set, err := h.service.RunJob(r.Request.Context(), req)
 	if err != nil {
 		response.Failed(w, err)

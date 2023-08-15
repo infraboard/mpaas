@@ -326,18 +326,7 @@ func (s *PipelineTask) RuntimeRunParams() (envs []*job.RunParam) {
 	if s.Status == nil {
 		return
 	}
-
-	for i := range s.Status.RuntimeEnvs {
-		env := s.Status.RuntimeEnvs[i]
-		if env.IsExport() {
-			envs = append(envs, job.NewRunParam(
-				env.Name,
-				env.Value,
-			))
-		}
-	}
-
-	return
+	return s.Status.RuntimeEnvs.Params
 }
 
 func NewPipelineTaskStatus() *PipelineTaskStatus {
@@ -359,36 +348,6 @@ func (s *PipelineTaskStatus) AddStage(item *StageStatus) {
 	s.StageStatus = append(s.StageStatus, item)
 }
 
-func (s *PipelineTaskStatus) UpdateRuntimeEnv(updateBy string, envs []*RuntimeEnv) {
-	for i := range envs {
-		env := envs[i]
-
-		// 未导出变量不更新
-		if !env.IsExport() {
-			continue
-		}
-
-		// 获取Pipeline中变量
-		old := s.GetRuntimeEnv(env.Name)
-		if old == nil {
-			s.AddRuntimeEnv(env)
-			return
-		}
-
-		// 不更新只读
-		if old.ReadOnly {
-			return
-		}
-		old.UpdateAt = time.Now().Unix()
-		old.UpdateTaskId = updateBy
-		old.Value = env.Value
-	}
-}
-
-func (s *PipelineTaskStatus) AddRuntimeEnv(items ...*RuntimeEnv) {
-	s.RuntimeEnvs = append(s.RuntimeEnvs, items...)
-}
-
 func (t *PipelineTaskStatus) AddErrorEvent(format string, a ...any) {
 	t.Events = append(t.Events, NewEvent(EVENT_LEVEL_ERROR, fmt.Sprintf(format, a...)))
 }
@@ -405,16 +364,6 @@ func (t *PipelineTaskStatus) AddEvent(level EVENT_LEVEL, format string, a ...any
 
 func (p *PipelineTaskStatus) AddWebhookStatus(items ...*CallbackStatus) {
 	p.WebhookStatus = append(p.WebhookStatus, items...)
-}
-
-func (s *PipelineTaskStatus) GetRuntimeEnv(name string) *RuntimeEnv {
-	for i := range s.RuntimeEnvs {
-		env := s.RuntimeEnvs[i]
-		if env.Name == name {
-			return env
-		}
-	}
-	return nil
 }
 
 func (s *PipelineTaskStatus) GetJobTask(id string) *JobTask {
@@ -477,17 +426,4 @@ func (s *StageStatus) GetJobTask(id string) *JobTask {
 		}
 	}
 	return nil
-}
-
-func NewReadOnlyRuntimeEnv(name, value string) *RuntimeEnv {
-	env := NewRuntimeEnv(name, value)
-	env.ReadOnly = true
-	return env
-}
-
-func NewRuntimeEnv(name, value string) *RuntimeEnv {
-	return &RuntimeEnv{
-		Name:  name,
-		Value: value,
-	}
 }
