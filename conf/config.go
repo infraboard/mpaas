@@ -103,7 +103,7 @@ func (a *http) Addr() string {
 func newDefaultHTTP() *http {
 	return &http{
 		Host: "127.0.0.1",
-		Port: "8080",
+		Port: "8090",
 	}
 }
 
@@ -122,7 +122,7 @@ func (a *grpc) Addr() string {
 func newDefaultGRPC() *grpc {
 	return &grpc{
 		Host: "127.0.0.1",
-		Port: "18080",
+		Port: "18090",
 	}
 }
 

@@ -4,11 +4,11 @@ key  = "this is your app key"
 
 [app.http]
 host = "127.0.0.1"
-port = "8080"
+port = "8090"
 
 [app.grpc]
 host = "127.0.0.1"
-port = "18080"
+port = "18090"
 
 [mcenter]
 address = "127.0.0.1:18010"
