@@ -177,7 +177,8 @@ func (req *UpdateJobTaskOutputRequest) AddRuntimeEnv(name, value string) {
 
 func NewUpdateJobTaskStatusRequest(id string) *UpdateJobTaskStatusRequest {
 	return &UpdateJobTaskStatusRequest{
-		Id: id,
+		Id:        id,
+		Extension: map[string]string{},
 	}
 }
 

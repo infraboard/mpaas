@@ -49,7 +49,7 @@ func (r *K8sRunner) Run(ctx context.Context, in *task.RunTaskRequest) (
 	workload.InjectPodEnvVars(&obj.Spec.Template.Spec, in.Params.EnvVars())
 
 	status := task.NewJobTaskStatus()
-	status.MarkedRunning()
+	status.MarkedCreating()
 
 	// 执行Job
 	if !in.DryRun {

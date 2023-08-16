@@ -45,20 +45,27 @@ message Meta {
 enum STAGE {
 	// 等待执行
 	PENDDING = 0;
-	// 运行中
-	ACTIVE = 1;
+	// 调度中,或者队列中
+	SCHEDULING = 4;
+	// 创建中, Job创建时更新
+	CREATING = 8;
+	// 运行中, Job对应的Pod创建完成后更新, 可以查看Pod日志
+	ACTIVE = 12;
+
 	// 回滚中, 回滚是一种特殊的运行中状态, 回滚时会运行回滚参数
-	ROLLBACKING = 2;
+	ROLLBACKING = 16;
 	// 取消中
-	CANCELING = 3;
+	CANCELING = 20;
+
 	// 任务被取消
-	CANCELED = 10;
+	CANCELED = 30;
 	// 运行失败
-	FAILED = 11;
+	FAILED = 34;
 	// 运行成功
-	SUCCEEDED = 12;
+	SUCCEEDED = 38;
+
 	// 跳过执行, 比如Pipeline中的一些可选流程
-	SKIPPED = 13;
+	SKIPPED = 45;
 }
 
 message JobTaskStatus {
@@ -99,6 +106,9 @@ message JobTaskStatus {
 	// Jot Task 关注人通知状态
 	// @gotags: bson:"notify_status" json:"notify_status"
 	repeated CallbackStatus notify_status = 11;
+	// 状态扩展属性
+	// @gotags: bson:"extension" json:"extension"
+	map<string, string> extension = 15;
 }
 
 message CallbackStatus {

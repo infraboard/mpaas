@@ -285,6 +285,7 @@ func NewJobTaskStatus() *JobTaskStatus {
 	return &JobTaskStatus{
 		StartAt:            time.Now().Unix(),
 		TemporaryResources: []*TemporaryResource{},
+		Extension:          map[string]string{},
 	}
 }
 
@@ -298,9 +299,9 @@ func (t *JobTaskStatus) MarkedError(err error) {
 	t.Message = err.Error()
 }
 
-func (t *JobTaskStatus) MarkedRunning() {
+func (t *JobTaskStatus) MarkedCreating() {
 	t.StartAt = time.Now().Unix()
-	t.Stage = STAGE_ACTIVE
+	t.Stage = STAGE_CREATING
 }
 
 func (t *JobTaskStatus) MarkedSuccess() {
@@ -333,6 +334,11 @@ func (p *JobTaskStatus) AddNotifyStatus(items ...*CallbackStatus) {
 func (t *JobTaskStatus) UpdateStatus(req *UpdateJobTaskStatusRequest) {
 	t.Stage = req.Stage
 	t.Message = req.Message
+
+	// 更新扩展属性
+	for k, v := range req.Extension {
+		t.Extension[k] = v
+	}
 
 	// 取消的任务 不需要更新detail详情
 	if !t.Stage.Equal(STAGE_CANCELED) {

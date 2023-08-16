@@ -87,6 +87,9 @@ message UpdateJobTaskStatusRequest {
 	// 任务状态详细描述, 用于Debug
 	// @gotags: bson:"detail" json:"detail"
 	string detail = 6;
+	// 状态扩展属性
+	// @gotags: bson:"extension" json:"extension"
+	map<string, string> extension = 15;
 }
 
 message UpdateJobTaskOutputRequest {
