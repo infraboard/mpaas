@@ -89,7 +89,7 @@ func (c *Client) LoginContainer(ctx context.Context, req *LoginContainerRequest)
 func NewWatchConainterLogRequest() *WatchConainterLogRequest {
 	return &WatchConainterLogRequest{
 		PodLogOptions: &v1.PodLogOptions{
-			Follow:                       false,
+			Follow:                       true,
 			Previous:                     false,
 			InsecureSkipTLSVerifyBackend: true,
 		},

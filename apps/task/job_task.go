@@ -178,6 +178,12 @@ func (p *JobTask) GetRunParamSet() *job.RunParamSet {
 	return p.Spec.RunParams
 }
 
+func (p *JobTask) Desense() {
+	if p.Status != nil {
+		p.Status.RunParams.Densense()
+	}
+}
+
 func (p *JobTask) SystemRunParam() (items []*job.RunParam) {
 	items = append(items,
 		job.NewRunParam(
@@ -218,8 +224,8 @@ func (p *JobTask) MarshalJSON() ([]byte, error) {
 	return json.Marshal(struct {
 		*pipeline.RunJobRequest
 		*Meta
-		*JobTaskStatus
-		Job *job.Job `json:"job"`
+		Status *JobTaskStatus `json:"status"`
+		Job    *job.Job       `json:"job"`
 	}{p.Spec, p.Meta, p.Status, p.Job})
 }
 

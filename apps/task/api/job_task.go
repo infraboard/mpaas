@@ -110,12 +110,13 @@ func (h *JobTaskHandler) QueryJobTask(r *restful.Request, w *restful.Response) {
 
 func (h *JobTaskHandler) DescribeJobTask(r *restful.Request, w *restful.Response) {
 	req := task.NewDescribeJobTaskRequest(r.PathParameter("id"))
-	set, err := h.service.DescribeJobTask(r.Request.Context(), req)
+	ins, err := h.service.DescribeJobTask(r.Request.Context(), req)
 	if err != nil {
 		response.Failed(w, err)
 		return
 	}
-	response.Success(w, set)
+
+	response.Success(w, ins)
 }
 
 func (h *JobTaskHandler) RunJob(r *restful.Request, w *restful.Response) {
