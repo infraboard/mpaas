@@ -386,10 +386,21 @@ func (i *impl) CleanTaskResource(ctx context.Context, in *task.JobTask) error {
 func (i *impl) WatchJobTaskLog(in *task.WatchJobTaskLogRequest, stream task.JobRPC_WatchJobTaskLogServer) error {
 	writer := NewWatchJobTaskLogServerWriter(stream)
 	writer.WriteMessagef("正在查询Task[%s]的日志 请稍等...", in.TaskId)
+
 	// 查询Task信息
+	maxRetryCount := 0
+WAIT_TASK_ACTIVE:
 	t, err := i.DescribeJobTask(stream.Context(), task.NewDescribeJobTaskRequest(in.TaskId))
 	if err != nil {
 		return err
+	}
+
+	// 等待Task的Pod正常启动
+	if t.Status.Stage < task.STAGE_ACTIVE || maxRetryCount > 30 {
+		writer.WriteMessagef("任务当前状态: [%s], 等待任务启动中...", t.Status.Stage)
+		time.Sleep(1 * time.Second)
+		maxRetryCount++
+		goto WAIT_TASK_ACTIVE
 	}
 
 	switch t.Job.Spec.RunnerType {

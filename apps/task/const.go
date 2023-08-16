@@ -9,3 +9,8 @@ const (
 	CONFIG_MAP_RUNTIME_ENV_KEY        = "task.env"
 	CONFIG_MAP_RUNTIME_ENV_MOUNT_PATH = "/workspace/runtime"
 )
+
+const (
+	EXTENSION_FOR_TASK_POD_DETAIL = "pod_detail"
+	EXTENSION_FOR_TASK_POD_STATUS = "pod_status"
+)

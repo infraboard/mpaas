@@ -153,7 +153,7 @@ func NewDescribeJobTaskRequest(id string) *DescribeJobTaskRequest {
 
 func (r *DescribeJobTaskRequest) Validate() error {
 	if r.Id == "" {
-		return fmt.Errorf("job id required")
+		return fmt.Errorf("job task id required")
 	}
 	return nil
 }
