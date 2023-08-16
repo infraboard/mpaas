@@ -191,7 +191,7 @@ func (i *impl) CheckAllowUpdate(ctx context.Context, ins *task.JobTask, token st
 
 	// 修改任务状态
 	if !force && ins.Status.IsComplete() {
-		return exception.NewBadRequest("已经结束的任务不能更新状态")
+		return exception.NewBadRequest("状态[%s], 已经结束的任务不能更新状态", ins.Status.Stage)
 	}
 	return nil
 }
