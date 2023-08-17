@@ -2,6 +2,7 @@ package workload
 
 import (
 	"context"
+	"fmt"
 
 	"github.com/infraboard/mpaas/provider/k8s/meta"
 	v1 "k8s.io/api/core/v1"
@@ -166,4 +167,57 @@ func GetPrimaryContainerName(spec v1.PodSpec) string {
 		return c.Name
 	}
 	return ""
+}
+
+type POD_STATUS int
+
+func (s POD_STATUS) String() string {
+	switch s {
+	case POD_STATUS_SCHEDULED:
+		return "PodScheduled"
+	case POD_STATUS_INITIALIZED:
+		return "Initialized"
+	case POD_STATUS_CONTAINER_READY:
+		return "ContainersReady"
+	case POD_STATUS_POD_READY:
+		return "Ready"
+	}
+
+	return fmt.Sprintf("%d", s)
+}
+
+const (
+	POD_STATUS_PENDDING POD_STATUS = iota
+	POD_STATUS_SCHEDULED
+	POD_STATUS_INITIALIZED
+	POD_STATUS_CONTAINER_READY
+	POD_STATUS_POD_READY
+)
+
+func GetPodStatus(p *v1.Pod) POD_STATUS {
+	status := POD_STATUS_PENDDING
+	for i := range p.Status.Conditions {
+		cond := p.Status.Conditions[i]
+		if cond.Type == v1.PodScheduled && cond.Status == v1.ConditionTrue {
+			if status <= POD_STATUS_SCHEDULED {
+				status = POD_STATUS_SCHEDULED
+			}
+		}
+		if cond.Type == v1.PodInitialized && cond.Status == v1.ConditionTrue {
+			if status <= POD_STATUS_INITIALIZED {
+				status = POD_STATUS_INITIALIZED
+			}
+		}
+		if cond.Type == v1.ContainersReady && cond.Status == v1.ConditionTrue {
+			if status <= POD_STATUS_CONTAINER_READY {
+				status = POD_STATUS_CONTAINER_READY
+			}
+		}
+		if cond.Type == v1.PodReady && cond.Status == v1.ConditionTrue {
+			if status <= POD_STATUS_POD_READY {
+				status = POD_STATUS_POD_READY
+			}
+		}
+	}
+	return status
 }

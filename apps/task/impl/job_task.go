@@ -396,8 +396,12 @@ WAIT_TASK_ACTIVE:
 	}
 
 	// 等待Task的Pod正常启动
-	if t.Status.Stage < task.STAGE_ACTIVE || maxRetryCount > 30 {
-		writer.WriteMessagef("任务当前状态: [%s], 等待任务启动中...", t.Status.Stage)
+	pod, err := t.Status.GetLatestPod()
+	if err != nil {
+		return err
+	}
+	if pod.Status.Phase != "Pending" || maxRetryCount > 30 {
+		writer.WriteMessagef("任务当前状态: [%s], Pod状态: [%s], 等待任务启动中...", t.Status.Stage, pod.Status.Phase)
 		time.Sleep(1 * time.Second)
 		maxRetryCount++
 		goto WAIT_TASK_ACTIVE

@@ -5,6 +5,8 @@ import (
 	"encoding/json"
 	"fmt"
 	"html/template"
+	"sort"
+	"strings"
 	"time"
 
 	"github.com/infraboard/mcenter/apps/notify"
@@ -12,6 +14,8 @@ import (
 	pipeline "github.com/infraboard/mpaas/apps/pipeline"
 	"github.com/infraboard/mpaas/common/format"
 	"github.com/infraboard/mpaas/provider/k8s/workload"
+	core_v1 "k8s.io/api/core/v1"
+	"sigs.k8s.io/yaml"
 )
 
 func NewJobTaskSet() *JobTaskSet {
@@ -349,6 +353,39 @@ func (t *JobTaskStatus) UpdateStatus(req *UpdateJobTaskStatusRequest) {
 	if t.IsComplete() && t.EndAt == 0 {
 		t.EndAt = time.Now().Unix()
 	}
+}
+
+func (s *JobTaskStatus) PodCount() int {
+	return len(s.PodKeys())
+}
+
+func (s *JobTaskStatus) PodKeys() (keys []string) {
+	for k := range s.Extension {
+		strings.HasPrefix(k, EXTENSION_FOR_TASK_POD_ARRAY)
+		keys = append(keys, k)
+	}
+	return
+}
+
+func (s *JobTaskStatus) GetLatestPodValue() string {
+	keys := s.PodKeys()
+	sortKeys := sort.StringSlice(keys)
+	sort.Sort(sortKeys)
+	latestKey := len(sortKeys) - 1
+	return s.Extension[sortKeys[latestKey]]
+}
+
+func (s *JobTaskStatus) GetLatestPod() (*core_v1.Pod, error) {
+	podStr := s.GetLatestPodValue()
+	if podStr == "" {
+		return nil, nil
+	}
+	pod := core_v1.Pod{}
+	err := yaml.Unmarshal([]byte(podStr), &pod)
+	if err != nil {
+		return nil, err
+	}
+	return &pod, nil
 }
 
 func (t *JobTaskStatus) UpdateOutput(req *UpdateJobTaskOutputRequest) {
