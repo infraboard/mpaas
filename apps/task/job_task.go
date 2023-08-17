@@ -359,6 +359,14 @@ func (s *JobTaskStatus) PodCount() int {
 	return len(s.PodKeys())
 }
 
+func (s *JobTaskStatus) GetOrNewPodKey(podName string) string {
+	key, _ := s.GetPodKey(podName)
+	if key != "" {
+		return key
+	}
+	return TaskPodArrayKey(s.PodCount())
+}
+
 func (s *JobTaskStatus) PodKeys() (keys []string) {
 	for k := range s.Extension {
 		if strings.HasPrefix(k, EXTENSION_FOR_TASK_POD_ARRAY) {
@@ -391,6 +399,23 @@ func (s *JobTaskStatus) GetLatestPod() (*core_v1.Pod, error) {
 		return nil, err
 	}
 	return &pod, nil
+}
+
+func (s *JobTaskStatus) GetPodKey(podName string) (string, error) {
+	for k, v := range s.Extension {
+		if strings.HasPrefix(k, EXTENSION_FOR_TASK_POD_ARRAY) {
+			pod := core_v1.Pod{}
+			err := yaml.Unmarshal([]byte(v), &pod)
+			if err != nil {
+				return "", err
+			}
+			if pod.Name == podName {
+				return k, nil
+			}
+		}
+	}
+
+	return "", nil
 }
 
 func (t *JobTaskStatus) UpdateOutput(req *UpdateJobTaskOutputRequest) {
