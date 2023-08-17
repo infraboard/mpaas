@@ -81,7 +81,7 @@ func (i *Job) MarshalJSON() ([]byte, error) {
 	return json.Marshal(struct {
 		*resource.Meta
 		*CreateJobRequest
-		*JobStatus
+		Status *JobStatus `json:"status"`
 	}{i.Meta, i.Spec, i.Status})
 }
 

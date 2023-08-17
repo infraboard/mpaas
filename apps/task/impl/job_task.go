@@ -460,7 +460,7 @@ WAIT_TASK_ACTIVE:
 			}
 		}
 
-		time.Sleep(1 * time.Second)
+		time.Sleep(2 * time.Second)
 		maxRetryCount++
 		goto WAIT_TASK_ACTIVE
 	}
