@@ -387,24 +387,10 @@ func (i *impl) WatchJobTaskLog(in *task.WatchJobTaskLogRequest, stream task.JobR
 	writer := NewWatchJobTaskLogServerWriter(stream)
 	writer.WriteMessagef("正在查询Task[%s]的日志 请稍等...", in.TaskId)
 
-	// 查询Task信息
-	maxRetryCount := 0
-WAIT_TASK_ACTIVE:
-	t, err := i.DescribeJobTask(stream.Context(), task.NewDescribeJobTaskRequest(in.TaskId))
-	if err != nil {
-		return err
-	}
-
 	// 等待Task的Pod正常启动
-	pod, err := t.Status.GetLatestPod()
+	t, err := i.WaitPodLogReady(stream.Context(), in, writer)
 	if err != nil {
 		return err
-	}
-	if pod.Status.Phase != "Pending" || maxRetryCount > 30 {
-		writer.WriteMessagef("任务当前状态: [%s], Pod状态: [%s], 等待任务启动中...", t.Status.Stage, pod.Status.Phase)
-		time.Sleep(1 * time.Second)
-		maxRetryCount++
-		goto WAIT_TASK_ACTIVE
 	}
 
 	switch t.Job.Spec.RunnerType {
@@ -443,6 +429,43 @@ WAIT_TASK_ACTIVE:
 	}
 
 	return nil
+}
+
+func (i *impl) WaitPodLogReady(
+	ctx context.Context,
+	in *task.WatchJobTaskLogRequest,
+	writer *WatchJobTaskLogServerWriter,
+) (*task.JobTask, error) {
+	maxRetryCount := 0
+WAIT_TASK_ACTIVE:
+	// 查询Task信息
+	t, err := i.DescribeJobTask(ctx, task.NewDescribeJobTaskRequest(in.TaskId))
+	if err != nil {
+		return nil, err
+	}
+
+	pod, err := t.Status.GetLatestPod()
+	if err != nil {
+		return nil, err
+	}
+
+	if maxRetryCount < 30 {
+		if pod == nil {
+			writer.WriteMessagef("任务当前状态: [%s], Pod创建中...", t.Status.Stage)
+		} else {
+			writer.WriteMessagef("任务当前状态: [%s], Pod状态: [%s], 等待任务启动中...", t.Status.Stage, pod.Status.Phase)
+			// Job状态运行成功，返回
+			if pod.Status.Phase != "Pending" {
+				return t, nil
+			}
+		}
+
+		time.Sleep(1 * time.Second)
+		maxRetryCount++
+		goto WAIT_TASK_ACTIVE
+	}
+
+	return t, nil
 }
 
 // Task Debug

@@ -361,14 +361,19 @@ func (s *JobTaskStatus) PodCount() int {
 
 func (s *JobTaskStatus) PodKeys() (keys []string) {
 	for k := range s.Extension {
-		strings.HasPrefix(k, EXTENSION_FOR_TASK_POD_ARRAY)
-		keys = append(keys, k)
+		if strings.HasPrefix(k, EXTENSION_FOR_TASK_POD_ARRAY) {
+			keys = append(keys, k)
+		}
 	}
 	return
 }
 
 func (s *JobTaskStatus) GetLatestPodValue() string {
 	keys := s.PodKeys()
+	if len(keys) == 0 {
+		return ""
+	}
+
 	sortKeys := sort.StringSlice(keys)
 	sort.Sort(sortKeys)
 	latestKey := len(sortKeys) - 1

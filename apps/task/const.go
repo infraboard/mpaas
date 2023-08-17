@@ -16,6 +16,6 @@ const (
 	EXTENSION_FOR_TASK_POD_ARRAY = "pod"
 )
 
-func TaskPodArrayKey(index int8) string {
+func TaskPodArrayKey(index int) string {
 	return fmt.Sprintf("%s.%d", EXTENSION_FOR_TASK_POD_ARRAY, index)
 }
