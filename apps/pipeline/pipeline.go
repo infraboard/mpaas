@@ -146,8 +146,12 @@ func (req *CreatePipelineRequest) AddStage(stages ...*Stage) {
 
 func NewRunJobRequest(jobName string) *RunJobRequest {
 	return &RunJobRequest{
-		JobName:   jobName,
-		RunParams: job.NewRunParamSet(),
+		JobName:      jobName,
+		RunParams:    job.NewRunParamSet(),
+		Webhooks:     []*WebHook{},
+		MentionUsers: []*MentionUser{},
+		Extension:    map[string]string{},
+		Labels:       map[string]string{},
 	}
 }
 

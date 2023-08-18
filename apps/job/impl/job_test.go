@@ -77,6 +77,7 @@ func TestUpdateDeployJob(t *testing.T) {
 	req := job.NewPatchJobRequest(conf.C.DEPLOY_JOB_ID)
 	req.Spec.RunnerSpec = tools.MustReadContentFile("test/container_deploy.yml")
 	req.Spec.Labels["Language"] = "*"
+	req.Spec.Icon = tools.MustReadContentFile("test/container_deploy.svg")
 	param := job.NewRunParamSet()
 	param.Add(&job.RunParam{
 		Required:    true,
@@ -129,6 +130,7 @@ func TestUpdateBuildJob(t *testing.T) {
 	req := job.NewPatchJobRequest(conf.C.BUILD_JOB_ID)
 	req.Spec.RunnerSpec = tools.MustReadContentFile("test/container_build.yml")
 	req.Spec.Labels["Language"] = "*"
+	req.Spec.Icon = tools.MustReadContentFile("test/container_build.svg")
 	param := job.NewRunParamSet()
 	param.Add(&job.RunParam{
 		Required:    true,
