@@ -39,7 +39,7 @@ func New(req *CreatePipelineRequest) (*Pipeline, error) {
 		return nil, err
 	}
 
-	req.BuildNumber()
+	req.BuildStageNumber()
 
 	d := &Pipeline{
 		Meta: resource.NewMeta(),
@@ -49,7 +49,7 @@ func New(req *CreatePipelineRequest) (*Pipeline, error) {
 }
 
 // 注入编号
-func (req *CreatePipelineRequest) BuildNumber() {
+func (req *CreatePipelineRequest) BuildStageNumber() {
 	for m := range req.Stages {
 		stage := req.Stages[m]
 		stage.Number = int32(m) + 1
