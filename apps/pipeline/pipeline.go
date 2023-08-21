@@ -39,7 +39,7 @@ func New(req *CreatePipelineRequest) (*Pipeline, error) {
 		return nil, err
 	}
 
-	req.BuildNumber()
+	req.BuildStageNumber()
 
 	d := &Pipeline{
 		Meta: resource.NewMeta(),
