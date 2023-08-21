@@ -48,7 +48,8 @@ func TestCreateTestJob(t *testing.T) {
 func TestCreateBuildJob(t *testing.T) {
 	req := job.NewCreateJobRequest()
 	req.Name = "docker_build"
-	req.CreateBy = "test"
+	req.DisplayName = "容器构建"
+	req.CreateBy = "admin@default"
 	req.RunnerSpec = tools.MustReadContentFile("test/container_build.yml")
 	req.Description = "使用git拉取源代码, 然后使用kaniko完成应用容器镜像的构建与推送"
 
@@ -62,7 +63,8 @@ func TestCreateBuildJob(t *testing.T) {
 func TestCreateDeployJob(t *testing.T) {
 	req := job.NewCreateJobRequest()
 	req.Name = "docker_deploy"
-	req.CreateBy = "test"
+	req.DisplayName = "容器部署"
+	req.CreateBy = "admin@default"
 	req.RunnerSpec = tools.MustReadContentFile("test/container_deploy.yml")
 	req.Description = "通过kubectl 的set image命令来更新部署镜像的版本"
 
