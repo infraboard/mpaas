@@ -71,6 +71,7 @@ func (i *impl) DescribePipeline(ctx context.Context, in *pipeline.DescribePipeli
 		return nil, exception.NewInternalServerError("find pipeline %s error, %s", in.Id, err)
 	}
 
+	ins.Spec.BuildNumber()
 	return ins, nil
 }
 
