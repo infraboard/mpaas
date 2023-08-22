@@ -110,12 +110,14 @@ func TestUpdateDeployJob(t *testing.T) {
 		Name:        build.SYSTEM_VARIABLE_IMAGE_REPOSITORY,
 		NameDesc:    "应用部署的镜像仓库地址, 默认沿用原有的镜像仓库地址",
 		Example:     "registry.cn-hangzhou.aliyuncs.com/infraboard/mcenter",
+		ValueDesc:   "如果 前面有构建操作, 该变量由构建操作提供",
 		SearchLabel: true,
 	})
 	param.Add(&job.RunParam{
 		Required:    true,
 		Name:        build.SYSTEM_VARIABLE_APP_VERSION,
 		NameDesc:    "应用部署时的版本",
+		ValueDesc:   "如果 前面有构建操作, 该变量由构建操作提供",
 		Example:     "v0.0.1",
 		SearchLabel: true,
 	})

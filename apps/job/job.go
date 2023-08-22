@@ -290,11 +290,14 @@ func (r *RunParamSet) GetParamValue(key string) string {
 	return ""
 }
 
-// 设置参数的值
+// 设置参数的值, 注意如果value为""则不会修改
 func (r *RunParamSet) SetParamValue(key, value string) {
+	// 剔除值里面的空白字符
+	value = strings.TrimSpace(value)
+
 	for i := range r.Params {
 		param := r.Params[i]
-		if param.IsEdit() && param.Name == key {
+		if param.IsEdit() && param.Name == key && value != "" {
 			param.Value = value
 			return
 		}
@@ -429,7 +432,6 @@ func (p *RunParam) Init() {
 	if p.Extensions == nil {
 		p.Extensions = map[string]string{}
 	}
-	return
 }
 
 // 设置SearchLabel
