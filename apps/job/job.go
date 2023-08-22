@@ -55,7 +55,8 @@ func (s *JobSet) Add(item *Job) {
 
 func (s *JobSet) Desense() {
 	for i := range s.Items {
-		s.Items[i].Desense()
+		item := s.Items[i]
+		item.Desense()
 	}
 }
 
@@ -107,6 +108,31 @@ func (i *Job) Desense() {
 	}
 }
 
+// 补充扩展属性
+func (i *Job) AddExtension() {
+	if i.Spec == nil {
+		return
+	}
+
+	i.Spec.Extension["uniq_name"] = i.UniqName()
+}
+
+// docker_build@default.default:v1
+func (i *Job) UniqName() string {
+	return fmt.Sprintf("%s@%s.%s:%s",
+		i.Spec.Name,
+		i.Spec.Namespace,
+		i.Spec.Domain, i.GetVersion())
+}
+
+func (i *Job) GetVersion() string {
+	if i.Status == nil {
+		return ""
+	}
+
+	return i.Status.Version
+}
+
 func NewRunParamSet() *RunParamSet {
 	return &RunParamSet{
 		Params: []*RunParam{},
@@ -123,7 +149,11 @@ func (r *RunParamSet) Densense() {
 // 绕开Merge, 直接注入, 因为Merge只允许注入Job声明的变量
 // 非job声明的变量只能通过Add添加, 比如系统变量
 func (r *RunParamSet) Add(items ...*RunParam) {
-	r.Params = append(r.Params, items...)
+	for i := range items {
+		item := items[i]
+		item.Init()
+		r.Params = append(r.Params, item)
+	}
 }
 
 // 检查是否有重复的参数
@@ -392,6 +422,14 @@ func (p *RunParam) Desense() *RunParam {
 		p.Value = sense.DeSense(p.Value)
 	}
 	return p
+}
+
+// 值脱敏
+func (p *RunParam) Init() {
+	if p.Extensions == nil {
+		p.Extensions = map[string]string{}
+	}
+	return
 }
 
 // 设置SearchLabel

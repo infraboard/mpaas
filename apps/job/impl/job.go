@@ -41,6 +41,7 @@ func (i *impl) QueryJob(ctx context.Context, in *job.QueryJobRequest) (
 		if err := resp.Decode(ins); err != nil {
 			return nil, exception.NewInternalServerError("decode job error, error is %s", err)
 		}
+		ins.AddExtension()
 		set.Add(ins)
 	}
 
@@ -92,6 +93,7 @@ func (i *impl) DescribeJob(ctx context.Context, in *job.DescribeJobRequest) (
 		return nil, exception.NewInternalServerError("find job %s error, %s", in.DescribeValue, err)
 	}
 
+	ins.AddExtension()
 	return ins, nil
 }
 

@@ -138,8 +138,8 @@ message CreateJobRequest {
 	// @gotags: bson:"labels" json:"labels"
 	map<string, string> labels = 24;
 	// 扩展属性
-	// @gotags: bson:"extra" json:"extra"
-	map<string, string> extra = 25;
+	// @gotags: bson:"extension" json:"extension"
+	map<string, string> extension = 25;
 }
 
 message RunParamSet {
@@ -157,6 +157,10 @@ enum PARAM_VALUE_TYPE {
 	ENUM = 2;
 	// 基于url的远程选项拉去, 仅存储URL地址, 前端自己处理
 	HTTP_ENUM = 3;
+	// k8s的 secret 名称
+	K8S_CONFIG_MAP = 4;
+	// k8s的 config map 名称
+	K8S_SECRET = 5;
 }
 
 message EnumOption {

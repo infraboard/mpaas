@@ -155,30 +155,35 @@ func TestUpdateBuildJob(t *testing.T) {
 		Required:    true,
 		Name:        "GIT_SSH_URL",
 		NameDesc:    "应用git代码仓库地址",
+		ValueDesc:   "CI时, 系统根据Webhook自动注入",
 		Example:     "git@github.com:infraboard/mpaas.git",
 		SearchLabel: true,
 	})
 	param.Add(&job.RunParam{
-		Required: false,
-		Name:     "APP_DOCKERFILE",
-		NameDesc: "应用git代码仓库中用于构建镜像的Dockerfile路径",
-		Value:    "Dockerfile",
-		Example:  "Dockerfile",
+		Required:  false,
+		Name:      "APP_DOCKERFILE",
+		NameDesc:  "应用git代码仓库中用于构建镜像的Dockerfile路径",
+		ValueDesc: "CI时, 通过读取构建配置自动获取",
+		Value:     "Dockerfile",
+		Example:   "Dockerfile",
 	})
 	param.Add(&job.RunParam{
-		Required: true,
-		Name:     "GIT_BRANCH",
-		NameDesc: "需要拉去的代码分支",
-		Example:  "master",
+		Required:  true,
+		Name:      "GIT_BRANCH",
+		NameDesc:  "需要拉去的代码分支",
+		ValueDesc: "CI时, 系统根据Webhook自动注入",
+		Example:   "master",
 	})
 	param.Add(&job.RunParam{
-		Required: true,
-		Name:     "GIT_COMMIT_ID",
-		NameDesc: "应用git代码仓库地址",
-		Example:  "32d63566098f7e0b0ac3a3d8ddffe71cc6cad7b0",
+		Required:  true,
+		Name:      "GIT_COMMIT_ID",
+		NameDesc:  "应用git代码仓库地址",
+		ValueDesc: "CI时, 系统根据Webhook自动注入",
+		Example:   "32d63566098f7e0b0ac3a3d8ddffe71cc6cad7b0",
 	})
 	param.Add(&job.RunParam{
 		UsageType: job.PARAM_USAGE_TYPE_TEMPLATE,
+		Required:  true,
 		Name:      "GIT_SSH_SECRET",
 		NameDesc:  "用于拉取git仓库代码的secret名称, kubectl create secret generic git-ssh-key --from-file=id_rsa=${HOME}/.ssh/id_rsa",
 		Example:   "git-ssh-key",
@@ -223,18 +228,21 @@ func TestUpdateBuildJob(t *testing.T) {
 	})
 	// docker push registry.cn-hangzhou.aliyuncs.com/infraboard/mpaas:[镜像版本号]
 	param.Add(&job.RunParam{
-		Required: true,
-		Name:     build.SYSTEM_VARIABLE_IMAGE_REPOSITORY,
-		NameDesc: "镜像推送地址",
-		Example:  "registry.cn-hangzhou.aliyuncs.com/infraboard/mpaas",
+		Required:  true,
+		Name:      build.SYSTEM_VARIABLE_IMAGE_REPOSITORY,
+		NameDesc:  "镜像推送地址",
+		ValueDesc: "CI时, 通过读取构建配置自动获取",
+		Example:   "registry.cn-hangzhou.aliyuncs.com/infraboard/mpaas",
 	})
 	param.Add(&job.RunParam{
-		Required: true,
-		Name:     build.SYSTEM_VARIABLE_APP_VERSION,
-		NameDesc: "镜像版本",
-		Example:  "v0.0.2",
+		Required:  true,
+		Name:      build.SYSTEM_VARIABLE_APP_VERSION,
+		NameDesc:  "镜像版本",
+		ValueDesc: "CI时, 通过构建配置自动生成",
+		Example:   "v0.0.2",
 	})
 	param.Add(&job.RunParam{
+		Required:  true,
 		UsageType: job.PARAM_USAGE_TYPE_TEMPLATE,
 		Name:      "IMAGE_PUSH_SECRET",
 		NameDesc:  "用于推送镜像的secret名称, 具体文档参考: https://github.com/GoogleContainerTools/kaniko#pushing-to-docker-hub",

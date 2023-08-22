@@ -31,7 +31,7 @@ func NewCreateJobRequest() *CreateJobRequest {
 		RunParam:      NewRunParamSet(),
 		RollbackParam: NewRunParamSet(),
 		Labels:        make(map[string]string),
-		Extra:         make(map[string]string),
+		Extension:     make(map[string]string),
 	}
 }
 
@@ -105,6 +105,14 @@ func ParseUniqName(name string) (version, jobname, namespace, domain string) {
 		}
 	}
 	return
+}
+
+func NewDescribeJobRequest(value string) *DescribeJobRequest {
+	by, v := ParseDescribeName(value)
+	return &DescribeJobRequest{
+		DescribeBy:    by,
+		DescribeValue: v,
+	}
 }
 
 func NewDescribeJobRequestByName(name string) *DescribeJobRequest {
