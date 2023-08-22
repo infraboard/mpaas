@@ -186,6 +186,8 @@ func TestUpdateBuildJob(t *testing.T) {
 		Required:  true,
 		Name:      "GIT_SSH_SECRET",
 		NameDesc:  "用于拉取git仓库代码的secret名称, kubectl create secret generic git-ssh-key --from-file=id_rsa=${HOME}/.ssh/id_rsa",
+		ValueType: job.PARAM_VALUE_TYPE_K8S_SECRET,
+		ValueDesc: "如果使用默认值, 请提前确认名为git-ssh-key的secret已经创建，namespace请参考前面参数",
 		Example:   "git-ssh-key",
 		Value:     "git-ssh-key",
 	})
@@ -246,6 +248,8 @@ func TestUpdateBuildJob(t *testing.T) {
 		UsageType: job.PARAM_USAGE_TYPE_TEMPLATE,
 		Name:      "IMAGE_PUSH_SECRET",
 		NameDesc:  "用于推送镜像的secret名称, 具体文档参考: https://github.com/GoogleContainerTools/kaniko#pushing-to-docker-hub",
+		ValueType: job.PARAM_VALUE_TYPE_K8S_SECRET,
+		ValueDesc: "如果使用默认值, 请提前确认名为kaniko-secret的secret已经创建, namespace请参考前面参数",
 		Example:   "kaniko-secret",
 		Value:     "kaniko-secret",
 	})
