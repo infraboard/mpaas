@@ -134,6 +134,9 @@ message CreateJobRequest {
 	// Job 的Readme说明文档, 支持Markdown格式
 	// @gotags: bson:"readme" json:"readme"
 	string readme = 3;
+	// 文档的URL地址
+	// @gotags: bson:"document_url" json:"document_url"
+	string document_url = 26;
 	// 标签
 	// @gotags: bson:"labels" json:"labels"
 	map<string, string> labels = 24;
