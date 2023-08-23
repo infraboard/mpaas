@@ -9,7 +9,7 @@ message Event  {
     CreateEventRequest spec = 1;
     // 事件状态
     // @gotags: bson:"status" json:"status"
-    Status status = 2;
+    EventStatus status = 2;
 }
 
 // 创建事件
@@ -39,7 +39,7 @@ enum LEVEL {
 }
 
 // 事件状态
-message Status {
+message EventStatus {
     // 当前状态
     // @gotags: bson:"stage" json:"stage"
     STAGE stage = 1;

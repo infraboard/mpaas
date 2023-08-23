@@ -1,0 +1,50 @@
+syntax = "proto3";
+
+package infraboard.mpaas.event;
+option go_package = "github.com/infraboard/mpaas/apps/event";
+
+import "mpaas/apps/event/pb/event.proto";
+
+message Problem  {
+    // 故障信息
+    // @gotags: bson:",inline" json:"spec"
+    CreateProblemRequest spec = 1;
+    // 故障状态
+    // @gotags: bson:"status" json:"status"
+    ProblemStatus status = 2;
+}
+
+// 创建故障
+message CreateProblemRequest {
+    // 对象所在域
+    // @gotags: bson:"domain" json:"domain"
+    string domain = 1;
+    // 对象所在空间
+    // @gotags: bson:"namespace" json:"namespace"
+    string namespace = 2;
+    // 触发告警的规则名称, 一个规则 会生成一个故障单
+    // @gotags: bson:"rule_name" json:"rule_name"
+    string rule_name = 3;
+   // 规则URL地址, 用于跳转查看
+    // @gotags: bson:"rule_url" json:"rule_url"
+    string rule_url = 4;
+    // 故障Id, 如果不传会自动生成
+    // @gotags: bson:"_id" json:"id"
+    string id = 5;
+    // 故障开始时间
+    // @gotags: bson:"start" json:"start"
+    int64 start = 6;
+    // 故障结束时间
+    // @gotags: bson:"end" json:"end"
+    int64 end = 7;
+    // 故障级别
+    // @gotags: bson:"level" json:"level"
+    LEVEL level = 8;
+    // 故障标签
+    // @gotags: bson:"labels" json:"labels"
+    map<string,string> labels = 15;
+}
+
+message ProblemStatus {
+
+}
