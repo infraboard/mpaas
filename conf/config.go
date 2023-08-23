@@ -28,7 +28,6 @@ func newConfig() *Config {
 		Mongo:   newDefaultMongoDB(),
 		Cache:   newDefaultCache(),
 		Mcenter: rpc.NewDefaultConfig(),
-		Image:   newDefaultImage(),
 		Jaeger:  newJaeger(),
 	}
 }
@@ -40,7 +39,6 @@ type Config struct {
 	Mongo   *mongodb    `toml:"mongodb"`
 	Cache   *_cache     `toml:"cache"`
 	Mcenter *rpc.Config `toml:"mcenter"`
-	Image   *image      `toml:"image"`
 	Jaeger  *jaeger     `toml:"jaeger"`
 }
 
@@ -103,7 +101,7 @@ func (a *http) Addr() string {
 func newDefaultHTTP() *http {
 	return &http{
 		Host: "127.0.0.1",
-		Port: "8090",
+		Port: "8080",
 	}
 }
 
@@ -122,7 +120,7 @@ func (a *grpc) Addr() string {
 func newDefaultGRPC() *grpc {
 	return &grpc{
 		Host: "127.0.0.1",
-		Port: "18090",
+		Port: "18080",
 	}
 }
 
@@ -250,17 +248,6 @@ func (m *mongodb) getClient() (*mongo.Client, error) {
 	}
 
 	return client, nil
-}
-
-func newDefaultImage() *image {
-	return &image{
-		DefaultRegistry: "registry.cn-hangzhou.aliyuncs.com",
-	}
-}
-
-type image struct {
-	// 镜像默认推送仓库地址
-	DefaultRegistry string `toml:"default_registry" json:"default_registry" yaml:"default_registry" env:"DEFAULT_REGISTRY"`
 }
 
 func newJaeger() *jaeger {
