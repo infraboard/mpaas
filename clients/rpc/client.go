@@ -7,7 +7,6 @@ import (
 	"github.com/infraboard/mcenter/clients/rpc"
 	"github.com/infraboard/mcenter/clients/rpc/resolver"
 	"github.com/infraboard/mpaas/apps/deploy"
-	"github.com/infraboard/mpaas/apps/task"
 	"go.opentelemetry.io/contrib/instrumentation/google.golang.org/grpc/otelgrpc"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
@@ -72,11 +71,6 @@ type ClientSet struct {
 // 关闭GRPC连接
 func (c *ClientSet) Stop() error {
 	return c.conn.Close()
-}
-
-// Job Task 管理接口
-func (s *ClientSet) JobTask() task.JobRPCClient {
-	return task.NewJobRPCClient(s.conn)
 }
 
 // Deploy 管理接口

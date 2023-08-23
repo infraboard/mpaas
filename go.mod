@@ -14,6 +14,7 @@ require (
 	github.com/imdario/mergo v0.3.16
 	github.com/infraboard/mcenter v0.0.11-0.20230714083219-4cc7fc0bf8ec
 	github.com/infraboard/mcube v1.9.17
+	github.com/infraboard/mflow v0.0.0-20230823031557-036b2996f9e3
 	github.com/kvtools/valkeyrie v1.0.0
 	github.com/rs/xid v1.5.0
 	github.com/spf13/cobra v1.7.0
@@ -46,7 +47,6 @@ require (
 	github.com/coreos/go-systemd/v22 v22.3.2 // indirect
 	github.com/davecgh/go-spew v1.1.1 // indirect
 	github.com/felixge/httpsnoop v1.0.3 // indirect
-	github.com/fsnotify/fsnotify v1.6.0 // indirect
 	github.com/gabriel-vasile/mimetype v1.4.2 // indirect
 	github.com/gin-contrib/sse v0.1.0 // indirect
 	github.com/gin-gonic/gin v1.9.1 // indirect
@@ -110,7 +110,6 @@ require (
 	google.golang.org/appengine v1.6.7 // indirect
 	google.golang.org/genproto v0.0.0-20230306155012-7f2fa6fef1f4 // indirect
 	gopkg.in/inf.v0 v0.9.1 // indirect
-	gopkg.in/tomb.v1 v1.0.0-20141024135613-dd632973f1e7 // indirect
 	gopkg.in/yaml.v2 v2.4.0 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 	k8s.io/klog/v2 v2.90.1 // indirect
