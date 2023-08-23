@@ -85,6 +85,7 @@ func NewQueryDeploymentRequest() *QueryDeploymentRequest {
 func NewCreateDeploymentRequest() *CreateDeploymentRequest {
 	return &CreateDeploymentRequest{
 		AuthEnabled:    false,
+		EventNotify:    NewEventNotify(),
 		Labels:         make(map[string]string),
 		K8STypeConfig:  NewK8STypeConfig(),
 		HostTypeConfig: NewHostTypeConfig(),

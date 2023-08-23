@@ -232,3 +232,9 @@ func NewAccessAddress() *AccessAddress {
 func (a *AccessAddress) AddServiceEnv(name, example string) {
 	a.AccessEnvs = append(a.AccessEnvs, NewServiceEnv(name, example))
 }
+
+func NewEventNotify() *EventNotify {
+	return &EventNotify{
+		Users: []string{},
+	}
+}

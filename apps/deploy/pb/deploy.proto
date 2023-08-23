@@ -200,15 +200,9 @@ message CreateDeploymentRequest {
     // 对象所在空间
     // @gotags: bson:"namespace" json:"namespace"
     string namespace = 20;
-    // 是否开启集群事件通知
-    // @gotags: bson:"enable_event_notify" json:"enable_event_notify"
-    bool enable_event_notify = 26;
-    // 需要通知的事件等级
-    // @gotags: bson:"notify_level" json:"notify_level"
-    event.LEVEL notify_level = 27;
-    // 部署有异常事件时需要被通知的人
-    // @gotags: bson:"notify_users" json:"notify_users"
-    repeated string notify_users = 24;
+    // 集群事件通知
+    // @gotags: bson:"event_notify" json:"event_notify"
+    EventNotify event_notify = 22;
 	// 是否是模版
 	// @gotags: bson:"is_template" json:"is_template"
     bool is_template = 1;
@@ -263,6 +257,18 @@ message CreateDeploymentRequest {
     // 部署标签
     // @gotags: bson:"labels" json:"labels"
     map<string,string> labels = 25;
+}
+
+message EventNotify {
+    // 是否开启集群事件通知
+    // @gotags: bson:"enabled" json:"enabled"
+    bool enabled = 1;
+    // 需要通知的事件等级
+    // @gotags: bson:"level" json:"level"
+    event.LEVEL level = 2;
+    // 部署有异常事件时需要被通知的人
+    // @gotags: bson:"users" json:"users"
+    repeated string users = 3;
 }
 
 message AccessInfo {
