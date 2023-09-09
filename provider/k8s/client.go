@@ -9,6 +9,7 @@ import (
 
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/client-go/kubernetes"
+	"k8s.io/client-go/rest"
 	"k8s.io/client-go/tools/clientcmd"
 	clientcmdapi "k8s.io/client-go/tools/clientcmd/api"
 
@@ -59,6 +60,7 @@ func NewClient(kubeConfigYaml string) (*Client, error) {
 
 	return &Client{
 		kubeconf: kubeConf,
+		restconf: restConf,
 		client:   client,
 		log:      zap.L().Named("provider.k8s"),
 	}, nil
@@ -66,6 +68,7 @@ func NewClient(kubeConfigYaml string) (*Client, error) {
 
 type Client struct {
 	kubeconf *clientcmdapi.Config
+	restconf *rest.Config
 	client   *kubernetes.Clientset
 	log      logger.Logger
 }
@@ -102,7 +105,7 @@ func (c *Client) CurrentCluster() *clientcmdapi.Cluster {
 
 // 应用负载
 func (c *Client) WorkLoad() *workload.Client {
-	return workload.NewWorkload(c.client)
+	return workload.NewWorkload(c.client, c.restconf)
 }
 
 // 应用配置
