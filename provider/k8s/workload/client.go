@@ -10,13 +10,12 @@ import (
 	"k8s.io/client-go/rest"
 )
 
-func NewWorkload(cs *kubernetes.Clientset, restconf *rest.Config) *Client {
+func NewWorkload(cs *kubernetes.Clientset) *Client {
 	return &Client{
-		appsv1:   cs.AppsV1(),
-		batchV1:  cs.BatchV1(),
-		corev1:   cs.CoreV1(),
-		restconf: restconf,
-		l:        zap.L().Named("workload"),
+		appsv1:  cs.AppsV1(),
+		batchV1: cs.BatchV1(),
+		corev1:  cs.CoreV1(),
+		l:       zap.L().Named("workload"),
 	}
 }
 

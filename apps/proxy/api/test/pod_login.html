@@ -35,7 +35,7 @@
             const pod_name = inputs['pod_name'].value
             const container_name = inputs['container_name'].value
             const token = inputs['token'].value
-            let socket = new WebSocket(`ws://127.0.0.1:8090/mpaas/api/v1/proxy/${cluster_id}/pods/${pod_name}/login?mcenter_access_token=${token}`);
+            let socket = new WebSocket(`ws://127.0.0.1:8090/mflow/api/v1/proxy/${cluster_id}/pods/${pod_name}/login?mcenter_access_token=${token}`);
             //心跳检测
             var heartCheck = {
                 timeout: 10000,        //10秒发一次心跳
