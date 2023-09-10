@@ -22,19 +22,20 @@ import (
 
 func (i *impl) CreateDeployment(ctx context.Context, in *deploy.CreateDeploymentRequest) (
 	*deploy.Deployment, error) {
-	err := i.validate(ctx, in)
+	// 检查Cluster是否存在
+	c, err := i.cluster.DescribeCluster(ctx, deploy_cluster.NewDescribeClusterRequest(in.Cluster))
+	if err != nil {
+		return nil, err
+	}
+	in.ServiceId = c.Spec.ServiceId
+
+	err = i.validate(ctx, in)
 	if err != nil {
 		return nil, exception.NewBadRequest(err.Error())
 	}
 
 	ins := deploy.New(in)
 	ins.Spec.SetDefault()
-
-	// 检查Cluster是否存在
-	_, err = i.cluster.DescribeCluster(ctx, deploy_cluster.NewDescribeClusterRequest(in.Cluster))
-	if err != nil {
-		return nil, err
-	}
 
 	// 因为有WebHook 需要提前保存好集群信息
 	ins.Meta.Id = ins.Spec.UUID()
