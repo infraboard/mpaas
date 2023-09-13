@@ -82,6 +82,10 @@ func NewQueryDeploymentRequest() *QueryDeploymentRequest {
 	}
 }
 
+func (r *QueryDeploymentRequest) AddServiceId(sid ...string) {
+	r.ServiceIds = append(r.ServiceIds, sid...)
+}
+
 func NewCreateDeploymentRequest() *CreateDeploymentRequest {
 	return &CreateDeploymentRequest{
 		AuthEnabled:    false,

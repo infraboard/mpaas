@@ -33,15 +33,12 @@ message CreateClusterRequest {
     // 服务Id
     // @gotags: bson:"service_id" json:"service_id" validate:"required"
     string service_id = 1;
-    // 对象所属环境
-    // @gotags: bson:"environment" json:"environment" validate:"required"
-    string environment = 2;
     // 集群名称
     // @gotags: bson:"name" json:"name" validate:"required"
-    string name = 3;
+    string name = 2;
     // 集群描述
     // @gotags: bson:"describe" json:"describe"
-    string describe = 4;
+    string describe = 3;
     // 部署标签
     // @gotags: bson:"labels" json:"labels"
     map<string,string> labels = 15;

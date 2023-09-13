@@ -10,6 +10,7 @@ import (
 
 func TestQueryCluster(t *testing.T) {
 	req := cluster.NewQueryClusterRequest()
+	req.Label["Env"] = "开发"
 	req.WithDeployment = true
 	ds, err := impl.QueryCluster(ctx, req)
 	if err != nil {
@@ -21,7 +22,7 @@ func TestQueryCluster(t *testing.T) {
 func TestCreateCluster(t *testing.T) {
 	req := cluster.NewCreateClusterRequest()
 	req.ServiceId = conf.C.MCENTER_SERVICE_ID
-	req.Environment = "生产"
+	req.Labels["Env"] = "开发"
 	req.Name = "默认集群"
 	ds, err := impl.CreateCluster(ctx, req)
 	if err != nil {

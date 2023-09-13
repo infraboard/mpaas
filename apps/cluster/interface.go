@@ -3,7 +3,11 @@ package cluster
 import (
 	context "context"
 
+	"github.com/emicklei/go-restful/v3"
+	"github.com/infraboard/mcenter/apps/policy"
+	"github.com/infraboard/mcenter/apps/token"
 	"github.com/infraboard/mcube/http/request"
+	"github.com/infraboard/mcube/pb/resource"
 )
 
 const (
@@ -19,8 +23,18 @@ type Service interface {
 
 func NewQueryClusterRequest() *QueryClusterRequest {
 	return &QueryClusterRequest{
-		Page: request.NewDefaultPageRequest(),
+		Page:    request.NewDefaultPageRequest(),
+		Filters: []*resource.LabelRequirement{},
+		Label:   map[string]string{},
 	}
+}
+
+func NewQueryClusterRequestFromHttp(r *restful.Request) *QueryClusterRequest {
+	req := NewQueryClusterRequest()
+	req.Page = request.NewPageRequestFromHTTP(r.Request)
+	req.Scope = token.GetTokenFromRequest(r).GenScope()
+	req.Filters = policy.GetScopeFilterFromRequest(r)
+	return req
 }
 
 func NewCreateClusterRequest() *CreateClusterRequest {
