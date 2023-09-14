@@ -97,7 +97,7 @@ func (i *impl) validate(ctx context.Context, in *deploy.CreateDeploymentRequest)
 		return fmt.Errorf("无主容器[第一个容器]配置")
 	}
 	// 检查主容器名称
-	if serviceContainer.Name == in.ServiceName {
+	if serviceContainer.Name != in.ServiceName {
 		return fmt.Errorf("主容器[第一个容器]名称(%s)与服务名称(%s)不相同, 请修改主容器名称为服务名称",
 			serviceContainer.Name,
 			in.ServiceName,

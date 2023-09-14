@@ -27,9 +27,9 @@ func TestDescribeCluster(t *testing.T) {
 
 func TestCreateCluster(t *testing.T) {
 	req := cluster.NewCreateClusterRequest()
-	req.Provider = "腾讯云"
-	req.Region = "上海"
-	req.Name = "k8s-test"
+	req.Provider = "Docker"
+	req.Region = "Local"
+	req.Name = "docker-desktop"
 
 	req.KubeConfig = tools.MustReadContentFile("test/kube_config.yml")
 	ins, err := impl.CreateCluster(ctx, req)

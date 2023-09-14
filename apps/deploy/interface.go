@@ -67,7 +67,7 @@ func (req *CreateDeploymentRequest) SetDefault() {
 }
 
 func (req *CreateDeploymentRequest) UUID() string {
-	return hash.FnvHash(req.Domain, req.Namespace, req.ServiceName, req.Name)
+	return hash.FnvHash(req.Domain, req.Namespace, req.ServiceName, req.Cluster, req.Name)
 }
 
 func NewQueryDeploymentRequestFromHttp(r *http.Request) *QueryDeploymentRequest {

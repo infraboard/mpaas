@@ -55,11 +55,11 @@ func TestCreateMongoDeployment(t *testing.T) {
 func TestCreateMcenterDeployment(t *testing.T) {
 	k8sConf := deploy.NewK8STypeConfig()
 	k8sConf.WorkloadConfig = tools.MustReadContentFile("test/mcenter_workload.yml")
-	k8sConf.ClusterId = "k8s-test"
+	k8sConf.ClusterId = "docker-desktop"
 
 	req := deploy.NewCreateDeploymentRequest()
 	req.K8STypeConfig = k8sConf
-	req.ServiceId = conf.C.MCENTER_SERVICE_ID
+	req.Cluster = conf.C.MCNETER_CLUSTER_ID
 
 	ds, err := impl.CreateDeployment(ctx, req)
 	if err != nil {
