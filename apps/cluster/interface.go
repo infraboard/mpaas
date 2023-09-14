@@ -34,6 +34,7 @@ func NewQueryClusterRequestFromHttp(r *restful.Request) *QueryClusterRequest {
 	req.Page = request.NewPageRequestFromHTTP(r.Request)
 	req.Scope = token.GetTokenFromRequest(r).GenScope()
 	req.Filters = policy.GetScopeFilterFromRequest(r)
+	req.WithDeployment = r.QueryParameter("with_deploy") == "true"
 	return req
 }
 

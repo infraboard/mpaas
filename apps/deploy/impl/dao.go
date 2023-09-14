@@ -36,8 +36,10 @@ func (r *queryRequest) FindOptions() *options.FindOptions {
 }
 
 func (r *queryRequest) FindFilter() bson.M {
-	filter := bson.M{
-		"domain": r.Domain,
+	filter := bson.M{}
+
+	if r.Domain != "" {
+		filter["domain"] = r.Domain
 	}
 
 	if r.Namespace != "" {
@@ -53,7 +55,7 @@ func (r *queryRequest) FindFilter() bson.M {
 		filter["environment"] = bson.M{"$in": r.Environments}
 	}
 	if len(r.Clusters) > 0 {
-		filter["clusters"] = bson.M{"$in": r.Clusters}
+		filter["cluster"] = bson.M{"$in": r.Clusters}
 	}
 	return filter
 }
