@@ -78,7 +78,8 @@ func NewQueryDeploymentRequestFromHttp(r *http.Request) *QueryDeploymentRequest 
 
 func NewQueryDeploymentRequest() *QueryDeploymentRequest {
 	return &QueryDeploymentRequest{
-		Page: request.NewDefaultPageRequest(),
+		Page:  request.NewDefaultPageRequest(),
+		Scope: resource.NewScope(),
 	}
 }
 

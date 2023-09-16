@@ -35,6 +35,7 @@ func NewQueryClusterRequestFromHttp(r *restful.Request) *QueryClusterRequest {
 	req.Scope = token.GetTokenFromRequest(r).GenScope()
 	req.Filters = policy.GetScopeFilterFromRequest(r)
 	req.WithDeployment = r.QueryParameter("with_deploy") == "true"
+	req.Filters = resource.ParseLabelRequirementListFromString(r.QueryParameter("filters"))
 	return req
 }
 

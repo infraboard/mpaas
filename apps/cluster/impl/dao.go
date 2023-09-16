@@ -37,12 +37,7 @@ func (r *queryRequest) FindFilter() bson.M {
 	filter := bson.M{}
 	token.MakeMongoFilter(filter, r.Scope)
 	policy.MakeMongoFilter(filter, "labels", r.Filters)
-
-	if r.Label != nil && len(r.Label) > 0 {
-		for k, v := range r.Label {
-			filter["labels."+k] = v
-		}
-	}
+	policy.MakeMongoLabelFromMap(filter, "labels", r.Label)
 
 	if len(r.Ids) > 0 {
 		filter["_id"] = bson.M{"$in": r.Ids}

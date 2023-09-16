@@ -4,6 +4,8 @@ import (
 	"context"
 	"time"
 
+	"github.com/infraboard/mcenter/apps/policy"
+	"github.com/infraboard/mcenter/apps/token"
 	"github.com/infraboard/mcube/exception"
 	"github.com/infraboard/mpaas/apps/deploy"
 	"go.mongodb.org/mongo-driver/bson"
@@ -37,22 +39,14 @@ func (r *queryRequest) FindOptions() *options.FindOptions {
 
 func (r *queryRequest) FindFilter() bson.M {
 	filter := bson.M{}
+	token.MakeMongoFilter(filter, r.Scope)
+	policy.MakeMongoFilter(filter, "labels", r.Filters)
 
-	if r.Domain != "" {
-		filter["domain"] = r.Domain
-	}
-
-	if r.Namespace != "" {
-		filter["namespace"] = r.Namespace
-	}
 	if len(r.Ids) > 0 {
 		filter["_id"] = bson.M{"$in": r.Ids}
 	}
 	if len(r.ServiceIds) > 0 {
 		filter["service_id"] = bson.M{"$in": r.ServiceIds}
-	}
-	if len(r.Environments) > 0 {
-		filter["environment"] = bson.M{"$in": r.Environments}
 	}
 	if len(r.Clusters) > 0 {
 		filter["cluster"] = bson.M{"$in": r.Clusters}

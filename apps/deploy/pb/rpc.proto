@@ -6,6 +6,8 @@ option go_package = "github.com/infraboard/mpaas/apps/deploy";
 import "mcube/pb/request/request.proto";
 import "mcube/pb/page/page.proto";
 import "mpaas/apps/deploy/pb/deploy.proto";
+import "mcube/pb/resource/meta.proto";
+import "mcube/pb/resource/label.proto";
 
 // RPC 应用部署配置
 service RPC {
@@ -41,27 +43,24 @@ message UpdateDeploymentStatusRequest {
 }
 
 message QueryDeploymentRequest {
-    // 所属域
-    // @gotags: json:"domain"
-    string domain = 6;
-    // 所属空间
-    // @gotags: json:"namespace"
-    string namespace = 7;
+    // 资源范围
+    // @gotags: json:"scope"
+    mcube.resource.Scope scope = 1;
+    // 资源标签过滤
+    // @gotags: json:"filters"
+    repeated mcube.resource.LabelRequirement filters = 2;
     // 分页请求
     // @gotags: json:"page"
-    mcube.page.PageRequest page = 1;
+    mcube.page.PageRequest page = 3;
     // 部署Id列表
     // @gotags: json:"ids"
-    repeated string ids = 2;
+    repeated string ids = 4;
     // 查询服务相关的部署
     // @gotags: json:"service_ids"
-    repeated string service_ids = 3;
-    // 查询环境相关的部署
-    // @gotags: json:"envs"
-    repeated string environments = 4;
+    repeated string service_ids = 5;
     // 查询集群相关的部署
     // @gotags: json:"clusters"
-    repeated string clusters = 5;
+    repeated string clusters = 6;
 }
 
 enum DESCRIBE_BY {

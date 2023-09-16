@@ -12,7 +12,7 @@ import (
 
 func TestQueryDeploy(t *testing.T) {
 	req := deploy.NewQueryDeploymentRequest()
-	req.Domain = domain.DEFAULT_DOMAIN
+	req.Scope.Domain = domain.DEFAULT_DOMAIN
 	ds, err := impl.QueryDeployment(ctx, req)
 	if err != nil {
 		t.Fatal(err)
