@@ -28,9 +28,11 @@ type ClusterSet struct {
 	unknownFields protoimpl.UnknownFields
 
 	// 总数
-	Total int64 `protobuf:"varint,1,opt,name=total,proto3" json:"total,omitempty"`
+	// @gotags: json:"total"
+	Total int64 `protobuf:"varint,1,opt,name=total,proto3" json:"total"`
 	// 清单
-	Items []*Cluster `protobuf:"bytes,2,rep,name=items,proto3" json:"items,omitempty"`
+	// @gotags: json:"items"
+	Items []*Cluster `protobuf:"bytes,2,rep,name=items,proto3" json:"items"`
 }
 
 func (x *ClusterSet) Reset() {

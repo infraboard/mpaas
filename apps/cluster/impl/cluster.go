@@ -15,6 +15,7 @@ import (
 func (i *impl) QueryCluster(ctx context.Context, in *cluster.QueryClusterRequest) (
 	*cluster.ClusterSet, error) {
 	r := newQueryRequest(in)
+	i.log.Debugf("filter: %s", r.FindFilter())
 	resp, err := i.col.Find(ctx, r.FindFilter(), r.FindOptions())
 
 	if err != nil {

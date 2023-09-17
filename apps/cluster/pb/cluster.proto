@@ -8,8 +8,10 @@ import "mpaas/apps/deploy/pb/deploy.proto";
 
 message ClusterSet {
     // 总数
+    // @gotags: json:"total"
     int64 total = 1;
     // 清单
+    // @gotags: json:"items"
     repeated Cluster items = 2;
 }
 
