@@ -130,6 +130,19 @@ func (w *WorkLoad) SetDefaultNamespace(ns string) {
 	}
 }
 
+func (w *WorkLoad) SetMatchLabel(k, v string) {
+	switch w.WorkloadKind {
+	case WORKLOAD_KIND_DEPLOYMENT:
+		w.Deployment.Spec.Selector.MatchLabels[k] = v
+	case WORKLOAD_KIND_STATEFULSET:
+		w.StatefulSet.Spec.Selector.MatchLabels[k] = v
+	case WORKLOAD_KIND_DAEMONSET:
+		w.DaemonSet.Spec.Selector.MatchLabels[k] = v
+	case WORKLOAD_KIND_CRONJOB:
+	case WORKLOAD_KIND_JOB:
+	}
+}
+
 func (w *WorkLoad) GetPodTemplateSpec() (podSpec *v1.PodTemplateSpec) {
 	switch w.WorkloadKind {
 	case WORKLOAD_KIND_DEPLOYMENT:

@@ -33,9 +33,12 @@ message QueryClusterRequest {
     // 集群 名称列表
     // @gotags: json:"names"
     repeated string names = 5;
+    // 服务 Id列表
+    // @gotags: json:"service_ids"
+    repeated string service_ids = 6;
     // 查询查询集群管理的部署
     // @gotags: json:"with_deployment"
-    bool with_deployment = 6;
+    bool with_deployment = 7;
     // 集群 标签
     // @gotags: json:"label"
     map<string,string> label = 15;

@@ -92,6 +92,17 @@ func (d *Deployment) GetK8sClusterId() string {
 	return d.Spec.K8STypeConfig.ClusterId
 }
 
+func (d *Deployment) InjectPodLabel() map[string]string {
+	m := map[string]string{
+		LABEL_SERVICE_NAME_KEY: d.Spec.ServiceName,
+		LABEL_NAMESPACE_KEY:    d.Spec.Namespace,
+		LABEL_CLUSTER_KEY:      d.Spec.Cluster,
+		LABEL_DEPLOY_GROUP_KEY: d.Spec.Group,
+		LABEL_DEPLOY_ID_KEY:    d.Meta.Id,
+	}
+	return m
+}
+
 // 部署时的系统变量, 在部署任务时注入
 func (d *Deployment) SystemVariable() ([]v1.EnvVar, error) {
 	items := []*job.RunParam{}

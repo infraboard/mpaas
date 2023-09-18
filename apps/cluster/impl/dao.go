@@ -47,5 +47,9 @@ func (r *queryRequest) FindFilter() bson.M {
 		filter["name"] = bson.M{"$in": r.Names}
 	}
 
+	if len(r.ServiceIds) > 0 {
+		filter["service_id"] = bson.M{"$in": r.ServiceIds}
+	}
+
 	return filter
 }

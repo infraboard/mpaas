@@ -37,6 +37,19 @@ func InjectPodTemplateSpecAnnotations(pod *v1.PodTemplateSpec, key, value string
 	pod.Annotations[key] = value
 }
 
+func InjectPodTemplateSpecLabel(pod *v1.PodTemplateSpec, key, value string) {
+	if pod == nil {
+		return
+	}
+
+	if pod.Labels == nil {
+		pod.Labels = map[string]string{}
+	}
+
+	// 注入
+	pod.Labels[key] = value
+}
+
 func InjectPodEnvVars(pod *v1.PodSpec, envs []v1.EnvVar) {
 	if len(envs) == 0 {
 		return

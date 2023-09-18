@@ -81,7 +81,7 @@ func (c *Cluster) MarshalJSON() ([]byte, error) {
 		*resource.Meta
 		*resource.Scope
 		*CreateClusterRequest
-		Deployments *deploy.DeploymentSet
+		Deployments *deploy.DeploymentSet `json:"deployments"`
 	}{c.Meta, c.Scope, c.Spec, c.Deployments})
 }
 

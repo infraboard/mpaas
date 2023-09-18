@@ -122,6 +122,11 @@ func (i *impl) RunK8sDeploy(ctx context.Context, ins *deploy.Deployment) error {
 	pts := wl.GetPodTemplateSpec()
 	workload.InjectPodTemplateSpecAnnotations(pts, deploy.ANNOTATION_DEPLOY_ID, ins.Meta.Id)
 	wl.SetAnnotations(deploy.ANNOTATION_DEPLOY_ID, ins.Meta.Id)
+	for k, v := range ins.InjectPodLabel() {
+		workload.InjectPodTemplateSpecLabel(pts, k, v)
+	}
+	// 设置Match Lable
+	wl.SetMatchLabel(deploy.LABEL_DEPLOY_ID_KEY, ins.Meta.Id)
 
 	// 补充需要注入的系统变量
 	// ins.DynamicInjection.EnvGroups[0].ToContainerEnvVars()

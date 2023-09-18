@@ -2,6 +2,7 @@ package cluster
 
 import (
 	context "context"
+	"strings"
 
 	"github.com/emicklei/go-restful/v3"
 	"github.com/infraboard/mcenter/apps/policy"
@@ -23,9 +24,12 @@ type Service interface {
 
 func NewQueryClusterRequest() *QueryClusterRequest {
 	return &QueryClusterRequest{
-		Page:    request.NewDefaultPageRequest(),
-		Filters: []*resource.LabelRequirement{},
-		Label:   map[string]string{},
+		Page:       request.NewDefaultPageRequest(),
+		Filters:    []*resource.LabelRequirement{},
+		Label:      map[string]string{},
+		ServiceIds: []string{},
+		Names:      []string{},
+		Ids:        []string{},
 	}
 }
 
@@ -36,7 +40,18 @@ func NewQueryClusterRequestFromHttp(r *restful.Request) *QueryClusterRequest {
 	req.Filters = policy.GetScopeFilterFromRequest(r)
 	req.WithDeployment = r.QueryParameter("with_deploy") == "true"
 	req.Filters = resource.ParseLabelRequirementListFromString(r.QueryParameter("filters"))
+	req.AddServiceIds(r.QueryParameter("service_ids"))
 	return req
+}
+
+func (req *QueryClusterRequest) AddServiceIds(ids string) {
+	ids = strings.TrimSpace(ids)
+	if ids == "" {
+		return
+	}
+
+	idList := strings.Split(ids, ",")
+	req.ServiceIds = append(req.ServiceIds, idList...)
 }
 
 func NewCreateClusterRequest() *CreateClusterRequest {
