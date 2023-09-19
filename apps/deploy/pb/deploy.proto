@@ -178,7 +178,7 @@ message K8sTypeConfig {
     string service = 4;
     // k8s pods状态, 由Operater负责更新
     // @gotags: bson:"pods" json:"pods"
-    string pods = 5;
+    map<string,string> pods = 5;
 }
 
 // HostTypeConfig 主机部署相关配置
