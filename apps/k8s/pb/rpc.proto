@@ -33,7 +33,11 @@ message QueryClusterRequest {
     // 集群所属地域
     // @gotags: json:"region"
     string region = 6;
+    // 集群Id列表
+    // @gotags: json:"cluster_ids"
+    repeated string cluster_ids = 7; 
 }
+
 
 message DescribeClusterRequest {
     // Cluster id

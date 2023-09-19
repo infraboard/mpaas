@@ -136,6 +136,7 @@ func (i *impl) RunK8sDeploy(ctx context.Context, ins *deploy.Deployment) error {
 	if err != nil {
 		return err
 	}
+
 	// 运行工作负载
 	ins.Status.MarkCreating()
 	wl, err = k8sClient.WorkLoad().Run(ctx, wl)

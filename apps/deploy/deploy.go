@@ -25,6 +25,23 @@ func (s *DeploymentSet) Add(item *Deployment) {
 	s.Items = append(s.Items, item)
 }
 
+func (s *DeploymentSet) Len() int {
+	return len(s.Items)
+}
+
+func (s *DeploymentSet) GetK8sClusterIds() (ids []string) {
+	m := map[string]string{}
+	for i := range s.Items {
+		item := s.Items[i]
+		m[item.GetK8sClusterId()] = ""
+	}
+
+	for k := range m {
+		ids = append(ids, k)
+	}
+	return
+}
+
 func NewDefaultDeploy() *Deployment {
 	return &Deployment{
 		Spec:             NewCreateDeploymentRequest(),
@@ -149,7 +166,9 @@ func (c *K8STypeConfig) Merge(target *K8STypeConfig) error {
 	}
 
 	// 不能更新集群的clusterId
-	target.ClusterId = c.ClusterId
+	if target.ClusterId != "" && target.ClusterId != c.ClusterId {
+		return fmt.Errorf("状态更新, 禁止修改集群, 修改值: %s", target.ClusterId)
+	}
 
 	return mergo.MergeWithOverwrite(c, target)
 }
