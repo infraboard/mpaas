@@ -51,6 +51,9 @@ func (r *queryRequest) FindFilter() bson.M {
 	if len(r.Clusters) > 0 {
 		filter["cluster"] = bson.M{"$in": r.Clusters}
 	}
+	if r.PodName != "" {
+		filter["k8s_type_config.pods."+r.PodName] = bson.M{"$ne": ""}
+	}
 	return filter
 }
 

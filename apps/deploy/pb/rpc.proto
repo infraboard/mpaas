@@ -61,6 +61,9 @@ message QueryDeploymentRequest {
     // 查询集群相关的部署
     // @gotags: json:"clusters"
     repeated string clusters = 6;
+    // 查询Pod关联的部署
+    // @gotags: json:"pod_name"
+    string pod_name = 7;
 }
 
 enum DESCRIBE_BY {
