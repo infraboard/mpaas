@@ -1,6 +1,7 @@
 package api
 
 import (
+	"fmt"
 	"io"
 	"net/http"
 	"time"
@@ -163,6 +164,7 @@ func (h *handler) LoginContainer(r *restful.Request, w *restful.Response) {
 
 	// 登录容器
 	client := r.Attribute(proxy.ATTRIBUTE_K8S_CLIENT).(*k8s.Client)
+	fmt.Println(req)
 	err = client.WorkLoad().LoginContainer(r.Request.Context(), req)
 	if err != nil {
 		term.Failed(err)
@@ -181,7 +183,7 @@ func (h *handler) WatchConainterLog(r *restful.Request, w *restful.Response) {
 	}
 
 	websocket.Subprotocols(r.Request)
-	term := terminal.NewWebSocketWriter(ws)
+	term := terminal.NewWebSocketTerminal(ws)
 
 	// 开启认证与鉴权
 	entry := endpoint.NewEntryFromRestRequest(r).

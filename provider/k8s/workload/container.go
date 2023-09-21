@@ -7,6 +7,7 @@ import (
 	"time"
 
 	"github.com/go-playground/validator/v10"
+	"github.com/infraboard/mcube/tools/pretty"
 	"github.com/infraboard/mpaas/common/format"
 	v1 "k8s.io/api/core/v1"
 	"k8s.io/client-go/kubernetes/scheme"
@@ -47,6 +48,10 @@ type LoginContainerRequest struct {
 
 func (req *LoginContainerRequest) Validate() error {
 	return validate.Struct(req)
+}
+
+func (req *LoginContainerRequest) String() string {
+	return pretty.ToJSON(req)
 }
 
 type ContainerTerminal interface {
