@@ -50,6 +50,19 @@ func (i *impl) QueryCluster(ctx context.Context, in *cluster.QueryClusterRequest
 		set.UpdateDeploymens(ds)
 	}
 
+	// 查询关联的服务
+	if in.WithService && set.Len() > 0 {
+		squery := service.NewQueryServiceRequest()
+		squery.Ids = set.ServiceIds()
+		services, err := i.mcenter.Service().QueryService(ctx, squery)
+		if err != nil {
+			return nil, err
+		}
+		set.ForEatch(func(item *cluster.Cluster) {
+			item.Service = services.GetServiceById(item.Spec.ServiceId)
+		})
+	}
+
 	return set, nil
 }
 

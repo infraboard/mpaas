@@ -10,7 +10,8 @@ import (
 
 func TestQueryCluster(t *testing.T) {
 	req := cluster.NewQueryClusterRequest()
-	req.Label["Env"] = "开发1"
+	req.Label["Env"] = "开发"
+	req.WithService = true
 	req.WithDeployment = true
 	ds, err := impl.QueryCluster(ctx, req)
 	if err != nil {

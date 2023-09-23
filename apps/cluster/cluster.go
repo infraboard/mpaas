@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 
+	service "github.com/infraboard/mcenter/apps/service"
 	"github.com/infraboard/mcenter/common/validate"
 	"github.com/infraboard/mcube/pb/resource"
 	"github.com/infraboard/mcube/tools/hash"
@@ -43,10 +44,24 @@ func (s *ClusterSet) UpdateDeploymens(ds *deploy.DeploymentSet) {
 	}
 }
 
+func (s *ClusterSet) ForEatch(fn func(*Cluster)) {
+	for i := range s.Items {
+		fn(s.Items[i])
+	}
+}
+
 func (s *ClusterSet) ClusterIds() (ids []string) {
 	for i := range s.Items {
 		item := s.Items[i]
 		ids = append(ids, item.Meta.Id)
+	}
+	return
+}
+
+func (s *ClusterSet) ServiceIds() (ids []string) {
+	for i := range s.Items {
+		item := s.Items[i]
+		ids = append(ids, item.Spec.ServiceId)
 	}
 	return
 }
@@ -82,7 +97,8 @@ func (c *Cluster) MarshalJSON() ([]byte, error) {
 		*resource.Scope
 		*CreateClusterRequest
 		Deployments *deploy.DeploymentSet `json:"deployments"`
-	}{c.Meta, c.Scope, c.Spec, c.Deployments})
+		Service     *service.Service      `json:"service"`
+	}{c.Meta, c.Scope, c.Spec, c.Deployments, c.Service})
 }
 
 func (c *Cluster) FullName() string {
