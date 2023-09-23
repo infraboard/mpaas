@@ -25,6 +25,12 @@ func (s *DeploymentSet) Add(item *Deployment) {
 	s.Items = append(s.Items, item)
 }
 
+func (s *DeploymentSet) ForEatch(fn func(item *Deployment)) {
+	for i := range s.Items {
+		fn(s.Items[i])
+	}
+}
+
 func (s *DeploymentSet) Len() int {
 	return len(s.Items)
 }
