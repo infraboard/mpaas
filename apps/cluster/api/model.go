@@ -1,21 +1,34 @@
 package api
 
 import (
+	"fmt"
+
 	"github.com/infraboard/mcube/types/tree"
 	"github.com/infraboard/mpaas/apps/cluster"
 	"github.com/infraboard/mpaas/apps/deploy"
+	v1 "k8s.io/api/core/v1"
+	"sigs.k8s.io/yaml"
 )
 
-func ClusterSetToTreeSet(set *cluster.ClusterSet) (*tree.ArcoDesignTreeSet, error) {
-	trees := tree.NewArcoDesignTreeSet()
+// clusterA/v1
+func ClusterSetToTreeSet(set *cluster.ClusterSet) *tree.ArcoDesignTree {
+	tree := tree.NewArcoDesignTree()
 	set.ForEatch(func(c *cluster.Cluster) {
 		svc := c.Service
-		svcNode := trees.GetOrCreateTreeByRootKey(svc.Meta.Id, svc.Spec.Name)
-		clusterNode := svcNode.GetOrCreateChildrenByKey(c.Meta.Id, c.Spec.Name, 1)
+		clusterNode := tree.GetOrCreateTreeByRootKey(c.Spec.Name, c.Spec.Describe)
 		c.Deployments.ForEatch(func(item *deploy.Deployment) {
-			clusterNode.GetOrCreateChildrenByKey(item.Meta.Id, item.Spec.Name, 1)
+			deployNode := clusterNode.GetOrCreateChildrenByKey(item.Meta.Id,
+				fmt.Sprintf("%s_%s", svc.Spec.Name, item.Spec.Name))
+			for k, podStr := range item.Spec.K8STypeConfig.Pods {
+				podNode := deployNode.GetOrCreateChildrenByKey(k, k)
+				podObj := &v1.Pod{}
+				if err := yaml.Unmarshal([]byte(podStr), podObj); err != nil {
+					continue
+				}
+				podNode.SetTitle(podObj.Status.PodIP)
+			}
 		})
 	})
 
-	return nil, nil
+	return tree
 }

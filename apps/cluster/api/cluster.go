@@ -61,12 +61,7 @@ func (h *handler) QueryCluster(r *restful.Request, w *restful.Response) {
 
 	// 针对前端专门做Tree转换
 	if r.QueryParameter("to_tree") == "true" {
-		trees, err := ClusterSetToTreeSet(set)
-		if err != nil {
-			response.Failed(w, err)
-			return
-		}
-		response.Success(w, trees)
+		response.Success(w, ClusterSetToTreeSet(set))
 		return
 	}
 
