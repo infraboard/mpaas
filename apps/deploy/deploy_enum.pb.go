@@ -99,51 +99,6 @@ func (t *TYPE) UnmarshalJSON(b []byte) error {
 	return nil
 }
 
-// ParseKINDFromString Parse KIND from string
-func ParseKINDFromString(str string) (KIND, error) {
-	key := strings.Trim(string(str), `"`)
-	v, ok := KIND_value[strings.ToUpper(key)]
-	if !ok {
-		return 0, fmt.Errorf("unknown KIND: %s", str)
-	}
-
-	return KIND(v), nil
-}
-
-// Equal type compare
-func (t KIND) Equal(target KIND) bool {
-	return t == target
-}
-
-// IsIn todo
-func (t KIND) IsIn(targets ...KIND) bool {
-	for _, target := range targets {
-		if t.Equal(target) {
-			return true
-		}
-	}
-
-	return false
-}
-
-// MarshalJSON todo
-func (t KIND) MarshalJSON() ([]byte, error) {
-	b := bytes.NewBufferString(`"`)
-	b.WriteString(strings.ToUpper(t.String()))
-	b.WriteString(`"`)
-	return b.Bytes(), nil
-}
-
-// UnmarshalJSON todo
-func (t *KIND) UnmarshalJSON(b []byte) error {
-	ins, err := ParseKINDFromString(string(b))
-	if err != nil {
-		return err
-	}
-	*t = ins
-	return nil
-}
-
 // ParseACCESS_TYPEFromString Parse ACCESS_TYPE from string
 func ParseACCESS_TYPEFromString(str string) (ACCESS_TYPE, error) {
 	key := strings.Trim(string(str), `"`)

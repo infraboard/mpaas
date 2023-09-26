@@ -35,16 +35,29 @@ message Cluster  {
     mcenter.service.Service service = 5;
 }
 
+enum KIND {
+    // 应用工作负载, 需要关联应用
+    WORKLOAD = 0;
+    // 应用中间件, 无需关联应用, 直接部署
+    MIDDLEWARE = 1;
+}
+
 message CreateClusterRequest {
+	// 部署的类型
+	// @gotags: bson:"kind" json:"kind"
+    KIND kind = 1;
     // 服务Id
     // @gotags: bson:"service_id" json:"service_id" validate:"required"
-    string service_id = 1;
+    string service_id = 2;
     // 集群名称
     // @gotags: bson:"name" json:"name" validate:"required"
-    string name = 2;
+    string name = 3;
     // 集群描述
     // @gotags: bson:"describe" json:"describe"
-    string describe = 3;
+    string describe = 4;
+    // 扩展属性
+    // @gotags: bson:"extra" json:"extra"
+    map<string,string> extra = 14;
     // 部署标签
     // @gotags: bson:"labels" json:"labels"
     map<string,string> labels = 15;

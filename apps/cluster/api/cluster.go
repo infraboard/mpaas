@@ -3,6 +3,7 @@ package api
 import (
 	restfulspec "github.com/emicklei/go-restful-openapi/v2"
 	"github.com/emicklei/go-restful/v3"
+	"github.com/infraboard/mcenter/apps/token"
 	"github.com/infraboard/mcube/http/label"
 	"github.com/infraboard/mcube/http/restful/response"
 	"github.com/infraboard/mpaas/apps/cluster"
@@ -41,7 +42,7 @@ func (h *handler) CreateCluster(r *restful.Request, w *restful.Response) {
 		return
 	}
 
-	ins, err := h.service.CreateCluster(r.Request.Context(), req)
+	ins, err := h.service.CreateCluster(token.WithTokenCtx(r), req)
 	if err != nil {
 		response.Failed(w, err)
 		return

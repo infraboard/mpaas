@@ -25,7 +25,13 @@ func ClusterSetToTreeSet(set *cluster.ClusterSet) *tree.ArcoDesignTree {
 				if err := yaml.Unmarshal([]byte(podStr), podObj); err != nil {
 					continue
 				}
+				podNode.Extra["cluster_id"] = item.Spec.K8STypeConfig.ClusterId
+				podNode.Extra["namespace"] = podObj.Namespace
+				podNode.Extra["pod_name"] = podObj.Name
+				podNode.Extra["status"] = string(podObj.Status.Phase)
+				podNode.Extra["message"] = fmt.Sprintf("%s,%s", podObj.Status.Reason, podObj.Status.Message)
 				podNode.SetTitle(podObj.Status.PodIP)
+				podNode.IsLeaf = true
 			}
 		})
 	})

@@ -35,11 +35,10 @@ func TestCreateMongoDeployment(t *testing.T) {
 	k8sConf := deploy.NewK8STypeConfig()
 	k8sConf.WorkloadConfig = tools.MustReadContentFile("test/mongodb_workload.yml")
 	k8sConf.Service = tools.MustReadContentFile("test/mongodb_service.yml")
-	k8sConf.ClusterId = "k8s-test"
+	k8sConf.ClusterId = "docker-desktop"
 
 	req := deploy.NewCreateDeploymentRequest()
-	req.Cluster = conf.C.DEPLOY_CLUSTER_ID
-	req.Kind = deploy.KIND_MIDDLEWARE
+	req.Cluster = conf.C.MONGO_CLUSTER_ID
 	req.ServiceName = "mongodb"
 	req.K8STypeConfig = k8sConf
 	req.Domain = domain.DEFAULT_DOMAIN

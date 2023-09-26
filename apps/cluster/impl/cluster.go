@@ -4,6 +4,7 @@ import (
 	"context"
 
 	"github.com/infraboard/mcenter/apps/service"
+	"github.com/infraboard/mcenter/apps/token"
 	"github.com/infraboard/mcube/exception"
 	"github.com/infraboard/mpaas/apps/cluster"
 	"github.com/infraboard/mpaas/apps/deploy"
@@ -74,15 +75,23 @@ func (i *impl) CreateCluster(ctx context.Context, in *cluster.CreateClusterReque
 	}
 
 	// 获取Service信息
-	svc, err := i.mcenter.Service().DescribeService(
-		ctx,
-		service.NewDescribeServiceRequest(in.ServiceId),
-	)
-	if err != nil {
-		return nil, err
+	switch in.Kind {
+	case cluster.KIND_WORKLOAD:
+		svc, err := i.mcenter.Service().DescribeService(
+			ctx,
+			service.NewDescribeServiceRequest(in.ServiceId),
+		)
+		if err != nil {
+			return nil, err
+		}
+		ins.Scope.Domain = svc.Spec.Domain
+		ins.Scope.Namespace = svc.Spec.Namespace
+	default:
+		tk := token.GetTokenFromCtx(ctx)
+		if tk != nil {
+			ins.Scope = tk.GenScope()
+		}
 	}
-	ins.Scope.Domain = svc.Spec.Domain
-	ins.Scope.Namespace = svc.Spec.Namespace
 
 	if _, err := i.col.InsertOne(ctx, ins); err != nil {
 		return nil, exception.NewInternalServerError("inserted a cluster document error, %s", err)

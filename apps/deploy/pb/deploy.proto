@@ -186,17 +186,7 @@ message HostTypeConfig {
 
 }
 
-enum KIND {
-    // 应用工作负载, 需要关联应用
-    WORKLOAD = 0;
-    // 应用中间件, 无需关联应用, 直接部署
-    MIDDLEWARE = 1;
-}
-
 message CreateDeploymentRequest {
-	// 部署的类型
-	// @gotags: bson:"kind" json:"kind"
-    KIND kind = 18;
     // 对象所在域
     // @gotags: bson:"domain" json:"domain"
     string domain = 19;

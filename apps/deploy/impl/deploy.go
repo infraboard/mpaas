@@ -29,7 +29,7 @@ func (i *impl) CreateDeployment(ctx context.Context, in *deploy.CreateDeployment
 	}
 	in.ServiceId = c.Spec.ServiceId
 
-	err = i.validate(ctx, in)
+	err = i.validate(ctx, c.Spec.Kind, in)
 	if err != nil {
 		return nil, exception.NewBadRequest(err.Error())
 	}
@@ -56,7 +56,7 @@ func (i *impl) CreateDeployment(ctx context.Context, in *deploy.CreateDeployment
 	return ins, nil
 }
 
-func (i *impl) validate(ctx context.Context, in *deploy.CreateDeploymentRequest) error {
+func (i *impl) validate(ctx context.Context, kind deploy_cluster.KIND, in *deploy.CreateDeploymentRequest) error {
 	if err := in.Validate(); err != nil {
 		return err
 	}
@@ -68,8 +68,8 @@ func (i *impl) validate(ctx context.Context, in *deploy.CreateDeploymentRequest)
 	}
 
 	// 补充服务相关信息
-	switch in.Kind {
-	case deploy.KIND_WORKLOAD:
+	switch kind {
+	case deploy_cluster.KIND_WORKLOAD:
 		err := in.ValidateWorkLoad()
 		if err != nil {
 			return exception.NewBadRequest(err.Error())
@@ -82,7 +82,7 @@ func (i *impl) validate(ctx context.Context, in *deploy.CreateDeploymentRequest)
 		in.ServiceName = svc.Spec.Name
 		in.Domain = svc.Spec.Namespace
 		in.Namespace = svc.Spec.Namespace
-	case deploy.KIND_MIDDLEWARE:
+	case deploy_cluster.KIND_MIDDLEWARE:
 		err := in.ValidateMiddleware()
 		if err != nil {
 			return err

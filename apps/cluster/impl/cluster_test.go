@@ -22,9 +22,9 @@ func TestQueryCluster(t *testing.T) {
 
 func TestCreateCluster(t *testing.T) {
 	req := cluster.NewCreateClusterRequest()
-	req.ServiceId = conf.C.MCENTER_SERVICE_ID
+	req.Kind = cluster.KIND_MIDDLEWARE
 	req.Labels["Env"] = "开发"
-	req.Name = "默认集群"
+	req.Name = "MongoDB"
 	ds, err := impl.CreateCluster(ctx, req)
 	if err != nil {
 		t.Fatal(err)
