@@ -58,6 +58,7 @@ func (req *QueryClusterRequest) AddServiceIds(ids string) {
 func NewCreateClusterRequest() *CreateClusterRequest {
 	return &CreateClusterRequest{
 		Labels: map[string]string{},
+		Extra:  map[string]string{},
 	}
 }
 

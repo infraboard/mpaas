@@ -247,39 +247,6 @@ func (s *Status) UpdateK8sWorkloadStatus(status *workload.WorkloadStatus) {
 	s.UpdateAt = time.Now().Unix()
 }
 
-func NewAccessAddressFromK8sService(svc *v1.Service) *AccessAddress {
-	address := NewAccessAddress()
-	for i := range svc.Spec.Ports {
-		p := svc.Spec.Ports[i]
-		name := fmt.Sprintf(
-			"%s_PORT_%d_%s",
-			strings.ToUpper(svc.Name),
-			p.Port,
-			strings.ToUpper(string(p.Protocol)),
-		)
-		address.AddServiceEnv(name, "REDIS_SERVICE_NAME_PORT_6379_TCP")
-	}
-
-	return &AccessAddress{}
-}
-
-func NewServiceEnv(name, example string) *AccessEnv {
-	return &AccessEnv{
-		Name:    name,
-		Example: example,
-	}
-}
-
-func NewAccessAddress() *AccessAddress {
-	return &AccessAddress{
-		AccessEnvs: []*AccessEnv{},
-	}
-}
-
-func (a *AccessAddress) AddServiceEnv(name, example string) {
-	a.AccessEnvs = append(a.AccessEnvs, NewServiceEnv(name, example))
-}
-
 func NewEventNotify() *EventNotify {
 	return &EventNotify{
 		Users: []string{},

@@ -244,9 +244,6 @@ message CreateDeploymentRequest {
     // 是否需要发布申请, 需要发布申请的部署 不允许执行自动部署
     // @gotags: bson:"is_approval" json:"is_approval"
     bool is_approval = 15;
-    // 服务访问地址相关信息
-    // @gotags: bson:"access_info" json:"access_info"
-    AccessInfo access_info = 16;
     // 部署标签
     // @gotags: bson:"labels" json:"labels"
     map<string,string> labels = 25;
@@ -264,44 +261,3 @@ message EventNotify {
     repeated string users = 3;
 }
 
-message AccessInfo {
-    // 内部访问地址
-    // @gotags: bson:"private" json:"private"
-    AccessAddress private = 1;
-    // 是否注册到网关
-    // @gotags: bson:"registe_gateway" json:"registe_gateway"
-    bool registe_gateway = 2;
-    // 网关Id
-    // @gotags: bson:"gateway_id" json:"gateway_id"
-    string gateway_id = 3;
-    // 外部访问地址
-    // @gotags: bson:"public" json:"public"
-    AccessAddress public = 4;
-}
-
-enum ACCESS_TYPE {
-    // 以环境变量访问
-    ENV = 0;
-}
-
-// 部署的访问方式
-message AccessAddress {
-    // 访问的方式
-    // @gotags: bson:"type" json:"type"
-    ACCESS_TYPE type = 1;
-    // 访问地址
-    // @gotags: bson:"access_envs" json:"access_envs"
-    repeated AccessEnv access_envs = 2;
-}
-
-// kubelet 为 Pod 添加环境变量 {SVCNAME}_SERVICE_HOST 和 {SVCNAME}_SERVICE_PORT。 
-// 这里 Service 的名称需大写，横线被转换成下划线。
-// 具体请参考: https://kubernetes.io/zh-cn/docs/concepts/services-networking/service/#environment-variables
-message AccessEnv {
-    // 服务访问地址变量的名称
-    // @gotags: bson:"name" json:"name"
-    string name = 1;
-    // 样例
-    // @gotags: bson:"example" json:"example"
-    string example = 2;
-}

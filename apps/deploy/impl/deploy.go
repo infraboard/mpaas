@@ -157,7 +157,6 @@ func (i *impl) RunK8sDeploy(ctx context.Context, ins *deploy.Deployment) error {
 			return err
 		}
 		wc.Service = yaml.MustToYaml(service)
-		ins.Spec.AccessInfo.Private = deploy.NewAccessAddressFromK8sService(service)
 	}
 
 	return nil
