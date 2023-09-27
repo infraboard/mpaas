@@ -123,6 +123,8 @@ func (i *impl) createClusterNetwork(ctx context.Context, ins *cluster.Cluster) e
 			return err
 		}
 		svc.Annotations[deploy.ANNOTATION_CLUSTER_ID] = ins.Meta.Id
+		// 该svc控制 所有带有该cluster id标签的pod
+		svc.Spec.Selector[deploy.LABEL_CLUSTER_KEY] = ins.Meta.Id
 
 		// 查询部署的k8s集群
 		k8sClient, err := i.GetDeployK8sClient(ctx, private.K8SCluster)
