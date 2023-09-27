@@ -2,7 +2,8 @@ package deploy
 
 const (
 	// 该注解标签 用于部署成功后 回调更新部署状态, 具体功能由operator实现
-	ANNOTATION_DEPLOY_ID = "deploy.mpaas.infraboard.io/id"
+	ANNOTATION_DEPLOY_ID  = "deploy.mpaas.infraboard.io/id"
+	ANNOTATION_CLUSTER_ID = "cluster.mpaas.infraboard.io/id"
 
 	// k8s 部署时的标签
 	LABEL_SERVICE_NAME_KEY = "devcloud.service"

@@ -23,6 +23,8 @@ func TestQueryCluster(t *testing.T) {
 func TestCreateCluster(t *testing.T) {
 	req := cluster.NewCreateClusterRequest()
 	req.Kind = cluster.KIND_MIDDLEWARE
+	req.AccessConfig.Private.K8SCluster = "docker-desktop"
+	req.AccessConfig.Private.K8SService = tools.MustReadContentFile("test/mongodb_service.yml")
 	req.Labels["Env"] = "开发"
 	req.Name = "MongoDB"
 	ds, err := impl.CreateCluster(ctx, req)
@@ -42,7 +44,7 @@ func TestDescribeCluster(t *testing.T) {
 }
 
 func TestDeleteCluster(t *testing.T) {
-	req := cluster.NewDeleteClusterRequest("xxx")
+	req := cluster.NewDeleteClusterRequest("2a90c4eec422c171")
 	ds, err := impl.DeleteCluster(ctx, req)
 	if err != nil {
 		t.Fatal(err)

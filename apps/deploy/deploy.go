@@ -10,7 +10,6 @@ import (
 	"github.com/infraboard/mcube/pb/resource"
 	"github.com/infraboard/mflow/apps/build"
 	"github.com/infraboard/mflow/apps/job"
-	"github.com/infraboard/mpaas/provider/k8s/network"
 	"github.com/infraboard/mpaas/provider/k8s/workload"
 	v1 "k8s.io/api/core/v1"
 )
@@ -166,6 +165,12 @@ func (c *K8STypeConfig) GetWorkLoad() (*workload.WorkLoad, error) {
 	return workload.ParseWorkloadFromYaml(c.WorkloadKind, c.WorkloadConfig)
 }
 
+func (c *K8STypeConfig) SetDefaultClusterId(clusterId string) {
+	if c.ClusterId == "" {
+		c.ClusterId = clusterId
+	}
+}
+
 func (c *K8STypeConfig) Merge(target *K8STypeConfig) error {
 	if target == nil {
 		return nil
@@ -188,13 +193,6 @@ func (c *K8STypeConfig) Merge(target *K8STypeConfig) error {
 		}
 	}
 	return nil
-}
-
-func (c *K8STypeConfig) GetServiceObj() (*v1.Service, error) {
-	if c.Service == "" {
-		return nil, nil
-	}
-	return network.ParseServiceFromYaml(c.Service)
 }
 
 func NewCredential() *Credential {

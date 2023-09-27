@@ -11,6 +11,7 @@ import (
 
 	"github.com/infraboard/mpaas/apps/cluster"
 	"github.com/infraboard/mpaas/apps/deploy"
+	"github.com/infraboard/mpaas/apps/k8s"
 	"github.com/infraboard/mpaas/conf"
 )
 
@@ -24,6 +25,7 @@ type impl struct {
 	cluster.UnimplementedRPCServer
 	ioc.IocObjectImpl
 
+	k8s     k8s.Service
 	mcenter *rpc.ClientSet
 	deploy  deploy.RPCServer
 }
@@ -37,6 +39,7 @@ func (i *impl) Init() error {
 	i.log = zap.L().Named(i.Name())
 	i.mcenter = rpc.C()
 	i.deploy = ioc.GetController(deploy.AppName).(deploy.Service)
+	i.k8s = ioc.GetController(k8s.AppName).(k8s.Service)
 	return nil
 }
 

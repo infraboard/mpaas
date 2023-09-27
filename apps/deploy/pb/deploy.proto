@@ -173,9 +173,6 @@ message K8sTypeConfig {
     // k8s yaml配置, 支持deploy/statfulset/daemonset/job/cronjob
     // @gotags: bson:"workload_config" json:"workload_config" validate:"required"
     string workload_config = 3;
-    // k8s service配置
-    // @gotags: bson:"service" json:"service"
-    string service = 4;
     // k8s pods状态, 由Operater负责更新
     // @gotags: bson:"pods" json:"pods"
     map<string,string> pods = 5;

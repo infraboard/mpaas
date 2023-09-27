@@ -54,24 +54,24 @@ func (t *KIND) UnmarshalJSON(b []byte) error {
 	return nil
 }
 
-// ParseACCESS_TYPEFromString Parse ACCESS_TYPE from string
-func ParseACCESS_TYPEFromString(str string) (ACCESS_TYPE, error) {
+// ParseINTERNAL_ACCESS_PROVIDERFromString Parse INTERNAL_ACCESS_PROVIDER from string
+func ParseINTERNAL_ACCESS_PROVIDERFromString(str string) (INTERNAL_ACCESS_PROVIDER, error) {
 	key := strings.Trim(string(str), `"`)
-	v, ok := ACCESS_TYPE_value[strings.ToUpper(key)]
+	v, ok := INTERNAL_ACCESS_PROVIDER_value[strings.ToUpper(key)]
 	if !ok {
-		return 0, fmt.Errorf("unknown ACCESS_TYPE: %s", str)
+		return 0, fmt.Errorf("unknown INTERNAL_ACCESS_PROVIDER: %s", str)
 	}
 
-	return ACCESS_TYPE(v), nil
+	return INTERNAL_ACCESS_PROVIDER(v), nil
 }
 
 // Equal type compare
-func (t ACCESS_TYPE) Equal(target ACCESS_TYPE) bool {
+func (t INTERNAL_ACCESS_PROVIDER) Equal(target INTERNAL_ACCESS_PROVIDER) bool {
 	return t == target
 }
 
 // IsIn todo
-func (t ACCESS_TYPE) IsIn(targets ...ACCESS_TYPE) bool {
+func (t INTERNAL_ACCESS_PROVIDER) IsIn(targets ...INTERNAL_ACCESS_PROVIDER) bool {
 	for _, target := range targets {
 		if t.Equal(target) {
 			return true
@@ -82,7 +82,7 @@ func (t ACCESS_TYPE) IsIn(targets ...ACCESS_TYPE) bool {
 }
 
 // MarshalJSON todo
-func (t ACCESS_TYPE) MarshalJSON() ([]byte, error) {
+func (t INTERNAL_ACCESS_PROVIDER) MarshalJSON() ([]byte, error) {
 	b := bytes.NewBufferString(`"`)
 	b.WriteString(strings.ToUpper(t.String()))
 	b.WriteString(`"`)
@@ -90,8 +90,53 @@ func (t ACCESS_TYPE) MarshalJSON() ([]byte, error) {
 }
 
 // UnmarshalJSON todo
-func (t *ACCESS_TYPE) UnmarshalJSON(b []byte) error {
-	ins, err := ParseACCESS_TYPEFromString(string(b))
+func (t *INTERNAL_ACCESS_PROVIDER) UnmarshalJSON(b []byte) error {
+	ins, err := ParseINTERNAL_ACCESS_PROVIDERFromString(string(b))
+	if err != nil {
+		return err
+	}
+	*t = ins
+	return nil
+}
+
+// ParsePUBLIC_ACCESS_PROVIDERFromString Parse PUBLIC_ACCESS_PROVIDER from string
+func ParsePUBLIC_ACCESS_PROVIDERFromString(str string) (PUBLIC_ACCESS_PROVIDER, error) {
+	key := strings.Trim(string(str), `"`)
+	v, ok := PUBLIC_ACCESS_PROVIDER_value[strings.ToUpper(key)]
+	if !ok {
+		return 0, fmt.Errorf("unknown PUBLIC_ACCESS_PROVIDER: %s", str)
+	}
+
+	return PUBLIC_ACCESS_PROVIDER(v), nil
+}
+
+// Equal type compare
+func (t PUBLIC_ACCESS_PROVIDER) Equal(target PUBLIC_ACCESS_PROVIDER) bool {
+	return t == target
+}
+
+// IsIn todo
+func (t PUBLIC_ACCESS_PROVIDER) IsIn(targets ...PUBLIC_ACCESS_PROVIDER) bool {
+	for _, target := range targets {
+		if t.Equal(target) {
+			return true
+		}
+	}
+
+	return false
+}
+
+// MarshalJSON todo
+func (t PUBLIC_ACCESS_PROVIDER) MarshalJSON() ([]byte, error) {
+	b := bytes.NewBufferString(`"`)
+	b.WriteString(strings.ToUpper(t.String()))
+	b.WriteString(`"`)
+	return b.Bytes(), nil
+}
+
+// UnmarshalJSON todo
+func (t *PUBLIC_ACCESS_PROVIDER) UnmarshalJSON(b []byte) error {
+	ins, err := ParsePUBLIC_ACCESS_PROVIDERFromString(string(b))
 	if err != nil {
 		return err
 	}

@@ -11,10 +11,7 @@ import (
 	deploy_cluster "github.com/infraboard/mpaas/apps/cluster"
 	"github.com/infraboard/mpaas/apps/deploy"
 	cluster "github.com/infraboard/mpaas/apps/k8s"
-	"github.com/infraboard/mpaas/common/yaml"
 	"github.com/infraboard/mpaas/provider/k8s"
-	"github.com/infraboard/mpaas/provider/k8s/meta"
-	"github.com/infraboard/mpaas/provider/k8s/network"
 	"github.com/infraboard/mpaas/provider/k8s/workload"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
@@ -28,7 +25,7 @@ func (i *impl) CreateDeployment(ctx context.Context, in *deploy.CreateDeployment
 		return nil, err
 	}
 	in.ServiceId = c.Spec.ServiceId
-
+	in.K8STypeConfig.SetDefaultClusterId(c.Spec.AccessConfig.Private.K8SCluster)
 	err = i.validate(ctx, c.Spec.Kind, in)
 	if err != nil {
 		return nil, exception.NewBadRequest(err.Error())
@@ -144,20 +141,6 @@ func (i *impl) RunK8sDeploy(ctx context.Context, ins *deploy.Deployment) error {
 		return err
 	}
 	wc.WorkloadConfig = wl.MustToYaml()
-	// 创建服务
-	if wc.Service != "" {
-		svc, err := network.ParseServiceFromYaml(wc.Service)
-		if err != nil {
-			return err
-		}
-		svc.Namespace = ins.Spec.Namespace
-		svc.Annotations[deploy.ANNOTATION_DEPLOY_ID] = ins.Meta.Id
-		service, err := k8sClient.Network().CreateService(ctx, svc)
-		if err != nil {
-			return err
-		}
-		wc.Service = yaml.MustToYaml(service)
-	}
 
 	return nil
 }
@@ -273,19 +256,6 @@ func (i *impl) DeleteDeployment(ctx context.Context, in *deploy.DeleteDeployment
 		// 删除工作负载
 		if wl != nil {
 			_, err = k8sClient.WorkLoad().Delete(ctx, wl)
-			if err != nil {
-				return nil, err
-			}
-		}
-
-		// 删除服务
-		svc, err := kc.GetServiceObj()
-		if err != nil {
-			return nil, err
-		}
-		if svc != nil {
-			delReq := meta.NewDeleteRequest(svc.Name).WithNamespace(svc.Namespace)
-			err = k8sClient.Network().DeleteService(ctx, delReq)
 			if err != nil {
 				return nil, err
 			}
