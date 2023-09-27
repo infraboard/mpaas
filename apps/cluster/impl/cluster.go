@@ -9,10 +9,7 @@ import (
 	"github.com/infraboard/mpaas/apps/cluster"
 	"github.com/infraboard/mpaas/apps/deploy"
 	k8s_cluster "github.com/infraboard/mpaas/apps/k8s"
-	"github.com/infraboard/mpaas/common/yaml"
 	"github.com/infraboard/mpaas/provider/k8s"
-	"github.com/infraboard/mpaas/provider/k8s/meta"
-	"github.com/infraboard/mpaas/provider/k8s/network"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
 )
@@ -98,47 +95,10 @@ func (i *impl) CreateCluster(ctx context.Context, in *cluster.CreateClusterReque
 		}
 	}
 
-	// 创建集群网路
-	if err := i.createClusterNetwork(ctx, ins); err != nil {
-		if err != nil {
-			return nil, err
-		}
-	}
-
 	if _, err := i.col.InsertOne(ctx, ins); err != nil {
 		return nil, exception.NewInternalServerError("inserted a cluster document error, %s", err)
 	}
 	return ins, nil
-}
-
-func (i *impl) createClusterNetwork(ctx context.Context, ins *cluster.Cluster) error {
-	private := ins.Spec.AccessConfig.Private
-	switch private.Provider {
-	case cluster.INTERNAL_ACCESS_PROVIDER_K8S_SERVICE:
-		if private.K8SService == "" {
-			return nil
-		}
-		svc, err := network.ParseServiceFromYaml(private.K8SService)
-		if err != nil {
-			return err
-		}
-		svc.Annotations[deploy.ANNOTATION_CLUSTER_ID] = ins.Meta.Id
-		// 该svc控制 所有带有该cluster id标签的pod
-		svc.Spec.Selector[deploy.LABEL_CLUSTER_KEY] = ins.Meta.Id
-
-		// 查询部署的k8s集群
-		k8sClient, err := i.GetDeployK8sClient(ctx, private.K8SCluster)
-		if err != nil {
-			return err
-		}
-		service, err := k8sClient.Network().CreateService(ctx, svc)
-		if err != nil {
-			return err
-		}
-		private.K8SService = yaml.MustToYaml(service)
-	}
-
-	return nil
 }
 
 func (i *impl) GetDeployK8sClient(ctx context.Context, k8sClusterId string) (*k8s.Client, error) {
@@ -180,44 +140,9 @@ func (i *impl) DeleteCluster(ctx context.Context, in *cluster.DeleteClusterReque
 		return nil, err
 	}
 
-	// 删除服务
-	if err := i.deleteClusterNetwork(ctx, ins); err != nil {
-		return nil, err
-	}
-
 	_, err = i.col.DeleteOne(ctx, bson.M{"_id": ins.Meta.Id})
 	if err != nil {
 		return nil, exception.NewInternalServerError("delete cluster(%s) error, %s", in.Id, err)
 	}
 	return ins, nil
-}
-
-func (i *impl) deleteClusterNetwork(ctx context.Context, ins *cluster.Cluster) error {
-	private := ins.Spec.AccessConfig.Private
-	switch private.Provider {
-	case cluster.INTERNAL_ACCESS_PROVIDER_K8S_SERVICE:
-		if private.K8SService == "" {
-			return nil
-		}
-		svc, err := network.ParseServiceFromYaml(private.K8SService)
-		if err != nil {
-			return err
-		}
-		svc.Annotations[deploy.ANNOTATION_CLUSTER_ID] = ins.Meta.Id
-
-		// 查询部署的k8s集群
-		k8sClient, err := i.GetDeployK8sClient(ctx, private.K8SCluster)
-		if err != nil {
-			return err
-		}
-		err = k8sClient.Network().DeleteService(ctx,
-			meta.NewDeleteRequest(svc.Name).WithNamespace(svc.Namespace),
-		)
-		if err != nil {
-			return err
-		}
-
-	}
-
-	return nil
 }

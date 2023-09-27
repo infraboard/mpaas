@@ -3,15 +3,12 @@ package cluster
 import (
 	"encoding/json"
 	"fmt"
-	"strings"
 
 	service "github.com/infraboard/mcenter/apps/service"
 	"github.com/infraboard/mcenter/common/validate"
 	"github.com/infraboard/mcube/pb/resource"
 	"github.com/infraboard/mcube/tools/hash"
 	deploy "github.com/infraboard/mpaas/apps/deploy"
-	"github.com/infraboard/mpaas/provider/k8s/network"
-	v1 "k8s.io/api/core/v1"
 )
 
 func NewClusterSet() *ClusterSet {
@@ -111,44 +108,4 @@ func (c *Cluster) FullName() string {
 		c.Spec.ServiceId,
 		c.Spec.Name,
 	)
-}
-
-func NewAccessAddressFromK8sService(svc *v1.Service) *PrivateAccess {
-	address := NewPrivateAddress()
-	for i := range svc.Spec.Ports {
-		p := svc.Spec.Ports[i]
-		name := fmt.Sprintf(
-			"%s_PORT_%d_%s",
-			strings.ToUpper(svc.Name),
-			p.Port,
-			strings.ToUpper(string(p.Protocol)),
-		)
-		address.AddServiceEnv(name, "REDIS_SERVICE_NAME_PORT_6379_TCP")
-	}
-
-	return address
-}
-
-func NewServiceEnv(name, example string) *AccessEnv {
-	return &AccessEnv{
-		Name:    name,
-		Example: example,
-	}
-}
-
-func NewPrivateAddress() *PrivateAccess {
-	return &PrivateAccess{
-		AccessEnvs: []*AccessEnv{},
-	}
-}
-
-func (a *PrivateAccess) AddServiceEnv(name, example string) {
-	a.AccessEnvs = append(a.AccessEnvs, NewServiceEnv(name, example))
-}
-
-func (c *PrivateAccess) GetServiceObj() (*v1.Service, error) {
-	if c.K8SService == "" {
-		return nil, nil
-	}
-	return network.ParseServiceFromYaml(c.K8SService)
 }

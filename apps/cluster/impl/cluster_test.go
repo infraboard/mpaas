@@ -23,8 +23,6 @@ func TestQueryCluster(t *testing.T) {
 func TestCreateCluster(t *testing.T) {
 	req := cluster.NewCreateClusterRequest()
 	req.Kind = cluster.KIND_MIDDLEWARE
-	req.AccessConfig.Private.K8SCluster = "docker-desktop"
-	req.AccessConfig.Private.K8SService = tools.MustReadContentFile("test/mongodb_service.yml")
 	req.Labels["Env"] = "开发"
 	req.Name = "MongoDB"
 	ds, err := impl.CreateCluster(ctx, req)

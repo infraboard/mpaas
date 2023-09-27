@@ -55,9 +55,6 @@ message CreateClusterRequest {
     // 集群描述
     // @gotags: bson:"describe" json:"describe"
     string describe = 4;
-    // 集群访问方式
-    // @gotags: bson:"access_config" json:"access_config"
-    AccessConfig access_config = 5;
     // 扩展属性
     // @gotags: bson:"extra" json:"extra"
     map<string,string> extra = 14;
@@ -66,63 +63,4 @@ message CreateClusterRequest {
     map<string,string> labels = 15;
 }
 
-message AccessConfig {
-    // 集群内部访问地址
-    // @gotags: bson:"private" json:"private"
-    PrivateAccess private = 1;
-    // 集群外部访问地址
-    // @gotags: bson:"public" json:"public"
-    PublicAccess public = 2;
-}
 
-enum INTERNAL_ACCESS_PROVIDER {
-    K8S_SERVICE = 0;
-}
-
-//  内网访问
-message PrivateAccess {
-    // 访问地址
-    // @gotags: bson:"address" json:"address"
-    string address = 1;
-    // 采用那种方式对内访问
-    // @gotags: bson:"provider" json:"provider"
-    INTERNAL_ACCESS_PROVIDER provider = 2;
-    // k8s 集群信息
-    // @gotags: bson:"k8s_cluster" json:"k8s_cluster"
-    string k8s_cluster = 3;
-    // k8s service 配置
-    // @gotags: bson:"k8s_service" json:"k8s_service"
-    string k8s_service = 4;
-    // 访问地址
-    // @gotags: bson:"access_envs" json:"access_envs"
-    repeated AccessEnv access_envs = 15;
-}
-
-// kubelet 为 Pod 添加环境变量 {SVCNAME}_SERVICE_HOST 和 {SVCNAME}_SERVICE_PORT。 
-// 这里 Service 的名称需大写，横线被转换成下划线。
-// 具体请参考: https://kubernetes.io/zh-cn/docs/concepts/services-networking/service/#environment-variables
-message AccessEnv {
-    // 服务访问地址变量的名称
-    // @gotags: bson:"name" json:"name"
-    string name = 1;
-    // 样例
-    // @gotags: bson:"example" json:"example"
-    string example = 2;
-}
-
-enum PUBLIC_ACCESS_PROVIDER {
-    K8S_INGRESS = 0;
-}
-
-// 外网访问
-message PublicAccess {
-    // 访问地址
-    // @gotags: bson:"address" json:"address"
-    string address = 1;
-    // 采用那种方式对外访问
-    // @gotags: bson:"provider" json:"provider"
-    PUBLIC_ACCESS_PROVIDER provider = 2;
-    // k8s ingress 配置
-    // @gotags: bson:"k8s_ingress" json:"k8s_ingress"
-    string k8s_ingress = 3;
-}

@@ -57,9 +57,8 @@ func (req *QueryClusterRequest) AddServiceIds(ids string) {
 
 func NewCreateClusterRequest() *CreateClusterRequest {
 	return &CreateClusterRequest{
-		AccessConfig: NewAccessConfig(),
-		Labels:       map[string]string{},
-		Extra:        map[string]string{},
+		Labels: map[string]string{},
+		Extra:  map[string]string{},
 	}
 }
 
@@ -77,21 +76,4 @@ func NewDeleteClusterRequest(id string) *DeleteClusterRequest {
 	return &DeleteClusterRequest{
 		Id: id,
 	}
-}
-
-func NewAccessConfig() *AccessConfig {
-	return &AccessConfig{
-		Private: NewPrivateAccess(),
-		Public:  NewPublicAccess(),
-	}
-}
-
-func NewPrivateAccess() *PrivateAccess {
-	return &PrivateAccess{
-		AccessEnvs: []*AccessEnv{},
-	}
-}
-
-func NewPublicAccess() *PublicAccess {
-	return &PublicAccess{}
 }
