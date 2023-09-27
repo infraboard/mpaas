@@ -14,11 +14,9 @@ import (
 func ClusterSetToTreeSet(set *cluster.ClusterSet) *tree.ArcoDesignTree {
 	tree := tree.NewArcoDesignTree()
 	set.ForEatch(func(c *cluster.Cluster) {
-		svc := c.Service
 		clusterNode := tree.GetOrCreateTreeByRootKey(c.Spec.Name, c.Spec.Describe)
 		c.Deployments.ForEatch(func(item *deploy.Deployment) {
-			deployNode := clusterNode.GetOrCreateChildrenByKey(item.Meta.Id,
-				fmt.Sprintf("%s_%s", svc.Spec.Name, item.Spec.Name))
+			deployNode := clusterNode.GetOrCreateChildrenByKey(item.Meta.Id, item.Spec.Name)
 			for k, podStr := range item.Spec.K8STypeConfig.Pods {
 				podNode := deployNode.GetOrCreateChildrenByKey(k, k)
 				podObj := &v1.Pod{}
