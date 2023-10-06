@@ -37,6 +37,8 @@ func (t *WebSocketTerminal) Read(p []byte) (n int, err error) {
 		t.l.Debugf("receive client close: %s", m)
 	default:
 		n = copy(p, m)
+
+		t.audit(p)
 	}
 
 	return n, nil

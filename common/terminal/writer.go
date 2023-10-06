@@ -12,12 +12,18 @@ import (
 	"github.com/infraboard/mcube/logger/zap"
 )
 
+var (
+	// 4K
+	DefaultWriteBuf = 4 * 1024
+)
+
 func NewWebSocketWriter(conn *websocket.Conn) *WebSocketWriter {
 	return &WebSocketWriter{
 		ServerStreamBase: mock.NewServerStreamBase(),
 		ws:               conn,
 		timeout:          3 * time.Second,
 		l:                zap.L().Named("tasklog.term"),
+		writeBuf:         make([]byte, DefaultWriteBuf),
 	}
 }
 
@@ -26,6 +32,11 @@ type WebSocketWriter struct {
 	ws      *websocket.Conn
 	timeout time.Duration
 	l       logger.Logger
+
+	// 写入websocket时 buffer大小
+	writeBuf []byte
+	// terminal镜像数据
+	auditor io.ReadWriter
 }
 
 func (i *WebSocketWriter) ReadReq(req any) error {
@@ -44,13 +55,21 @@ func (i *WebSocketWriter) ReadReq(req any) error {
 }
 
 func (i *WebSocketWriter) WriteTo(r io.Reader) (err error) {
-	_, err = io.Copy(i, r)
+	_, err = io.CopyBuffer(i, r, i.writeBuf)
+	if err != nil {
+		return err
+	}
+	defer i.ResetWriteBuf()
+
+	_, err = i.Write(i.writeBuf)
 	return
 }
 
 func (i *WebSocketWriter) Write(p []byte) (n int, err error) {
 	err = i.ws.WriteMessage(websocket.BinaryMessage, p)
 	n = len(p)
+
+	i.audit(p)
 	return
 }
 
@@ -88,6 +107,25 @@ func (i *WebSocketWriter) Failed(err error) {
 
 func (i *WebSocketWriter) Success(msg string) {
 	i.close(websocket.CloseNormalClosure, msg)
+}
+
+func (i *WebSocketWriter) ResetWriteBuf() {
+	i.writeBuf = make([]byte, DefaultWriteBuf)
+}
+
+func (i *WebSocketWriter) audit(p []byte) {
+	if i.auditor == nil {
+		return
+	}
+
+	_, err := i.auditor.Write(p)
+	if err != nil {
+		i.l.Errorf("auditor write error, %s", err)
+	}
+}
+
+func (i *WebSocketWriter) SetAuditor(rw io.ReadWriter) {
+	i.auditor = rw
 }
 
 func (i *WebSocketWriter) close(code int, msg string) {

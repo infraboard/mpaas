@@ -1,0 +1,62 @@
+syntax = "proto3";
+
+package infraboard.mpaas.audit;
+option go_package = "github.com/infraboard/mpaas/apps/audit";
+
+import "mcube/pb/resource/meta.proto";
+
+message RecordSet {
+    // 总数
+    // @gotags: json:"total"
+    int64 total = 1;
+    // 清单
+    // @gotags: json:"items"
+    repeated Record items = 2;
+}
+
+// 部署集群
+message Record  {
+    // 元信息
+    // @gotags: bson:",inline" json:"meta"
+    infraboard.mcube.resource.Meta meta = 1;
+    // 元信息
+    // @gotags: bson:",inline" json:"scope"
+    infraboard.mcube.resource.Scope scope = 2;
+    // 创建信息
+    // @gotags: bson:",inline" json:"spec"
+    SaveRecordRequest spec = 3;
+}
+
+enum ACTION {
+    // 应用工作负载登录
+    WORKLOAD_LOGIN = 0;
+    // 应用中间件登录
+    MIDDLEWARE_LOGIN = 1;
+}
+
+message SaveRecordRequest {
+    // 谁
+    // @gotags: bson:"username" json:"username"
+    string username = 1;
+    // 在上什么时间开始
+    // @gotags: bson:"time" json:"time"
+    int64 start = 2;
+    // 在上什么时间结束
+    // @gotags: bson:"end" json:"end"
+    int64 end = 3;
+	// 操作类型
+	// @gotags: bson:"action" json:"action"
+    ACTION action = 4;
+    // 操作的资源名称, 比如PodName
+    // @gotags: bson:"resource" json:"resource"
+    string resource = 5;
+    // 资源操作的日志文件路径
+    // @gotags: bson:"log_file" json:"log_file"
+    string log_file = 6;
+    // 扩展属性
+    // @gotags: bson:"extra" json:"extra"
+    map<string,string> extra = 14;
+    // 部署标签
+    // @gotags: bson:"labels" json:"labels"
+    map<string,string> labels = 15;
+}

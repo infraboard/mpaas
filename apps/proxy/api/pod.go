@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"io"
 	"net/http"
+	"os"
 	"time"
 
 	restfulspec "github.com/emicklei/go-restful-openapi/v2"
@@ -144,6 +145,7 @@ func (h *handler) LoginContainer(r *restful.Request, w *restful.Response) {
 	}
 
 	term := terminal.NewWebSocketTerminal(ws)
+	term.SetAuditor(os.Stdout)
 
 	// 开启认证与鉴权
 	entry := endpoint.NewEntryFromRestRequest(r).

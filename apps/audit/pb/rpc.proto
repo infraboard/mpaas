@@ -1,0 +1,35 @@
+syntax = "proto3";
+
+package infraboard.mpaas.audit;
+option go_package = "github.com/infraboard/mpaas/apps/audit";
+
+import "mpaas/apps/audit/pb/audit.proto";
+import "mcube/pb/page/page.proto";
+import "mcube/pb/resource/meta.proto";
+import "mcube/pb/resource/label.proto";
+
+// RPC 审计日志管理
+service RPC {
+    // 保存审计日志
+    rpc SaveRecord(SaveRecordRequest) returns(Record);
+    // 查询升级日志
+    rpc QueryRecord(QueryRecordRequest) returns(RecordSet);
+}
+
+message QueryRecordRequest {
+    // 资源范围
+    // @gotags: json:"scope"
+    mcube.resource.Scope scope = 1;
+    // 资源标签过滤
+    // @gotags: json:"filters"
+    repeated mcube.resource.LabelRequirement filters = 2;
+    // 分页请求
+    // @gotags: json:"page"
+    mcube.page.PageRequest page = 3;
+    // 集群 Id列表
+    // @gotags: json:"ids"
+    repeated string ids = 4;
+    // 集群 标签
+    // @gotags: json:"label"
+    map<string,string> label = 15;
+}
