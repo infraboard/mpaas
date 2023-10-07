@@ -204,11 +204,11 @@ type SaveRecordRequest struct {
 	unknownFields protoimpl.UnknownFields
 
 	// 谁
-	// @gotags: bson:"username" json:"username"
-	Username string `protobuf:"bytes,1,opt,name=username,proto3" json:"username" bson:"username"`
+	// @gotags: bson:"username" json:"username" validate:"required"
+	Username string `protobuf:"bytes,1,opt,name=username,proto3" json:"username" bson:"username" validate:"required"`
 	// 在上什么时间开始
-	// @gotags: bson:"time" json:"time"
-	Start int64 `protobuf:"varint,2,opt,name=start,proto3" json:"time" bson:"time"`
+	// @gotags: bson:"time" json:"time" validate:"required"
+	Start int64 `protobuf:"varint,2,opt,name=start,proto3" json:"time" bson:"time" validate:"required"`
 	// 在上什么时间结束
 	// @gotags: bson:"end" json:"end"
 	End int64 `protobuf:"varint,3,opt,name=end,proto3" json:"end" bson:"end"`
@@ -216,11 +216,11 @@ type SaveRecordRequest struct {
 	// @gotags: bson:"action" json:"action"
 	Action ACTION `protobuf:"varint,4,opt,name=action,proto3,enum=infraboard.mpaas.audit.ACTION" json:"action" bson:"action"`
 	// 操作的资源名称, 比如PodName
-	// @gotags: bson:"resource" json:"resource"
-	Resource string `protobuf:"bytes,5,opt,name=resource,proto3" json:"resource" bson:"resource"`
+	// @gotags: bson:"resource" json:"resource" validate:"required"
+	Resource string `protobuf:"bytes,5,opt,name=resource,proto3" json:"resource" bson:"resource" validate:"required"`
 	// 资源操作的日志文件路径
-	// @gotags: bson:"log_file" json:"log_file"
-	LogFile string `protobuf:"bytes,6,opt,name=log_file,json=logFile,proto3" json:"log_file" bson:"log_file"`
+	// @gotags: bson:"log_file" json:"log_file" validate:"required"
+	LogFile string `protobuf:"bytes,6,opt,name=log_file,json=logFile,proto3" json:"log_file" bson:"log_file" validate:"required"`
 	// 扩展属性
 	// @gotags: bson:"extra" json:"extra"
 	Extra map[string]string `protobuf:"bytes,14,rep,name=extra,proto3" json:"extra" protobuf_key:"bytes,1,opt,name=key,proto3" protobuf_val:"bytes,2,opt,name=value,proto3" bson:"extra"`

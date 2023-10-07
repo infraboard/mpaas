@@ -36,10 +36,10 @@ enum ACTION {
 
 message SaveRecordRequest {
     // 谁
-    // @gotags: bson:"username" json:"username"
+    // @gotags: bson:"username" json:"username" validate:"required"
     string username = 1;
     // 在上什么时间开始
-    // @gotags: bson:"time" json:"time"
+    // @gotags: bson:"time" json:"time" validate:"required"
     int64 start = 2;
     // 在上什么时间结束
     // @gotags: bson:"end" json:"end"
@@ -48,10 +48,10 @@ message SaveRecordRequest {
 	// @gotags: bson:"action" json:"action"
     ACTION action = 4;
     // 操作的资源名称, 比如PodName
-    // @gotags: bson:"resource" json:"resource"
+    // @gotags: bson:"resource" json:"resource" validate:"required"
     string resource = 5;
     // 资源操作的日志文件路径
-    // @gotags: bson:"log_file" json:"log_file"
+    // @gotags: bson:"log_file" json:"log_file" validate:"required"
     string log_file = 6;
     // 扩展属性
     // @gotags: bson:"extra" json:"extra"
