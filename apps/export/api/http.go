@@ -15,7 +15,7 @@ func init() {
 type downloadHandler struct {
 	service deploy.Service
 	log     logger.Logger
-	ioc.IocObjectImpl
+	ioc.ObjectImpl
 }
 
 func (h *downloadHandler) Init() error {

@@ -19,7 +19,7 @@ type impl struct {
 	col *mongo.Collection
 	log logger.Logger
 	audit.UnimplementedRPCServer
-	ioc.IocObjectImpl
+	ioc.ObjectImpl
 }
 
 func (i *impl) Init() error {

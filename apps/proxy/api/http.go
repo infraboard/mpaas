@@ -21,7 +21,7 @@ func init() {
 type handler struct {
 	service cluster.Service
 	log     logger.Logger
-	ioc.IocObjectImpl
+	ioc.ObjectImpl
 }
 
 func (h *handler) Init() error {

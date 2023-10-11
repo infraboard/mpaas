@@ -7,8 +7,8 @@ import (
 
 	"github.com/emicklei/go-restful/v3"
 	"github.com/infraboard/mcube/ioc"
-	"github.com/infraboard/mcube/ioc/apidoc"
-	"github.com/infraboard/mcube/ioc/health"
+	"github.com/infraboard/mcube/ioc/apps/apidoc"
+	"github.com/infraboard/mcube/ioc/apps/health"
 	"github.com/infraboard/mcube/logger"
 	"github.com/infraboard/mcube/logger/zap"
 	"go.opentelemetry.io/contrib/instrumentation/github.com/emicklei/go-restful/otelrestful"

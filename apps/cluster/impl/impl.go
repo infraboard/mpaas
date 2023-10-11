@@ -23,7 +23,7 @@ type impl struct {
 	col *mongo.Collection
 	log logger.Logger
 	cluster.UnimplementedRPCServer
-	ioc.IocObjectImpl
+	ioc.ObjectImpl
 
 	k8s     k8s.Service
 	mcenter *rpc.ClientSet

@@ -21,7 +21,7 @@ type service struct {
 	log     logger.Logger
 	cluster k8s.Service
 	k8s.UnimplementedRPCServer
-	ioc.IocObjectImpl
+	ioc.ObjectImpl
 	encryptoKey string
 }
 
