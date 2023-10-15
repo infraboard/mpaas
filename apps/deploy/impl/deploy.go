@@ -4,7 +4,7 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/imdario/mergo"
+	"dario.cat/mergo"
 	"github.com/infraboard/mcenter/apps/service"
 	"github.com/infraboard/mcube/exception"
 	"github.com/infraboard/mcube/pb/request"

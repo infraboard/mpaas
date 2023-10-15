@@ -7,9 +7,9 @@ import (
 	"strings"
 	"time"
 
+	"dario.cat/mergo"
 	"github.com/emicklei/go-restful/v3"
 	"github.com/go-playground/validator/v10"
-	"github.com/imdario/mergo"
 	"github.com/infraboard/mcenter/apps/policy"
 	"github.com/infraboard/mcenter/apps/token"
 	"github.com/infraboard/mcube/crypto/cbc"

@@ -6,7 +6,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/imdario/mergo"
+	"dario.cat/mergo"
 	"github.com/infraboard/mcube/pb/resource"
 	"github.com/infraboard/mflow/apps/build"
 	"github.com/infraboard/mflow/apps/job"
