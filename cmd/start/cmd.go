@@ -60,8 +60,9 @@ type service struct {
 }
 
 func (s *service) start() {
-	s.log.Info().Msgf("loaded controllers: %s", ioc.ListControllerObjectNames())
-	s.log.Info().Msgf("loaded apis: %s", ioc.ListApiObjectNames())
+	s.log.Info().Msgf("loaded configs: %s", ioc.Config().List())
+	s.log.Info().Msgf("loaded controllers: %s", ioc.Config().List())
+	s.log.Info().Msgf("loaded apis: %s", ioc.Api().List())
 
 	go s.grpc.Start()
 	go s.http.Start()

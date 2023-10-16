@@ -3,7 +3,7 @@ package rpc
 import "github.com/infraboard/mcube/ioc"
 
 const (
-	MPAAS = "mpaas_client"
+	MPAAS = "mpaas"
 )
 
 func C() *ClientSet {
