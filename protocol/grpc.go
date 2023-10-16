@@ -15,9 +15,9 @@ import (
 
 	"github.com/infraboard/mcube/grpc/middleware/recovery"
 	"github.com/infraboard/mcube/ioc"
+	"github.com/infraboard/mcube/ioc/config/application"
 	"github.com/infraboard/mcube/ioc/config/logger"
 
-	"github.com/infraboard/mpaas/conf"
 	"github.com/infraboard/mpaas/version"
 )
 
@@ -36,7 +36,7 @@ func NewGRPCService() *GRPCService {
 	return &GRPCService{
 		svr: grpcServer,
 		l:   logger.Sub("server.grpc"),
-		c:   conf.C(),
+		c:   application.App().GRPC,
 
 		ctx:    ctx,
 		cancel: cancel,
@@ -48,7 +48,7 @@ func NewGRPCService() *GRPCService {
 type GRPCService struct {
 	svr *grpc.Server
 	l   *zerolog.Logger
-	c   *conf.Config
+	c   *application.Grpc
 
 	ctx    context.Context
 	cancel context.CancelFunc
@@ -62,7 +62,7 @@ func (s *GRPCService) Start() {
 	ioc.LoadGrpcController(s.svr)
 
 	// 启动HTTP服务
-	lis, err := net.Listen("tcp", s.c.App.GRPC.Addr())
+	lis, err := net.Listen("tcp", s.c.Addr())
 	if err != nil {
 		s.l.Error().Msgf("listen grpc tcp conn error, %s", err)
 		return
@@ -70,7 +70,7 @@ func (s *GRPCService) Start() {
 
 	time.AfterFunc(1*time.Second, s.registry)
 
-	s.l.Info().Msgf("GRPC 服务监听地址: %s", s.c.App.GRPC.Addr())
+	s.l.Info().Msgf("GRPC 服务监听地址: %s", s.c.Addr())
 	if err := s.svr.Serve(lis); err != nil {
 		if err == grpc.ErrServerStopped {
 			s.l.Info().Msg("service is stopped")
@@ -83,7 +83,7 @@ func (s *GRPCService) Start() {
 
 func (s *GRPCService) registry() {
 	req := instance.NewRegistryRequest()
-	req.Address = s.c.App.GRPC.Addr()
+	req.Address = s.c.Addr()
 	ins, err := s.client.Instance().RegistryInstance(s.ctx, req)
 	if err != nil {
 		s.l.Error().Msgf("registry to mcenter error, %s", err)

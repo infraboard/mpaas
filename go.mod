@@ -4,7 +4,6 @@ go 1.20
 
 require (
 	dario.cat/mergo v1.0.0
-	github.com/BurntSushi/toml v1.3.2
 	github.com/alibabacloud-go/tea v1.2.1
 	github.com/caarlos0/env/v6 v6.10.1
 	github.com/emicklei/go-restful-openapi/v2 v2.9.1
@@ -12,8 +11,8 @@ require (
 	github.com/go-openapi/spec v0.20.9
 	github.com/go-playground/validator/v10 v10.15.5
 	github.com/gorilla/websocket v1.5.0
-	github.com/infraboard/mcenter v0.0.15
-	github.com/infraboard/mcube v1.9.24
+	github.com/infraboard/mcenter v0.0.16
+	github.com/infraboard/mcube v1.9.25
 	github.com/infraboard/mflow v0.0.0-20231011002548-f55c3f8041cf
 	github.com/kvtools/valkeyrie v1.0.0
 	github.com/rs/xid v1.5.0
@@ -24,12 +23,7 @@ require (
 	go.etcd.io/etcd/client/v3 v3.5.9
 	go.mongodb.org/mongo-driver v1.12.1
 	go.opentelemetry.io/contrib/instrumentation/github.com/emicklei/go-restful/otelrestful v0.45.0
-	go.opentelemetry.io/contrib/instrumentation/go.mongodb.org/mongo-driver/mongo/otelmongo v0.45.0
 	go.opentelemetry.io/contrib/instrumentation/google.golang.org/grpc/otelgrpc v0.45.0
-	go.opentelemetry.io/otel v1.19.0
-	go.opentelemetry.io/otel/exporters/jaeger v1.17.0
-	go.opentelemetry.io/otel/sdk v1.19.0
-	go.opentelemetry.io/otel/trace v1.19.0
 	google.golang.org/grpc v1.58.3
 	google.golang.org/protobuf v1.31.0
 	k8s.io/api v0.28.2
@@ -40,8 +34,8 @@ require (
 )
 
 require (
+	github.com/BurntSushi/toml v1.3.2 // indirect
 	github.com/alibabacloud-go/debug v0.0.0-20190504072949-9472017b5c68 // indirect
-	github.com/bluele/gcache v0.0.2 // indirect
 	github.com/bytedance/sonic v1.9.1 // indirect
 	github.com/chenzhuoyu/base64x v0.0.0-20221115062448-fe3a3abad311 // indirect
 	github.com/coreos/go-semver v0.3.0 // indirect
@@ -58,7 +52,6 @@ require (
 	github.com/go-openapi/swag v0.22.3 // indirect
 	github.com/go-playground/locales v0.14.1 // indirect
 	github.com/go-playground/universal-translator v0.18.1 // indirect
-	github.com/go-redis/redis v6.15.9+incompatible // indirect
 	github.com/goccy/go-json v0.10.2 // indirect
 	github.com/gogo/protobuf v1.3.2 // indirect
 	github.com/golang/protobuf v1.5.3 // indirect
@@ -95,9 +88,12 @@ require (
 	github.com/youmark/pkcs8 v0.0.0-20181117223130-1be2e3e5546d // indirect
 	go.etcd.io/etcd/api/v3 v3.5.9 // indirect
 	go.etcd.io/etcd/client/pkg/v3 v3.5.9 // indirect
+	go.opentelemetry.io/contrib/instrumentation/go.mongodb.org/mongo-driver/mongo/otelmongo v0.45.0 // indirect
 	go.opentelemetry.io/contrib/instrumentation/net/http/httptrace/otelhttptrace v0.45.0 // indirect
 	go.opentelemetry.io/contrib/instrumentation/net/http/otelhttp v0.45.0 // indirect
+	go.opentelemetry.io/otel v1.19.0 // indirect
 	go.opentelemetry.io/otel/metric v1.19.0 // indirect
+	go.opentelemetry.io/otel/trace v1.19.0 // indirect
 	go.uber.org/multierr v1.10.0 // indirect
 	go.uber.org/zap v1.26.0 // indirect
 	golang.org/x/arch v0.3.0 // indirect

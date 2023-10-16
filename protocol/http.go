@@ -9,6 +9,7 @@ import (
 	"github.com/infraboard/mcube/ioc"
 	"github.com/infraboard/mcube/ioc/apps/apidoc"
 	"github.com/infraboard/mcube/ioc/apps/health"
+	"github.com/infraboard/mcube/ioc/config/application"
 	"github.com/infraboard/mcube/ioc/config/logger"
 	"github.com/rs/zerolog"
 	"go.opentelemetry.io/contrib/instrumentation/github.com/emicklei/go-restful/otelrestful"
@@ -17,18 +18,12 @@ import (
 	"github.com/infraboard/mcenter/clients/rpc"
 	"github.com/infraboard/mcenter/clients/rpc/middleware"
 
-	"github.com/infraboard/mpaas/conf"
 	"github.com/infraboard/mpaas/swagger"
 	"github.com/infraboard/mpaas/version"
 )
 
 // NewHTTPService 构建函数
 func NewHTTPService() *HTTPService {
-	c, err := rpc.NewClient(conf.C().Mcenter)
-	if err != nil {
-		panic(err)
-	}
-
 	r := restful.DefaultContainer
 	restful.DefaultResponseContentType(restful.MIME_JSON)
 	restful.DefaultRequestContentType(restful.MIME_JSON)
@@ -54,7 +49,7 @@ func NewHTTPService() *HTTPService {
 		WriteTimeout:      60 * time.Second,
 		IdleTimeout:       60 * time.Second,
 		MaxHeaderBytes:    1 << 20, // 1M
-		Addr:              conf.C().App.HTTP.Addr(),
+		Addr:              application.App().HTTP.Addr(),
 		Handler:           r,
 	}
 
@@ -62,8 +57,8 @@ func NewHTTPService() *HTTPService {
 		r:          r,
 		server:     server,
 		l:          logger.Sub("server.http"),
-		c:          conf.C(),
-		endpoint:   c.Endpoint(),
+		c:          application.App().HTTP,
+		endpoint:   rpc.C().Endpoint(),
 		apiDocPath: "/apidocs.json",
 	}
 }
@@ -72,7 +67,7 @@ func NewHTTPService() *HTTPService {
 type HTTPService struct {
 	r      *restful.Container
 	l      *zerolog.Logger
-	c      *conf.Config
+	c      *application.Http
 	server *http.Server
 
 	endpoint   endpoint.RPCClient
@@ -80,7 +75,7 @@ type HTTPService struct {
 }
 
 func (s *HTTPService) PathPrefix() string {
-	return s.c.App.HTTPPrefix()
+	return application.App().HTTPPrefix()
 }
 
 // Start 启动服务
@@ -90,12 +85,12 @@ func (s *HTTPService) Start() {
 
 	// API Doc
 	s.r.Add(apidoc.APIDocs(s.apiDocPath, swagger.Docs))
-	s.l.Info().Msgf("Get the API Doc using http://%s%s", s.c.App.HTTP.Addr(), s.apiDocPath)
+	s.l.Info().Msgf("Get the API Doc using http://%s%s", s.c.Addr(), s.apiDocPath)
 
 	// HealthCheck
 	hc := health.NewDefaultHealthChecker()
 	s.r.Add(hc.WebService())
-	s.l.Info().Msgf("健康检查地址: http://%s%s", s.c.App.HTTP.Addr(), hc.HealthCheckPath)
+	s.l.Info().Msgf("健康检查地址: http://%s%s", s.c.Addr(), hc.HealthCheckPath)
 
 	// 注册路由条目
 	s.RegistryEndpoint()

@@ -7,8 +7,8 @@ import (
 	"go.mongodb.org/mongo-driver/mongo"
 	"google.golang.org/grpc"
 
+	ioc_mongo "github.com/infraboard/mcube/ioc/config/mongo"
 	"github.com/infraboard/mpaas/apps/audit"
-	"github.com/infraboard/mpaas/conf"
 )
 
 func init() {
@@ -23,11 +23,7 @@ type impl struct {
 }
 
 func (i *impl) Init() error {
-	db, err := conf.C().Mongo.GetDB()
-	if err != nil {
-		return err
-	}
-	i.col = db.Collection(i.Name())
+	i.col = ioc_mongo.DB().Collection(i.Name())
 	i.log = logger.Sub(i.Name())
 	return nil
 }

@@ -16,28 +16,19 @@ import (
 	"github.com/infraboard/mcube/ioc/config/logger"
 )
 
-func NewClientSetFromEnv() (*ClientSet, error) {
-	// 从环境变量中获取mcenter配置
-	mc, err := rpc.NewConfigFromEnv()
-	if err != nil {
-		return nil, err
-	}
-
-	return NewClientSetFromConfig(mc)
-}
-
 // NewClient todo
-func NewClientSetFromConfig(conf *rpc.Config) (*ClientSet, error) {
+func NewClient() (*ClientSet, error) {
 	log := logger.Sub("sdk.mpaas")
+	mcenter := rpc.Config()
 
-	ctx, cancel := context.WithTimeout(context.Background(), conf.Timeout())
+	ctx, cancel := context.WithTimeout(context.Background(), mcenter.Timeout())
 	defer cancel()
 
 	// 连接到服务
 	conn, err := grpc.DialContext(
 		ctx,
-		fmt.Sprintf("%s://%s?%s", resolver.Scheme, "mpaas", conf.Resolver.ToQueryString()),
-		grpc.WithPerRPCCredentials(conf.Credentials()),
+		fmt.Sprintf("%s://%s?%s", resolver.Scheme, "mpaas", mcenter.Resolver.ToQueryString()),
+		grpc.WithPerRPCCredentials(mcenter.Credentials()),
 		grpc.WithTransportCredentials(insecure.NewCredentials()),
 		grpc.WithDefaultServiceConfig(`{"loadBalancingPolicy":"round_robin"}`),
 		grpc.WithBlock(),
@@ -55,7 +46,6 @@ func NewClientSetFromConfig(conf *rpc.Config) (*ClientSet, error) {
 	}
 
 	return &ClientSet{
-		conf: conf,
 		conn: conn,
 		log:  log,
 	}, nil
@@ -63,7 +53,6 @@ func NewClientSetFromConfig(conf *rpc.Config) (*ClientSet, error) {
 
 // Client 客户端
 type ClientSet struct {
-	conf *rpc.Config
 	conn *grpc.ClientConn
 	log  *zerolog.Logger
 }

@@ -1,19 +1,14 @@
 package cmd
 
 import (
-	"errors"
 	"fmt"
 
 	"github.com/infraboard/mcube/ioc"
-	"github.com/infraboard/mcube/ioc/config/logger"
-	"github.com/infraboard/mcube/logger/zap"
 	"github.com/spf13/cobra"
 
 	"github.com/infraboard/mcube/validator"
 	"github.com/infraboard/mpaas/cmd/initial"
 	"github.com/infraboard/mpaas/cmd/start"
-	"github.com/infraboard/mpaas/conf"
-	"github.com/infraboard/mpaas/tracer"
 	"github.com/infraboard/mpaas/version"
 )
 
@@ -40,81 +35,20 @@ var RootCmd = &cobra.Command{
 	},
 }
 
-// config 为全局变量, 只需要load 即可全局可用户
-func loadGlobalConfig(configType string) error {
-	// 配置加载
-	switch configType {
-	case "file":
-		err := conf.LoadConfigFromToml(confFile)
-		if err != nil {
-			return err
-		}
-	case "env":
-		err := conf.LoadConfigFromEnv()
-		if err != nil {
-			return err
-		}
-	default:
-		return errors.New("unknown config type")
-	}
-
-	return nil
-}
-
-// log 为全局变量, 只需要load 即可全局可用户, 依赖全局配置先初始化
-func loadGlobalLogger() error {
-	var (
-		logInitMsg string
-		level      zap.Level
-	)
-	lc := conf.C().Log
-	lv, err := zap.NewLevel(lc.Level)
-	if err != nil {
-		logInitMsg = fmt.Sprintf("%s, use default level INFO", err)
-		level = zap.InfoLevel
-	} else {
-		level = lv
-		logInitMsg = fmt.Sprintf("log level: %s", lv)
-	}
-	zapConfig := zap.DefaultConfig()
-	zapConfig.Level = level
-	switch lc.To {
-	case conf.ToStdout:
-		zapConfig.ToStderr = true
-		zapConfig.ToFiles = false
-	case conf.ToFile:
-		zapConfig.Files.Name = "api.log"
-		zapConfig.Files.Path = lc.PathDir
-	}
-	switch lc.Format {
-	case conf.JSONFormat:
-		zapConfig.JSON = true
-	}
-	if err := zap.Configure(zapConfig); err != nil {
-		return err
-	}
-	logger.Sub("init").Info().Msg(logInitMsg)
-	return nil
-}
-
 func initail() {
 	err := validator.Init()
 	cobra.CheckErr(err)
 
-	// 初始化全局变量
-	err = loadGlobalConfig(confType)
-	cobra.CheckErr(err)
+	req := ioc.NewLoadConfigRequest()
+	switch confType {
+	case "file":
+		req.ConfigFile.Enabled = true
+		req.ConfigFile.Path = confFile
+	default:
+		req.ConfigEnv.Enabled = true
+	}
 
-	// 初始化全局日志配置
-	err = loadGlobalLogger()
-	cobra.CheckErr(err)
-
-	// 初始化全局app
-	err = ioc.InitIocObject()
-	cobra.CheckErr(err)
-
-	// 初始化Tracer
-	err = tracer.InitTracer()
+	err = ioc.ConfigIocObject(req)
 	cobra.CheckErr(err)
 }
 

@@ -12,20 +12,19 @@ port = "18080"
 
 [mcenter]
 address = "127.0.0.1:18010"
-client_id = "w3N8ozuoqVGVQGxEOQ4zyhiE"
-client_secret = "nPvMEfQGl24dQwjE3MF8SNHXN0ul080P"
+client_id = "M3tA2aRnBux2pwO45itbcUAG"
+client_secret = "UzMbIgSqLmzHrFPi2g5aXMqVPcHkoYhl"
 
 [mongodb]
 endpoints = ["127.0.0.1:27017"]
-username = "mpaas"
-password = "123456"
 database = "mpaas"
 
 [log]
 level = "debug"
-path = "logs"
-format = "text"
-to = "stdout"
+
+[log.file]
+enable = true
+file_path = "logs/app.log"
 
 [jaeger]
 endpoint = "http://localhost:14268/api/traces"

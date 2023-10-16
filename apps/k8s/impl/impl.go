@@ -4,12 +4,13 @@ import (
 	"go.mongodb.org/mongo-driver/mongo"
 
 	"github.com/infraboard/mcube/ioc"
+	"github.com/infraboard/mcube/ioc/config/application"
 	"github.com/infraboard/mcube/ioc/config/logger"
 	"github.com/rs/zerolog"
 	"google.golang.org/grpc"
 
+	ioc_mongo "github.com/infraboard/mcube/ioc/config/mongo"
 	"github.com/infraboard/mpaas/apps/k8s"
-	"github.com/infraboard/mpaas/conf"
 )
 
 func init() {
@@ -26,14 +27,8 @@ type service struct {
 }
 
 func (s *service) Init() error {
-	db, err := conf.C().Mongo.GetDB()
-	if err != nil {
-		return err
-	}
-
-	s.col = db.Collection(s.Name())
-
-	s.encryptoKey = conf.C().App.EncryptKey
+	s.col = ioc_mongo.DB().Collection(s.Name())
+	s.encryptoKey = application.App().EncryptKey
 	s.log = logger.Sub(s.Name())
 	s.cluster = ioc.GetController(k8s.AppName).(k8s.Service)
 	return nil

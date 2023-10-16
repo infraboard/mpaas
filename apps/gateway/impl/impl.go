@@ -8,8 +8,8 @@ import (
 	"google.golang.org/grpc"
 
 	"github.com/infraboard/mcube/ioc"
+	ioc_mongo "github.com/infraboard/mcube/ioc/config/mongo"
 	"github.com/infraboard/mpaas/apps/gateway"
-	"github.com/infraboard/mpaas/conf"
 )
 
 func init() {
@@ -23,19 +23,14 @@ type impl struct {
 }
 
 func (s *impl) Init() error {
-	db, err := conf.C().Mongo.GetDB()
-	if err != nil {
-		return err
-	}
-
-	dc := db.Collection(s.Name())
+	dc := ioc_mongo.DB().Collection(s.Name())
 	indexs := []mongo.IndexModel{
 		{
 			Keys: bson.D{{Key: "create_at", Value: -1}},
 		},
 	}
 
-	_, err = dc.Indexes().CreateMany(context.Background(), indexs)
+	_, err := dc.Indexes().CreateMany(context.Background(), indexs)
 	if err != nil {
 		return err
 	}

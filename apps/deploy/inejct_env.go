@@ -5,7 +5,7 @@ import (
 	"strings"
 
 	"github.com/infraboard/mcube/crypto/cbc"
-	"github.com/infraboard/mpaas/conf"
+	"github.com/infraboard/mcube/ioc/config/application"
 	v1 "k8s.io/api/core/v1"
 )
 
@@ -115,7 +115,8 @@ func (e *InjectionEnv) SetEncrypt(v bool) *InjectionEnv {
 }
 
 func (e *InjectionEnv) MakeEncrypt(key string) {
-	if strings.HasPrefix(e.Value, conf.CIPHER_TEXT_PREFIX) {
+
+	if strings.HasPrefix(e.Value, application.App().CipherPrefix) {
 		return
 	}
 
@@ -134,5 +135,5 @@ func (e *InjectionEnv) MakeEncrypt(key string) {
 		return
 	}
 
-	e.Value = fmt.Sprintf("%s%s", conf.CIPHER_TEXT_PREFIX, encrypt)
+	e.Value = fmt.Sprintf("%s%s", application.App().CipherPrefix, encrypt)
 }

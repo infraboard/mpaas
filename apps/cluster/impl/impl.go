@@ -9,10 +9,10 @@ import (
 	"github.com/rs/zerolog"
 	"google.golang.org/grpc"
 
+	ioc_mongo "github.com/infraboard/mcube/ioc/config/mongo"
 	"github.com/infraboard/mpaas/apps/cluster"
 	"github.com/infraboard/mpaas/apps/deploy"
 	"github.com/infraboard/mpaas/apps/k8s"
-	"github.com/infraboard/mpaas/conf"
 )
 
 func init() {
@@ -31,11 +31,7 @@ type impl struct {
 }
 
 func (i *impl) Init() error {
-	db, err := conf.C().Mongo.GetDB()
-	if err != nil {
-		return err
-	}
-	i.col = db.Collection(i.Name())
+	i.col = ioc_mongo.DB().Collection(i.Name())
 	i.log = logger.Sub(i.Name())
 	i.mcenter = rpc.C()
 	i.deploy = ioc.GetController(deploy.AppName).(deploy.Service)

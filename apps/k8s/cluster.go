@@ -14,11 +14,11 @@ import (
 	"github.com/infraboard/mcenter/apps/token"
 	"github.com/infraboard/mcube/crypto/cbc"
 	"github.com/infraboard/mcube/http/request"
+	"github.com/infraboard/mcube/ioc/config/application"
 	pb_request "github.com/infraboard/mcube/pb/request"
 	"github.com/rs/xid"
 	v1 "k8s.io/api/core/v1"
 
-	"github.com/infraboard/mpaas/conf"
 	"github.com/infraboard/mpaas/provider/k8s"
 	"github.com/infraboard/mpaas/provider/k8s/workload"
 )
@@ -141,7 +141,7 @@ func (i *Cluster) Patch(req *UpdateClusterRequest) error {
 
 func (i *Cluster) EncryptKubeConf(key string) error {
 	// 判断文本是否已经加密
-	if strings.HasPrefix(i.Spec.KubeConfig, conf.CIPHER_TEXT_PREFIX) {
+	if strings.HasPrefix(i.Spec.KubeConfig, application.App().CipherPrefix) {
 		return fmt.Errorf("text has ciphered")
 	}
 
@@ -151,17 +151,17 @@ func (i *Cluster) EncryptKubeConf(key string) error {
 	}
 
 	base64Str := base64.StdEncoding.EncodeToString(cipherText)
-	i.Spec.KubeConfig = fmt.Sprintf("%s%s", conf.CIPHER_TEXT_PREFIX, base64Str)
+	i.Spec.KubeConfig = fmt.Sprintf("%s%s", application.App().CipherPrefix, base64Str)
 	return nil
 }
 
 func (i *Cluster) DecryptKubeConf(key string) error {
 	// 判断文本是否已经是明文
-	if !strings.HasPrefix(i.Spec.KubeConfig, conf.CIPHER_TEXT_PREFIX) {
+	if !strings.HasPrefix(i.Spec.KubeConfig, application.App().CipherPrefix) {
 		return nil
 	}
 
-	base64CipherText := strings.TrimPrefix(i.Spec.KubeConfig, conf.CIPHER_TEXT_PREFIX)
+	base64CipherText := strings.TrimPrefix(i.Spec.KubeConfig, application.App().CipherPrefix)
 
 	cipherText, err := base64.StdEncoding.DecodeString(base64CipherText)
 	if err != nil {
