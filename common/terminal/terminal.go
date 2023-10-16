@@ -34,7 +34,7 @@ func (t *WebSocketTerminal) Read(p []byte) (n int, err error) {
 	case websocket.TextMessage:
 		t.HandleCmd(m)
 	case websocket.CloseMessage:
-		t.l.Debugf("receive client close: %s", m)
+		t.l.Debug().Msgf("receive client close: %s", m)
 	default:
 		n = copy(p, m)
 
@@ -70,7 +70,7 @@ func (t *WebSocketTerminal) HandleCmd(m []byte) {
 			return
 		}
 		t.SetSize(*payload)
-		t.l.Debugf("resize add to queue success: %s", req)
+		t.l.Debug().Msgf("resize add to queue success: %s", req)
 		return
 	}
 

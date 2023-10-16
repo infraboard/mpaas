@@ -10,12 +10,12 @@ import (
 	"github.com/infraboard/mcenter/apps/instance"
 	"github.com/infraboard/mcenter/clients/rpc"
 	"github.com/infraboard/mcenter/clients/rpc/middleware"
+	"github.com/rs/zerolog"
 	"go.opentelemetry.io/contrib/instrumentation/google.golang.org/grpc/otelgrpc"
 
 	"github.com/infraboard/mcube/grpc/middleware/recovery"
 	"github.com/infraboard/mcube/ioc"
-	"github.com/infraboard/mcube/logger"
-	"github.com/infraboard/mcube/logger/zap"
+	"github.com/infraboard/mcube/ioc/config/logger"
 
 	"github.com/infraboard/mpaas/conf"
 	"github.com/infraboard/mpaas/version"
@@ -35,7 +35,7 @@ func NewGRPCService() *GRPCService {
 
 	return &GRPCService{
 		svr: grpcServer,
-		l:   zap.L().Named("server.grpc"),
+		l:   logger.Sub("server.grpc"),
 		c:   conf.C(),
 
 		ctx:    ctx,
@@ -47,7 +47,7 @@ func NewGRPCService() *GRPCService {
 // GRPCService grpc服务
 type GRPCService struct {
 	svr *grpc.Server
-	l   logger.Logger
+	l   *zerolog.Logger
 	c   *conf.Config
 
 	ctx    context.Context
@@ -64,19 +64,19 @@ func (s *GRPCService) Start() {
 	// 启动HTTP服务
 	lis, err := net.Listen("tcp", s.c.App.GRPC.Addr())
 	if err != nil {
-		s.l.Errorf("listen grpc tcp conn error, %s", err)
+		s.l.Error().Msgf("listen grpc tcp conn error, %s", err)
 		return
 	}
 
 	time.AfterFunc(1*time.Second, s.registry)
 
-	s.l.Infof("GRPC 服务监听地址: %s", s.c.App.GRPC.Addr())
+	s.l.Info().Msgf("GRPC 服务监听地址: %s", s.c.App.GRPC.Addr())
 	if err := s.svr.Serve(lis); err != nil {
 		if err == grpc.ErrServerStopped {
-			s.l.Info("service is stopped")
+			s.l.Info().Msg("service is stopped")
 		}
 
-		s.l.Error("start grpc service error, %s", err.Error())
+		s.l.Error().Msgf("start grpc service error, %s", err.Error())
 		return
 	}
 }
@@ -86,12 +86,12 @@ func (s *GRPCService) registry() {
 	req.Address = s.c.App.GRPC.Addr()
 	ins, err := s.client.Instance().RegistryInstance(s.ctx, req)
 	if err != nil {
-		s.l.Errorf("registry to mcenter error, %s", err)
+		s.l.Error().Msgf("registry to mcenter error, %s", err)
 		return
 	}
 	s.ins = ins
 
-	s.l.Infof("registry instance to mcenter success")
+	s.l.Info().Msgf("registry instance to mcenter success")
 }
 
 // Stop 启动GRPC服务
@@ -100,9 +100,9 @@ func (s *GRPCService) Stop() error {
 	if s.ins != nil {
 		req := instance.NewUnregistryRequest(s.ins.Id)
 		if _, err := s.client.Instance().UnRegistryInstance(s.ctx, req); err != nil {
-			s.l.Errorf("unregistry error, %s", err)
+			s.l.Error().Msgf("unregistry error, %s", err)
 		} else {
-			s.l.Info("unregistry success")
+			s.l.Info().Msg("unregistry success")
 		}
 	}
 

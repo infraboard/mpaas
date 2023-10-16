@@ -80,7 +80,7 @@ func (h *handler) GetConfigMap(r *restful.Request, w *restful.Response) {
 func (h *handler) CreateConfigMap(r *restful.Request, w *restful.Response) {
 	client := r.Attribute(proxy.ATTRIBUTE_K8S_CLIENT).(*k8s.Client)
 	tk := r.Attribute(token.TOKEN_ATTRIBUTE_NAME).(*token.Token)
-	h.log.Debug(tk)
+	h.log.Debug().Msgf("%s", tk)
 
 	req := &corev1.ConfigMap{}
 	if err := binding.Bind(r.Request, req); err != nil {

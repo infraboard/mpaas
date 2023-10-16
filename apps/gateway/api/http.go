@@ -5,8 +5,8 @@ import (
 
 	"github.com/emicklei/go-restful/v3"
 	"github.com/infraboard/mcube/ioc"
-	"github.com/infraboard/mcube/logger"
-	"github.com/infraboard/mcube/logger/zap"
+	"github.com/infraboard/mcube/ioc/config/logger"
+	"github.com/rs/zerolog"
 
 	"github.com/infraboard/mpaas/apps/gateway"
 )
@@ -17,12 +17,12 @@ var (
 
 type handler struct {
 	service gateway.Service
-	log     logger.Logger
+	log     *zerolog.Logger
 	ioc.ObjectImpl
 }
 
 func (h *handler) Init() error {
-	h.log = zap.L().Named(gateway.AppName)
+	h.log = logger.Sub(gateway.AppName)
 	h.service = ioc.GetController(gateway.AppName).(gateway.Service)
 	return nil
 }

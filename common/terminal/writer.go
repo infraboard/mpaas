@@ -8,8 +8,8 @@ import (
 
 	"github.com/gorilla/websocket"
 	"github.com/infraboard/mcube/grpc/mock"
-	"github.com/infraboard/mcube/logger"
-	"github.com/infraboard/mcube/logger/zap"
+	"github.com/infraboard/mcube/ioc/config/logger"
+	"github.com/rs/zerolog"
 )
 
 var (
@@ -22,7 +22,7 @@ func NewWebSocketWriter(conn *websocket.Conn) *WebSocketWriter {
 		ServerStreamBase: mock.NewServerStreamBase(),
 		ws:               conn,
 		timeout:          3 * time.Second,
-		l:                zap.L().Named("tasklog.term"),
+		l:                logger.Sub("tasklog.term"),
 		writeBuf:         make([]byte, DefaultWriteBuf),
 	}
 }
@@ -31,7 +31,7 @@ type WebSocketWriter struct {
 	*mock.ServerStreamBase
 	ws      *websocket.Conn
 	timeout time.Duration
-	l       logger.Logger
+	l       *zerolog.Logger
 
 	// 写入websocket时 buffer大小
 	writeBuf []byte
@@ -76,12 +76,12 @@ func (i *WebSocketWriter) Write(p []byte) (n int, err error) {
 // 命令的返回
 func (i *WebSocketWriter) Response(resp *Response) {
 	if resp.Message != "" {
-		i.l.Debugf("response error, %s", resp.Message)
+		i.l.Debug().Msgf("response error, %s", resp.Message)
 	}
 
 	err := i.ws.WriteJSON(resp)
 	if err != nil {
-		i.l.Infof("write message error, %s", err)
+		i.l.Info().Msgf("write message error, %s", err)
 	}
 }
 
@@ -93,7 +93,7 @@ func (i *WebSocketWriter) WriteTextln(format string, a ...any) {
 func (i *WebSocketWriter) WriteText(msg string) {
 	err := i.ws.WriteMessage(websocket.BinaryMessage, []byte(msg))
 	if err != nil {
-		i.l.Infof("write message error, %s", err)
+		i.l.Info().Msgf("write message error, %s", err)
 	}
 }
 
@@ -120,7 +120,7 @@ func (i *WebSocketWriter) audit(p []byte) {
 
 	_, err := i.auditor.Write(p)
 	if err != nil {
-		i.l.Errorf("auditor write error, %s", err)
+		i.l.Error().Msgf("auditor write error, %s", err)
 	}
 }
 
@@ -129,14 +129,14 @@ func (i *WebSocketWriter) SetAuditor(rw io.ReadWriter) {
 }
 
 func (i *WebSocketWriter) close(code int, msg string) {
-	i.l.Debugf("close code: %d, msg: %s", code, msg)
+	i.l.Debug().Msgf("close code: %d, msg: %s", code, msg)
 	err := i.ws.WriteControl(
 		websocket.CloseMessage,
 		websocket.FormatCloseMessage(code, msg),
 		time.Now().Add(i.timeout),
 	)
 	if err != nil {
-		i.l.Errorf("close error, %s", err)
+		i.l.Error().Msgf("close error, %s", err)
 		i.WriteText("\n" + msg)
 	}
 }

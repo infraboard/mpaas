@@ -83,7 +83,7 @@ func (r *queryclusterRequest) FindFilter() bson.M {
 }
 
 func (s *service) query(ctx context.Context, req *queryclusterRequest) (*cluster.ClusterSet, error) {
-	s.log.Debugf("find filter: %s", req.FindFilter())
+	s.log.Debug().Msgf("find filter: %s", req.FindFilter())
 
 	resp, err := s.col.Find(ctx, req.FindFilter(), req.FindOptions())
 	if err != nil {

@@ -5,6 +5,7 @@ import (
 	"fmt"
 
 	"github.com/infraboard/mcube/ioc"
+	"github.com/infraboard/mcube/ioc/config/logger"
 	"github.com/infraboard/mcube/logger/zap"
 	"github.com/spf13/cobra"
 
@@ -92,7 +93,7 @@ func loadGlobalLogger() error {
 	if err := zap.Configure(zapConfig); err != nil {
 		return err
 	}
-	zap.L().Named("init").Info(logInitMsg)
+	logger.Sub("init").Info().Msg(logInitMsg)
 	return nil
 }
 

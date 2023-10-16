@@ -70,7 +70,7 @@ func (c *Client) DebugPod(ctx context.Context, req *DebugPodRequest) error {
 		// Kind the api server will respond with a not-registered error. When this happens we can optimistically try
 		// using the old API.
 		if runtime.IsNotRegisteredError(err) {
-			c.l.Infof("Falling back to legacy API because server returned error: %v", err)
+			c.l.Info().Msgf("Falling back to legacy API because server returned error: %v", err)
 			return c.debugByEphemeralContainerLegacy(ctx, pod, &req.EphemeralContainer)
 		}
 

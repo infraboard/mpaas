@@ -7,10 +7,10 @@ import (
 	"syscall"
 
 	"github.com/infraboard/mcube/ioc"
+	"github.com/rs/zerolog"
 	"github.com/spf13/cobra"
 
-	"github.com/infraboard/mcube/logger"
-	"github.com/infraboard/mcube/logger/zap"
+	"github.com/infraboard/mcube/ioc/config/logger"
 
 	"github.com/infraboard/mpaas/conf"
 	"github.com/infraboard/mpaas/protocol"
@@ -48,7 +48,7 @@ func newService(cnf *conf.Config) (*service, error) {
 	svr := &service{
 		http: http,
 		grpc: grpc,
-		log:  zap.L().Named("cli"),
+		log:  logger.Sub("cli"),
 		ch:   ch,
 	}
 
@@ -59,12 +59,12 @@ type service struct {
 	http *protocol.HTTPService
 	grpc *protocol.GRPCService
 	ch   chan os.Signal
-	log  logger.Logger
+	log  *zerolog.Logger
 }
 
 func (s *service) start() {
-	s.log.Infof("loaded controllers: %s", ioc.ListControllerObjectNames())
-	s.log.Infof("loaded apis: %s", ioc.ListApiObjectNames())
+	s.log.Info().Msgf("loaded controllers: %s", ioc.ListControllerObjectNames())
+	s.log.Info().Msgf("loaded apis: %s", ioc.ListApiObjectNames())
 
 	go s.grpc.Start()
 	go s.http.Start()
@@ -75,18 +75,18 @@ func (s *service) waitSign(sign chan os.Signal) {
 	for sg := range sign {
 		switch v := sg.(type) {
 		default:
-			s.log.Infof("receive signal '%v', start graceful shutdown", v.String())
+			s.log.Info().Msgf("receive signal '%v', start graceful shutdown", v.String())
 
 			if err := s.grpc.Stop(); err != nil {
-				s.log.Errorf("grpc graceful shutdown err: %s, force exit", err)
+				s.log.Error().Msgf("grpc graceful shutdown err: %s, force exit", err)
 			} else {
-				s.log.Info("grpc service stop complete")
+				s.log.Info().Msg("grpc service stop complete")
 			}
 
 			if err := s.http.Stop(); err != nil {
-				s.log.Errorf("http graceful shutdown err: %s, force exit", err)
+				s.log.Error().Msgf("http graceful shutdown err: %s, force exit", err)
 			} else {
-				s.log.Infof("http service stop complete")
+				s.log.Info().Msgf("http service stop complete")
 			}
 
 			// 关闭依赖的全景配置对象

@@ -7,13 +7,13 @@ import (
 	"github.com/infraboard/mcenter/clients/rpc"
 	"github.com/infraboard/mcenter/clients/rpc/resolver"
 	"github.com/infraboard/mpaas/apps/deploy"
+	"github.com/rs/zerolog"
 	"go.opentelemetry.io/contrib/instrumentation/google.golang.org/grpc/otelgrpc"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
 
 	"github.com/infraboard/mcube/grpc/middleware/exception"
-	"github.com/infraboard/mcube/logger"
-	"github.com/infraboard/mcube/logger/zap"
+	"github.com/infraboard/mcube/ioc/config/logger"
 )
 
 func NewClientSetFromEnv() (*ClientSet, error) {
@@ -28,7 +28,7 @@ func NewClientSetFromEnv() (*ClientSet, error) {
 
 // NewClient todo
 func NewClientSetFromConfig(conf *rpc.Config) (*ClientSet, error) {
-	log := zap.L().Named("sdk.mpaas")
+	log := logger.Sub("sdk.mpaas")
 
 	ctx, cancel := context.WithTimeout(context.Background(), conf.Timeout())
 	defer cancel()
@@ -65,7 +65,7 @@ func NewClientSetFromConfig(conf *rpc.Config) (*ClientSet, error) {
 type ClientSet struct {
 	conf *rpc.Config
 	conn *grpc.ClientConn
-	log  logger.Logger
+	log  *zerolog.Logger
 }
 
 // 关闭GRPC连接

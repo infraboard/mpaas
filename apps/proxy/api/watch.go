@@ -11,7 +11,7 @@ func (h *handler) registryWatchHandler(ws *restful.WebService) {
 func (h *handler) Watch(r *restful.Request, w *restful.Response) {
 	// term, err := h.newWebsocketTerminal(w, r.Request)
 	// if err != nil {
-	// 	h.log.Errorf("new websocket terminal error, %s", err)
+	// 	h.log.Error().Msgf("new websocket terminal error, %s", err)
 	// 	response.Failed(w, err)
 	// 	return
 	// }
@@ -33,6 +33,6 @@ func (h *handler) Watch(r *restful.Request, w *restful.Response) {
 	// // 读取出来的数据流 copy到term
 	// _, err = io.Copy(term, reader)
 	// if err != nil {
-	// 	h.log.Errorf("copy log to weboscket error, %s", err)
+	// 	h.log.Error().Msgf("copy log to weboscket error, %s", err)
 	// }
 }

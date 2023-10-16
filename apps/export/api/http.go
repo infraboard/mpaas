@@ -2,8 +2,8 @@ package api
 
 import (
 	"github.com/infraboard/mcube/ioc"
-	"github.com/infraboard/mcube/logger"
-	"github.com/infraboard/mcube/logger/zap"
+	"github.com/infraboard/mcube/ioc/config/logger"
+	"github.com/rs/zerolog"
 
 	"github.com/infraboard/mpaas/apps/deploy"
 )
@@ -14,12 +14,12 @@ func init() {
 
 type downloadHandler struct {
 	service deploy.Service
-	log     logger.Logger
+	log     *zerolog.Logger
 	ioc.ObjectImpl
 }
 
 func (h *downloadHandler) Init() error {
-	h.log = zap.L().Named(deploy.AppName)
+	h.log = logger.Sub(deploy.AppName)
 	h.service = ioc.GetController(deploy.AppName).(deploy.Service)
 	return nil
 }

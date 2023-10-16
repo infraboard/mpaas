@@ -102,7 +102,7 @@ func (c *Client) CopyPodRun(ctx context.Context, req *CopyPodRunRequest) (*v1.Po
 					WithNamespace(req.TargetPodMeta.Namespace)
 				err := c.DeletePod(ctx, delReq)
 				if err != nil {
-					c.l.Error("delete pod error, %s", err)
+					c.l.Error().Msgf("delete pod error, %s", err)
 				}
 			}()
 		}
