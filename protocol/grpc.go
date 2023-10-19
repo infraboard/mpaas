@@ -17,8 +17,6 @@ import (
 	"github.com/infraboard/mcube/ioc"
 	"github.com/infraboard/mcube/ioc/config/application"
 	"github.com/infraboard/mcube/ioc/config/logger"
-
-	"github.com/infraboard/mpaas/version"
 )
 
 // NewGRPCService todo
@@ -27,7 +25,7 @@ func NewGRPCService() *GRPCService {
 	grpcServer := grpc.NewServer(grpc.ChainUnaryInterceptor(
 		rc.UnaryServerInterceptor(),
 		otelgrpc.UnaryServerInterceptor(),
-		middleware.GrpcAuthUnaryServerInterceptor(version.ServiceName),
+		middleware.GrpcAuthUnaryServerInterceptor(application.App().AppName),
 	))
 
 	// 控制Grpc启动其他服务, 比如注册中心

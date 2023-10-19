@@ -4,12 +4,12 @@ import (
 	"fmt"
 
 	"github.com/infraboard/mcube/ioc"
+	"github.com/infraboard/mcube/ioc/config/application"
 	"github.com/spf13/cobra"
 
 	"github.com/infraboard/mcube/validator"
 	"github.com/infraboard/mpaas/cmd/initial"
 	"github.com/infraboard/mpaas/cmd/start"
-	"github.com/infraboard/mpaas/version"
 )
 
 var (
@@ -28,7 +28,7 @@ var RootCmd = &cobra.Command{
 	Long:  "微服务发布平台",
 	Run: func(cmd *cobra.Command, args []string) {
 		if vers {
-			fmt.Println(version.FullVersion())
+			fmt.Println(application.FullVersion())
 			return
 		}
 		cmd.Help()
