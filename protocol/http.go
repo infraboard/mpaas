@@ -78,7 +78,7 @@ func (s *HTTPService) PathPrefix() string {
 }
 
 // Start 启动服务
-func (s *HTTPService) Start() {
+func (s *HTTPService) Start(ctx context.Context) {
 	// 装置子服务路由
 	ioc.LoadGoRestfulApi(s.PathPrefix(), s.r)
 
@@ -92,7 +92,7 @@ func (s *HTTPService) Start() {
 	s.l.Info().Msgf("健康检查地址: http://%s%s", s.c.Addr(), hc.HealthCheckPath)
 
 	// 注册路由条目
-	s.RegistryEndpoint()
+	s.RegistryEndpoint(ctx)
 
 	// 启动 HTTP服务
 	s.l.Info().Msgf("HTTP服务启动成功, 监听地址: %s", s.server.Addr)
@@ -106,9 +106,9 @@ func (s *HTTPService) Start() {
 }
 
 // Stop 停止server
-func (s *HTTPService) Stop() error {
+func (s *HTTPService) Stop(ctx context.Context) error {
 	s.l.Info().Msg("start graceful shutdown")
-	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
+	ctx, cancel := context.WithTimeout(ctx, 30*time.Second)
 	defer cancel()
 	// 优雅关闭HTTP服务
 	if err := s.server.Shutdown(ctx); err != nil {
@@ -117,7 +117,7 @@ func (s *HTTPService) Stop() error {
 	return nil
 }
 
-func (s *HTTPService) RegistryEndpoint() {
+func (s *HTTPService) RegistryEndpoint(ctx context.Context) {
 	// 注册服务权限条目
 	s.l.Info().Msg("start registry endpoints ...")
 
@@ -129,7 +129,7 @@ func (s *HTTPService) RegistryEndpoint() {
 	}
 
 	req := endpoint.NewRegistryRequest(application.Short(), entries)
-	_, err := s.endpoint.RegistryEndpoint(context.Background(), req)
+	_, err := s.endpoint.RegistryEndpoint(ctx, req)
 	if err != nil {
 		s.l.Warn().Msgf("registry endpoints error, %s", err)
 	} else {

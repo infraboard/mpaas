@@ -1,6 +1,7 @@
 package start
 
 import (
+	"context"
 	"os"
 	"os/signal"
 	"syscall"
@@ -32,21 +33,18 @@ var Cmd = &cobra.Command{
 		cobra.CheckErr(err)
 
 		// 启动服务
-		svr.start()
+		svr.start(context.Background())
 	},
 }
 
 func newService() (*service, error) {
 	http := protocol.NewHTTPService()
 	grpc := protocol.NewGRPCService()
-	// 处理信号量
-	ch := make(chan os.Signal, 1)
-	signal.Notify(ch, syscall.SIGTERM, syscall.SIGINT, syscall.SIGHUP, syscall.SIGQUIT)
+
 	svr := &service{
 		http: http,
 		grpc: grpc,
 		log:  logger.Sub("cli"),
-		ch:   ch,
 	}
 
 	return svr, nil
@@ -59,18 +57,22 @@ type service struct {
 	log  *zerolog.Logger
 }
 
-func (s *service) start() {
+func (s *service) start(ctx context.Context) {
 	s.log.Info().Msgf("loaded configs: %s", ioc.Config().List())
 	s.log.Info().Msgf("loaded controllers: %s", ioc.Config().List())
 	s.log.Info().Msgf("loaded apis: %s", ioc.Api().List())
 
 	go s.grpc.Start()
-	go s.http.Start()
-	s.waitSign(s.ch)
+	go s.http.Start(ctx)
+	s.waitSign(ctx)
 }
 
-func (s *service) waitSign(sign chan os.Signal) {
-	for sg := range sign {
+func (s *service) waitSign(ctx context.Context) {
+	// 处理信号量
+	ch := make(chan os.Signal, 1)
+	signal.Notify(ch, syscall.SIGTERM, syscall.SIGINT, syscall.SIGHUP, syscall.SIGQUIT)
+
+	for sg := range ch {
 		switch v := sg.(type) {
 		default:
 			s.log.Info().Msgf("receive signal '%v', start graceful shutdown", v.String())
@@ -81,7 +83,7 @@ func (s *service) waitSign(sign chan os.Signal) {
 				s.log.Info().Msg("grpc service stop complete")
 			}
 
-			if err := s.http.Stop(); err != nil {
+			if err := s.http.Stop(ctx); err != nil {
 				s.log.Error().Msgf("http graceful shutdown err: %s, force exit", err)
 			} else {
 				s.log.Info().Msgf("http service stop complete")
