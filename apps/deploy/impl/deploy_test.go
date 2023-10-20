@@ -37,7 +37,7 @@ func TestCreateMongoDeployment(t *testing.T) {
 	k8sConf.ClusterId = "docker-desktop"
 
 	req := deploy.NewCreateDeploymentRequest()
-	req.Cluster = conf.C.MONGO_CLUSTER_ID
+	req.Cluster = "2a90c4eec422c171"
 	req.ServiceName = "mongodb"
 	req.K8STypeConfig = k8sConf
 	req.Domain = domain.DEFAULT_DOMAIN
@@ -57,7 +57,7 @@ func TestCreateMcenterDeployment(t *testing.T) {
 
 	req := deploy.NewCreateDeploymentRequest()
 	req.K8STypeConfig = k8sConf
-	req.Cluster = conf.C.MCNETER_CLUSTER_ID
+	req.Cluster = "6d6586cacdc2aa95"
 
 	ds, err := impl.CreateDeployment(ctx, req)
 	if err != nil {

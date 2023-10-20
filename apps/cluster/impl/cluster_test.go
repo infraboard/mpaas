@@ -32,6 +32,18 @@ func TestCreateCluster(t *testing.T) {
 	t.Log(tools.MustToJson(ds))
 }
 
+func TestMcenterCluster(t *testing.T) {
+	req := cluster.NewCreateClusterRequest()
+	req.Labels["Env"] = "开发"
+	req.Name = "默认集群"
+	req.ServiceId = "ff0a7afd03561715"
+	ds, err := impl.CreateCluster(ctx, req)
+	if err != nil {
+		t.Fatal(err)
+	}
+	t.Log(tools.MustToJson(ds))
+}
+
 func TestDescribeCluster(t *testing.T) {
 	req := cluster.NewDescribeClusterRequest(conf.C.DEPLOY_CLUSTER_ID)
 	ds, err := impl.DescribeCluster(ctx, req)
