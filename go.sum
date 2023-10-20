@@ -114,8 +114,8 @@ github.com/inconshreveable/mousetrap v1.1.0 h1:wN+x4NVGpMsO7ErUn/mUI3vEoE6Jt13X2
 github.com/inconshreveable/mousetrap v1.1.0/go.mod h1:vpF70FUmC8bwa3OWnCshd2FqLfsEA9PFc4w1p2J65bw=
 github.com/infraboard/mcenter v0.0.16 h1:TY9Mgp+ieCcJWsGwkxajHLXDwksTLX07xIslwxYrnHU=
 github.com/infraboard/mcenter v0.0.16/go.mod h1:DjXilPWg59MoM4aMY5QfPHDuaDqdEji9xXYi5HhduiA=
-github.com/infraboard/mcube v1.9.25 h1:HyZX5vmoS7c/iVnFSSYrPX7sTL+TtT2ZvspDG64DJQ8=
-github.com/infraboard/mcube v1.9.25/go.mod h1:6tXsN2/ag19cPCc+SVMamdtDZ5DDLwKpN+J9Di3bHaM=
+github.com/infraboard/mcube v1.9.27 h1:tDHphjfooOy8BAwcMem2gAsP59fTuHTE540dSCcTMEA=
+github.com/infraboard/mcube v1.9.27/go.mod h1:6tXsN2/ag19cPCc+SVMamdtDZ5DDLwKpN+J9Di3bHaM=
 github.com/infraboard/mflow v0.0.0-20231011002548-f55c3f8041cf h1:PNQPEYFQL08+WkBisNsnGNacECwrTM7v4i6HCNu87aI=
 github.com/infraboard/mflow v0.0.0-20231011002548-f55c3f8041cf/go.mod h1:PM9hYGnjfe+UBdk1O5S8yCrMkXO5Je6I1Lcid42HR0s=
 github.com/josharian/intern v1.0.0 h1:vlS4z54oSdjm0bgjRigI+G1HpF+tI+9rE5LLzOg8HmY=
