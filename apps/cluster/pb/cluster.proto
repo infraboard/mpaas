@@ -5,7 +5,6 @@ option go_package = "github.com/infraboard/mpaas/apps/cluster";
 
 import "mcube/pb/resource/meta.proto";
 import "mpaas/apps/deploy/pb/deploy.proto";
-import "mcenter/apps/service/pb/service.proto";
 
 message ClusterSet {
     // 总数
@@ -30,9 +29,6 @@ message Cluster  {
     // 关联的部署
     // @gotags: bson:"-" json:"deployments"
     deploy.DeploymentSet deployments = 4;
-    // 关联的部署
-    // @gotags: bson:"-" json:"service"
-    mcenter.service.Service service = 5;
 }
 
 enum KIND {
@@ -46,15 +42,12 @@ message CreateClusterRequest {
 	// 部署的类型
 	// @gotags: bson:"kind" json:"kind"
     KIND kind = 1;
-    // 服务Id
-    // @gotags: bson:"service_id" json:"service_id"
-    string service_id = 2;
     // 集群名称
     // @gotags: bson:"name" json:"name" validate:"required"
-    string name = 3;
+    string name = 2;
     // 集群描述
     // @gotags: bson:"describe" json:"describe"
-    string describe = 4;
+    string describe = 3;
     // 扩展属性
     // @gotags: bson:"extra" json:"extra"
     map<string,string> extra = 14;

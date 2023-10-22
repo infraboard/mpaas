@@ -11,7 +11,6 @@ import (
 func TestQueryCluster(t *testing.T) {
 	req := cluster.NewQueryClusterRequest()
 	req.Label["Env"] = "开发"
-	req.WithService = true
 	req.WithDeployment = true
 	ds, err := impl.QueryCluster(ctx, req)
 	if err != nil {
@@ -24,7 +23,7 @@ func TestCreateCluster(t *testing.T) {
 	req := cluster.NewCreateClusterRequest()
 	req.Kind = cluster.KIND_MIDDLEWARE
 	req.Labels["Env"] = "开发"
-	req.Name = "MongoDB"
+	req.Name = "中间件"
 	ds, err := impl.CreateCluster(ctx, req)
 	if err != nil {
 		t.Fatal(err)
@@ -36,7 +35,6 @@ func TestMcenterCluster(t *testing.T) {
 	req := cluster.NewCreateClusterRequest()
 	req.Labels["Env"] = "开发"
 	req.Name = "默认集群"
-	req.ServiceId = "ff0a7afd03561715"
 	ds, err := impl.CreateCluster(ctx, req)
 	if err != nil {
 		t.Fatal(err)

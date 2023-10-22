@@ -3,7 +3,6 @@ package impl
 import (
 	"context"
 
-	"github.com/infraboard/mcenter/apps/service"
 	"github.com/infraboard/mcenter/apps/token"
 	"github.com/infraboard/mcube/exception"
 	"github.com/infraboard/mpaas/apps/cluster"
@@ -52,19 +51,6 @@ func (i *impl) QueryCluster(ctx context.Context, in *cluster.QueryClusterRequest
 		set.UpdateDeploymens(ds)
 	}
 
-	// 查询关联的服务
-	if in.WithService && set.Len() > 0 {
-		squery := service.NewQueryServiceRequest()
-		squery.Ids = set.ServiceIds()
-		services, err := i.mcenter.Service().QueryService(ctx, squery)
-		if err != nil {
-			return nil, err
-		}
-		set.ForEatch(func(item *cluster.Cluster) {
-			item.Service = services.GetServiceById(item.Spec.ServiceId)
-		})
-	}
-
 	return set, nil
 }
 
@@ -76,22 +62,9 @@ func (i *impl) CreateCluster(ctx context.Context, in *cluster.CreateClusterReque
 	}
 
 	// 获取Service信息
-	switch in.Kind {
-	case cluster.KIND_WORKLOAD:
-		svc, err := i.mcenter.Service().DescribeService(
-			ctx,
-			service.NewDescribeServiceRequest(in.ServiceId),
-		)
-		if err != nil {
-			return nil, err
-		}
-		ins.Scope.Domain = svc.Spec.Domain
-		ins.Scope.Namespace = svc.Spec.Namespace
-	default:
-		tk := token.GetTokenFromCtx(ctx)
-		if tk != nil {
-			ins.Scope = tk.GenScope()
-		}
+	tk := token.GetTokenFromCtx(ctx)
+	if tk != nil {
+		ins.Scope = tk.GenScope()
 	}
 
 	if _, err := i.col.InsertOne(ctx, ins); err != nil {

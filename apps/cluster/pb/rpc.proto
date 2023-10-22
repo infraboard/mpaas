@@ -39,9 +39,6 @@ message QueryClusterRequest {
     // 查询查询集群管理的部署
     // @gotags: json:"with_deployment"
     bool with_deployment = 7;
-    // 是否查询出关联的service信息
-    // @gotags: json:"with_service"
-    bool with_service = 8;
     // 集群 标签
     // @gotags: json:"label"
     map<string,string> label = 15;

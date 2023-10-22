@@ -3,7 +3,6 @@ package impl
 import (
 	"go.mongodb.org/mongo-driver/mongo"
 
-	"github.com/infraboard/mcenter/clients/rpc"
 	"github.com/infraboard/mcube/ioc"
 	"github.com/infraboard/mcube/ioc/config/logger"
 	"github.com/rs/zerolog"
@@ -25,15 +24,13 @@ type impl struct {
 	cluster.UnimplementedRPCServer
 	ioc.ObjectImpl
 
-	k8s     k8s.Service
-	mcenter *rpc.ClientSet
-	deploy  deploy.RPCServer
+	k8s    k8s.Service
+	deploy deploy.RPCServer
 }
 
 func (i *impl) Init() error {
 	i.col = ioc_mongo.DB().Collection(i.Name())
 	i.log = logger.Sub(i.Name())
-	i.mcenter = rpc.C()
 	i.deploy = ioc.GetController(deploy.AppName).(deploy.Service)
 	i.k8s = ioc.GetController(k8s.AppName).(k8s.Service)
 	return nil

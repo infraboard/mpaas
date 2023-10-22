@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 	"fmt"
 
-	service "github.com/infraboard/mcenter/apps/service"
 	"github.com/infraboard/mcenter/common/validate"
 	"github.com/infraboard/mcube/pb/resource"
 	"github.com/infraboard/mcube/tools/hash"
@@ -58,14 +57,6 @@ func (s *ClusterSet) ClusterIds() (ids []string) {
 	return
 }
 
-func (s *ClusterSet) ServiceIds() (ids []string) {
-	for i := range s.Items {
-		item := s.Items[i]
-		ids = append(ids, item.Spec.ServiceId)
-	}
-	return
-}
-
 func New(req *CreateClusterRequest) (*Cluster, error) {
 	if err := req.Validate(); err != nil {
 		return nil, err
@@ -97,15 +88,13 @@ func (c *Cluster) MarshalJSON() ([]byte, error) {
 		*resource.Scope
 		*CreateClusterRequest
 		Deployments *deploy.DeploymentSet `json:"deployments"`
-		Service     *service.Service      `json:"service"`
-	}{c.Meta, c.Scope, c.Spec, c.Deployments, c.Service})
+	}{c.Meta, c.Scope, c.Spec, c.Deployments})
 }
 
 func (c *Cluster) FullName() string {
-	return fmt.Sprintf("%s.%s.%s.%s",
+	return fmt.Sprintf("%s.%s.%s",
 		c.Scope.Domain,
 		c.Scope.Namespace,
-		c.Spec.ServiceId,
 		c.Spec.Name,
 	)
 }

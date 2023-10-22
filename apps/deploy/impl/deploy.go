@@ -27,7 +27,6 @@ func (i *impl) CreateDeployment(ctx context.Context, in *deploy.CreateDeployment
 	if err != nil {
 		return nil, err
 	}
-	in.ServiceId = c.Spec.ServiceId
 
 	err = i.validate(ctx, c.Spec.Kind, in)
 	if err != nil {
