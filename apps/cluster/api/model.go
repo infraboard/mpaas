@@ -14,11 +14,11 @@ import (
 func ClusterSetToTreeSet(set *cluster.ClusterSet) *tree.ArcoDesignTree {
 	tree := tree.NewArcoDesignTree()
 	set.ForEatch(func(c *cluster.Cluster) {
-		clusterNode := tree.GetOrCreateTreeByRootKey(c.Spec.Name, c.Spec.Describe)
+		clusterNode := tree.GetOrCreateTreeByRootKey(c.Spec.Name, c.Spec.Describe, "cluster")
 		c.Deployments.ForEatch(func(item *deploy.Deployment) {
-			deployNode := clusterNode.GetOrCreateChildrenByKey(item.Meta.Id, item.Spec.Name)
+			deployNode := clusterNode.GetOrCreateChildrenByKey(item.Meta.Id, item.Spec.Name, "deploy")
 			for k, podStr := range item.Spec.K8STypeConfig.Pods {
-				podNode := deployNode.GetOrCreateChildrenByKey(k, k)
+				podNode := deployNode.GetOrCreateChildrenByKey(k, k, "pod")
 				podObj := &v1.Pod{}
 				if err := yaml.Unmarshal([]byte(podStr), podObj); err != nil {
 					continue
