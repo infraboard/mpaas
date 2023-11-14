@@ -22,7 +22,6 @@ require (
 	github.com/traefik/paerser v0.2.0
 	go.etcd.io/etcd/client/v3 v3.5.9
 	go.mongodb.org/mongo-driver v1.12.1
-	go.opentelemetry.io/contrib/instrumentation/github.com/emicklei/go-restful/otelrestful v0.45.0
 	go.opentelemetry.io/contrib/instrumentation/google.golang.org/grpc/otelgrpc v0.45.0
 	google.golang.org/grpc v1.58.3
 	google.golang.org/protobuf v1.31.0
