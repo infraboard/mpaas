@@ -7,6 +7,10 @@ import (
 	"github.com/infraboard/mpaas/test/tools"
 )
 
+var (
+	ClusterId = "docker-desktop"
+)
+
 func TestQueryCluster(t *testing.T) {
 	req := cluster.NewQueryClusterRequest()
 	set, err := impl.QueryCluster(ctx, req)
@@ -17,7 +21,7 @@ func TestQueryCluster(t *testing.T) {
 }
 
 func TestDescribeCluster(t *testing.T) {
-	req := cluster.NewDescribeClusterRequest("k8s-test")
+	req := cluster.NewDescribeClusterRequest(ClusterId)
 	ins, err := impl.DescribeCluster(ctx, req)
 	if err != nil {
 		t.Fatal(err)
@@ -29,7 +33,7 @@ func TestCreateCluster(t *testing.T) {
 	req := cluster.NewCreateClusterRequest()
 	req.Provider = "Docker"
 	req.Region = "Local"
-	req.Name = "docker-desktop"
+	req.Name = ClusterId
 
 	req.KubeConfig = tools.MustReadContentFile("test/kube_config.yml")
 	ins, err := impl.CreateCluster(ctx, req)
@@ -40,7 +44,7 @@ func TestCreateCluster(t *testing.T) {
 }
 
 func TestUpdateCluster(t *testing.T) {
-	req := cluster.NewPatchClusterRequest("k8s-test")
+	req := cluster.NewPatchClusterRequest(ClusterId)
 	req.Spec.KubeConfig = tools.MustReadContentFile("test/kube_config.yml")
 	ins, err := impl.UpdateCluster(ctx, req)
 	if err != nil {
@@ -50,7 +54,7 @@ func TestUpdateCluster(t *testing.T) {
 }
 
 func TestDeleteCluster(t *testing.T) {
-	req := cluster.NewDeleteClusterRequestWithID("k8s-test")
+	req := cluster.NewDeleteClusterRequestWithID(ClusterId)
 	ins, err := impl.DeleteCluster(ctx, req)
 	if err != nil {
 		t.Fatal(err)
