@@ -1,6 +1,6 @@
 package upstream
 
-import "github.com/infraboard/mcube/tools/pretty"
+import "github.com/infraboard/mcube/v2/tools/pretty"
 
 func NewDescribeUpstreamRequest(upstreamId string) *DescribeUpstreamRequest {
 	return &DescribeUpstreamRequest{

@@ -6,8 +6,8 @@ import (
 
 	"dario.cat/mergo"
 	"github.com/infraboard/mcenter/apps/service"
-	"github.com/infraboard/mcube/exception"
-	"github.com/infraboard/mcube/pb/request"
+	"github.com/infraboard/mcube/v2/exception"
+	"github.com/infraboard/mcube/v2/pb/request"
 	deploy_cluster "github.com/infraboard/mpaas/apps/cluster"
 	"github.com/infraboard/mpaas/apps/deploy"
 	cluster "github.com/infraboard/mpaas/apps/k8s"

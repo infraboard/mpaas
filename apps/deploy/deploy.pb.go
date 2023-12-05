@@ -7,7 +7,7 @@
 package deploy
 
 import (
-	resource "github.com/infraboard/mcube/pb/resource"
+	resource "github.com/infraboard/mcube/v2/pb/resource"
 	event "github.com/infraboard/mpaas/apps/event"
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"

@@ -7,7 +7,7 @@ import (
 	"time"
 
 	"github.com/go-playground/validator/v10"
-	"github.com/infraboard/mcube/tools/pretty"
+	"github.com/infraboard/mcube/v2/tools/pretty"
 	"github.com/infraboard/mpaas/common/format"
 	v1 "k8s.io/api/core/v1"
 	"k8s.io/client-go/kubernetes/scheme"

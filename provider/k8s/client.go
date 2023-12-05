@@ -4,7 +4,7 @@ import (
 	"os"
 	"path/filepath"
 
-	"github.com/infraboard/mcube/ioc/config/logger"
+	"github.com/infraboard/mcube/v2/ioc/config/logger"
 	"github.com/rs/zerolog"
 
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"

@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/infraboard/mcube/crypto/cbc"
-	"github.com/infraboard/mcube/ioc/config/application"
+	"github.com/infraboard/mcube/v2/crypto/cbc"
+	"github.com/infraboard/mcube/v2/ioc/config/application"
 	v1 "k8s.io/api/core/v1"
 )
 

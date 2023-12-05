@@ -3,7 +3,7 @@ package api
 import (
 	"fmt"
 
-	"github.com/infraboard/mcube/types/tree"
+	"github.com/infraboard/mcube/v2/types/tree"
 	"github.com/infraboard/mpaas/apps/cluster"
 	"github.com/infraboard/mpaas/apps/deploy"
 	v1 "k8s.io/api/core/v1"

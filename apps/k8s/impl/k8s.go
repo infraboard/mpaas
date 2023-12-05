@@ -4,8 +4,8 @@ import (
 	"context"
 	"time"
 
-	"github.com/infraboard/mcube/exception"
-	"github.com/infraboard/mcube/pb/request"
+	"github.com/infraboard/mcube/v2/exception"
+	"github.com/infraboard/mcube/v2/pb/request"
 
 	cluster "github.com/infraboard/mpaas/apps/k8s"
 	"github.com/infraboard/mpaas/provider/k8s"

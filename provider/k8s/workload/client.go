@@ -1,7 +1,7 @@
 package workload
 
 import (
-	"github.com/infraboard/mcube/ioc/config/logger"
+	"github.com/infraboard/mcube/v2/ioc/config/logger"
 	"github.com/rs/zerolog"
 	"k8s.io/client-go/kubernetes"
 	appsv1 "k8s.io/client-go/kubernetes/typed/apps/v1"

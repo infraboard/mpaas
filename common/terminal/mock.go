@@ -3,7 +3,7 @@ package terminal
 import (
 	"os"
 
-	"github.com/infraboard/mcube/grpc/mock"
+	"github.com/infraboard/mcube/v2/grpc/mock"
 	"k8s.io/client-go/tools/remotecommand"
 )
 

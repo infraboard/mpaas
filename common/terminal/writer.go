@@ -7,8 +7,8 @@ import (
 	"time"
 
 	"github.com/gorilla/websocket"
-	"github.com/infraboard/mcube/grpc/mock"
-	"github.com/infraboard/mcube/ioc/config/logger"
+	"github.com/infraboard/mcube/v2/grpc/mock"
+	"github.com/infraboard/mcube/v2/ioc/config/logger"
 	"github.com/rs/zerolog"
 )
 

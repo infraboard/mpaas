@@ -7,8 +7,8 @@ import (
 	"go.mongodb.org/mongo-driver/mongo"
 	"google.golang.org/grpc"
 
-	"github.com/infraboard/mcube/ioc"
-	ioc_mongo "github.com/infraboard/mcube/ioc/config/mongo"
+	"github.com/infraboard/mcube/v2/ioc"
+	ioc_mongo "github.com/infraboard/mcube/v2/ioc/config/mongo"
 	"github.com/infraboard/mpaas/apps/gateway"
 )
 

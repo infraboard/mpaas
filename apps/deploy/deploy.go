@@ -7,7 +7,7 @@ import (
 	"time"
 
 	"dario.cat/mergo"
-	"github.com/infraboard/mcube/pb/resource"
+	"github.com/infraboard/mcube/v2/pb/resource"
 	"github.com/infraboard/mflow/apps/build"
 	"github.com/infraboard/mflow/apps/job"
 	"github.com/infraboard/mpaas/provider/k8s/network"

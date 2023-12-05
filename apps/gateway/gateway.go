@@ -3,7 +3,7 @@ package gateway
 import (
 	"encoding/json"
 
-	resource "github.com/infraboard/mcube/pb/resource"
+	resource "github.com/infraboard/mcube/v2/pb/resource"
 )
 
 func New(req *CreateGatewayRequest) (*Gateway, error) {

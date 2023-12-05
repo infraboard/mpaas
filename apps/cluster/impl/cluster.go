@@ -4,7 +4,7 @@ import (
 	"context"
 
 	"github.com/infraboard/mcenter/apps/token"
-	"github.com/infraboard/mcube/exception"
+	"github.com/infraboard/mcube/v2/exception"
 	"github.com/infraboard/mpaas/apps/cluster"
 	"github.com/infraboard/mpaas/apps/deploy"
 	k8s_cluster "github.com/infraboard/mpaas/apps/k8s"

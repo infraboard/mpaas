@@ -3,7 +3,7 @@ package route
 import (
 	"encoding/json"
 
-	"github.com/infraboard/mcube/tools/pretty"
+	"github.com/infraboard/mcube/v2/tools/pretty"
 	"github.com/infraboard/mpaas/apps/gateway/provider/apisix/common"
 )
 

@@ -3,7 +3,7 @@ package impl
 import (
 	"context"
 
-	"github.com/infraboard/mcube/exception"
+	"github.com/infraboard/mcube/v2/exception"
 	"github.com/infraboard/mpaas/apps/gateway"
 	"go.mongodb.org/mongo-driver/mongo"
 )

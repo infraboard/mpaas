@@ -6,7 +6,7 @@ import (
 	"github.com/spf13/cobra"
 
 	"github.com/infraboard/mcenter/clients/rpc/hooks"
-	"github.com/infraboard/mcube/ioc/config/application"
+	"github.com/infraboard/mcube/v2/ioc/config/application"
 
 	// 注册所有服务
 	_ "github.com/infraboard/mpaas/apps"

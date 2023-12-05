@@ -4,9 +4,9 @@ import (
 	"fmt"
 
 	"github.com/emicklei/go-restful/v3"
-	"github.com/infraboard/mcube/http/restful/response"
-	"github.com/infraboard/mcube/ioc"
-	"github.com/infraboard/mcube/ioc/config/logger"
+	"github.com/infraboard/mcube/v2/http/restful/response"
+	"github.com/infraboard/mcube/v2/ioc"
+	"github.com/infraboard/mcube/v2/ioc/config/logger"
 	"github.com/rs/zerolog"
 
 	cluster "github.com/infraboard/mpaas/apps/k8s"

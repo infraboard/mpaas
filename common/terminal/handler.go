@@ -4,8 +4,8 @@ import (
 	"encoding/json"
 	"fmt"
 
-	"github.com/infraboard/mcube/tools/pretty"
-	"github.com/infraboard/mcube/validator"
+	"github.com/infraboard/mcube/v2/ioc/config/validator"
+	"github.com/infraboard/mcube/v2/tools/pretty"
 )
 
 var handleFuncs = map[string]HandleFunc{}

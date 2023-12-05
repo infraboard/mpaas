@@ -1,7 +1,7 @@
 package apisix
 
 import (
-	"github.com/infraboard/mcube/client/rest"
+	"github.com/infraboard/mcube/v2/client/rest"
 	"github.com/infraboard/mpaas/apps/gateway/provider/apisix/route"
 	"github.com/infraboard/mpaas/apps/gateway/provider/apisix/service"
 	"github.com/infraboard/mpaas/apps/gateway/provider/apisix/upstream"

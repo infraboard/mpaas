@@ -5,7 +5,7 @@ import (
 	"crypto/tls"
 	"time"
 
-	"github.com/infraboard/mcube/ioc/config/logger"
+	"github.com/infraboard/mcube/v2/ioc/config/logger"
 	"github.com/infraboard/mpaas/apps/gateway"
 	"github.com/rs/zerolog"
 	clientv3 "go.etcd.io/etcd/client/v3"

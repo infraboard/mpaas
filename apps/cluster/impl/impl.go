@@ -3,12 +3,12 @@ package impl
 import (
 	"go.mongodb.org/mongo-driver/mongo"
 
-	"github.com/infraboard/mcube/ioc"
-	"github.com/infraboard/mcube/ioc/config/logger"
+	"github.com/infraboard/mcube/v2/ioc"
+	"github.com/infraboard/mcube/v2/ioc/config/logger"
 	"github.com/rs/zerolog"
 	"google.golang.org/grpc"
 
-	ioc_mongo "github.com/infraboard/mcube/ioc/config/mongo"
+	ioc_mongo "github.com/infraboard/mcube/v2/ioc/config/mongo"
 	"github.com/infraboard/mpaas/apps/cluster"
 	"github.com/infraboard/mpaas/apps/deploy"
 	"github.com/infraboard/mpaas/apps/k8s"

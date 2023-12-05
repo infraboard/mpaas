@@ -1,8 +1,8 @@
 package audit
 
 import (
-	resource "github.com/infraboard/mcube/pb/resource"
-	"github.com/infraboard/mcube/validator"
+	"github.com/infraboard/mcube/v2/ioc/config/validator"
+	resource "github.com/infraboard/mcube/v2/pb/resource"
 )
 
 func NewRecordSet() *RecordSet {

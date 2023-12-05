@@ -4,7 +4,6 @@ import (
 	"context"
 	"testing"
 
-	"github.com/infraboard/mcube/logger/zap"
 	cluster "github.com/infraboard/mpaas/apps/k8s"
 	"github.com/infraboard/mpaas/clients/rest"
 	"github.com/infraboard/mpaas/test/tools"
@@ -52,7 +51,6 @@ func TestDescribeCluster(t *testing.T) {
 }
 
 func init() {
-	zap.DevelopmentSetup()
 	conf := rest.NewDefaultConfig()
 	client = rest.NewClient(conf)
 }

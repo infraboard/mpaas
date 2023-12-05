@@ -1,6 +1,6 @@
 package rpc
 
-import "github.com/infraboard/mcube/ioc"
+import "github.com/infraboard/mcube/v2/ioc"
 
 const (
 	MPAAS = "mpaas"

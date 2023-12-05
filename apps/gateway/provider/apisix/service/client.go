@@ -1,6 +1,6 @@
 package service
 
-import "github.com/infraboard/mcube/client/rest"
+import "github.com/infraboard/mcube/v2/client/rest"
 
 func NewClient(c *rest.RESTClient) *Client {
 	return &Client{
