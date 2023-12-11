@@ -37,8 +37,7 @@ func NewClient() (*ClientSet, error) {
 		grpc.WithChainUnaryInterceptor(exception.NewUnaryClientInterceptor()),
 
 		// Grpc Trace
-		grpc.WithUnaryInterceptor(otelgrpc.UnaryClientInterceptor()),
-		grpc.WithStreamInterceptor(otelgrpc.StreamClientInterceptor()),
+		grpc.WithStatsHandler(otelgrpc.NewClientHandler()),
 	)
 
 	if err != nil {
