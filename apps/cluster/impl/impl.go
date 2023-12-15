@@ -15,7 +15,7 @@ import (
 )
 
 func init() {
-	ioc.RegistryController(&impl{})
+	ioc.Controller().Registry(&impl{})
 }
 
 type impl struct {
@@ -31,8 +31,8 @@ type impl struct {
 func (i *impl) Init() error {
 	i.col = ioc_mongo.DB().Collection(i.Name())
 	i.log = logger.Sub(i.Name())
-	i.deploy = ioc.GetController(deploy.AppName).(deploy.Service)
-	i.k8s = ioc.GetController(k8s.AppName).(k8s.Service)
+	i.deploy = ioc.Controller().Get(deploy.AppName).(deploy.Service)
+	i.k8s = ioc.Controller().Get(k8s.AppName).(k8s.Service)
 	return nil
 }
 

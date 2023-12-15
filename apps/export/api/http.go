@@ -9,7 +9,7 @@ import (
 )
 
 func init() {
-	ioc.RegistryApi(&downloadHandler{})
+	ioc.Api().Registry(&downloadHandler{})
 }
 
 type downloadHandler struct {
@@ -20,7 +20,7 @@ type downloadHandler struct {
 
 func (h *downloadHandler) Init() error {
 	h.log = logger.Sub(deploy.AppName)
-	h.service = ioc.GetController(deploy.AppName).(deploy.Service)
+	h.service = ioc.Controller().Get(deploy.AppName).(deploy.Service)
 	return nil
 }
 

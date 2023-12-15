@@ -16,7 +16,7 @@ import (
 )
 
 func init() {
-	ioc.RegistryController(&impl{})
+	ioc.Controller().Registry(&impl{})
 }
 
 type impl struct {
@@ -34,8 +34,8 @@ func (i *impl) Init() error {
 	i.col = ioc_mongo.DB().Collection(i.Name())
 	i.log = logger.Sub(i.Name())
 	i.mcenter = rpc.C()
-	i.k8s = ioc.GetController(k8s.AppName).(k8s.Service)
-	i.cluster = ioc.GetController(cluster.AppName).(cluster.Service)
+	i.k8s = ioc.Controller().Get(k8s.AppName).(k8s.Service)
+	i.cluster = ioc.Controller().Get(cluster.AppName).(cluster.Service)
 	return nil
 }
 

@@ -14,7 +14,7 @@ import (
 )
 
 func init() {
-	ioc.RegistryController(&service{})
+	ioc.Controller().Registry(&service{})
 }
 
 type service struct {
@@ -30,7 +30,7 @@ func (s *service) Init() error {
 	s.col = ioc_mongo.DB().Collection(s.Name())
 	s.encryptoKey = application.App().EncryptKey
 	s.log = logger.Sub(s.Name())
-	s.cluster = ioc.GetController(k8s.AppName).(k8s.Service)
+	s.cluster = ioc.Controller().Get(k8s.AppName).(k8s.Service)
 	return nil
 }
 

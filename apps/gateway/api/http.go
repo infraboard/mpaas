@@ -23,7 +23,7 @@ type handler struct {
 
 func (h *handler) Init() error {
 	h.log = logger.Sub(gateway.AppName)
-	h.service = ioc.GetController(gateway.AppName).(gateway.Service)
+	h.service = ioc.Controller().Get(gateway.AppName).(gateway.Service)
 	return nil
 }
 
@@ -41,5 +41,5 @@ func (h *handler) Registry(ws *restful.WebService) {
 }
 
 func init() {
-	ioc.RegistryApi(h)
+	ioc.Api().Registry(h)
 }

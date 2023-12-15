@@ -15,5 +15,5 @@ var (
 
 func init() {
 	tools.DevelopmentSetup()
-	impl = ioc.GetController(audit.AppName).(audit.Service)
+	impl = ioc.Controller().Get(audit.AppName).(audit.Service)
 }

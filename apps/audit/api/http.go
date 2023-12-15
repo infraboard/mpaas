@@ -10,7 +10,7 @@ import (
 )
 
 func init() {
-	ioc.RegistryApi(&handler{})
+	ioc.Api().Registry(&handler{})
 }
 
 type handler struct {
@@ -21,7 +21,7 @@ type handler struct {
 
 func (h *handler) Init() error {
 	h.log = logger.Sub(deploy.AppName)
-	h.service = ioc.GetController(audit.AppName).(audit.Service)
+	h.service = ioc.Controller().Get(audit.AppName).(audit.Service)
 	return nil
 }
 
