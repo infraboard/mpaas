@@ -141,7 +141,7 @@ func (i *Cluster) Patch(req *UpdateClusterRequest) error {
 
 func (i *Cluster) EncryptKubeConf(key string) error {
 	// 判断文本是否已经加密
-	if strings.HasPrefix(i.Spec.KubeConfig, application.App().CipherPrefix) {
+	if strings.HasPrefix(i.Spec.KubeConfig, application.Get().CipherPrefix) {
 		return fmt.Errorf("text has ciphered")
 	}
 
@@ -151,17 +151,17 @@ func (i *Cluster) EncryptKubeConf(key string) error {
 	}
 
 	base64Str := base64.StdEncoding.EncodeToString(cipherText)
-	i.Spec.KubeConfig = fmt.Sprintf("%s%s", application.App().CipherPrefix, base64Str)
+	i.Spec.KubeConfig = fmt.Sprintf("%s%s", application.Get().CipherPrefix, base64Str)
 	return nil
 }
 
 func (i *Cluster) DecryptKubeConf(key string) error {
 	// 判断文本是否已经是明文
-	if !strings.HasPrefix(i.Spec.KubeConfig, application.App().CipherPrefix) {
+	if !strings.HasPrefix(i.Spec.KubeConfig, application.Get().CipherPrefix) {
 		return nil
 	}
 
-	base64CipherText := strings.TrimPrefix(i.Spec.KubeConfig, application.App().CipherPrefix)
+	base64CipherText := strings.TrimPrefix(i.Spec.KubeConfig, application.Get().CipherPrefix)
 
 	cipherText, err := base64.StdEncoding.DecodeString(base64CipherText)
 	if err != nil {

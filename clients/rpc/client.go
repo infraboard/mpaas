@@ -13,12 +13,12 @@ import (
 	"google.golang.org/grpc/credentials/insecure"
 
 	"github.com/infraboard/mcube/v2/grpc/middleware/exception"
-	"github.com/infraboard/mcube/v2/ioc/config/logger"
+	"github.com/infraboard/mcube/v2/ioc/config/log"
 )
 
 // NewClient todo
 func NewClient() (*ClientSet, error) {
-	log := logger.Sub("sdk.mpaas")
+	log := log.Sub("sdk.mpaas")
 	mcenter := rpc.Config()
 
 	ctx, cancel := context.WithTimeout(context.Background(), mcenter.Timeout())

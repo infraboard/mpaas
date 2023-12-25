@@ -5,7 +5,7 @@ import (
 	"crypto/tls"
 	"time"
 
-	"github.com/infraboard/mcube/v2/ioc/config/logger"
+	"github.com/infraboard/mcube/v2/ioc/config/log"
 	"github.com/infraboard/mpaas/apps/gateway"
 	"github.com/rs/zerolog"
 	clientv3 "go.etcd.io/etcd/client/v3"
@@ -28,7 +28,7 @@ func NewEtcdOperator(config *gateway.TraefikConfig) (*EtcdOperator, error) {
 	op := &EtcdOperator{
 		rootKey: config.RootKey,
 		client:  client,
-		log:     logger.Sub("traefik.etcd"),
+		log:     log.Sub("traefik.etcd"),
 	}
 	return op, nil
 }

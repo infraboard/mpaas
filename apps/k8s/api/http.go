@@ -2,7 +2,7 @@ package api
 
 import (
 	"github.com/infraboard/mcube/v2/ioc"
-	"github.com/infraboard/mcube/v2/ioc/config/logger"
+	"github.com/infraboard/mcube/v2/ioc/config/log"
 	"github.com/rs/zerolog"
 
 	cluster "github.com/infraboard/mpaas/apps/k8s"
@@ -19,7 +19,7 @@ type handler struct {
 }
 
 func (h *handler) Init() error {
-	h.log = logger.Sub(cluster.AppName)
+	h.log = log.Sub(cluster.AppName)
 	h.service = ioc.Controller().Get(cluster.AppName).(cluster.Service)
 	return nil
 }

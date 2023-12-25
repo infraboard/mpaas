@@ -3,13 +3,11 @@ package deploy
 import (
 	"encoding/json"
 	"fmt"
-	"strings"
 	"time"
 
 	"dario.cat/mergo"
 	"github.com/infraboard/mcube/v2/pb/resource"
-	"github.com/infraboard/mflow/apps/build"
-	"github.com/infraboard/mflow/apps/job"
+
 	"github.com/infraboard/mpaas/provider/k8s/network"
 	"github.com/infraboard/mpaas/provider/k8s/workload"
 	v1 "k8s.io/api/core/v1"
@@ -124,42 +122,6 @@ func (d *Deployment) InjectPodLabel() map[string]string {
 		LABEL_DEPLOY_ID_KEY:    d.Meta.Id,
 	}
 	return m
-}
-
-// 部署时的系统变量, 在部署任务时注入
-func (d *Deployment) SystemVariable() ([]v1.EnvVar, error) {
-	items := []*job.RunParam{}
-	switch d.Spec.Type {
-	case TYPE_KUBERNETES:
-		wc := d.Spec.K8STypeConfig
-		// 与k8s部署相关的系统变量, 不要注入版本信息, 部署版本由用户自己传人
-		wl, err := wc.GetWorkLoad()
-		if err != nil {
-			return nil, err
-		}
-		variables := wl.SystemVaraible(d.Spec.ServiceName)
-		addr, _ := variables.ImageDetail()
-		items = append(items,
-			job.NewRunParam(
-				job.SYSTEM_VARIABLE_WORKLOAD_KIND,
-				strings.ToLower(d.Spec.K8STypeConfig.WorkloadKind),
-			).SetReadOnly(true).SetSearchLabel(true),
-			job.NewRunParam(
-				job.SYSTEM_VARIABLE_WORKLOAD_NAME,
-				variables.WorkloadName,
-			).SetReadOnly(true).SetSearchLabel(true),
-			job.NewRunParam(
-				job.SYSTEM_VARIABLE_SERVICE_NAME,
-				d.Spec.ServiceName,
-			).SetReadOnly(true).SetSearchLabel(true),
-			job.NewRunParam(
-				build.SYSTEM_VARIABLE_IMAGE_REPOSITORY,
-				addr,
-			),
-		)
-	}
-
-	return job.ParamsToEnvVar(items), nil
 }
 
 func (c *K8STypeConfig) GetWorkLoad() (*workload.WorkLoad, error) {

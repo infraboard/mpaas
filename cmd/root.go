@@ -5,6 +5,7 @@ import (
 
 	"github.com/infraboard/mcube/v2/ioc"
 	"github.com/infraboard/mcube/v2/ioc/config/application"
+	"github.com/infraboard/mcube/v2/ioc/server"
 	"github.com/spf13/cobra"
 
 	"github.com/infraboard/mpaas/cmd/initial"
@@ -44,8 +45,7 @@ func initail() {
 		req.ConfigEnv.Enabled = true
 	}
 
-	err := ioc.ConfigIocObject(req)
-	cobra.CheckErr(err)
+	server.DefaultConfig = req
 }
 
 // Execute adds all child commands to the root command sets flags appropriately.

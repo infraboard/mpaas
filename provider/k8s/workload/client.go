@@ -1,7 +1,7 @@
 package workload
 
 import (
-	"github.com/infraboard/mcube/v2/ioc/config/logger"
+	"github.com/infraboard/mcube/v2/ioc/config/log"
 	"github.com/rs/zerolog"
 	"k8s.io/client-go/kubernetes"
 	appsv1 "k8s.io/client-go/kubernetes/typed/apps/v1"
@@ -16,7 +16,7 @@ func NewWorkload(cs *kubernetes.Clientset, restconf *rest.Config) *Client {
 		batchV1:  cs.BatchV1(),
 		corev1:   cs.CoreV1(),
 		restconf: restconf,
-		l:        logger.Sub("workload"),
+		l:        log.Sub("workload"),
 	}
 }
 

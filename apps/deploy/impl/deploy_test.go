@@ -27,7 +27,6 @@ func TestDescribeDeployment(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	t.Log(ds.SystemVariable())
 	t.Log(tools.MustToJson(ds))
 }
 

@@ -4,7 +4,6 @@ import (
 	"os"
 	"path/filepath"
 
-	"github.com/infraboard/mcube/v2/ioc/config/logger"
 	"github.com/rs/zerolog"
 
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
@@ -13,6 +12,7 @@ import (
 	"k8s.io/client-go/tools/clientcmd"
 	clientcmdapi "k8s.io/client-go/tools/clientcmd/api"
 
+	"github.com/infraboard/mcube/v2/ioc/config/log"
 	"github.com/infraboard/mpaas/provider/k8s/admin"
 	"github.com/infraboard/mpaas/provider/k8s/config"
 	"github.com/infraboard/mpaas/provider/k8s/event"
@@ -62,7 +62,7 @@ func NewClient(kubeConfigYaml string) (*Client, error) {
 		kubeconf: kubeConf,
 		restconf: restConf,
 		client:   client,
-		log:      logger.Sub("provider.k8s"),
+		log:      log.Sub("provider.k8s"),
 	}, nil
 }
 

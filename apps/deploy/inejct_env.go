@@ -116,7 +116,7 @@ func (e *InjectionEnv) SetEncrypt(v bool) *InjectionEnv {
 
 func (e *InjectionEnv) MakeEncrypt(key string) {
 
-	if strings.HasPrefix(e.Value, application.App().CipherPrefix) {
+	if strings.HasPrefix(e.Value, application.Get().CipherPrefix) {
 		return
 	}
 
@@ -135,5 +135,5 @@ func (e *InjectionEnv) MakeEncrypt(key string) {
 		return
 	}
 
-	e.Value = fmt.Sprintf("%s%s", application.App().CipherPrefix, encrypt)
+	e.Value = fmt.Sprintf("%s%s", application.Get().CipherPrefix, encrypt)
 }

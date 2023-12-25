@@ -4,10 +4,10 @@ import (
 	"go.mongodb.org/mongo-driver/mongo"
 
 	"github.com/infraboard/mcube/v2/ioc"
-	"github.com/infraboard/mcube/v2/ioc/config/logger"
 	"github.com/rs/zerolog"
 	"google.golang.org/grpc"
 
+	"github.com/infraboard/mcube/v2/ioc/config/log"
 	ioc_mongo "github.com/infraboard/mcube/v2/ioc/config/mongo"
 	"github.com/infraboard/mpaas/apps/cluster"
 	"github.com/infraboard/mpaas/apps/deploy"
@@ -30,7 +30,7 @@ type impl struct {
 
 func (i *impl) Init() error {
 	i.col = ioc_mongo.DB().Collection(i.Name())
-	i.log = logger.Sub(i.Name())
+	i.log = log.Sub(i.Name())
 	i.deploy = ioc.Controller().Get(deploy.AppName).(deploy.Service)
 	i.k8s = ioc.Controller().Get(k8s.AppName).(k8s.Service)
 	return nil

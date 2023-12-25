@@ -5,7 +5,7 @@ import (
 
 	"github.com/infraboard/mcube/v2/ioc"
 	"github.com/infraboard/mcube/v2/ioc/config/application"
-	"github.com/infraboard/mcube/v2/ioc/config/logger"
+	"github.com/infraboard/mcube/v2/ioc/config/log"
 	"github.com/rs/zerolog"
 	"google.golang.org/grpc"
 
@@ -28,8 +28,8 @@ type service struct {
 
 func (s *service) Init() error {
 	s.col = ioc_mongo.DB().Collection(s.Name())
-	s.encryptoKey = application.App().EncryptKey
-	s.log = logger.Sub(s.Name())
+	s.encryptoKey = application.Get().EncryptKey
+	s.log = log.Sub(s.Name())
 	s.cluster = ioc.Controller().Get(k8s.AppName).(k8s.Service)
 	return nil
 }

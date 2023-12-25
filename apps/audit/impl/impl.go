@@ -2,11 +2,11 @@ package impl
 
 import (
 	"github.com/infraboard/mcube/v2/ioc"
-	"github.com/infraboard/mcube/v2/ioc/config/logger"
 	"github.com/rs/zerolog"
 	"go.mongodb.org/mongo-driver/mongo"
 	"google.golang.org/grpc"
 
+	"github.com/infraboard/mcube/v2/ioc/config/log"
 	ioc_mongo "github.com/infraboard/mcube/v2/ioc/config/mongo"
 	"github.com/infraboard/mpaas/apps/audit"
 )
@@ -24,7 +24,7 @@ type impl struct {
 
 func (i *impl) Init() error {
 	i.col = ioc_mongo.DB().Collection(i.Name())
-	i.log = logger.Sub(i.Name())
+	i.log = log.Sub(i.Name())
 	return nil
 }
 

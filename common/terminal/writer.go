@@ -8,7 +8,7 @@ import (
 
 	"github.com/gorilla/websocket"
 	"github.com/infraboard/mcube/v2/grpc/mock"
-	"github.com/infraboard/mcube/v2/ioc/config/logger"
+	"github.com/infraboard/mcube/v2/ioc/config/log"
 	"github.com/rs/zerolog"
 )
 
@@ -22,7 +22,7 @@ func NewWebSocketWriter(conn *websocket.Conn) *WebSocketWriter {
 		ServerStreamBase: mock.NewServerStreamBase(),
 		ws:               conn,
 		timeout:          3 * time.Second,
-		l:                logger.Sub("tasklog.term"),
+		l:                log.Sub("tasklog.term"),
 		writeBuf:         make([]byte, DefaultWriteBuf),
 	}
 }
