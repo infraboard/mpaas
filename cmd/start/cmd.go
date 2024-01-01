@@ -7,11 +7,15 @@ import (
 
 	"github.com/infraboard/mcenter/clients/rpc/hooks"
 
-	_ "github.com/infraboard/mcube/v2/ioc/apps/metric/restful"
 	"github.com/infraboard/mcube/v2/ioc/server"
 
 	// 注册所有服务
 	_ "github.com/infraboard/mpaas/apps"
+
+	//
+	_ "github.com/infraboard/mcube/v2/ioc/apps/apidoc/restful"
+	_ "github.com/infraboard/mcube/v2/ioc/apps/health/restful"
+	_ "github.com/infraboard/mcube/v2/ioc/apps/metric/restful"
 )
 
 // Cmd represents the start command

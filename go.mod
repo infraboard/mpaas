@@ -12,7 +12,7 @@ require (
 	github.com/go-playground/validator/v10 v10.15.5
 	github.com/gorilla/websocket v1.5.0
 	github.com/infraboard/mcenter v0.0.21
-	github.com/infraboard/mcube/v2 v2.0.4
+	github.com/infraboard/mcube/v2 v2.0.5
 	github.com/kvtools/valkeyrie v1.0.0
 	github.com/rs/xid v1.5.0
 	github.com/rs/zerolog v1.31.0
