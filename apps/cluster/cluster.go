@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 
-	"github.com/infraboard/mcenter/common/validate"
+	"github.com/infraboard/mcube/v2/ioc/config/validator"
 	"github.com/infraboard/mcube/v2/pb/resource"
 	"github.com/infraboard/mcube/v2/tools/hash"
 	deploy "github.com/infraboard/mpaas/apps/deploy"
@@ -73,7 +73,7 @@ func New(req *CreateClusterRequest) (*Cluster, error) {
 }
 
 func (req *CreateClusterRequest) Validate() error {
-	return validate.Validate(req)
+	return validator.Validate(req)
 }
 
 func NewDefaultCluster() *Cluster {

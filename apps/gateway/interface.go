@@ -3,7 +3,7 @@ package gateway
 import (
 	context "context"
 
-	"github.com/infraboard/mcenter/common/validate"
+	"github.com/infraboard/mcube/v2/ioc/config/validator"
 )
 
 const (
@@ -22,7 +22,7 @@ func NewDefaultTraefikConfig() *TraefikConfig {
 }
 
 func (req *CreateGatewayRequest) Validate() error {
-	return validate.Validate(req)
+	return validator.Validate(req)
 }
 
 func NewCreateGatewayRequest() *CreateGatewayRequest {
@@ -30,9 +30,9 @@ func NewCreateGatewayRequest() *CreateGatewayRequest {
 }
 
 func (req *QueryGatewayRequest) Validate() error {
-	return validate.Validate(req)
+	return validator.Validate(req)
 }
 
 func (req *DescribeGatewayRequest) Validate() error {
-	return validate.Validate(req)
+	return validator.Validate(req)
 }

@@ -11,7 +11,7 @@ import (
 	"github.com/emicklei/go-restful/v3"
 	"github.com/gorilla/websocket"
 	"github.com/infraboard/mcenter/apps/endpoint"
-	"github.com/infraboard/mcenter/clients/rpc/middleware"
+	"github.com/infraboard/mcenter/clients/rpc/middleware/auth/gorestful"
 	"github.com/infraboard/mcube/v2/http/label"
 	"github.com/infraboard/mcube/v2/http/restful/response"
 	cluster "github.com/infraboard/mpaas/apps/k8s"
@@ -151,7 +151,8 @@ func (h *handler) LoginContainer(r *restful.Request, w *restful.Response) {
 	entry := endpoint.NewEntryFromRestRequest(r).
 		SetAuthEnable(true).
 		SetPermissionEnable(true)
-	err = middleware.GetHttpAuther().PermissionCheck(r, w, entry)
+
+	err = gorestful.Get().PermissionCheck(r, w, entry)
 	if err != nil {
 		term.Failed(err)
 		return
@@ -191,7 +192,7 @@ func (h *handler) WatchConainterLog(r *restful.Request, w *restful.Response) {
 	entry := endpoint.NewEntryFromRestRequest(r).
 		SetAuthEnable(true).
 		SetPermissionEnable(true)
-	err = middleware.GetHttpAuther().PermissionCheck(r, w, entry)
+	err = gorestful.Get().PermissionCheck(r, w, entry)
 	if err != nil {
 		term.Failed(err)
 		return

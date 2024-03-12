@@ -6,8 +6,8 @@ import (
 	"net/http"
 
 	"github.com/infraboard/mcenter/apps/instance"
-	"github.com/infraboard/mcenter/common/validate"
 	"github.com/infraboard/mcube/v2/http/request"
+	"github.com/infraboard/mcube/v2/ioc/config/validator"
 	pb_request "github.com/infraboard/mcube/v2/pb/request"
 	resource "github.com/infraboard/mcube/v2/pb/resource"
 	"github.com/infraboard/mcube/v2/tools/hash"
@@ -41,7 +41,7 @@ func New(req *CreateDeploymentRequest) *Deployment {
 }
 
 func (req *CreateDeploymentRequest) Validate() error {
-	return validate.Validate(req)
+	return validator.Validate(req)
 }
 
 func (req *CreateDeploymentRequest) ValidateWorkLoad() error {
@@ -118,7 +118,7 @@ func (req *UpdateDeploymentRequest) Validate() error {
 		return fmt.Errorf("id required")
 	}
 	if req.UpdateMode.Equal(pb_request.UpdateMode_PUT) {
-		return validate.Validate(req)
+		return validator.Validate(req)
 	}
 
 	return nil
@@ -131,7 +131,7 @@ func NewDescribeDeploymentRequest(id string) *DescribeDeploymentRequest {
 }
 
 func (req *DescribeDeploymentRequest) Validate() error {
-	return validate.Validate(req)
+	return validator.Validate(req)
 }
 
 func NewPutDeployRequest(id string) *UpdateDeploymentRequest {
