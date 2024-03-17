@@ -11,9 +11,10 @@ import (
 	"github.com/emicklei/go-restful/v3"
 	"github.com/gorilla/websocket"
 	"github.com/infraboard/mcenter/apps/endpoint"
-	"github.com/infraboard/mcenter/clients/rpc/middleware/auth/gorestful"
+	middleware "github.com/infraboard/mcenter/clients/rpc/middleware/auth/gorestful"
 	"github.com/infraboard/mcube/v2/http/label"
 	"github.com/infraboard/mcube/v2/http/restful/response"
+	"github.com/infraboard/mcube/v2/ioc/config/gorestful"
 	cluster "github.com/infraboard/mpaas/apps/k8s"
 	"github.com/infraboard/mpaas/apps/proxy"
 	"github.com/infraboard/mpaas/common/terminal"
@@ -24,9 +25,10 @@ import (
 	corev1 "k8s.io/api/core/v1"
 )
 
-func (h *handler) registryPodHandler(ws *restful.WebService) {
+func (h *handler) registryPodHandler() {
 	tags := []string{"[Proxy] Pod管理"}
 
+	ws := gorestful.ObjectRouter(h)
 	ws.Route(ws.POST("/{cluster_id}/pods").To(h.CreatePod).
 		Doc("创建Pod").
 		Metadata(restfulspec.KeyOpenAPITags, tags).
@@ -152,7 +154,7 @@ func (h *handler) LoginContainer(r *restful.Request, w *restful.Response) {
 		SetAuthEnable(true).
 		SetPermissionEnable(true)
 
-	err = gorestful.Get().PermissionCheck(r, w, entry)
+	err = middleware.Get().PermissionCheck(r, w, entry)
 	if err != nil {
 		term.Failed(err)
 		return
@@ -192,7 +194,7 @@ func (h *handler) WatchConainterLog(r *restful.Request, w *restful.Response) {
 	entry := endpoint.NewEntryFromRestRequest(r).
 		SetAuthEnable(true).
 		SetPermissionEnable(true)
-	err = gorestful.Get().PermissionCheck(r, w, entry)
+	err = middleware.Get().PermissionCheck(r, w, entry)
 	if err != nil {
 		term.Failed(err)
 		return

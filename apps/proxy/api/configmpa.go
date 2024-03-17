@@ -7,6 +7,7 @@ import (
 	"github.com/infraboard/mcube/v2/http/binding"
 	"github.com/infraboard/mcube/v2/http/label"
 	"github.com/infraboard/mcube/v2/http/restful/response"
+	"github.com/infraboard/mcube/v2/ioc/config/gorestful"
 	cluster "github.com/infraboard/mpaas/apps/k8s"
 	"github.com/infraboard/mpaas/apps/proxy"
 	"github.com/infraboard/mpaas/provider/k8s"
@@ -15,8 +16,10 @@ import (
 	corev1 "k8s.io/api/core/v1"
 )
 
-func (h *handler) registryConfigMapHandler(ws *restful.WebService) {
+func (h *handler) registryConfigMapHandler() {
 	tags := []string{"[Proxy] Config Map管理"}
+
+	ws := gorestful.ObjectRouter(h)
 	ws.Route(ws.POST("/{cluster_id}/configmaps").To(h.CreateConfigMap).
 		Doc("创建ConfigMap").
 		Metadata(restfulspec.KeyOpenAPITags, tags).

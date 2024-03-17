@@ -21,6 +21,7 @@ type downloadHandler struct {
 func (h *downloadHandler) Init() error {
 	h.log = log.Sub(deploy.AppName)
 	h.service = ioc.Controller().Get(deploy.AppName).(deploy.Service)
+	h.Registry()
 	return nil
 }
 

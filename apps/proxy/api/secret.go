@@ -7,6 +7,7 @@ import (
 	"github.com/emicklei/go-restful/v3"
 	"github.com/infraboard/mcube/v2/http/label"
 	"github.com/infraboard/mcube/v2/http/restful/response"
+	"github.com/infraboard/mcube/v2/ioc/config/gorestful"
 	"github.com/infraboard/mpaas/apps/proxy"
 	"github.com/infraboard/mpaas/provider/k8s"
 	"github.com/infraboard/mpaas/provider/k8s/meta"
@@ -15,9 +16,10 @@ import (
 	v1 "k8s.io/api/core/v1"
 )
 
-func (h *handler) registrySecretHandler(ws *restful.WebService) {
+func (h *handler) registrySecretHandler() {
 	tags := []string{"[Proxy] 密钥管理"}
 
+	ws := gorestful.ObjectRouter(h)
 	ws.Route(ws.POST("/{cluster_id}/secrets").To(h.CreateSecret).
 		Doc("创建密钥").
 		Metadata(restfulspec.KeyOpenAPITags, tags).

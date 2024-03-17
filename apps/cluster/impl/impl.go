@@ -5,8 +5,8 @@ import (
 
 	"github.com/infraboard/mcube/v2/ioc"
 	"github.com/rs/zerolog"
-	"google.golang.org/grpc"
 
+	"github.com/infraboard/mcube/v2/ioc/config/grpc"
 	"github.com/infraboard/mcube/v2/ioc/config/log"
 	ioc_mongo "github.com/infraboard/mcube/v2/ioc/config/mongo"
 	"github.com/infraboard/mpaas/apps/cluster"
@@ -33,13 +33,10 @@ func (i *impl) Init() error {
 	i.log = log.Sub(i.Name())
 	i.deploy = ioc.Controller().Get(deploy.AppName).(deploy.Service)
 	i.k8s = ioc.Controller().Get(k8s.AppName).(k8s.Service)
+	cluster.RegisterRPCServer(grpc.Get().Server(), i)
 	return nil
 }
 
 func (i *impl) Name() string {
 	return cluster.AppName
-}
-
-func (i *impl) Registry(server *grpc.Server) {
-	cluster.RegisterRPCServer(server, i)
 }

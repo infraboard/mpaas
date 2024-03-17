@@ -5,11 +5,14 @@ import (
 	"github.com/emicklei/go-restful/v3"
 	"github.com/infraboard/mcube/v2/http/label"
 	"github.com/infraboard/mcube/v2/http/restful/response"
+	"github.com/infraboard/mcube/v2/ioc/config/gorestful"
 	"github.com/infraboard/mpaas/apps/deploy"
 )
 
-func (h *downloadHandler) Registry(ws *restful.WebService) {
+func (h *downloadHandler) Registry() {
 	tags := []string{"部署配置下载"}
+
+	ws := gorestful.ObjectRouter(h)
 	ws.Route(ws.GET("/deploys/{id}").To(h.DownloadDeployment).
 		Doc("下载配置详情").
 		Param(ws.PathParameter("id", "identifier of the deploy").DataType("string")).

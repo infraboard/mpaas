@@ -41,16 +41,16 @@ func (h *handler) Version() string {
 
 func (h *handler) Registry(r *restful.WebService) {
 	r.Filter(h.ClusterMiddleware)
-	h.registryConfigMapHandler(r)
-	h.registryDeploymentHandler(r)
-	h.registryNodeHandler(r)
-	h.registryNamespaceHandler(r)
-	h.registryPodHandler(r)
-	h.registrySecretHandler(r)
-	h.registryServiceHandler(r)
-	h.registryStatefulSetHandler(r)
-	h.registryPVHandler(r)
-	h.registryWatchHandler(r)
+	h.registryConfigMapHandler()
+	h.registryDeploymentHandler()
+	h.registryNodeHandler()
+	h.registryNamespaceHandler()
+	h.registryPodHandler()
+	h.registrySecretHandler()
+	h.registryServiceHandler()
+	h.registryStatefulSetHandler()
+	h.registryPVHandler()
+	h.registryWatchHandler()
 }
 
 // 解析Cluster Id的中间件

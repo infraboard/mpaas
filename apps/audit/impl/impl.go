@@ -4,8 +4,8 @@ import (
 	"github.com/infraboard/mcube/v2/ioc"
 	"github.com/rs/zerolog"
 	"go.mongodb.org/mongo-driver/mongo"
-	"google.golang.org/grpc"
 
+	"github.com/infraboard/mcube/v2/ioc/config/grpc"
 	"github.com/infraboard/mcube/v2/ioc/config/log"
 	ioc_mongo "github.com/infraboard/mcube/v2/ioc/config/mongo"
 	"github.com/infraboard/mpaas/apps/audit"
@@ -25,13 +25,10 @@ type impl struct {
 func (i *impl) Init() error {
 	i.col = ioc_mongo.DB().Collection(i.Name())
 	i.log = log.Sub(i.Name())
+	audit.RegisterRPCServer(grpc.Get().Server(), i)
 	return nil
 }
 
 func (i *impl) Name() string {
 	return audit.AppName
-}
-
-func (i *impl) Registry(server *grpc.Server) {
-	audit.RegisterRPCServer(server, i)
 }

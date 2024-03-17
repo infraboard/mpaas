@@ -5,6 +5,7 @@ import (
 	"github.com/emicklei/go-restful/v3"
 	"github.com/infraboard/mcube/v2/http/label"
 	"github.com/infraboard/mcube/v2/http/restful/response"
+	"github.com/infraboard/mcube/v2/ioc/config/gorestful"
 	cluster "github.com/infraboard/mpaas/apps/k8s"
 	"github.com/infraboard/mpaas/apps/proxy"
 	"github.com/infraboard/mpaas/provider/k8s"
@@ -13,8 +14,10 @@ import (
 	appsv1 "k8s.io/api/apps/v1"
 )
 
-func (h *handler) registryStatefulSetHandler(ws *restful.WebService) {
+func (h *handler) registryStatefulSetHandler() {
 	tags := []string{"[Proxy] StatefulSet管理"}
+
+	ws := gorestful.ObjectRouter(h)
 	ws.Route(ws.POST("/{cluster_id}/statefulsets").To(h.CreateStatefulSet).
 		Doc("创建StatefulSet").
 		Metadata(restfulspec.KeyOpenAPITags, tags).

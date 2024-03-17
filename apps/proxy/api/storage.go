@@ -5,6 +5,7 @@ import (
 	"github.com/emicklei/go-restful/v3"
 	"github.com/infraboard/mcube/v2/http/label"
 	"github.com/infraboard/mcube/v2/http/restful/response"
+	"github.com/infraboard/mcube/v2/ioc/config/gorestful"
 	cluster "github.com/infraboard/mpaas/apps/k8s"
 	"github.com/infraboard/mpaas/apps/proxy"
 	"github.com/infraboard/mpaas/provider/k8s"
@@ -13,9 +14,10 @@ import (
 	corev1 "k8s.io/api/core/v1"
 )
 
-func (h *handler) registryPVHandler(ws *restful.WebService) {
+func (h *handler) registryPVHandler() {
 	tags := []string{"[Proxy] 存储管理"}
 
+	ws := gorestful.ObjectRouter(h)
 	ws.Route(ws.GET("/{cluster_id}/pv").To(h.QueryPersistentVolumes).
 		Doc("查询卷列表").
 		Metadata(restfulspec.KeyOpenAPITags, tags).
