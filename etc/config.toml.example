@@ -2,11 +2,11 @@
 name = "mpaas"
 key  = "this is your app key"
 
-[app.http]
+[http]
 host = "127.0.0.1"
 port = 8080
 
-[app.grpc]
+[grpc]
 host = "127.0.0.1"
 port = 18080
 
@@ -24,7 +24,6 @@ level = "debug"
 
 [log.file]
 enable = true
-file_path = "logs/app.log"
 
 [jaeger]
-endpoint = "http://localhost:14268/api/traces"
+enable = false
