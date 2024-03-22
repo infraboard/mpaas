@@ -94,3 +94,21 @@ func (h *handler) DescribeCluster(r *restful.Request, w *restful.Response) {
 
 	response.Success(w, set)
 }
+
+func (h *handler) PutCluster(r *restful.Request, w *restful.Response) {
+	tk := r.Attribute("token").(*token.Token)
+
+	req := cluster.NewPutClusterRequest(r.PathParameter("id"))
+	if err := r.ReadEntity(req.Spec); err != nil {
+		response.Failed(w, err)
+		return
+	}
+	req.UpdateBy = tk.Username
+
+	set, err := h.service.UpdateCluster(r.Request.Context(), req)
+	if err != nil {
+		response.Failed(w, err)
+		return
+	}
+	response.Success(w, set)
+}

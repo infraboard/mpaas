@@ -76,3 +76,10 @@ func NewDeleteClusterRequest(id string) *DeleteClusterRequest {
 		Id: id,
 	}
 }
+
+func NewPutClusterRequest(id string) *UpdateClusterRequest {
+	return &UpdateClusterRequest{
+		Id:   id,
+		Spec: NewCreateClusterRequest(),
+	}
+}

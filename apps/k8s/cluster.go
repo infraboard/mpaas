@@ -49,7 +49,7 @@ func NewCluster(req *CreateClusterRequest) (*Cluster, error) {
 func NewMeta() *Meta {
 	return &Meta{
 		Id:         xid.New().String(),
-		CreateAt:   time.Now().UnixMicro(),
+		CreateAt:   time.Now().Unix(),
 		ServerInfo: &ServerInfo{},
 	}
 }

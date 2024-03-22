@@ -7,6 +7,7 @@ import "mpaas/apps/cluster/pb/cluster.proto";
 import "mcube/pb/page/page.proto";
 import "mcube/pb/resource/meta.proto";
 import "mcube/pb/resource/label.proto";
+import "mcube/pb/request/request.proto";
 
 
 // RPC 应用集群管理
@@ -54,12 +55,18 @@ message UpdateClusterRequest {
     // 集群Id
     // @gotags: json:"id"
     string id = 1;
+    // 更新模式
+    // @gotags: json:"update_mode"
+    infraboard.mcube.request.UpdateMode update_mode = 2;
     // 更新人
     // @gotags: json:"update_by"
-    string update_by = 2;
+    string update_by = 3;
+    // 更新时间
+    // @gotags: json:"update_at"
+    int64 update_at = 4;
     // 集群信息
     // @gotags: json:"spec"
-    CreateClusterRequest spec = 3;
+    CreateClusterRequest spec = 5;
 }
 
 message DeleteClusterRequest {
