@@ -46,6 +46,16 @@ func (h *handler) Registry() {
 		Reads(deploy.DescribeDeploymentRequest{}).
 		Writes(deploy.Deployment{}).
 		Returns(200, "OK", deploy.Deployment{}))
+
+	ws.Route(ws.DELETE("/{id}").To(h.DeleteCluster).
+		Doc("删除集群").
+		Param(ws.PathParameter("id", "identifier of the secret").DataType("string")).
+		Metadata(restfulspec.KeyOpenAPITags, tags).
+		Metadata(restfulspec.KeyOpenAPITags, tags).
+		Metadata(label.Resource, h.Name()).
+		Metadata(label.Action, label.Delete.Value()).
+		Metadata(label.Auth, label.Enable).
+		Metadata(label.Permission, label.Enable))
 }
 
 func (h *handler) CreateCluster(r *restful.Request, w *restful.Response) {
@@ -106,6 +116,16 @@ func (h *handler) PutCluster(r *restful.Request, w *restful.Response) {
 	req.UpdateBy = tk.Username
 
 	set, err := h.service.UpdateCluster(r.Request.Context(), req)
+	if err != nil {
+		response.Failed(w, err)
+		return
+	}
+	response.Success(w, set)
+}
+
+func (h *handler) DeleteCluster(r *restful.Request, w *restful.Response) {
+	req := cluster.NewDeleteClusterRequest(r.PathParameter("id"))
+	set, err := h.service.DeleteCluster(r.Request.Context(), req)
 	if err != nil {
 		response.Failed(w, err)
 		return

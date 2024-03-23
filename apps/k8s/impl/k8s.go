@@ -98,6 +98,11 @@ func (s *service) UpdateCluster(ctx context.Context, req *cluster.UpdateClusterR
 		return nil, err
 	}
 
+	// 针对脱敏后的KubeConfig未修改自动补充
+	if req.Spec.KubeConfig == "****" {
+		req.Spec.KubeConfig = ins.Spec.KubeConfig
+	}
+
 	// 配置kubeconfig是否有变更
 	isKubeConfigChanged := req.Spec.KubeConfig == ins.Spec.KubeConfig
 
