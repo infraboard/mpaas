@@ -6,6 +6,7 @@ import (
 	"net/http"
 
 	"github.com/infraboard/mcenter/apps/instance"
+	"github.com/infraboard/mcenter/apps/token"
 	"github.com/infraboard/mcube/v2/http/request"
 	"github.com/infraboard/mcube/v2/ioc/config/validator"
 	pb_request "github.com/infraboard/mcube/v2/pb/request"
@@ -99,6 +100,12 @@ func NewCreateDeploymentRequest() *CreateDeploymentRequest {
 		Environment:    instance.DEFAULT_ENV,
 		Group:          instance.DEFAULT_GROUP,
 	}
+}
+
+func (r *CreateDeploymentRequest) UpdateOwner(tk *token.Token) {
+	r.Domain = tk.Domain
+	r.Namespace = tk.Namespace
+	r.CreateBy = tk.Username
 }
 
 func NewK8STypeConfig() *K8STypeConfig {

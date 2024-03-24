@@ -90,7 +90,7 @@ func (h *handler) CreateCluster(r *restful.Request, w *restful.Response) {
 		response.Failed(w, err)
 		return
 	}
-	req.UpdateOwner()
+	req.UpdateOwner(token.GetTokenFromRequest(r))
 
 	ins, err := h.service.CreateCluster(r.Request.Context(), req)
 	if err != nil {

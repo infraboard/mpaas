@@ -6,6 +6,7 @@ import (
 	"github.com/emicklei/go-restful/v3"
 	"github.com/infraboard/mcube/v2/http/restful/response"
 	"github.com/infraboard/mcube/v2/ioc"
+	"github.com/infraboard/mcube/v2/ioc/config/gorestful"
 	"github.com/infraboard/mcube/v2/ioc/config/log"
 	"github.com/rs/zerolog"
 
@@ -27,6 +28,7 @@ type handler struct {
 func (h *handler) Init() error {
 	h.log = log.Sub(cluster.AppName)
 	h.service = ioc.Controller().Get(cluster.AppName).(cluster.Service)
+	h.Registry()
 	return nil
 }
 
@@ -39,18 +41,19 @@ func (h *handler) Version() string {
 	return "v1"
 }
 
-func (h *handler) Registry(r *restful.WebService) {
+func (h *handler) Registry() {
+	r := gorestful.ObjectRouter(h)
 	r.Filter(h.ClusterMiddleware)
-	h.registryConfigMapHandler()
-	h.registryDeploymentHandler()
-	h.registryNodeHandler()
-	h.registryNamespaceHandler()
-	h.registryPodHandler()
-	h.registrySecretHandler()
-	h.registryServiceHandler()
-	h.registryStatefulSetHandler()
-	h.registryPVHandler()
-	h.registryWatchHandler()
+	h.registryConfigMapHandler(r)
+	h.registryDeploymentHandler(r)
+	h.registryNodeHandler(r)
+	h.registryNamespaceHandler(r)
+	h.registryPodHandler(r)
+	h.registrySecretHandler(r)
+	h.registryServiceHandler(r)
+	h.registryStatefulSetHandler(r)
+	h.registryPVHandler(r)
+	h.registryWatchHandler(r)
 }
 
 // 解析Cluster Id的中间件

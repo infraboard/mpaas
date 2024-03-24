@@ -106,7 +106,7 @@ func TestQueryDeploymentInjectEnv(t *testing.T) {
 }
 
 func TestDeleteDeployment(t *testing.T) {
-	req := deploy.NewDeleteDeploymentRequest(conf.C.MCENTER_DEPLOY_ID)
+	req := deploy.NewDeleteDeploymentRequest("4c35a24b95f30d05")
 	ds, err := impl.DeleteDeployment(ctx, req)
 	if err != nil {
 		t.Fatal(err)

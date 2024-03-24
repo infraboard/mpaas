@@ -151,7 +151,7 @@ func getElementKvs(rootName string, rootType reflect.Type) *KVSet {
 		}
 
 		if field.Type.Kind() == reflect.Ptr && field.Type.Elem().Kind() == reflect.Slice || field.Type.Kind() == reflect.Slice {
-			fmt.Println(field.Name, "xx", field.PkgPath, "xx", field.Type.Elem())
+
 			kvs := getElementKvs(rootName+"/"+strings.Split(yv, ",")[0], field.Type)
 			set.Add(kvs.Items...)
 			continue

@@ -5,7 +5,6 @@ import (
 	"github.com/emicklei/go-restful/v3"
 	"github.com/infraboard/mcube/v2/http/label"
 	"github.com/infraboard/mcube/v2/http/restful/response"
-	"github.com/infraboard/mcube/v2/ioc/config/gorestful"
 	cluster "github.com/infraboard/mpaas/apps/k8s"
 	"github.com/infraboard/mpaas/apps/proxy"
 	"github.com/infraboard/mpaas/provider/k8s"
@@ -15,10 +14,9 @@ import (
 	scalv1 "k8s.io/api/autoscaling/v1"
 )
 
-func (h *handler) registryDeploymentHandler() {
+func (h *handler) registryDeploymentHandler(ws *restful.WebService) {
 	tags := []string{"[Proxy] Deployment管理"}
 
-	ws := gorestful.ObjectRouter(h)
 	ws.Route(ws.POST("/{cluster_id}/deployments").To(h.CreateDeployment).
 		Doc("创建Deployment").
 		Metadata(restfulspec.KeyOpenAPITags, tags).

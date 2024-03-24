@@ -1,10 +1,8 @@
 package api
 
 import (
-	"fmt"
 	"io"
 	"net/http"
-	"os"
 	"time"
 
 	restfulspec "github.com/emicklei/go-restful-openapi/v2"
@@ -14,7 +12,6 @@ import (
 	middleware "github.com/infraboard/mcenter/clients/rpc/middleware/auth/gorestful"
 	"github.com/infraboard/mcube/v2/http/label"
 	"github.com/infraboard/mcube/v2/http/restful/response"
-	"github.com/infraboard/mcube/v2/ioc/config/gorestful"
 	cluster "github.com/infraboard/mpaas/apps/k8s"
 	"github.com/infraboard/mpaas/apps/proxy"
 	"github.com/infraboard/mpaas/common/terminal"
@@ -25,10 +22,9 @@ import (
 	corev1 "k8s.io/api/core/v1"
 )
 
-func (h *handler) registryPodHandler() {
+func (h *handler) registryPodHandler(ws *restful.WebService) {
 	tags := []string{"[Proxy] Pod管理"}
 
-	ws := gorestful.ObjectRouter(h)
 	ws.Route(ws.POST("/{cluster_id}/pods").To(h.CreatePod).
 		Doc("创建Pod").
 		Metadata(restfulspec.KeyOpenAPITags, tags).
@@ -147,7 +143,7 @@ func (h *handler) LoginContainer(r *restful.Request, w *restful.Response) {
 	}
 
 	term := terminal.NewWebSocketTerminal(ws)
-	term.SetAuditor(os.Stdout)
+	// term.SetAuditor(os.Stdout)
 
 	// 开启认证与鉴权
 	entry := endpoint.NewEntryFromRestRequest(r).
@@ -169,7 +165,6 @@ func (h *handler) LoginContainer(r *restful.Request, w *restful.Response) {
 
 	// 登录容器
 	client := r.Attribute(proxy.ATTRIBUTE_K8S_CLIENT).(*k8s.Client)
-	fmt.Println(req)
 	err = client.WorkLoad().LoginContainer(r.Request.Context(), req)
 	if err != nil {
 		term.Failed(err)

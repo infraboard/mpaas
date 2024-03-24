@@ -244,6 +244,9 @@ message CreateDeploymentRequest {
     // 是否需要发布申请, 需要发布申请的部署 不允许执行自动部署
     // @gotags: bson:"is_approval" json:"is_approval"
     bool is_approval = 15;
+    // 服务部署创建人
+    // @gotags: bson:"create_by" json:"create_by"
+    string create_by = 24;
     // 部署标签
     // @gotags: bson:"labels" json:"labels"
     map<string,string> labels = 25;

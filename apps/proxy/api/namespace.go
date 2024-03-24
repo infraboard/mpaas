@@ -5,7 +5,6 @@ import (
 	"github.com/emicklei/go-restful/v3"
 	"github.com/infraboard/mcube/v2/http/label"
 	"github.com/infraboard/mcube/v2/http/restful/response"
-	"github.com/infraboard/mcube/v2/ioc/config/gorestful"
 	cluster "github.com/infraboard/mpaas/apps/k8s"
 	"github.com/infraboard/mpaas/apps/proxy"
 	"github.com/infraboard/mpaas/provider/k8s"
@@ -14,10 +13,9 @@ import (
 	v1 "k8s.io/api/core/v1"
 )
 
-func (h *handler) registryNamespaceHandler() {
+func (h *handler) registryNamespaceHandler(ws *restful.WebService) {
 	tags := []string{"[Proxy] Namespace管理"}
 
-	ws := gorestful.ObjectRouter(h)
 	ws.Route(ws.POST("/{cluster_id}/namespace").To(h.CreateNamespaces).
 		Doc("创建Namespace").
 		Metadata(restfulspec.KeyOpenAPITags, tags).

@@ -90,6 +90,7 @@ func (h *handler) CreateDeployment(r *restful.Request, w *restful.Response) {
 		return
 	}
 
+	req.UpdateOwner(token.GetTokenFromRequest(r))
 	ins, err := h.service.CreateDeployment(r.Request.Context(), req)
 	if err != nil {
 		response.Failed(w, err)

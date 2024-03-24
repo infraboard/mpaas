@@ -5,6 +5,7 @@ import (
 	"fmt"
 
 	"dario.cat/mergo"
+	"github.com/infraboard/mcenter/apps/label"
 	"github.com/infraboard/mcenter/apps/service"
 	"github.com/infraboard/mcube/v2/exception"
 	"github.com/infraboard/mcube/v2/pb/request"
@@ -27,6 +28,9 @@ func (i *impl) CreateDeployment(ctx context.Context, in *deploy.CreateDeployment
 	if err != nil {
 		return nil, err
 	}
+
+	// 基础Cluster的环境和部署组标签
+	label.MergeInheritanceLabel(c.Spec.Labels, in.Labels)
 
 	err = i.validate(ctx, c.Spec.Kind, in)
 	if err != nil {
@@ -79,8 +83,6 @@ func (i *impl) validate(ctx context.Context, kind deploy_cluster.KIND, in *deplo
 			return err
 		}
 		in.ServiceName = svc.Spec.Name
-		in.Domain = svc.Spec.Namespace
-		in.Namespace = svc.Spec.Namespace
 	case deploy_cluster.KIND_MIDDLEWARE:
 		err := in.ValidateMiddleware()
 		if err != nil {
@@ -164,7 +166,9 @@ func (i *impl) RunK8sDeploy(ctx context.Context, ins *deploy.Deployment) error {
 func (i *impl) QueryDeployment(ctx context.Context, in *deploy.QueryDeploymentRequest) (
 	*deploy.DeploymentSet, error) {
 	r := newQueryRequest(in)
-	resp, err := i.col.Find(ctx, r.FindFilter(), r.FindOptions())
+	filter := r.FindFilter()
+	i.log.Debug().Msgf("query deploy filter: %s", filter)
+	resp, err := i.col.Find(ctx, filter, r.FindOptions())
 
 	if err != nil {
 		return nil, exception.NewInternalServerError("find deploy error, error is %s", err)

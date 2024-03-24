@@ -58,10 +58,10 @@ func (req *CreateClusterRequest) Validate() error {
 	return validate.Struct(req)
 }
 
-func (req *CreateClusterRequest) UpdateOwner() {
-	req.CreateBy = "default"
-	req.Domain = "default"
-	req.Namespace = "default"
+func (req *CreateClusterRequest) UpdateOwner(tk *token.Token) {
+	req.CreateBy = tk.Username
+	req.Domain = tk.Domain
+	req.Namespace = tk.Namespace
 }
 
 func NewClusterSet() *ClusterSet {

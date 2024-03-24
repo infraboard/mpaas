@@ -4,7 +4,7 @@ import (
 	"github.com/emicklei/go-restful/v3"
 )
 
-func (h *handler) registryWatchHandler() {
+func (h *handler) registryWatchHandler(ws *restful.WebService) {
 }
 
 // Watch 资源变化
