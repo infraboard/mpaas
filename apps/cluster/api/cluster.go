@@ -95,7 +95,7 @@ func (h *handler) QueryCluster(r *restful.Request, w *restful.Response) {
 
 func (h *handler) DescribeCluster(r *restful.Request, w *restful.Response) {
 	req := cluster.NewDescribeClusterRequest(r.PathParameter("id"))
-
+	req.WithDeployment = r.QueryParameter("with_deploy") == "true"
 	set, err := h.service.DescribeCluster(r.Request.Context(), req)
 	if err != nil {
 		response.Failed(w, err)

@@ -49,6 +49,9 @@ message DescribeClusterRequest {
     // 集群Id
     // @gotags: json:"id"
     string id = 1;
+    // 查询查询集群管理的部署
+    // @gotags: json:"with_deployment"
+    bool with_deployment = 2;
 }
 
 message UpdateClusterRequest {

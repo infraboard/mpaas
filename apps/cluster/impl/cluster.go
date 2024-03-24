@@ -96,6 +96,18 @@ func (i *impl) DescribeCluster(ctx context.Context, in *cluster.DescribeClusterR
 
 		return nil, exception.NewInternalServerError("find cluster %s error, %s", in.Id, err)
 	}
+
+	// 查询集群关联的部署
+	if in.WithDeployment {
+		dquery := deploy.NewQueryDeploymentRequest()
+		dquery.AddClusterId(ins.Meta.Id)
+		ds, err := i.deploy.QueryDeployment(ctx, dquery)
+		if err != nil {
+			return nil, err
+		}
+		ins.Deployments = ds
+	}
+
 	return ins, nil
 }
 
