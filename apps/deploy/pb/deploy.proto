@@ -179,6 +179,9 @@ message K8sTypeConfig {
     // k8s pods状态, 由Operater负责更新
     // @gotags: bson:"pods" json:"pods"
     map<string,string> pods = 5;
+    // 扩展属性
+    // @gotags: bson:"extras" json:"extras"
+    map<string,string> extras = 6;
 }
 
 // HostTypeConfig 主机部署相关配置

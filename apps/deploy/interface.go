@@ -116,6 +116,7 @@ func NewK8STypeConfig() *K8STypeConfig {
 	return &K8STypeConfig{
 		WorkloadKind: workload.WORKLOAD_KIND_DEPLOYMENT.String(),
 		Pods:         map[string]string{},
+		Extras:       map[string]string{},
 	}
 }
 
