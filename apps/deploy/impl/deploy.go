@@ -277,7 +277,7 @@ func (i *impl) DeleteDeployment(ctx context.Context, in *deploy.DeleteDeployment
 		if wl != nil {
 			_, err = k8sClient.WorkLoad().Delete(ctx, wl)
 			if err != nil {
-				return nil, err
+				i.log.Warn().Msg(err.Error())
 			}
 		}
 
@@ -290,7 +290,8 @@ func (i *impl) DeleteDeployment(ctx context.Context, in *deploy.DeleteDeployment
 			delReq := meta.NewDeleteRequest(svc.Name).WithNamespace(svc.Namespace)
 			err = k8sClient.Network().DeleteService(ctx, delReq)
 			if err != nil {
-				return nil, err
+				i.log.Warn().Msg(err.Error())
+
 			}
 		}
 	}
