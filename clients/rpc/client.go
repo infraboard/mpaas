@@ -7,6 +7,7 @@ import (
 	"github.com/infraboard/mcenter/clients/rpc"
 	"github.com/infraboard/mcenter/clients/rpc/resolver"
 	"github.com/infraboard/mpaas/apps/deploy"
+	"github.com/infraboard/mpaas/apps/k8s"
 	"github.com/rs/zerolog"
 	"go.opentelemetry.io/contrib/instrumentation/google.golang.org/grpc/otelgrpc"
 	"google.golang.org/grpc"
@@ -64,4 +65,9 @@ func (c *ClientSet) Stop() error {
 // Deploy 管理接口
 func (s *ClientSet) Deploy() deploy.RPCClient {
 	return deploy.NewRPCClient(s.conn)
+}
+
+// Deploy 管理接口
+func (s *ClientSet) K8s() k8s.RPCClient {
+	return k8s.NewRPCClient(s.conn)
 }

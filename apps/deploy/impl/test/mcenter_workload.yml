@@ -32,6 +32,8 @@ spec:
               protocol: TCP
           resources: {}
           env:
+            - name: MONGO_ENDPOINTS
+              value: "10.108.136.134:27017"
             - name: MONGO_USERNAME
               value: admin
             - name: MONGO_PASSWORD
