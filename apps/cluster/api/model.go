@@ -17,13 +17,21 @@ func ClusterSetToTreeSet(set *cluster.ClusterSet) *tree.ArcoDesignTree {
 		clusterNode := tree.GetOrCreateTreeByRootKey(c.Meta.Id, c.Spec.Name, "cluster")
 		clusterNode.Labels = c.Spec.Labels
 		c.Deployments.ForEatch(func(item *deploy.Deployment) {
-			deployNode := clusterNode.GetOrCreateChildrenByKey(item.Meta.Id, item.Spec.Name, "deploy")
+			// 服务
+			serviceNode := clusterNode.GetOrCreateChildrenByKey(item.Spec.ServiceId, item.Spec.ServiceName, "service")
+			serviceNode.Extra["type"] = c.Spec.Kind.String()
+
+			// 部署
+			deployNode := serviceNode.GetOrCreateChildrenByKey(item.Meta.Id, item.Spec.ServiceVersion, "deploy")
 			for k, podStr := range item.Spec.K8STypeConfig.Pods {
+				// Pod
 				podNode := deployNode.GetOrCreateChildrenByKey(k, k, "pod")
 				podObj := &v1.Pod{}
 				if err := yaml.Unmarshal([]byte(podStr), podObj); err != nil {
 					continue
 				}
+				podNode.Labels = podObj.Labels
+				podNode.Extra["deploy_group"] = item.Spec.Group
 				podNode.Extra["cluster_id"] = item.Spec.K8STypeConfig.ClusterId
 				podNode.Extra["namespace"] = podObj.Namespace
 				podNode.Extra["pod_name"] = podObj.Name

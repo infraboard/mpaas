@@ -16,7 +16,8 @@ import (
 )
 
 const (
-	AppName = "deploys"
+	AppName        = "deploys"
+	ResourcePreifx = "dep"
 )
 
 type Service interface {
@@ -28,8 +29,7 @@ type Service interface {
 
 // New 新建一个部署配置
 func New(req *CreateDeploymentRequest) *Deployment {
-	m := resource.NewMeta()
-
+	m := resource.NewMeta().IdWithPrefix(ResourcePreifx)
 	d := &Deployment{
 		Meta:             m,
 		Spec:             req,

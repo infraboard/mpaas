@@ -68,7 +68,7 @@ func New(req *CreateClusterRequest) (*Cluster, error) {
 	}
 
 	// 生成唯一键
-	ins.Meta.Id = hash.FnvHash(ins.FullName())
+	ins.Meta.Id = fmt.Sprintf("%s-%s", ResourcePreifx, hash.FnvHash(ins.FullName()))
 	return ins, nil
 }
 

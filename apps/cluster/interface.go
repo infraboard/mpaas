@@ -12,7 +12,8 @@ import (
 )
 
 const (
-	AppName = "clusters"
+	AppName        = "clusters"
+	ResourcePreifx = "clu"
 )
 
 type Service interface {
