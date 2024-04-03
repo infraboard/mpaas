@@ -12,8 +12,8 @@ port = 18080
 
 [mcenter]
 address = "127.0.0.1:18010"
-client_id = "M3tA2aRnBux2pwO45itbcUAG"
-client_secret = "UzMbIgSqLmzHrFPi2g5aXMqVPcHkoYhl"
+client_id = "zO21KkUrPxF2oPpF20qAmTjG"
+client_secret = "9V1niHnU7XedTBYrCcxSI8LLDj5q5hFf"
 
 [mongodb]
 endpoints = ["127.0.0.1:27017"]
@@ -25,5 +25,6 @@ level = "debug"
 [log.file]
 enable = true
 
-[jaeger]
-enable = false
+[trace]
+enable = true
+endpoint = "127.0.0.1:4318"
