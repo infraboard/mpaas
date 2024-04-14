@@ -16,6 +16,7 @@ import (
 	"github.com/infraboard/mcube/v2/http/request"
 	"github.com/infraboard/mcube/v2/ioc/config/application"
 	pb_request "github.com/infraboard/mcube/v2/pb/request"
+	"github.com/infraboard/mcube/v2/pb/resource"
 	"github.com/rs/xid"
 	v1 "k8s.io/api/core/v1"
 
@@ -207,7 +208,8 @@ func NewDescribeClusterRequest(id string) *DescribeClusterRequest {
 
 func NewQueryClusterRequest() *QueryClusterRequest {
 	return &QueryClusterRequest{
-		Page: request.NewDefaultPageRequest(),
+		Page:  request.NewDefaultPageRequest(),
+		Scope: resource.NewScope(),
 	}
 }
 
