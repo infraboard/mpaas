@@ -87,10 +87,14 @@ func GetDeploymentStatus(obj *appsv1.Deployment) *WorkloadStatus {
 			status.Reason = cond.Reason
 			status.Message = cond.Message
 		case appsv1.DeploymentProgressing:
+			status.Stage = WORKLOAD_STAGE_PROGERESS
+			status.Reason = cond.Reason
+			status.Message = cond.Message
 			if cond.Status == corev1.ConditionTrue {
-				status.Stage = WORKLOAD_STAGE_PROGERESS
-				status.Reason = cond.Reason
-				status.Message = cond.Message
+				switch cond.Reason {
+				case "NewReplicaSetAvailable":
+					status.Stage = WORKLOAD_STAGE_ACTIVE
+				}
 			}
 		}
 	}

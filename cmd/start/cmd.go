@@ -8,7 +8,7 @@ import (
 	// 注册所有服务
 	_ "github.com/infraboard/mpaas/apps"
 
-	//
+	// 非功能模块
 	_ "github.com/infraboard/mcenter/clients/rpc/middleware"
 	_ "github.com/infraboard/mcube/v2/ioc/apps/apidoc/restful"
 	_ "github.com/infraboard/mcube/v2/ioc/apps/health/restful"

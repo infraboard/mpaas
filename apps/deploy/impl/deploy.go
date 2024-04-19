@@ -324,6 +324,7 @@ func (i *impl) UpdateDeploymentStatus(ctx context.Context, in *deploy.UpdateDepl
 		return nil, err
 	}
 
+	i.log.Debug().Msgf("更新部署%s状态", ins.Spec.Name)
 	switch ins.Spec.Type {
 	case deploy.TYPE_KUBERNETES:
 		err := i.UpdateK8sDeployStatus(ctx, ins, in.UpdatedK8SConfig)
