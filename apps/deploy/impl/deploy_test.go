@@ -113,3 +113,22 @@ func TestDeleteDeployment(t *testing.T) {
 	}
 	t.Log(tools.MustToYaml(ds))
 }
+
+func TestK8STypeConfigMerge(t *testing.T) {
+	req := deploy.NewDescribeDeploymentRequest("958754c58f7207c1")
+	ds1, err := impl.DescribeDeployment(ctx, req)
+	if err != nil {
+		t.Fatal(err)
+	}
+	ds2, err := impl.DescribeDeployment(ctx, req)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	ds2.Spec.K8STypeConfig.Pods["cicd-test-66865455cc-ppjq9"] = ""
+	ds1.Spec.K8STypeConfig.Merge(ds2.Spec.K8STypeConfig)
+
+	for k := range ds1.Spec.K8STypeConfig.Pods {
+		t.Log(k)
+	}
+}

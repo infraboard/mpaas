@@ -138,10 +138,17 @@ func (c *K8STypeConfig) Merge(target *K8STypeConfig) error {
 		return fmt.Errorf("状态更新, 禁止修改集群, 修改值: %s", target.ClusterId)
 	}
 
-	// 清除删除的Pod
+	// 标记删除的Pod
 	for k, v := range target.Pods {
 		if v == "" {
-			delete(c.Pods, k)
+			c.Pods[k] = ""
+		}
+	}
+
+	// 已经被删除的pod不允许再次更新
+	for k, v := range c.Pods {
+		if v == "" {
+			delete(target.Pods, k)
 		}
 	}
 

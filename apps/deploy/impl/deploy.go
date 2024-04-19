@@ -333,6 +333,15 @@ func (i *impl) UpdateDeploymentStatus(ctx context.Context, in *deploy.UpdateDepl
 		}
 	}
 
+	// 清理掉已经删除的pod
+	if ins.Status.Stage == deploy.STAGE_ACTIVE {
+		for k, v := range ins.Spec.K8STypeConfig.Pods {
+			if v == "" {
+				delete(ins.Spec.K8STypeConfig.Pods, k)
+			}
+		}
+	}
+
 	// 更新
 	_, err = i.col.UpdateOne(ctx, bson.M{"_id": ins.Meta.Id}, bson.M{"$set": ins})
 	if err != nil {
@@ -347,7 +356,6 @@ func (i *impl) UpdateK8sDeployStatus(ctx context.Context, ins *deploy.Deployment
 	if in == nil {
 		return fmt.Errorf("k8s config 不能为nil")
 	}
-
 	ins.SetDefault()
 
 	wc := ins.Spec.K8STypeConfig
