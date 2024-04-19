@@ -128,7 +128,11 @@ func TestK8STypeConfigMerge(t *testing.T) {
 	ds2.Spec.K8STypeConfig.Pods["cicd-test-66865455cc-ppjq9"] = ""
 	ds1.Spec.K8STypeConfig.Merge(ds2.Spec.K8STypeConfig)
 
-	for k := range ds1.Spec.K8STypeConfig.Pods {
-		t.Log(k)
+	ureq := deploy.NewUpdateDeploymentStatusRequest("958754c58f7207c1")
+	ureq.UpdatedK8SConfig = ds1.Spec.K8STypeConfig
+
+	_, err = impl.UpdateDeploymentStatus(ctx, ureq)
+	if err != nil {
+		t.Fatal(err)
 	}
 }
