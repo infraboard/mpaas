@@ -21,6 +21,10 @@ func (c *Client) CreateService(ctx context.Context, req *v1.Service) (*v1.Servic
 	return c.corev1.Services(req.Namespace).Create(ctx, req, metav1.CreateOptions{})
 }
 
+func (c *Client) UpdateService(ctx context.Context, req *v1.Service) (*v1.Service, error) {
+	return c.corev1.Services(req.Namespace).Update(ctx, req, metav1.UpdateOptions{})
+}
+
 func (c *Client) ListService(ctx context.Context, req *meta.ListRequest) (*v1.ServiceList, error) {
 	return c.corev1.Services(req.Namespace).List(ctx, req.Opts)
 }

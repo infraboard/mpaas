@@ -31,6 +31,46 @@ func (c *Client) Run(ctx context.Context, wl *WorkLoad) (*WorkLoad, error) {
 	return wl, nil
 }
 
+func (c *Client) Update(ctx context.Context, wl *WorkLoad) (*WorkLoad, error) {
+	var err error
+	switch wl.WorkloadKind {
+	case WORKLOAD_KIND_DEPLOYMENT:
+		wl.Deployment, err = c.UpdateDeployment(ctx, wl.Deployment)
+	case WORKLOAD_KIND_STATEFULSET:
+		wl.StatefulSet, err = c.UpdateStatefulSet(ctx, wl.StatefulSet)
+	case WORKLOAD_KIND_DAEMONSET:
+		wl.DaemonSet, err = c.UpdateDaemonSet(ctx, wl.DaemonSet)
+	case WORKLOAD_KIND_CRONJOB:
+		wl.CronJob, err = c.UpdateCronJob(ctx, wl.CronJob)
+	case WORKLOAD_KIND_JOB:
+		wl.Job, err = c.UpdateJob(ctx, wl.Job)
+	}
+	if err != nil {
+		return nil, err
+	}
+	return wl, nil
+}
+
+func (c *Client) Get(ctx context.Context, wl *WorkLoad, req *meta.GetRequest) error {
+	var err error
+	switch wl.WorkloadKind {
+	case WORKLOAD_KIND_DEPLOYMENT:
+		wl.Deployment, err = c.GetDeployment(ctx, req)
+	case WORKLOAD_KIND_STATEFULSET:
+		wl.StatefulSet, err = c.GetStatefulSet(ctx, req)
+	case WORKLOAD_KIND_DAEMONSET:
+		wl.DaemonSet, err = c.GetDaemonSet(ctx, req)
+	case WORKLOAD_KIND_CRONJOB:
+		wl.CronJob, err = c.GetCronJob(ctx, req)
+	case WORKLOAD_KIND_JOB:
+		wl.Job, err = c.GetJob(ctx, req)
+	}
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
 func (c *Client) Delete(ctx context.Context, wl *WorkLoad) (*WorkLoad, error) {
 	var err error
 

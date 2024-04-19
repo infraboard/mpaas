@@ -86,7 +86,7 @@ type ListRequest struct {
 	Opts              metav1.ListOptions
 }
 
-func (r *ListRequest) SetNamespace(ns string) *ListRequest {
+func (r *ListRequest) WithNamespace(ns string) *ListRequest {
 	r.Namespace = ns
 	return r
 }
@@ -106,7 +106,7 @@ func (l *LabelSelector) Add(key, value string) *LabelSelector {
 	return l
 }
 
-func (r *ListRequest) SetLabelSelector(l *LabelSelector) *ListRequest {
+func (r *ListRequest) WithLabelSelector(l *LabelSelector) *ListRequest {
 	r.Opts.LabelSelector = l.values.Encode()
 	return r
 }

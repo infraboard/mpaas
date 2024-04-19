@@ -13,6 +13,10 @@ func (c *Client) CreateStatefulSet(ctx context.Context, req *appsv1.StatefulSet)
 	return c.appsv1.StatefulSets(req.Namespace).Create(ctx, req, metav1.CreateOptions{})
 }
 
+func (c *Client) UpdateStatefulSet(ctx context.Context, req *appsv1.StatefulSet) (*appsv1.StatefulSet, error) {
+	return c.appsv1.StatefulSets(req.Namespace).Update(ctx, req, metav1.UpdateOptions{})
+}
+
 func (c *Client) ListStatefulSet(ctx context.Context, req *meta.ListRequest) (*appsv1.StatefulSetList, error) {
 	return c.appsv1.StatefulSets(req.Namespace).List(ctx, req.Opts)
 }

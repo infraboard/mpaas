@@ -138,23 +138,16 @@ func (c *K8STypeConfig) Merge(target *K8STypeConfig) error {
 		return fmt.Errorf("状态更新, 禁止修改集群, 修改值: %s", target.ClusterId)
 	}
 
-	// 标记删除的Pod
-	for k, v := range target.Pods {
-		if v == "" {
-			c.Pods[k] = ""
-		}
-	}
-
-	// 已经被删除的pod不允许再次更新
-	for k, v := range c.Pods {
-		if v == "" {
-			delete(target.Pods, k)
-		}
-	}
-
 	err := mergo.MergeWithOverwrite(c, target)
 	if err != nil {
 		return err
+	}
+
+	// 标记删除的Pod
+	for k, v := range target.Pods {
+		if v == "" {
+			delete(c.Pods, k)
+		}
 	}
 
 	return nil

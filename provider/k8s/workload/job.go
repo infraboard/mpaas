@@ -22,8 +22,20 @@ func (b *Client) CreateJob(ctx context.Context, job *v1.Job) (*v1.Job, error) {
 	return b.batchV1.Jobs(job.Namespace).Create(ctx, job, metav1.CreateOptions{})
 }
 
+func (b *Client) UpdateJob(ctx context.Context, job *v1.Job) (*v1.Job, error) {
+	return b.batchV1.Jobs(job.Namespace).Update(ctx, job, metav1.UpdateOptions{})
+}
+
 func (b *Client) CreateCronJob(ctx context.Context, job *v1.CronJob) (*v1.CronJob, error) {
 	return b.batchV1.CronJobs(job.Namespace).Create(ctx, job, metav1.CreateOptions{})
+}
+
+func (b *Client) UpdateCronJob(ctx context.Context, job *v1.CronJob) (*v1.CronJob, error) {
+	return b.batchV1.CronJobs(job.Namespace).Update(ctx, job, metav1.UpdateOptions{})
+}
+
+func (b *Client) GetCronJob(ctx context.Context, req *meta.GetRequest) (*v1.CronJob, error) {
+	return b.batchV1.CronJobs(req.Namespace).Get(ctx, req.Name, req.Opts)
 }
 
 func (c *Client) DeleteJob(ctx context.Context, req *meta.DeleteRequest) error {

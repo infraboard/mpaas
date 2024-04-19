@@ -12,11 +12,8 @@ import (
 	deploy_cluster "github.com/infraboard/mpaas/apps/cluster"
 	"github.com/infraboard/mpaas/apps/deploy"
 	cluster "github.com/infraboard/mpaas/apps/k8s"
-	"github.com/infraboard/mpaas/common/yaml"
 	"github.com/infraboard/mpaas/provider/k8s"
 	"github.com/infraboard/mpaas/provider/k8s/meta"
-	"github.com/infraboard/mpaas/provider/k8s/network"
-	"github.com/infraboard/mpaas/provider/k8s/workload"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
 )
@@ -110,59 +107,6 @@ func (i *impl) validate(ctx context.Context, kind deploy_cluster.KIND, in *deplo
 	return nil
 }
 
-func (i *impl) RunK8sDeploy(ctx context.Context, ins *deploy.Deployment) error {
-	wc := ins.Spec.K8STypeConfig
-
-	wl, err := wc.GetWorkLoad()
-	if err != nil {
-		return err
-	}
-	wl.SetDefaultNamespace(ins.Spec.Namespace)
-
-	// 补充Pod需要注入的信息
-	pts := wl.GetPodTemplateSpec()
-	workload.InjectPodTemplateSpecAnnotations(pts, deploy.ANNOTATION_DEPLOY_ID, ins.Meta.Id)
-	wl.SetAnnotations(deploy.ANNOTATION_DEPLOY_ID, ins.Meta.Id)
-	for k, v := range ins.InjectPodLabel() {
-		workload.InjectPodTemplateSpecLabel(pts, k, v)
-	}
-	// 设置Match Lable
-	wl.SetMatchLabel(deploy.LABEL_DEPLOY_ID_KEY, ins.Meta.Id)
-
-	// 补充需要注入的系统变量
-	// ins.DynamicInjection.EnvGroups[0].ToContainerEnvVars()
-
-	// 查询部署的k8s集群
-	k8sClient, err := i.GetDeployK8sClient(ctx, wc.ClusterId)
-	if err != nil {
-		return err
-	}
-
-	// 运行工作负载
-	ins.Status.MarkCreating()
-	wl, err = k8sClient.WorkLoad().Run(ctx, wl)
-	if err != nil {
-		return err
-	}
-	wc.WorkloadConfig = wl.MustToYaml()
-	// 创建服务
-	if wc.Service != "" {
-		svc, err := network.ParseServiceFromYaml(wc.Service)
-		if err != nil {
-			return err
-		}
-		svc.Namespace = ins.Spec.Namespace
-		svc.Annotations[deploy.ANNOTATION_DEPLOY_ID] = ins.Meta.Id
-		service, err := k8sClient.Network().CreateService(ctx, svc)
-		if err != nil {
-			return err
-		}
-		wc.Service = yaml.MustToYaml(service)
-	}
-
-	return nil
-}
-
 func (i *impl) QueryDeployment(ctx context.Context, in *deploy.QueryDeploymentRequest) (
 	*deploy.DeploymentSet, error) {
 	r := newQueryRequest(in)
@@ -244,6 +188,15 @@ func (i *impl) UpdateDeployment(ctx context.Context, in *deploy.UpdateDeployment
 		}
 	default:
 		return nil, exception.NewBadRequest("unknown update mode: %s", in.UpdateMode)
+	}
+
+	switch d.Spec.Type {
+	case deploy.TYPE_KUBERNETES:
+		// 如果创建成功, 等待回调更新状态, 如果失败则直接更新状态
+		err := i.UpdateK8sDeploy(ctx, d)
+		if err != nil {
+			d.Status.MarkFailed(err)
+		}
 	}
 
 	if err := i.update(ctx, d); err != nil {
@@ -333,12 +286,13 @@ func (i *impl) UpdateDeploymentStatus(ctx context.Context, in *deploy.UpdateDepl
 		}
 	}
 
-	// 清理掉已经删除的pod
+	// Active时重新刷新Pod列表
 	if ins.Status.Stage == deploy.STAGE_ACTIVE {
-		for k, v := range ins.Spec.K8STypeConfig.Pods {
-			if v == "" {
-				delete(ins.Spec.K8STypeConfig.Pods, k)
-			}
+		syncReq := NewSyncK8sDeployRequest()
+		syncReq.SyncDeployment = false
+		err := i.SyncK8sDeploy(ctx, syncReq, ins)
+		if err != nil {
+			return nil, err
 		}
 	}
 
