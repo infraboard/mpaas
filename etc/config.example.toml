@@ -26,5 +26,5 @@ level = "debug"
 enable = true
 
 [trace]
-enable = true
+enable = false
 endpoint = "127.0.0.1:4318"
