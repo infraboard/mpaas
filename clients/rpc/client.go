@@ -32,7 +32,6 @@ func NewClient() (*ClientSet, error) {
 		grpc.WithPerRPCCredentials(mcenter.Credentials()),
 		grpc.WithTransportCredentials(insecure.NewCredentials()),
 		grpc.WithDefaultServiceConfig(`{"loadBalancingPolicy":"round_robin"}`),
-		grpc.WithBlock(),
 
 		// 将异常转化为 API Exception
 		grpc.WithChainUnaryInterceptor(exception.NewUnaryClientInterceptor()),
