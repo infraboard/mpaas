@@ -6,11 +6,10 @@ WORKDIR /src
 COPY go.mod .
 COPY go.sum .
 
-ENV CGO_ENABLED 0
-ENV GOOS linux
-ENV GOARCH amd64
-ENV GOPROXY https://goproxy.cn,direct
-# ENV GOPRIVATE="*.gitlab.com"
+ENV CGO_ENABLED=0\
+GOOS=linux\
+GOARCH=amd64\
+GOPROXY=https://goproxy.cn,direct
 
 # 下载依赖
 RUN go mod download
@@ -25,5 +24,15 @@ EXPOSE 80
 
 COPY --from=builder /src/dist/mpaas /app/mpaas-api
 COPY --from=builder /src/etc /app/etc
+
+# 默认配置
+ENV APP_NAME=mpaas\
+APP_DOMAIN=console.mdev.group\
+HTTP_HOST=127.0.0.1\
+HTTP_PORT=8080\
+GRPC_HOST=127.0.0.1\
+GRPC_PORT=18080\
+MONGO_ENDPOINTS=127.0.0.1:27017\
+MONGO_DATABASE=mpaas
 
 CMD ["./mpaas-api", "start", "-t", "env"]
