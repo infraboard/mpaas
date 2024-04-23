@@ -98,4 +98,10 @@ $ make dep
 $ make run
 ```
 
+## 镜像构建
+
+```sh
+docker buildx build  --platform linux/amd64 -t mpaas .
+```
+
 ## 相关文档
