@@ -16,7 +16,6 @@ var (
 	// pusher service config option
 	confType string
 	confFile string
-	confETCD string
 )
 
 var vers bool
@@ -61,8 +60,7 @@ func Execute() {
 }
 
 func init() {
-	RootCmd.PersistentFlags().StringVarP(&confType, "config-type", "t", "file", "the service config type [file/env/etcd]")
+	RootCmd.PersistentFlags().StringVarP(&confType, "config-type", "t", "file", "the service config type [file/env]")
 	RootCmd.PersistentFlags().StringVarP(&confFile, "config-file", "f", "etc/config.toml", "the service config from file")
-	RootCmd.PersistentFlags().StringVarP(&confETCD, "config-etcd", "e", "127.0.0.1:2379", "the service config from etcd")
 	RootCmd.PersistentFlags().BoolVarP(&vers, "version", "v", false, "the mpaas version")
 }
