@@ -15,7 +15,7 @@ address = "127.0.0.1:18010"
 client_id = "zO21KkUrPxF2oPpF20qAmTjG"
 client_secret = "9V1niHnU7XedTBYrCcxSI8LLDj5q5hFf"
 
-[mongodb]
+[mongo]
 endpoints = ["127.0.0.1:27017"]
 database = "mpaas"
 
