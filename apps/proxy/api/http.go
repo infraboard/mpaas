@@ -43,7 +43,7 @@ func (h *handler) Version() string {
 
 func (h *handler) Registry() {
 	r := gorestful.ObjectRouter(h)
-	r.Filter(h.ClusterMiddleware)
+	r.Filter(ClusterMiddleware())
 	h.registryConfigMapHandler(r)
 	h.registryDeploymentHandler(r)
 	h.registryNodeHandler(r)
@@ -57,35 +57,39 @@ func (h *handler) Registry() {
 }
 
 // 解析Cluster Id的中间件
-func (h *handler) ClusterMiddleware(
-	req *restful.Request,
-	resp *restful.Response,
-	next *restful.FilterChain) {
+func ClusterMiddleware() restful.FilterFunction {
+	return func(
+		req *restful.Request,
+		resp *restful.Response,
+		next *restful.FilterChain) {
 
-	// 处理请求
-	clusterId := req.PathParameter("cluster_id")
-	if clusterId == "" {
-		response.Failed(resp, fmt.Errorf("url path param cluster_id required"))
-		return
+		// 处理请求
+		clusterId := req.PathParameter("cluster_id")
+		if clusterId == "" {
+			response.Failed(resp, fmt.Errorf("url path param cluster_id required"))
+			return
+		}
+
+		// 获取集群client对象
+		descReq := cluster.NewDescribeClusterRequest(clusterId)
+		clusterController := ioc.Controller().Get(cluster.AppName).(cluster.Service)
+		ins, err := clusterController.DescribeCluster(req.Request.Context(), descReq)
+		if err != nil {
+			response.Failed(resp, fmt.Errorf("describe cluster_id error, %s", err))
+			return
+		}
+
+		client, err := k8s.NewClient(ins.Spec.KubeConfig)
+		if err != nil {
+			response.Failed(resp, fmt.Errorf("new k8s client error, %s", err))
+			return
+		}
+		req.SetAttribute(proxy.ATTRIBUTE_K8S_CLIENT, client)
+
+		// next flow
+		next.ProcessFilter(req, resp)
+
+		// 处理响应
 	}
 
-	// 获取集群client对象
-	descReq := cluster.NewDescribeClusterRequest(clusterId)
-	ins, err := h.service.DescribeCluster(req.Request.Context(), descReq)
-	if err != nil {
-		response.Failed(resp, fmt.Errorf("describe cluster_id error, %s", err))
-		return
-	}
-
-	client, err := k8s.NewClient(ins.Spec.KubeConfig)
-	if err != nil {
-		response.Failed(resp, fmt.Errorf("new k8s client error, %s", err))
-		return
-	}
-	req.SetAttribute(proxy.ATTRIBUTE_K8S_CLIENT, client)
-
-	// next flow
-	next.ProcessFilter(req, resp)
-
-	// 处理响应
 }
