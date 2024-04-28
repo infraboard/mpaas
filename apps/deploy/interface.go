@@ -151,6 +151,7 @@ func NewPutDeployRequest(id string) *UpdateDeploymentRequest {
 		Id:         id,
 		UpdateMode: pb_request.UpdateMode_PUT,
 		Spec:       NewCreateDeploymentRequest(),
+		Sync:       true,
 	}
 }
 
@@ -159,6 +160,7 @@ func NewPatchDeployRequest(id string) *UpdateDeploymentRequest {
 		Id:         id,
 		UpdateMode: pb_request.UpdateMode_PATCH,
 		Spec:       NewCreateDeploymentRequest(),
+		Sync:       true,
 	}
 }
 

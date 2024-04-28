@@ -101,6 +101,9 @@ message UpdateDeploymentRequest {
     // 创建信息
     // @gotags: json:"spec"
     CreateDeploymentRequest spec = 4;
+    // 是否需要调用k8s API 执行update
+    // @gotags: json:"sync"
+    bool sync = 5;
 }
 
 message DeleteDeploymentRequest {

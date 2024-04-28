@@ -63,8 +63,8 @@ func (h *websocketHandler) registryPodHandler(ws *restful.WebService) {
 	ws.Route(ws.GET("/{cluster_id}/pods/{name}/login").To(h.LoginContainer).
 		Doc("登陆Pod").
 		Metadata(restfulspec.KeyOpenAPITags, tags).
-		Metadata(label.Resource, h.Name()).
-		Metadata(label.Action, label.List.Value()).
+		Metadata(label.Resource, "pod_terminal").
+		Metadata(label.Action, label.Create.Value()).
 		Reads(cluster.QueryClusterRequest{}).
 		Writes(corev1.Pod{}).
 		Returns(200, "OK", corev1.Pod{}))
@@ -72,8 +72,8 @@ func (h *websocketHandler) registryPodHandler(ws *restful.WebService) {
 	ws.Route(ws.GET("/{cluster_id}/pods/{name}/log").To(h.WatchConainterLog).
 		Doc("查看Pod日志").
 		Metadata(restfulspec.KeyOpenAPITags, tags).
-		Metadata(label.Resource, h.Name()).
-		Metadata(label.Action, label.List.Value()).
+		Metadata(label.Resource, "pod_terminal").
+		Metadata(label.Action, label.Get.Value()).
 		Reads(cluster.QueryClusterRequest{}).
 		Writes(corev1.Pod{}).
 		Returns(200, "OK", corev1.Pod{}))
@@ -108,6 +108,7 @@ func (h *websocketHandler) LoginContainer(r *restful.Request, w *restful.Respons
 
 	err = middleware.Get().PermissionCheck(r, w, entry)
 	if err != nil {
+		h.log.Debug().Msgf("login container error, %s", err)
 		term.Failed(err)
 		return
 	}

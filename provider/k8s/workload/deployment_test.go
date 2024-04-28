@@ -47,7 +47,7 @@ func TestCreateDeployment(t *testing.T) {
 	req := &v1.Deployment{
 		ObjectMeta: metav1.ObjectMeta{
 			Name:      "nginx",
-			Namespace: "go8",
+			Namespace: "default",
 		},
 		Spec: v1.DeploymentSpec{
 			Replicas: tea.Int32(2),

@@ -102,6 +102,7 @@ func (i *WebSocketWriter) WriteTextf(format string, a ...any) {
 }
 
 func (i *WebSocketWriter) Failed(err error) {
+	i.WriteTextf("[失败] %s", err.Error())
 	i.close(websocket.CloseGoingAway, err.Error())
 }
 

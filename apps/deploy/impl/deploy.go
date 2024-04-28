@@ -190,12 +190,15 @@ func (i *impl) UpdateDeployment(ctx context.Context, in *deploy.UpdateDeployment
 		return nil, exception.NewBadRequest("unknown update mode: %s", in.UpdateMode)
 	}
 
-	switch d.Spec.Type {
-	case deploy.TYPE_KUBERNETES:
-		// 如果创建成功, 等待回调更新状态, 如果失败则直接更新状态
-		err := i.UpdateK8sDeploy(ctx, d)
-		if err != nil {
-			d.Status.MarkFailed(err)
+	// 是否同步更新k8s
+	if in.Sync {
+		switch d.Spec.Type {
+		case deploy.TYPE_KUBERNETES:
+			// 如果创建成功, 等待回调更新状态, 如果失败则直接更新状态
+			err := i.UpdateK8sDeploy(ctx, d)
+			if err != nil {
+				d.Status.MarkFailed(err)
+			}
 		}
 	}
 
