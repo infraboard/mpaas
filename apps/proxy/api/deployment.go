@@ -42,7 +42,7 @@ func (h *handler) registryDeploymentHandler(ws *restful.WebService) {
 		Doc("查询Deployment详情").
 		Metadata(restfulspec.KeyOpenAPITags, tags).
 		Metadata(label.Resource, h.Name()).
-		Metadata(label.Action, label.List.Value()).
+		Metadata(label.Action, label.Get.Value()).
 		Metadata(label.Auth, label.Enable).
 		Metadata(label.Permission, label.Enable).
 		Reads(cluster.QueryClusterRequest{}).
@@ -53,7 +53,7 @@ func (h *handler) registryDeploymentHandler(ws *restful.WebService) {
 		Doc("更新Deployment").
 		Metadata(restfulspec.KeyOpenAPITags, tags).
 		Metadata(label.Resource, h.Name()).
-		Metadata(label.Action, label.List.Value()).
+		Metadata(label.Action, label.Update.Value()).
 		Metadata(label.Auth, label.Enable).
 		Metadata(label.Permission, label.Enable).
 		Reads(cluster.QueryClusterRequest{}).
@@ -64,7 +64,7 @@ func (h *handler) registryDeploymentHandler(ws *restful.WebService) {
 		Doc("更新副本数").
 		Metadata(restfulspec.KeyOpenAPITags, tags).
 		Metadata(label.Resource, h.Name()).
-		Metadata(label.Action, label.List.Value()).
+		Metadata(label.Action, label.Update.Value()).
 		Metadata(label.Auth, label.Enable).
 		Metadata(label.Permission, label.Enable).
 		Reads(cluster.QueryClusterRequest{}).
@@ -75,7 +75,7 @@ func (h *handler) registryDeploymentHandler(ws *restful.WebService) {
 		Doc("重新部署").
 		Metadata(restfulspec.KeyOpenAPITags, tags).
 		Metadata(label.Resource, h.Name()).
-		Metadata(label.Action, label.List.Value()).
+		Metadata(label.Action, label.Update.Value()).
 		Metadata(label.Auth, label.Enable).
 		Metadata(label.Permission, label.Enable).
 		Reads(cluster.QueryClusterRequest{}).

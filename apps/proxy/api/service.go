@@ -20,7 +20,7 @@ func (h *handler) registryServiceHandler(ws *restful.WebService) {
 		Doc("创建服务").
 		Metadata(restfulspec.KeyOpenAPITags, tags).
 		Metadata(label.Resource, h.Name()).
-		Metadata(label.Action, label.List.Value()).
+		Metadata(label.Action, label.Create.Value()).
 		Metadata(label.Auth, label.Enable).
 		Metadata(label.Permission, label.Enable).
 		Reads(cluster.QueryClusterRequest{}).
@@ -42,7 +42,7 @@ func (h *handler) registryServiceHandler(ws *restful.WebService) {
 		Doc("查询服务详情").
 		Metadata(restfulspec.KeyOpenAPITags, tags).
 		Metadata(label.Resource, h.Name()).
-		Metadata(label.Action, label.List.Value()).
+		Metadata(label.Action, label.Get.Value()).
 		Metadata(label.Auth, label.Enable).
 		Metadata(label.Permission, label.Enable).
 		Reads(cluster.QueryClusterRequest{}).

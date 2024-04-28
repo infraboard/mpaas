@@ -40,7 +40,7 @@ func (h *handler) Registry() {
 		Doc("查询集群详情").
 		Metadata(restfulspec.KeyOpenAPITags, tags).
 		Metadata(label.Resource, h.Name()).
-		Metadata(label.Action, label.List.Value()).
+		Metadata(label.Action, label.Get.Value()).
 		Metadata(label.Auth, label.Enable).
 		Metadata(label.Permission, label.Enable).
 		Reads(deploy.DescribeDeploymentRequest{}).

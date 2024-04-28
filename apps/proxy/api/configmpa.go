@@ -43,7 +43,7 @@ func (h *handler) registryConfigMapHandler(ws *restful.WebService) {
 		Doc("查询ConfigMap详情").
 		Metadata(restfulspec.KeyOpenAPITags, tags).
 		Metadata(label.Resource, h.Name()).
-		Metadata(label.Action, label.List.Value()).
+		Metadata(label.Action, label.Get.Value()).
 		Metadata(label.Auth, label.Enable).
 		Metadata(label.Permission, label.Enable).
 		Reads(cluster.QueryClusterRequest{}).
