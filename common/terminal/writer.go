@@ -79,8 +79,7 @@ func (i *WebSocketWriter) Response(resp *Response) {
 		i.l.Debug().Msgf("response error, %s", resp.Message)
 	}
 
-	err := i.ws.WriteJSON(resp)
-	if err != nil {
+	if err := i.ws.WriteJSON(resp); err != nil {
 		i.l.Info().Msgf("write message error, %s", err)
 	}
 }
