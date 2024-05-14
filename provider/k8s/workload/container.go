@@ -33,8 +33,8 @@ func HoldContaienrCmd(d time.Duration) []string {
 
 func NewLoginContainerRequest(ce ContainerTerminal) *LoginContainerRequest {
 	return &LoginContainerRequest{
-		Command: shellCmd,
-		Excutor: ce,
+		Command:  shellCmd,
+		Executor: ce,
 	}
 }
 
@@ -43,7 +43,7 @@ type LoginContainerRequest struct {
 	PodName       string            `json:"pod_name" validate:"required"`
 	ContainerName string            `json:"container_name"`
 	Command       []string          `json:"command"`
-	Excutor       ContainerTerminal `json:"-"`
+	Executor      ContainerTerminal `json:"-"`
 }
 
 func (req *LoginContainerRequest) Validate() error {
@@ -83,11 +83,11 @@ func (c *Client) LoginContainer(ctx context.Context, req *LoginContainerRequest)
 	}
 
 	return executor.StreamWithContext(ctx, remotecommand.StreamOptions{
-		Stdin:             req.Excutor,
-		Stdout:            req.Excutor,
-		Stderr:            req.Excutor,
+		Stdin:             req.Executor,
+		Stdout:            req.Executor,
+		Stderr:            req.Executor,
 		Tty:               true,
-		TerminalSizeQueue: req.Excutor,
+		TerminalSizeQueue: req.Executor,
 	})
 }
 

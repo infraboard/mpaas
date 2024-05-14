@@ -126,7 +126,7 @@ func (c *Client) CopyPodRun(ctx context.Context, req *CopyPodRunRequest) (*v1.Po
 			PodName:       req.TargetPodMeta.Name,
 			ContainerName: req.ExecContainer,
 			Command:       shellCmd,
-			Excutor:       req.Terminal,
+			Executor:      req.Terminal,
 		})
 		if err != nil {
 			return nil, err
