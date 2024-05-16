@@ -23,6 +23,10 @@ func GetCmdHandleFunc(command string) HandleFunc {
 type HandleFunc func(*Request, *Response)
 
 func ParseRequest(payload []byte) (*Request, error) {
+	if !json.Valid(payload) {
+		return nil, fmt.Errorf("command must be json")
+	}
+
 	req := NewRequest()
 	err := json.Unmarshal(payload, req)
 	if err != nil {

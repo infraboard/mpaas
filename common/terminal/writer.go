@@ -7,39 +7,9 @@ import (
 	"time"
 
 	"github.com/gorilla/websocket"
-	"github.com/infraboard/mcube/v2/grpc/mock"
-	"github.com/infraboard/mcube/v2/ioc/config/log"
-	"github.com/rs/zerolog"
 )
 
-var (
-	// 4K
-	DefaultWriteBuf = 4 * 1024
-)
-
-func NewWebSocketWriter(conn *websocket.Conn) *WebSocketWriter {
-	return &WebSocketWriter{
-		ServerStreamBase: mock.NewServerStreamBase(),
-		ws:               conn,
-		timeout:          3 * time.Second,
-		l:                log.Sub("tasklog.term"),
-		writeBuf:         make([]byte, DefaultWriteBuf),
-	}
-}
-
-type WebSocketWriter struct {
-	*mock.ServerStreamBase
-	ws      *websocket.Conn
-	timeout time.Duration
-	l       *zerolog.Logger
-
-	// 写入websocket时 buffer大小
-	writeBuf []byte
-	// terminal镜像数据
-	auditor io.ReadWriter
-}
-
-func (i *WebSocketWriter) ReadReq(req any) error {
+func (i *WebSocketTerminal) ReadReq(req any) error {
 	mt, data, err := i.ws.ReadMessage()
 	if err != nil {
 		return err
@@ -54,7 +24,7 @@ func (i *WebSocketWriter) ReadReq(req any) error {
 	return json.Unmarshal(data, req)
 }
 
-func (i *WebSocketWriter) WriteTo(r io.Reader) (err error) {
+func (i *WebSocketTerminal) WriteTo(r io.Reader) (err error) {
 	_, err = io.CopyBuffer(i, r, i.writeBuf)
 	if err != nil {
 		return err
@@ -65,7 +35,7 @@ func (i *WebSocketWriter) WriteTo(r io.Reader) (err error) {
 	return
 }
 
-func (i *WebSocketWriter) Write(p []byte) (n int, err error) {
+func (i *WebSocketTerminal) Write(p []byte) (n int, err error) {
 	err = i.ws.WriteMessage(websocket.BinaryMessage, p)
 	n = len(p)
 
@@ -74,7 +44,7 @@ func (i *WebSocketWriter) Write(p []byte) (n int, err error) {
 }
 
 // 命令的返回
-func (i *WebSocketWriter) Response(resp *Response) {
+func (i *WebSocketTerminal) Response(resp *Response) {
 	if resp.Message != "" {
 		i.l.Debug().Msgf("response error, %s", resp.Message)
 	}
@@ -84,35 +54,35 @@ func (i *WebSocketWriter) Response(resp *Response) {
 	}
 }
 
-func (i *WebSocketWriter) WriteTextln(format string, a ...any) {
+func (i *WebSocketTerminal) WriteTextln(format string, a ...any) {
 	i.WriteTextf(format, a...)
 	i.WriteText("\r\n")
 }
 
-func (i *WebSocketWriter) WriteText(msg string) {
+func (i *WebSocketTerminal) WriteText(msg string) {
 	err := i.ws.WriteMessage(websocket.BinaryMessage, []byte(msg))
 	if err != nil {
 		i.l.Info().Msgf("write message error, %s", err)
 	}
 }
 
-func (i *WebSocketWriter) WriteTextf(format string, a ...any) {
+func (i *WebSocketTerminal) WriteTextf(format string, a ...any) {
 	i.WriteText(fmt.Sprintf(format, a...))
 }
 
-func (i *WebSocketWriter) Failed(err error) {
+func (i *WebSocketTerminal) Failed(err error) {
 	i.close(websocket.CloseGoingAway, err.Error())
 }
 
-func (i *WebSocketWriter) Success(msg string) {
+func (i *WebSocketTerminal) Success(msg string) {
 	i.close(websocket.CloseNormalClosure, msg)
 }
 
-func (i *WebSocketWriter) ResetWriteBuf() {
+func (i *WebSocketTerminal) ResetWriteBuf() {
 	i.writeBuf = make([]byte, DefaultWriteBuf)
 }
 
-func (i *WebSocketWriter) audit(p []byte) {
+func (i *WebSocketTerminal) audit(p []byte) {
 	if i.auditor == nil {
 		return
 	}
@@ -123,11 +93,11 @@ func (i *WebSocketWriter) audit(p []byte) {
 	}
 }
 
-func (i *WebSocketWriter) SetAuditor(rw io.ReadWriter) {
+func (i *WebSocketTerminal) SetAuditor(rw io.ReadWriter) {
 	i.auditor = rw
 }
 
-func (i *WebSocketWriter) close(code int, msg string) {
+func (i *WebSocketTerminal) close(code int, msg string) {
 	i.l.Debug().Msgf("close code: %d, msg: %s", code, msg)
 	err := i.ws.WriteControl(
 		websocket.CloseMessage,
