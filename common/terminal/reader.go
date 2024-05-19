@@ -14,6 +14,8 @@ import (
 var (
 	// 4K
 	DefaultWriteBuf = 4 * 1024
+	// 1K
+	DefaultReadBuf = 1 * 1024
 )
 
 func NewWebSocketTerminal(conn *websocket.Conn) *WebSocketTerminal {
@@ -22,6 +24,7 @@ func NewWebSocketTerminal(conn *websocket.Conn) *WebSocketTerminal {
 		ws:               conn,
 		timeout:          3 * time.Second,
 		l:                log.Sub("tasklog.term"),
+		readBuf:          make([]byte, DefaultReadBuf),
 		writeBuf:         make([]byte, DefaultWriteBuf),
 		TerminalResizer:  NewTerminalSize(),
 	}
@@ -31,6 +34,7 @@ type WebSocketTerminal struct {
 	ws       *websocket.Conn
 	timeout  time.Duration
 	l        *zerolog.Logger
+	readBuf  []byte
 	writeBuf []byte
 	auditor  io.ReadWriter
 
@@ -43,6 +47,25 @@ func (t *WebSocketTerminal) Close() error {
 	return nil
 }
 
+// 读取二进制数据, 而读取过程中指令会自动处理
+func (t *WebSocketTerminal) ReadBinData(success func([]byte), failed func(error)) {
+	for {
+		n, err := t.Read(t.readBuf)
+		if err != nil {
+			failed(err)
+			return
+		}
+
+		// 用户输入的指令会被自动处理, 因此指令模式读取不到数据
+		if n == 0 {
+			continue
+		}
+
+		success(t.readBuf[:n])
+		t.readBuf = make([]byte, DefaultReadBuf)
+	}
+}
+
 func (t *WebSocketTerminal) Read(p []byte) (n int, err error) {
 	mt, m, err := t.ws.ReadMessage()
 	if err != nil {
@@ -51,6 +74,7 @@ func (t *WebSocketTerminal) Read(p []byte) (n int, err error) {
 
 	// 注意文本消息和关闭消息专门被设计为了指令通道
 	switch mt {
+
 	case websocket.TextMessage:
 		t.HandleCmd(m)
 	case websocket.CloseMessage:

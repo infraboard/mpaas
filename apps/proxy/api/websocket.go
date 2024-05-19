@@ -139,7 +139,6 @@ func (h *websocketHandler) WatchConainterLog(r *restful.Request, w *restful.Resp
 		return
 	}
 
-	websocket.Subprotocols(r.Request)
 	term := terminal.NewWebSocketTerminal(ws)
 
 	// 开启认证与鉴权
@@ -166,6 +165,16 @@ func (h *websocketHandler) WatchConainterLog(r *restful.Request, w *restful.Resp
 		term.Failed(err)
 		return
 	}
+
+	// 处理用户的输入, 这里主要是处理用户指令比如Ping
+	go term.ReadBinData(
+		func(b []byte) {
+			h.log.Debug().Msgf("read user %s input, log mod skip....", b)
+		},
+		func(err error) {
+			h.log.Error().Msgf("read socket data error, %s", err)
+		},
+	)
 
 	// 读取出来的数据流 copy到term
 	_, err = io.Copy(term, reader)
