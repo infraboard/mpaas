@@ -11,8 +11,8 @@ require (
 	github.com/go-openapi/spec v0.21.0
 	github.com/go-playground/validator/v10 v10.19.0
 	github.com/gorilla/websocket v1.5.1
-	github.com/infraboard/mcenter v0.0.37
-	github.com/infraboard/mcube/v2 v2.0.15
+	github.com/infraboard/mcenter v0.0.38
+	github.com/infraboard/mcube/v2 v2.0.16
 	github.com/rs/xid v1.5.0
 	github.com/rs/zerolog v1.32.0
 	github.com/spf13/cobra v1.8.0
