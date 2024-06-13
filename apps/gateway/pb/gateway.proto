@@ -9,7 +9,7 @@ enum TYPE {
     // 基于APISIX的网关
     APISIX = 0;
     // 基于Etcd对接的Traefik网关
-    TRAEFIK_ETCD = 1;
+    TRAEFIK = 1;
 }
 
 message Gateway {
