@@ -6,7 +6,6 @@ import (
 
 	"github.com/rs/zerolog"
 
-	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/client-go/kubernetes"
 	"k8s.io/client-go/rest"
 	"k8s.io/client-go/tools/clientcmd"
@@ -16,6 +15,8 @@ import (
 	"github.com/infraboard/mpaas/provider/k8s/admin"
 	"github.com/infraboard/mpaas/provider/k8s/config"
 	"github.com/infraboard/mpaas/provider/k8s/event"
+	"github.com/infraboard/mpaas/provider/k8s/gateway"
+	"github.com/infraboard/mpaas/provider/k8s/meta"
 	"github.com/infraboard/mpaas/provider/k8s/network"
 	"github.com/infraboard/mpaas/provider/k8s/storage"
 	"github.com/infraboard/mpaas/provider/k8s/workload"
@@ -58,11 +59,17 @@ func NewClient(kubeConfigYaml string) (*Client, error) {
 		return nil, err
 	}
 
+	items, err := client.ServerPreferredResources()
+	if err != nil {
+		return nil, err
+	}
+
 	return &Client{
-		kubeconf: kubeConf,
-		restconf: restConf,
-		client:   client,
-		log:      log.Sub("provider.k8s"),
+		kubeconf:  kubeConf,
+		restconf:  restConf,
+		client:    client,
+		resources: meta.NewApiResourceList(items),
+		log:       log.Sub("provider.k8s"),
 	}, nil
 }
 
@@ -71,6 +78,8 @@ type Client struct {
 	restconf *rest.Config
 	client   *kubernetes.Clientset
 	log      *zerolog.Logger
+
+	resources *meta.ApiResourceList
 }
 
 func (c *Client) ServerVersion() (string, error) {
@@ -82,8 +91,8 @@ func (c *Client) ServerVersion() (string, error) {
 	return si.String(), nil
 }
 
-func (c *Client) ServerResources() ([]*metav1.APIResourceList, error) {
-	return c.client.ServerPreferredResources()
+func (c *Client) ServerResources() *meta.ApiResourceList {
+	return c.resources
 }
 
 func (c *Client) GetContexts() map[string]*clientcmdapi.Context {
@@ -131,4 +140,8 @@ func (c *Client) Event() *event.Client {
 // 集群管理
 func (c *Client) Admin() *admin.Client {
 	return admin.NewAdmin(c.client)
+}
+
+func (c *Client) Gateway() *gateway.Client {
+	return gateway.NewGateway(c.restconf, c.resources)
 }

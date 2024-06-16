@@ -20,13 +20,12 @@ func TestServerVersion(t *testing.T) {
 }
 
 func TestServerResources(t *testing.T) {
-	rs, err := client.ServerResources()
-	if err != nil {
-		t.Log(err)
-	}
-	for i := range rs {
-		t.Log(rs[i].GroupVersion, rs[i].APIVersion)
-		for _, r := range rs[i].APIResources {
+	rs := client.ServerResources()
+
+	for i := range rs.Items {
+		item := rs.Items[i]
+		t.Log(item.GroupVersion, item.APIVersion)
+		for _, r := range item.APIResources {
 			t.Log(r)
 		}
 	}
