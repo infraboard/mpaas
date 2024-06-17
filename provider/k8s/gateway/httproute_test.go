@@ -15,3 +15,12 @@ func TestListHttpRoute(t *testing.T) {
 	}
 	t.Log(pretty.MustToYaml(v))
 }
+
+func TestGetHttpRoute(t *testing.T) {
+	req := meta.NewGetRequest("coffee")
+	v, err := impl.GetHttpRoute(ctx, req)
+	if err != nil {
+		t.Fatal(err)
+	}
+	t.Log(pretty.MustToYaml(v))
+}
