@@ -46,14 +46,15 @@ func (c *Client) GetHttpRoute(
 
 func (c *Client) CreateHttpRoute(
 	ctx context.Context,
-	req *gatewayv1.HTTPRoute) (
+	ins *gatewayv1.HTTPRoute,
+	req *meta.CreateRequest) (
 	*gatewayv1.HTTPRoute, error) {
-	m, err := runtime.DefaultUnstructuredConverter.ToUnstructured(req)
+	m, err := runtime.DefaultUnstructuredConverter.ToUnstructured(ins)
 	if err != nil {
 		return nil, err
 	}
 	us := &unstructured.Unstructured{Object: m}
-	us, err = c.dynamic.Resource(c.httpRouteResource()).Namespace(req.Namespace).Create(ctx, us, v1.CreateOptions{})
+	us, err = c.dynamic.Resource(c.httpRouteResource()).Namespace(ins.Namespace).Create(ctx, us, req.Opts)
 	if err != nil {
 		return nil, err
 	}
@@ -90,6 +91,17 @@ func (c *Client) UpdateHttpRoute(
 
 func (c *Client) DeleteHttpRoute(
 	ctx context.Context,
-	req *meta.DeleteRequest) error {
-	return c.dynamic.Resource(c.httpRouteResource()).Namespace(req.Namespace).Delete(ctx, req.Name, req.Opts)
+	req *meta.DeleteRequest) (
+	*gatewayv1.HTTPRoute, error) {
+	route, err := c.GetHttpRoute(ctx, meta.NewGetRequest(req.Name).WithNamespace(req.Namespace))
+	if err != nil {
+		return nil, err
+	}
+
+	err = c.dynamic.Resource(c.httpRouteResource()).Namespace(req.Namespace).Delete(ctx, req.Name, req.Opts)
+	if err != nil {
+		return nil, err
+	}
+
+	return route, nil
 }

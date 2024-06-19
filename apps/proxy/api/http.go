@@ -54,6 +54,10 @@ func (h *handler) Registry() {
 	h.registryStatefulSetHandler(r)
 	h.registryPVHandler(r)
 	h.registryWatchHandler(r)
+	h.registryGatewayInstanceHandler(r)
+	h.registryGatewayHttpRouteHandler(r)
+	h.registryGatewayGrpcRouteHandler(r)
+	h.registryGatewayClassHandler(r)
 }
 
 // 解析Cluster Id的中间件

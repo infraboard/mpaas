@@ -46,14 +46,15 @@ func (c *Client) GetGRPCRoute(
 
 func (c *Client) CreateGRPCRoute(
 	ctx context.Context,
-	req *gatewayv1.HTTPRoute) (
+	ins *gatewayv1.GRPCRoute,
+	req *meta.CreateRequest) (
 	*gatewayv1.GRPCRoute, error) {
-	m, err := runtime.DefaultUnstructuredConverter.ToUnstructured(req)
+	m, err := runtime.DefaultUnstructuredConverter.ToUnstructured(ins)
 	if err != nil {
 		return nil, err
 	}
 	us := &unstructured.Unstructured{Object: m}
-	us, err = c.dynamic.Resource(c.grpcRouteResource()).Namespace(req.Namespace).Create(ctx, us, v1.CreateOptions{})
+	us, err = c.dynamic.Resource(c.grpcRouteResource()).Namespace(ins.Namespace).Create(ctx, us, req.Opts)
 	if err != nil {
 		return nil, err
 	}
@@ -90,6 +91,16 @@ func (c *Client) UpdateGRPCRoute(
 
 func (c *Client) DeleteGRPCRoute(
 	ctx context.Context,
-	req *meta.DeleteRequest) error {
-	return c.dynamic.Resource(c.grpcRouteResource()).Namespace(req.Namespace).Delete(ctx, req.Name, req.Opts)
+	req *meta.DeleteRequest) (
+	*gatewayv1.GRPCRoute, error) {
+	ins, err := c.GetGRPCRoute(ctx, meta.NewGetRequest(req.Name).WithNamespace(req.Namespace))
+	if err != nil {
+		return nil, err
+	}
+	err = c.dynamic.Resource(c.grpcRouteResource()).Namespace(req.Namespace).Delete(ctx, req.Name, req.Opts)
+	if err != nil {
+		return nil, err
+	}
+
+	return ins, nil
 }

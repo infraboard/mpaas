@@ -46,14 +46,16 @@ func (c *Client) GetGatewayClass(
 
 func (c *Client) CreateGatewayClass(
 	ctx context.Context,
-	req *gatewayv1.GatewayClass) (
+	ins *gatewayv1.GatewayClass,
+	req *meta.CreateRequest,
+) (
 	*gatewayv1.GatewayClass, error) {
-	m, err := runtime.DefaultUnstructuredConverter.ToUnstructured(req)
+	m, err := runtime.DefaultUnstructuredConverter.ToUnstructured(ins)
 	if err != nil {
 		return nil, err
 	}
 	us := &unstructured.Unstructured{Object: m}
-	us, err = c.dynamic.Resource(c.gatewayClassResource()).Namespace(req.Namespace).Create(ctx, us, v1.CreateOptions{})
+	us, err = c.dynamic.Resource(c.gatewayClassResource()).Namespace(ins.Namespace).Create(ctx, us, req.Opts)
 	if err != nil {
 		return nil, err
 	}
@@ -90,6 +92,16 @@ func (c *Client) UpdateGatewayClass(
 
 func (c *Client) DeleteGatewayClass(
 	ctx context.Context,
-	req *meta.DeleteRequest) error {
-	return c.dynamic.Resource(c.gatewayClassResource()).Namespace(req.Namespace).Delete(ctx, req.Name, req.Opts)
+	req *meta.DeleteRequest) (*gatewayv1.GatewayClass, error) {
+	gc, err := c.GetGatewayClass(ctx, meta.NewGetRequest(req.Name).WithNamespace(req.Namespace))
+	if err != nil {
+		return nil, err
+	}
+
+	err = c.dynamic.Resource(c.gatewayClassResource()).Namespace(req.Namespace).Delete(ctx, req.Name, req.Opts)
+	if err != nil {
+		return nil, err
+	}
+
+	return gc, nil
 }
