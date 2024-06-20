@@ -18,7 +18,7 @@ import (
 func (h *handler) registrySecretHandler(ws *restful.WebService) {
 	tags := []string{"[Proxy] 密钥管理"}
 
-	ws.Route(ws.POST("/{cluster_id}/secrets").To(h.CreateSecret).
+	ws.Route(ws.POST("/{cluster_id}/{namespace}/secrets").To(h.CreateSecret).
 		Doc("创建密钥").
 		Metadata(restfulspec.KeyOpenAPITags, tags).
 		Metadata(label.Resource, h.Name()).
@@ -29,7 +29,7 @@ func (h *handler) registrySecretHandler(ws *restful.WebService) {
 		Writes(v1.Secret{}).
 		Returns(200, "OK", v1.Secret{}))
 
-	ws.Route(ws.GET("/{cluster_id}/secrets").To(h.QuerySecret).
+	ws.Route(ws.GET("/{cluster_id}/{namespace}/secrets").To(h.QuerySecret).
 		Doc("查询密钥列表").
 		Metadata(restfulspec.KeyOpenAPITags, tags).
 		Metadata(label.Resource, h.Name()).
@@ -40,7 +40,7 @@ func (h *handler) registrySecretHandler(ws *restful.WebService) {
 		Writes(v1.SecretList{}).
 		Returns(200, "OK", v1.SecretList{}))
 
-	ws.Route(ws.GET("/{cluster_id}/secrets/{name}").To(h.GetSecret).
+	ws.Route(ws.GET("/{cluster_id}/{namespace}/secrets/{name}").To(h.GetSecret).
 		Doc("查询密钥详情").
 		Metadata(restfulspec.KeyOpenAPITags, tags).
 		Metadata(label.Resource, h.Name()).

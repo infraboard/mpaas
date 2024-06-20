@@ -16,7 +16,7 @@ import (
 func (h *handler) registryStatefulSetHandler(ws *restful.WebService) {
 	tags := []string{"[Proxy] StatefulSet管理"}
 
-	ws.Route(ws.POST("/{cluster_id}/statefulsets").To(h.CreateStatefulSet).
+	ws.Route(ws.POST("/{cluster_id}/{namespace}/statefulsets").To(h.CreateStatefulSet).
 		Doc("创建StatefulSet").
 		Metadata(restfulspec.KeyOpenAPITags, tags).
 		Metadata(label.Resource, h.Name()).
@@ -26,7 +26,7 @@ func (h *handler) registryStatefulSetHandler(ws *restful.WebService) {
 		Reads(appsv1.StatefulSet{}).
 		Writes(appsv1.StatefulSet{}))
 
-	ws.Route(ws.GET("/{cluster_id}/statefulsets").To(h.QueryStatefulSet).
+	ws.Route(ws.GET("/{cluster_id}/{namespace}/statefulsets").To(h.QueryStatefulSet).
 		Doc("查询StatefulSet列表").
 		Metadata(restfulspec.KeyOpenAPITags, tags).
 		Metadata(label.Resource, h.Name()).
@@ -37,7 +37,7 @@ func (h *handler) registryStatefulSetHandler(ws *restful.WebService) {
 		Writes(appsv1.StatefulSetList{}).
 		Returns(200, "OK", appsv1.StatefulSetList{}))
 
-	ws.Route(ws.GET("/{cluster_id}/statefulsets/{name}").To(h.GetStatefulSet).
+	ws.Route(ws.GET("/{cluster_id}/{namespace}/statefulsets/{name}").To(h.GetStatefulSet).
 		Doc("查询StatefulSet详情").
 		Metadata(restfulspec.KeyOpenAPITags, tags).
 		Metadata(label.Resource, h.Name()).

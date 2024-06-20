@@ -16,7 +16,7 @@ import (
 func (h *handler) registryServiceHandler(ws *restful.WebService) {
 	tags := []string{"[Proxy] 服务管理"}
 
-	ws.Route(ws.POST("/{cluster_id}/services").To(h.CreateService).
+	ws.Route(ws.POST("/{cluster_id}/{namespace}/services").To(h.CreateService).
 		Doc("创建服务").
 		Metadata(restfulspec.KeyOpenAPITags, tags).
 		Metadata(label.Resource, h.Name()).
@@ -27,7 +27,7 @@ func (h *handler) registryServiceHandler(ws *restful.WebService) {
 		Writes(v1.Service{}).
 		Returns(200, "OK", v1.Service{}))
 
-	ws.Route(ws.GET("/{cluster_id}/services").To(h.QueryService).
+	ws.Route(ws.GET("/{cluster_id}/{namespace}/services").To(h.QueryService).
 		Doc("查询服务列表").
 		Metadata(restfulspec.KeyOpenAPITags, tags).
 		Metadata(label.Resource, h.Name()).
@@ -38,7 +38,7 @@ func (h *handler) registryServiceHandler(ws *restful.WebService) {
 		Writes(v1.ServiceList{}).
 		Returns(200, "OK", v1.ServiceList{}))
 
-	ws.Route(ws.GET("/{cluster_id}/services/{name}").To(h.GetService).
+	ws.Route(ws.GET("/{cluster_id}/{namespace}/services/{name}").To(h.GetService).
 		Doc("查询服务详情").
 		Metadata(restfulspec.KeyOpenAPITags, tags).
 		Metadata(label.Resource, h.Name()).

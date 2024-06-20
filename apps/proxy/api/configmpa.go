@@ -18,7 +18,7 @@ import (
 func (h *handler) registryConfigMapHandler(ws *restful.WebService) {
 	tags := []string{"[Proxy] Config Map管理"}
 
-	ws.Route(ws.POST("/{cluster_id}/configmaps").To(h.CreateConfigMap).
+	ws.Route(ws.POST("/{cluster_id}/{namespace}/configmaps").To(h.CreateConfigMap).
 		Doc("创建ConfigMap").
 		Metadata(restfulspec.KeyOpenAPITags, tags).
 		Metadata(label.Resource, h.Name()).
@@ -28,7 +28,7 @@ func (h *handler) registryConfigMapHandler(ws *restful.WebService) {
 		Reads(corev1.ConfigMap{}).
 		Writes(corev1.ConfigMap{}))
 
-	ws.Route(ws.GET("/{cluster_id}/configmaps").To(h.QueryConfigMap).
+	ws.Route(ws.GET("/{cluster_id}/{namespace}/configmaps").To(h.QueryConfigMap).
 		Doc("查询ConfigMap列表").
 		Metadata(restfulspec.KeyOpenAPITags, tags).
 		Metadata(label.Resource, h.Name()).
@@ -39,7 +39,7 @@ func (h *handler) registryConfigMapHandler(ws *restful.WebService) {
 		Writes(corev1.ConfigMapList{}).
 		Returns(200, "OK", corev1.ConfigMapList{}))
 
-	ws.Route(ws.GET("/{cluster_id}/configmaps/{name}").To(h.GetConfigMap).
+	ws.Route(ws.GET("/{cluster_id}/{namespace}/configmaps/{name}").To(h.GetConfigMap).
 		Doc("查询ConfigMap详情").
 		Metadata(restfulspec.KeyOpenAPITags, tags).
 		Metadata(label.Resource, h.Name()).

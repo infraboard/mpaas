@@ -14,7 +14,7 @@ import (
 func (h *handler) registryGatewayGrpcRouteHandler(ws *restful.WebService) {
 	tags := []string{"[Proxy] 网关GRPC路由管理"}
 
-	ws.Route(ws.POST("/{cluster_id}/gateway/grpcroutes").To(h.CreateGatewayGrpcRoute).
+	ws.Route(ws.POST("/{cluster_id}/{namespace}/gateway/grpcroutes").To(h.CreateGatewayGrpcRoute).
 		Doc("创建GRPC路由").
 		Metadata(restfulspec.KeyOpenAPITags, tags).
 		Metadata(label.Resource, h.Name()).
@@ -25,7 +25,7 @@ func (h *handler) registryGatewayGrpcRouteHandler(ws *restful.WebService) {
 		Writes(gatewayv1.GRPCRoute{}).
 		Returns(200, "OK", gatewayv1.GRPCRoute{}))
 
-	ws.Route(ws.GET("/{cluster_id}/gateway/grpcroutes").To(h.QueryGatewayGrpcRoute).
+	ws.Route(ws.GET("/{cluster_id}/{namespace}/gateway/grpcroutes").To(h.QueryGatewayGrpcRoute).
 		Doc("查询GRPC路由列表").
 		Metadata(restfulspec.KeyOpenAPITags, tags).
 		Metadata(label.Resource, h.Name()).
@@ -36,7 +36,7 @@ func (h *handler) registryGatewayGrpcRouteHandler(ws *restful.WebService) {
 		Writes(gatewayv1.GRPCRouteList{}).
 		Returns(200, "OK", gatewayv1.GRPCRouteList{}))
 
-	ws.Route(ws.GET("/{cluster_id}/gateway/grpcroutes/{name}").To(h.GetGatewayGrpcRoute).
+	ws.Route(ws.GET("/{cluster_id}/{namespace}/gateway/grpcroutes/{name}").To(h.GetGatewayGrpcRoute).
 		Doc("查询GRPC路由详情").
 		Metadata(restfulspec.KeyOpenAPITags, tags).
 		Metadata(label.Resource, h.Name()).
@@ -47,7 +47,7 @@ func (h *handler) registryGatewayGrpcRouteHandler(ws *restful.WebService) {
 		Writes(gatewayv1.GRPCRoute{}).
 		Returns(200, "OK", gatewayv1.GRPCRoute{}))
 
-	ws.Route(ws.PUT("/{cluster_id}/gateway/httproutes/{namespace}/{name}").To(h.UpdateGrpcRoute).
+	ws.Route(ws.PUT("/{cluster_id}/{namespace}/gateway/httproutes/{name}").To(h.UpdateGrpcRoute).
 		Doc("更新GRPC路由").
 		Metadata(restfulspec.KeyOpenAPITags, tags).
 		Metadata(label.Resource, h.Name()).
@@ -58,7 +58,7 @@ func (h *handler) registryGatewayGrpcRouteHandler(ws *restful.WebService) {
 		Writes(gatewayv1.GRPCRoute{}).
 		Returns(200, "OK", gatewayv1.GRPCRoute{}))
 
-	ws.Route(ws.DELETE("/{cluster_id}/gateway/httproutes/{namespace}/{name}").To(h.DeleteGrpcRoute).
+	ws.Route(ws.DELETE("/{cluster_id}/{namespace}/gateway/httproutes/{name}").To(h.DeleteGrpcRoute).
 		Doc("删除GRPC路由").
 		Metadata(restfulspec.KeyOpenAPITags, tags).
 		Metadata(label.Resource, h.Name()).
@@ -77,6 +77,7 @@ func (h *handler) CreateGatewayGrpcRoute(r *restful.Request, w *restful.Response
 		response.Failed(w, err)
 		return
 	}
+	ins.Namespace = r.PathParameter("namespace")
 
 	req := meta.NewCreateRequest()
 	ins, err := client.Gateway().CreateGRPCRoute(r.Request.Context(), ins, req)

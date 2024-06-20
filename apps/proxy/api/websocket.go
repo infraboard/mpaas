@@ -60,7 +60,7 @@ func (h *websocketHandler) Registry() {
 func (h *websocketHandler) registryPodHandler(ws *restful.WebService) {
 	tags := []string{"[Proxy] Pod管理"}
 
-	ws.Route(ws.GET("/{cluster_id}/pods/{name}/login").To(h.LoginContainer).
+	ws.Route(ws.GET("/{cluster_id}/{namespace}/pods/{name}/login").To(h.LoginContainer).
 		Doc("登陆Pod").
 		Metadata(restfulspec.KeyOpenAPITags, tags).
 		Metadata(label.Resource, "pod_terminal").
@@ -69,7 +69,7 @@ func (h *websocketHandler) registryPodHandler(ws *restful.WebService) {
 		Writes(corev1.Pod{}).
 		Returns(200, "OK", corev1.Pod{}))
 
-	ws.Route(ws.GET("/{cluster_id}/pods/{name}/log").To(h.WatchConainterLog).
+	ws.Route(ws.GET("/{cluster_id}/{namespace}/pods/{name}/log").To(h.WatchConainterLog).
 		Doc("查看Pod日志").
 		Metadata(restfulspec.KeyOpenAPITags, tags).
 		Metadata(label.Resource, "pod_terminal").

@@ -14,7 +14,7 @@ import (
 func (h *handler) registryGatewayHttpRouteHandler(ws *restful.WebService) {
 	tags := []string{"[Proxy] 网关HTTP路由管理"}
 
-	ws.Route(ws.POST("/{cluster_id}/gateway/httproutes").To(h.CreateGatewayHttpRoute).
+	ws.Route(ws.POST("/{cluster_id}/{namespace}/gateway/httproutes").To(h.CreateGatewayHttpRoute).
 		Doc("创建HTTP路由").
 		Metadata(restfulspec.KeyOpenAPITags, tags).
 		Metadata(label.Resource, h.Name()).
@@ -25,7 +25,7 @@ func (h *handler) registryGatewayHttpRouteHandler(ws *restful.WebService) {
 		Writes(gatewayv1.HTTPRoute{}).
 		Returns(200, "OK", gatewayv1.HTTPRoute{}))
 
-	ws.Route(ws.GET("/{cluster_id}/gateway/httproutes/{namespace}").To(h.QueryGatewayHttpRoute).
+	ws.Route(ws.GET("/{cluster_id}/{namespace}/gateway/httproutes").To(h.QueryGatewayHttpRoute).
 		Doc("查询HTTP路由列表").
 		Metadata(restfulspec.KeyOpenAPITags, tags).
 		Metadata(label.Resource, h.Name()).
@@ -36,7 +36,7 @@ func (h *handler) registryGatewayHttpRouteHandler(ws *restful.WebService) {
 		Writes(gatewayv1.HTTPRouteList{}).
 		Returns(200, "OK", gatewayv1.HTTPRouteList{}))
 
-	ws.Route(ws.GET("/{cluster_id}/gateway/httproutes/{namespace}/{name}").To(h.GetGatewayHttpRoute).
+	ws.Route(ws.GET("/{cluster_id}/{namespace}/gateway/httproutes/{name}").To(h.GetGatewayHttpRoute).
 		Doc("查询HTTP路由详情").
 		Metadata(restfulspec.KeyOpenAPITags, tags).
 		Metadata(label.Resource, h.Name()).
@@ -47,7 +47,7 @@ func (h *handler) registryGatewayHttpRouteHandler(ws *restful.WebService) {
 		Writes(gatewayv1.HTTPRoute{}).
 		Returns(200, "OK", gatewayv1.HTTPRoute{}))
 
-	ws.Route(ws.PUT("/{cluster_id}/gateway/httproutes/{namespace}/{name}").To(h.UpdateHttpRoute).
+	ws.Route(ws.PUT("/{cluster_id}/{namespace}/gateway/httproutes/{name}").To(h.UpdateHttpRoute).
 		Doc("更新HTTP路由").
 		Metadata(restfulspec.KeyOpenAPITags, tags).
 		Metadata(label.Resource, h.Name()).
@@ -58,7 +58,7 @@ func (h *handler) registryGatewayHttpRouteHandler(ws *restful.WebService) {
 		Writes(gatewayv1.HTTPRoute{}).
 		Returns(200, "OK", gatewayv1.HTTPRoute{}))
 
-	ws.Route(ws.DELETE("/{cluster_id}/gateway/httproutes/{namespace}/{name}").To(h.DeleteHttpRoute).
+	ws.Route(ws.DELETE("/{cluster_id}/{namespace}/gateway/httproutes/{name}").To(h.DeleteHttpRoute).
 		Doc("删除HTTP路由").
 		Metadata(restfulspec.KeyOpenAPITags, tags).
 		Metadata(label.Resource, h.Name()).

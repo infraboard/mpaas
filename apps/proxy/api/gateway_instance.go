@@ -15,7 +15,7 @@ import (
 func (h *handler) registryGatewayInstanceHandler(ws *restful.WebService) {
 	tags := []string{"[Proxy] 网关实例管理"}
 
-	ws.Route(ws.POST("/{cluster_id}/gateway/instances").To(h.CreateGatewayInstance).
+	ws.Route(ws.POST("/{cluster_id}/{namespace}/gateway/instances").To(h.CreateGatewayInstance).
 		Doc("创建网关").
 		Metadata(restfulspec.KeyOpenAPITags, tags).
 		Metadata(label.Resource, h.Name()).
@@ -26,7 +26,7 @@ func (h *handler) registryGatewayInstanceHandler(ws *restful.WebService) {
 		Writes(gatewayv1.Gateway{}).
 		Returns(200, "OK", gatewayv1.Gateway{}))
 
-	ws.Route(ws.GET("/{cluster_id}/gateway/instances/{namespace}").To(h.QueryGatewayInstance).
+	ws.Route(ws.GET("/{cluster_id}/{namespace}/gateway/instances").To(h.QueryGatewayInstance).
 		Doc("查询网关列表").
 		Metadata(restfulspec.KeyOpenAPITags, tags).
 		Metadata(label.Resource, h.Name()).
@@ -37,7 +37,7 @@ func (h *handler) registryGatewayInstanceHandler(ws *restful.WebService) {
 		Writes(gatewayv1.GatewayList{}).
 		Returns(200, "OK", gatewayv1.GatewayList{}))
 
-	ws.Route(ws.GET("/{cluster_id}/gateway/instances/{namespace}/{name}").To(h.GetGatewayInstance).
+	ws.Route(ws.GET("/{cluster_id}/{namespace}/gateway/instances/{name}").To(h.GetGatewayInstance).
 		Doc("查询网关详情").
 		Metadata(restfulspec.KeyOpenAPITags, tags).
 		Metadata(label.Resource, h.Name()).
@@ -48,7 +48,7 @@ func (h *handler) registryGatewayInstanceHandler(ws *restful.WebService) {
 		Writes(gatewayv1.Gateway{}).
 		Returns(200, "OK", gatewayv1.Gateway{}))
 
-	ws.Route(ws.PUT("/{cluster_id}/gateway/instances/{namespace}/{name}").To(h.UpdateGatewayInstance).
+	ws.Route(ws.PUT("/{cluster_id}/{namespace}/gateway/instances/{name}").To(h.UpdateGatewayInstance).
 		Doc("更新网关").
 		Metadata(restfulspec.KeyOpenAPITags, tags).
 		Metadata(label.Resource, h.Name()).
@@ -59,7 +59,7 @@ func (h *handler) registryGatewayInstanceHandler(ws *restful.WebService) {
 		Writes(gatewayv1.Gateway{}).
 		Returns(200, "OK", gatewayv1.Gateway{}))
 
-	ws.Route(ws.DELETE("/{cluster_id}/gateway/instances/{namespace}/{name}").To(h.DeleteGatewayInstance).
+	ws.Route(ws.DELETE("/{cluster_id}/{namespace}/gateway/instances/{name}").To(h.DeleteGatewayInstance).
 		Doc("删除网关").
 		Metadata(restfulspec.KeyOpenAPITags, tags).
 		Metadata(label.Resource, h.Name()).

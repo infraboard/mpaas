@@ -27,7 +27,7 @@ func (h *handler) registryPVHandler(ws *restful.WebService) {
 		Writes(corev1.PersistentVolumeList{}).
 		Returns(200, "OK", corev1.PersistentVolumeList{}))
 
-	ws.Route(ws.GET("/{cluster_id}/pvc").To(h.QueryPersistentVolumeClaims).
+	ws.Route(ws.GET("/{cluster_id}/{namespace}/pvc").To(h.QueryPersistentVolumeClaims).
 		Doc("查询PVC列表").
 		Metadata(restfulspec.KeyOpenAPITags, tags).
 		Metadata(label.Resource, h.Name()).

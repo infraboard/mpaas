@@ -16,7 +16,7 @@ import (
 func (h *handler) registryPodHandler(ws *restful.WebService) {
 	tags := []string{"[Proxy] Pod管理"}
 
-	ws.Route(ws.POST("/{cluster_id}/pods").To(h.CreatePod).
+	ws.Route(ws.POST("/{cluster_id}/{namespace}/pods").To(h.CreatePod).
 		Doc("创建Pod").
 		Metadata(restfulspec.KeyOpenAPITags, tags).
 		Metadata(label.Resource, h.Name()).
@@ -27,7 +27,7 @@ func (h *handler) registryPodHandler(ws *restful.WebService) {
 		Writes(corev1.Pod{}).
 		Returns(200, "OK", corev1.Pod{}))
 
-	ws.Route(ws.GET("/{cluster_id}/pods").To(h.QueryPods).
+	ws.Route(ws.GET("/{cluster_id}/{namespace}/pods").To(h.QueryPods).
 		Doc("查询Pod列表").
 		Metadata(restfulspec.KeyOpenAPITags, tags).
 		Metadata(label.Resource, h.Name()).
@@ -38,7 +38,7 @@ func (h *handler) registryPodHandler(ws *restful.WebService) {
 		Writes(corev1.PodList{}).
 		Returns(200, "OK", corev1.PodList{}))
 
-	ws.Route(ws.GET("/{cluster_id}/pods/{name}").To(h.GetPod).
+	ws.Route(ws.GET("/{cluster_id}/{namespace}/pods/{name}").To(h.GetPod).
 		Doc("查询Pod详情").
 		Metadata(restfulspec.KeyOpenAPITags, tags).
 		Metadata(label.Resource, h.Name()).

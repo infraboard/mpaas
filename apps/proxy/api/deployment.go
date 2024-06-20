@@ -17,7 +17,7 @@ import (
 func (h *handler) registryDeploymentHandler(ws *restful.WebService) {
 	tags := []string{"[Proxy] Deployment管理"}
 
-	ws.Route(ws.POST("/{cluster_id}/deployments").To(h.CreateDeployment).
+	ws.Route(ws.POST("/{cluster_id}/{namespace}/deployments").To(h.CreateDeployment).
 		Doc("创建Deployment").
 		Metadata(restfulspec.KeyOpenAPITags, tags).
 		Metadata(label.Resource, h.Name()).
@@ -27,7 +27,7 @@ func (h *handler) registryDeploymentHandler(ws *restful.WebService) {
 		Reads(appsv1.Deployment{}).
 		Writes(appsv1.Deployment{}))
 
-	ws.Route(ws.GET("/{cluster_id}/deployments").To(h.QueryDeployments).
+	ws.Route(ws.GET("/{cluster_id}/{namespace}/deployments").To(h.QueryDeployments).
 		Doc("查询Deployment列表").
 		Metadata(restfulspec.KeyOpenAPITags, tags).
 		Metadata(label.Resource, h.Name()).
@@ -38,7 +38,7 @@ func (h *handler) registryDeploymentHandler(ws *restful.WebService) {
 		Writes(appsv1.Deployment{}).
 		Returns(200, "OK", appsv1.Deployment{}))
 
-	ws.Route(ws.GET("/{cluster_id}/deployments/{namespace}/{name}").To(h.GetDeployment).
+	ws.Route(ws.GET("/{cluster_id}/{namespace}/deployments//{name}").To(h.GetDeployment).
 		Doc("查询Deployment详情").
 		Metadata(restfulspec.KeyOpenAPITags, tags).
 		Metadata(label.Resource, h.Name()).
@@ -49,7 +49,7 @@ func (h *handler) registryDeploymentHandler(ws *restful.WebService) {
 		Writes(appsv1.Deployment{}).
 		Returns(200, "OK", appsv1.Deployment{}))
 
-	ws.Route(ws.PUT("/{cluster_id}/deployments/{namespace}/{name}").To(h.UpdateDeployment).
+	ws.Route(ws.PUT("/{cluster_id}/{namespace}/deployments/{name}").To(h.UpdateDeployment).
 		Doc("更新Deployment").
 		Metadata(restfulspec.KeyOpenAPITags, tags).
 		Metadata(label.Resource, h.Name()).
@@ -60,7 +60,7 @@ func (h *handler) registryDeploymentHandler(ws *restful.WebService) {
 		Writes(appsv1.Deployment{}).
 		Returns(200, "OK", appsv1.Deployment{}))
 
-	ws.Route(ws.POST("/{cluster_id}/deployments/{namespace}/{name}/scale").To(h.ScaleDeployment).
+	ws.Route(ws.POST("/{cluster_id}/{namespace}/deployments/{name}/scale").To(h.ScaleDeployment).
 		Doc("更新副本数").
 		Metadata(restfulspec.KeyOpenAPITags, tags).
 		Metadata(label.Resource, h.Name()).
@@ -71,7 +71,7 @@ func (h *handler) registryDeploymentHandler(ws *restful.WebService) {
 		Writes(scalv1.Scale{}).
 		Returns(200, "OK", scalv1.Scale{}))
 
-	ws.Route(ws.POST("/{cluster_id}/deployments/{namespace}/{name}/redeploy").To(h.ReDeployment).
+	ws.Route(ws.POST("/{cluster_id}/{namespace}/deployments/{name}/redeploy").To(h.ReDeployment).
 		Doc("重新部署").
 		Metadata(restfulspec.KeyOpenAPITags, tags).
 		Metadata(label.Resource, h.Name()).
