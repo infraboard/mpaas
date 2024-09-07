@@ -3,7 +3,7 @@ package api
 import (
 	"fmt"
 
-	"github.com/infraboard/mcube/v2/types/tree"
+	"github.com/infraboard/mcube/v2/types"
 	"github.com/infraboard/mpaas/apps/cluster"
 	"github.com/infraboard/mpaas/apps/deploy"
 	v1 "k8s.io/api/core/v1"
@@ -11,8 +11,8 @@ import (
 )
 
 // clusterA/v1
-func ClusterSetToTreeSet(set *cluster.ClusterSet) *tree.ArcoDesignTree {
-	tree := tree.NewArcoDesignTree()
+func ClusterSetToTreeSet(set *cluster.ClusterSet) *types.ArcoDesignTree {
+	tree := types.NewArcoDesignTree()
 	set.ForEatch(func(c *cluster.Cluster) {
 		clusterNode := tree.GetOrCreateTreeByRootKey(c.Meta.Id, c.Spec.Name, "cluster")
 		clusterNode.Labels = c.Spec.Labels
