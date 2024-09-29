@@ -152,7 +152,7 @@ func (h *websocketHandler) WatchConainterLog(r *restful.Request, w *restful.Resp
 	}
 
 	// 获取参数
-	req := workload.NewWatchConainterLogRequest()
+	req := workload.NewWatchContainerLogRequest()
 	if err = term.ReadReq(req); err != nil {
 		term.Failed(err)
 		return
@@ -160,7 +160,7 @@ func (h *websocketHandler) WatchConainterLog(r *restful.Request, w *restful.Resp
 	req.PodName = r.PathParameter("name")
 
 	client := r.Attribute(proxy.ATTRIBUTE_K8S_CLIENT).(*k8s.Client)
-	reader, err := client.WorkLoad().WatchConainterLog(r.Request.Context(), req)
+	reader, err := client.WorkLoad().WatchContainerLog(r.Request.Context(), req)
 	if err != nil {
 		term.Failed(err)
 		return

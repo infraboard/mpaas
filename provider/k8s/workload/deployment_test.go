@@ -118,9 +118,9 @@ func TestCreateDeployment(t *testing.T) {
 
 func TestScaleDeployment(t *testing.T) {
 	req := meta.NewScaleRequest()
-	req.Scale.Namespace = "go8"
+	req.Scale.Namespace = "default"
 	req.Scale.Name = "nginx"
-	req.Scale.Spec.Replicas = 2
+	req.Scale.Spec.Replicas = 1
 	v, err := impl.ScaleDeployment(ctx, req)
 	if err != nil {
 		t.Fatal(err)
@@ -136,7 +136,6 @@ func TestScaleDeployment(t *testing.T) {
 
 func TestReDeployment(t *testing.T) {
 	req := meta.NewGetRequest("nginx")
-	req.Namespace = "go8"
 	v, err := impl.ReDeploy(ctx, req)
 	if err != nil {
 		t.Fatal(err)

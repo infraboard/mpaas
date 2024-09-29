@@ -74,7 +74,6 @@ func (t *WebSocketTerminal) Read(p []byte) (n int, err error) {
 
 	// 注意文本消息和关闭消息专门被设计为了指令通道
 	switch mt {
-
 	case websocket.TextMessage:
 		t.HandleCmd(m)
 	case websocket.CloseMessage:

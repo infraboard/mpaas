@@ -91,8 +91,8 @@ func (c *Client) LoginContainer(ctx context.Context, req *LoginContainerRequest)
 	})
 }
 
-func NewWatchConainterLogRequest() *WatchConainterLogRequest {
-	return &WatchConainterLogRequest{
+func NewWatchContainerLogRequest() *WatchContainerLogRequest {
+	return &WatchContainerLogRequest{
 		PodLogOptions: &v1.PodLogOptions{
 			Follow:                       true,
 			Previous:                     false,
@@ -101,18 +101,18 @@ func NewWatchConainterLogRequest() *WatchConainterLogRequest {
 	}
 }
 
-type WatchConainterLogRequest struct {
+type WatchContainerLogRequest struct {
 	Namespace string `json:"namespace" validate:"required"`
 	PodName   string `json:"pod_name" validate:"required"`
 	*v1.PodLogOptions
 }
 
-func (req *WatchConainterLogRequest) Validate() error {
+func (req *WatchContainerLogRequest) Validate() error {
 	return validate.Struct(req)
 }
 
 // 查看容器日志
-func (c *Client) WatchConainterLog(ctx context.Context, req *WatchConainterLogRequest) (io.ReadCloser, error) {
+func (c *Client) WatchContainerLog(ctx context.Context, req *WatchContainerLogRequest) (io.ReadCloser, error) {
 	restReq := c.corev1.Pods(req.Namespace).GetLogs(req.PodName, req.PodLogOptions)
 	return restReq.Stream(ctx)
 }

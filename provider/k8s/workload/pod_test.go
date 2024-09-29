@@ -14,7 +14,7 @@ import (
 func TestListPod(t *testing.T) {
 	req := meta.NewListRequest()
 	req.Namespace = "default"
-	req.Opts.LabelSelector = "job-name=test-job"
+	// req.Opts.LabelSelector = "job-name=test-job"
 	pods, err := impl.ListPod(ctx, req)
 	if err != nil {
 		t.Fatal(err)

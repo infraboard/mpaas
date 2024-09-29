@@ -12,10 +12,11 @@ import (
 )
 
 func TestWatchConainterLog(t *testing.T) {
-	req := workload.NewWatchConainterLogRequest()
+	req := workload.NewWatchContainerLogRequest()
+	req.Follow = false
 	req.Namespace = "default"
-	req.PodName = "cicd-test-8f97775-h78sj"
-	stream, err := impl.WatchConainterLog(ctx, req)
+	req.PodName = "nginx-974d7fcf-z7c8x"
+	stream, err := impl.WatchContainerLog(ctx, req)
 	if err != nil {
 		t.Fatal(err)
 	}

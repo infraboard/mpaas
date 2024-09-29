@@ -30,6 +30,12 @@ func (c *Client) GetDeployment(ctx context.Context, req *meta.GetRequest) (*apps
 	if err != nil {
 		return nil, err
 	}
+	if d.Annotations == nil {
+		d.Annotations = map[string]string{}
+	}
+	if d.Spec.Template.Annotations == nil {
+		d.Spec.Template.Annotations = map[string]string{}
+	}
 	d.APIVersion = "apps/v1"
 	d.Kind = "Deployment"
 	return d, nil
