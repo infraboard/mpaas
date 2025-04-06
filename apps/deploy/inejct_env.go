@@ -129,7 +129,7 @@ func (e *InjectionEnv) MakeEncrypt(key string) {
 		return
 	}
 
-	encrypt, err := cbc.EncryptToString(e.Value, []byte(key))
+	encrypt, err := cbc.MustNewAESCBCCihper([]byte(key)).Encrypt([]byte(e.Value))
 	if err != nil {
 		e.EncryptFailed = err.Error()
 		return

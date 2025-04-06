@@ -146,7 +146,7 @@ func (i *Cluster) EncryptKubeConf(key string) error {
 		return fmt.Errorf("text has ciphered")
 	}
 
-	cipherText, err := cbc.Encrypt([]byte(i.Spec.KubeConfig), []byte(key))
+	cipherText, err := cbc.MustNewAESCBCCihper([]byte(key)).Encrypt([]byte(i.Spec.KubeConfig))
 	if err != nil {
 		return err
 	}
@@ -169,7 +169,7 @@ func (i *Cluster) DecryptKubeConf(key string) error {
 		return err
 	}
 
-	planText, err := cbc.Decrypt([]byte(cipherText), []byte(key))
+	planText, err := cbc.MustNewAESCBCCihper([]byte(key)).Decrypt([]byte(cipherText))
 	if err != nil {
 		return err
 	}
